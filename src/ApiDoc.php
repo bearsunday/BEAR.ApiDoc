@@ -10,7 +10,7 @@ namespace BEAR\ApiDoc {
     use Ray\Di\Di\Inject;
     use Ray\Di\Di\Named;
 
-    class DocPage extends ResourceObject
+    class ApiDoc extends ResourceObject
     {
         /**
          * @var ResourceInterface
