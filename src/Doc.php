@@ -1,7 +1,7 @@
 <?php
-namespace BEAR\ApiDoc\Resource\Page\Rels {
+namespace BEAR\ApiDoc {
+
     use Aura\Router\Router;
-    use BEAR\ApiDoc\Template;
     use BEAR\Resource\Exception\HrefNotFoundException;
     use BEAR\Resource\Exception\ResourceNotFoundException;
     use BEAR\Resource\RenderInterface;
@@ -10,7 +10,7 @@ namespace BEAR\ApiDoc\Resource\Page\Rels {
     use Ray\Di\Di\Inject;
     use Ray\Di\Di\Named;
 
-    class Doc extends ResourceObject
+    class DocPage extends ResourceObject
     {
         /**
          * @var ResourceInterface
