@@ -10,7 +10,7 @@ namespace BEAR\ApiDoc\Resource\Page\Rels {
     use Ray\Di\Di\Inject;
     use Ray\Di\Di\Named;
 
-    class Index extends ResourceObject
+    class Doc extends ResourceObject
     {
         /**
          * @var ResourceInterface
