@@ -82,8 +82,9 @@ namespace BEAR\ApiDoc {
                 {
                     $ro->headers['content-type'] = 'text/html; charset=utf-8';
                     $twig = new \Twig_Environment(new \Twig_Loader_Array($this->template));
+                    $ro->view = $twig->render('index', $ro->body);
 
-                    return $twig->render('index', $ro->body);
+                    return $ro->view;
                 }
             };
         }
