@@ -1,0 +1,24 @@
+{
+    "name": "bear/api-doc",
+    "description": "API Doc page class for BEAR.Sunday",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Akihito Koriyama",
+            "email": "akihito.koriyama@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "BEAR\\ApiDoc\\": "src/"
+        }
+    },
+    "require": {
+        "bear/resource": "^1.7",
+        "twig/twig": "^2.4"
+    },
+    "require-dev": {
+        "bear/aura-router-module": "^1.2"
+    }
+}
