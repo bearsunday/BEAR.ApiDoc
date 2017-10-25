@@ -16,7 +16,7 @@
     },
     "require": {
         "bear/resource": "^1.7",
-        "twig/twig": "^1.0|^2.4"
+        "twig/twig": "^1.7|^2.4"
     },
     "require-dev": {
         "bear/aura-router-module": "^1.2"
