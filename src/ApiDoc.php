@@ -260,12 +260,12 @@ namespace BEAR\ApiDoc {
     <p class="lead">{{ method.summary }}</p>
     <h3>Parameters</h3>
     <table class="table table-sm">
-    {% for param_name, parameters in method.request.parameters %}
         <tr>
             <th>Name</th>
             <th>Type</th>
             <th>Description</th>
         </tr>
+    {% for param_name, parameters in method.request.parameters %}
         <tr>
             <td>{{ param_name }}</td>
             <td>{{ parameters.type }}</td>
