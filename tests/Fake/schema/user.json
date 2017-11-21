@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "maxLength": 30,
+      "pattern": "[a-z\\d~+-]+"
+    },
+    "lastName": {
+      "type": "string",
+      "maxLength": 30,
+      "pattern": "[a-z\\d~+-]+"
+    },
+    "age": {
+      "type": ["integer", "null"]
+    }
+  },
+  "required": ["firstName", "lastName", "age"]
+}
