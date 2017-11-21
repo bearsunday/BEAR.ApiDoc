@@ -20,7 +20,7 @@
         }
     },
     "require": {
-        "bear/resource": "^1.7",
+        "bear/resource": "^1.9.0",
         "twig/twig": "^1.7|^2.4"
     },
     "require-dev": {
