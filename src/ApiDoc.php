@@ -1,6 +1,5 @@
 <?php
 namespace BEAR\ApiDoc {
-
     use Aura\Router\Router;
     use BEAR\Resource\Exception\HrefNotFoundException;
     use BEAR\Resource\Exception\ResourceNotFoundException;
@@ -177,7 +176,6 @@ namespace BEAR\ApiDoc {
         }
     }
 }
-
 namespace BEAR\ApiDoc {
     class Template
     {
@@ -301,7 +299,11 @@ namespace BEAR\ApiDoc {
     {% for prop_name, prop in schema.properties %}
         <tr>
             <td>{{ prop_name }}</td>
+            {% if prop.type is iterable %}
+            <td>{{ prop.type | join(\', \') }}</td>
+            {% else %}
             <td>{{ prop.type }}</td>
+            {% endif %}
             <td>{{ prop.description }}</td>
             <td>
                 <table class="table table-condensed">
