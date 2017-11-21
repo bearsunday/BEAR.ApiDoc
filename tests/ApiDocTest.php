@@ -15,6 +15,10 @@ class ApiDocTest extends TestCase
      * @var ApiDoc
      */
     private $apiDoc;
+
+    /**
+     * @var ResourceInterface
+     */
     private $resource;
 
     public function setUp()
@@ -39,7 +43,46 @@ class ApiDocTest extends TestCase
 
     public function testRender()
     {
-        $ro = $this->apiDoc->onGet('user');
-        (string) $ro;
+        $options = $this->resource->options->uri('app://self/user')()->view;
+        $expected = '{
+    "GET": {
+        "request": {
+            "parameters": {
+                "age": []
+            },
+            "required": [
+                "age"
+            ]
+        },
+        "schema": {
+            "type": "object",
+            "properties": {
+                "firstName": {
+                    "type": "string",
+                    "maxLength": 30,
+                    "pattern": "[a-z\\\\d~+-]+"
+                },
+                "lastName": {
+                    "type": "string",
+                    "maxLength": 30,
+                    "pattern": "[a-z\\\\d~+-]+"
+                },
+                "age": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "firstName",
+                "lastName",
+                "age"
+            ]
+        }
+    }
+}
+';
+        $this->assertSame($expected, $options);
     }
 }
