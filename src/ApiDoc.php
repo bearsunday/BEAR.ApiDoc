@@ -1,6 +1,5 @@
 <?php
 namespace BEAR\ApiDoc {
-
     use Aura\Router\Router;
     use Aura\Router\RouterContainer;
     use BEAR\Resource\Exception\HrefNotFoundException;
@@ -176,7 +175,6 @@ namespace BEAR\ApiDoc {
     }
 }
 namespace BEAR\ApiDoc {
-
     class Template
     {
         /**
