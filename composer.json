@@ -20,11 +20,27 @@
         }
     },
     "require": {
+        "php": "^7.0",
         "bear/resource": "^1.9.0",
-        "twig/twig": "^1.7|^2.4"
+        "twig/twig": "^1.7|^2.4",
+        "bear/aura-router-module": "^2.0"
     },
     "require-dev": {
-        "bear/aura-router-module": "^1.2",
         "phpunit/phpunit": "^6.4"
-    }
-}
+    },
+    "scripts": {
+        "test": [
+            "phpunit"
+        ],
+        "coverage": [
+            "php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
+        ],
+        "cs": [
+            "php-cs-fixer fix -v --dry-run",
+            "phpcs --standard=./phpcs.xml src"
+        ],
+        "cs-fix": [
+            "php-cs-fixer fix -v",
+            "phpcbf src"
+        ]
+    }}

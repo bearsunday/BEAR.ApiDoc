@@ -1,6 +1,8 @@
 <?php
 namespace BEAR\ApiDoc {
+
     use Aura\Router\Router;
+    use Aura\Router\RouterContainer;
     use BEAR\Resource\Exception\HrefNotFoundException;
     use BEAR\Resource\Exception\ResourceNotFoundException;
     use BEAR\Resource\RenderInterface;
@@ -19,7 +21,7 @@ namespace BEAR\ApiDoc {
         /**
          * Optional aura router
          *
-         * @var Router
+         * @var RouterContainer
          */
         private $route;
 
@@ -36,14 +38,9 @@ namespace BEAR\ApiDoc {
             'schema.table.html.twig' => Template::SCHEMA_TABLE
         ];
 
-        /**
-         * @Named("aura_router")
-         *
-         * @param null|mixed $route
-         */
-        public function __construct($route = null)
+        public function __construct(RouterContainer $routerContainer = null)
         {
-            $this->route = $route;
+            $this->route = $routerContainer;
         }
 
         /**
@@ -160,15 +157,17 @@ namespace BEAR\ApiDoc {
 
         private function isTemplated(array $links) : bool
         {
-            return ($this->route instanceof Router && isset($links['templated']) && $links['templated'] === true) ? true : false;
+            $isTemplated = $this->route instanceof RouterContainer && isset($links['templated']) && $links['templated'] === true;
+
+            return $isTemplated;
         }
 
         private function match($tempaltedPath) : string
         {
-            $routes = $this->route->getRoutes();
+            $routes = $this->route->getMap()->getRoutes();
             foreach ($routes as $route) {
-                if ($tempaltedPath == $route->path) {
-                    return $route->values['path'];
+                if ($tempaltedPath === $route->path) {
+                    return $route->name;
                 }
             }
 
@@ -177,6 +176,7 @@ namespace BEAR\ApiDoc {
     }
 }
 namespace BEAR\ApiDoc {
+
     class Template
     {
         /**
