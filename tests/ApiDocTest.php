@@ -1,7 +1,7 @@
 <?php
 namespace BEAR\ApiDoc;
 
-use Aura\Router\RouterFactory;
+use Aura\Router\RouterContainer;
 use BEAR\Resource\JsonRenderer;
 use BEAR\Resource\Module\JsonSchemalModule;
 use BEAR\Resource\Module\ResourceModule;
@@ -23,7 +23,7 @@ class ApiDocTest extends TestCase
 
     public function setUp()
     {
-        $router = (new RouterFactory)->newInstance();
+        $routerContainer = new RouterContainer;
         $schemaDir = __DIR__ . '/Fake/schema';
         $classDir = __DIR__ . '/tmp';
         $this->resource = $resource = (new Injector(
@@ -34,7 +34,7 @@ class ApiDocTest extends TestCase
             ),
             $classDir
         ))->getInstance(ResourceInterface::class);
-        $apiDoc = new ApiDoc($router);
+        $apiDoc = new ApiDoc($routerContainer);
         $apiDoc->setScehmaDir(__DIR__ . '/Fake/schema');
         $apiDoc->setResource($resource);
         $apiDoc->setRenderer(new JsonRenderer());
