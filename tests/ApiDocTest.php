@@ -3,7 +3,7 @@ namespace BEAR\ApiDoc;
 
 use Aura\Router\RouterContainer;
 use BEAR\Resource\JsonRenderer;
-use BEAR\Resource\Module\JsonSchemalModule;
+use BEAR\Resource\Module\JsonSchemaModule;
 use BEAR\Resource\Module\ResourceModule;
 use BEAR\Resource\ResourceInterface;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +27,7 @@ class ApiDocTest extends TestCase
         $schemaDir = __DIR__ . '/Fake/schema';
         $classDir = __DIR__ . '/tmp';
         $this->resource = $resource = (new Injector(
-            new JsonSchemalModule(
+            new JsonSchemaModule(
                 $schemaDir,
                 '',
                 new ResourceModule('FakeVendor\FakeProject')
