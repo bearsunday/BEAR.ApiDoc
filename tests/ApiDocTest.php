@@ -43,12 +43,14 @@ class ApiDocTest extends TestCase
 
     public function testRender()
     {
-        $options = $this->resource->options->uri('app://self/user')()->view;
+        $options = $this->resource->options('app://self/user')->view;
         $expected = '{
     "GET": {
         "request": {
             "parameters": {
-                "age": []
+                "age": {
+                    "type": "integer"
+                }
             },
             "required": [
                 "age"
