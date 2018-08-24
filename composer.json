@@ -21,7 +21,7 @@
     },
     "require": {
         "php": "^7.0",
-        "bear/resource": "^1.9.0",
+        "bear/resource": "^1.10.1",
         "twig/twig": "^1.7|^2.4",
         "bear/aura-router-module": "^2.0"
     },
