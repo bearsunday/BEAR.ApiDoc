@@ -1,4 +1,5 @@
 <?php
+// @codingStandardsIgnoreFile
 namespace BEAR\ApiDoc {
     use Aura\Router\Router;
     use Aura\Router\RouterContainer;
