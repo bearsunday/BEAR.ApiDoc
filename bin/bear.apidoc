@@ -8,7 +8,7 @@
 use BEAR\ApiDoc\DocGen;
 
 if ($argc !== 4) {
-    echo 'usage: bear.compile <MyVendor\MyProject> <prod-app> <app_dir>' . PHP_EOL;
+    echo 'usage: bear.apidoc <MyVendor\MyProject> <prod-app> <app_dir>' . PHP_EOL;
     exit(1);
 }
 list(, $appName, $context, $appDir) = $argv;
