@@ -27,7 +27,9 @@
         "bear/aura-router-module": "^2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.4"
+        "phpunit/phpunit": "^6.4",
+        "bear/app-meta": "^1.4",
+        "bear/package": "^1.8"
     },
     "scripts": {
         "test": [
@@ -44,4 +46,8 @@
             "php-cs-fixer fix -v",
             "phpcbf src"
         ]
-    }}
+    },
+    "bin": [
+        "bin/bear.apidoc"
+    ]
+}
