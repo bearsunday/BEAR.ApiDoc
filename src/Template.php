@@ -182,7 +182,7 @@ final class Template
             <tr>
                 <td>{{ key }}</td>
                 {% if key == \'$ref\' %}
-                    <td><a href="?schema={{ item }}">{{ item }}</a></td>
+                    <td><a href="../schema/{{ schema.id  }}">{{ item }}</a></td>
                 {% else %}
                     <td>{{ item | json_encode()}}</td>
                 {% endif %}
