@@ -89,6 +89,8 @@ final class Template
     <h1>{{ method_name }}</h1>
     <p class="lead">{{ method.summary }}</p>
     <h4>Request</h4>
+    {% for param_name, parameters in method.request.parameters %}
+        {% if loop.first %}
     <table class="table table-bordered">
         <tr>
             <th>Name</th>
@@ -97,7 +99,7 @@ final class Template
             <th>Default</th>
             <th>Required</th>
         </tr>
-    {% for param_name, parameters in method.request.parameters %}
+        {% endif %}
         <tr>
             <td>{{ param_name }}</td>
             <td>{{ parameters.type }}</td>
@@ -109,6 +111,10 @@ final class Template
             <td>Optional</td>            
             {% endif %}
         </tr>
+    {% else %}
+    <div style="height: 15px"></div>
+       No parameters required.
+    <div style="height: 15px"></div>
     {% endfor %}
     </table>
     <h6>
@@ -176,17 +182,19 @@ final class Template
 {% endif %}
 
 {% if schema.type == \'array\' %}
-    <span class="label label-default">array</span>
-    <table class="table">
+    <table class="table table-bordered">
+        <tr>
+            <th>Type</th><th>$ref</th>
+        </tr>
         {% for key, item in schema.items %}
-            <tr>
-                <td>{{ key }}</td>
-                {% if key == \'$ref\' %}
-                    <td><a href="../schema/{{ schema.id  }}">{{ item }}</a></td>
-                {% else %}
-                    <td>{{ item | json_encode()}}</td>
-                {% endif %}
-            </tr>
+        <tr>
+            <td>Array</td>
+            {% if key == \'$ref\' %}
+                <td><a href="../schema/{{ schema.id  }}">{{ item }}</a></td>
+            {% else %}
+                <td>{{ item | json_encode()}}</td>
+            {% endif %}
+        </tr>
         {% endfor %}
     </table>
 {% endif %}
