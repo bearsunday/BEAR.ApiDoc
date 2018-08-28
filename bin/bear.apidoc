@@ -11,13 +11,12 @@ if ($argc !== 4) {
     echo 'usage: bear.apidoc <MyVendor\MyProject> <prod-app> <app_dir>' . PHP_EOL;
     exit(1);
 }
-list(, $appName, $context, $appDir) = $argv;
-$dir = realpath($appDir);
+list(, $appName, $appDir, $docDir) = $argv;
 
-require $dir . '/vendor/autoload.php';
+require realpath($appDir) . '/vendor/autoload.php';
 
 try {
-    syslog(LOG_INFO, (new DocGen)($appName, $context, $appDir));
+    echo (new DocGen)($appName, realpath($appDir), realpath($docDir));
     exit(0);
 } catch (\Exception $e) {
     error_log($e);

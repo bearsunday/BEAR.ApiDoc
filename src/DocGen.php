@@ -9,12 +9,10 @@ use BEAR\Resource\ResourceObject;
 
 final class DocGen
 {
-    const CONTEXT = 'app';
-
-    public function __invoke(string $appName, string $docDir) : string
+    public function __invoke(string $appName, string $appDir, string $docDir, string $cotext = 'app') : string
     {
-        $meta = new Meta($appName, self::CONTEXT);
-        $injector = new AppInjector($appName, self::CONTEXT, $meta);
+        $meta = new Meta($appName, $cotext);
+        $injector = new AppInjector($appName, $cotext, $meta);
         $apiDoc = $injector->getInstance(ApiStaticDoc::class);
         /* @var \BEAR\ApiDoc\ApiDoc $apiDoc */
         $apiDoc->setRenderer(new class implements RenderInterface {
