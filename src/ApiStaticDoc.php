@@ -16,7 +16,7 @@ use function json_decode;
 use function json_encode;
 use function str_replace;
 
-class ApiStaticDoc extends ResourceObject
+final class ApiStaticDoc extends ResourceObject
 {
     /**
      * @var ResourceInterface
