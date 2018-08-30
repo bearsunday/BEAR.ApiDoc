@@ -8,7 +8,7 @@
 use BEAR\ApiDoc\DocGen;
 
 if ($argc !== 4) {
-    echo 'usage: bear.apidoc <MyVendor\MyProject> <prod-app> <app_dir>' . PHP_EOL;
+    echo 'usage: bear.apidoc <MyVendor\MyProject>　<app_dir> <doc_dir>' . PHP_EOL;
     exit(1);
 }
 list(, $appName, $appDir, $docDir) = $argv;
@@ -19,6 +19,6 @@ try {
     echo (new DocGen)($appName, realpath($appDir), realpath($docDir));
     exit(0);
 } catch (\Exception $e) {
-    error_log($e);
+    error_log((string) $e);
     exit(1);
 }
