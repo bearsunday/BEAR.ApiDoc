@@ -64,7 +64,7 @@ final class Template
      * Home page content
      */
     const HOME = '
-<p>{{ message|nl2br }}</p>
+<p>{{ message|raw|nl2br }}</p>
 
 <p><b>Link Relations</b></p>
 <ul>
