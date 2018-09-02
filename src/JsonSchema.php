@@ -1,7 +1,11 @@
 <?php
 namespace BEAR\ApiDoc;
 
+use BEAR\ApiDoc\Exception\InvalidJsonException;
+use BEAR\ApiDoc\Exception\MissingIdException;
+use LogicException;
 use function json_decode;
+use function property_exists;
 
 final class JsonSchema
 {
@@ -13,6 +17,9 @@ final class JsonSchema
     public function __construct(string $json)
     {
         $schema = json_decode($json);
+        if ($schema === null) {
+            throw new InvalidJsonException;
+        }
         $this->id = $this->getSchemaId($schema);
         $this->docHref = 'schema/' . $this->id;
         $this->schema = $schema;
@@ -22,6 +29,9 @@ final class JsonSchema
 
     private function getSchemaId($schema) : string
     {
+        if (! property_exists($schema, 'id')) {
+            throw new MissingIdException($schema);
+        }
         $path = parse_url($schema->id, PHP_URL_PATH);
         if ($path) {
             return pathinfo($schema->id, PATHINFO_BASENAME);
