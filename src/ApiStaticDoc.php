@@ -109,6 +109,9 @@ final class ApiStaticDoc extends ResourceObject
 
     private function writeIndex(string $docDir)
     {
+        if (! is_dir($docDir)) {
+            mkdir($docDir, 0777, true);
+        }
         file_put_contents($docDir . '/index.html', (string) $this->indexPage());
     }
 
