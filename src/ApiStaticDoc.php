@@ -8,6 +8,8 @@ use BEAR\Resource\Exception\ResourceNotFoundException;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
+use function file_exists;
+use function is_writable;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
@@ -45,8 +47,9 @@ final class ApiStaticDoc extends ResourceObject
 
     private $schemaJson = [];
 
-    public function __construct(RouterContainer $routerContainer = null)
+    public function __construct(ResourceInterface $resource, RouterContainer $routerContainer = null)
     {
+        $this->resource = $resource;
         $this->route = $routerContainer;
     }
 
@@ -57,14 +60,6 @@ final class ApiStaticDoc extends ResourceObject
     public function setScehmaDir(string $schemaDir = '')
     {
         $this->schemaDir = $schemaDir;
-    }
-
-    /**
-     * @Inject
-     */
-    public function setResource(ResourceInterface $resource)
-    {
-        $this->resource = $resource;
     }
 
     /**
