@@ -6,20 +6,40 @@ use BEAR\Resource\ResourceObject;
 class Index extends ResourceObject
 {
     public $body = [
-        'message' => 'Welcome to the our API !',
+        'message' => 'Welcome to the our API !
+<ul>
+    <li>more info1 <a href="http://www.example.com/more-info1">http://www.example.com/more-info1</a>
+    <li>more info2 <a href="http://www.example.com/more-info1">http://www.example.com/more-info1</a>
+</ul>',
         '_links' => [
             'self' => [
                 'href' => '/',
             ],
             'curies' => [
                 'name' => 'doc',
-                'href' => 'http://apidoc.example.com/rels/{?rel}',
+                'href' => 'rels/{rel}.html',
                 'templated' => true
+            ],
+            'doc:ticket' => [
+                'href' => '/ticket',
+                'title' => 'Tickets item',
+            ],
+            'doc:tickets' => [
+                'href' => '/tickets',
+                'title' => 'Ticket list'
             ],
             'doc:user' => [
                 'href' => '/user',
-                'templated' => false
+                'title' => 'User'
             ],
+            'doc:address' => [
+                'href' => '/address',
+                'title' => 'Address'
+            ],
+            'doc:array' => [
+                'href' => '/array-data',
+                'title' => 'Array'
+            ]
         ]
     ];
 

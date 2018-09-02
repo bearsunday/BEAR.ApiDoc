@@ -1,0 +1,14 @@
+{
+  "id": "ticket.param.json",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Ticket request parameter",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for a ticket."
+    }
+  },
+  "required": ["id"],
+  "additionalProperties": false
+}

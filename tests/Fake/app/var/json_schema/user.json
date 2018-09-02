@@ -1,4 +1,7 @@
 {
+  "id": "user.json",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "User",
   "type": "object",
   "properties": {
     "firstName": {
@@ -12,7 +15,7 @@
       "pattern": "[a-z\\d~+-]+"
     },
     "age": {
-      "type": ["integer", "null"]
+      "$ref": "age.json"
     }
   },
   "required": ["firstName", "lastName", "age"]
