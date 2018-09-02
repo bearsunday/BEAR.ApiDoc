@@ -69,7 +69,7 @@ final class Template
 <p><b>Link Relations</b></p>
 <ul>
     {% for link in links %}
-        <li><a href="{{ link.docUri }}">{{ link.rel }}</a> - {{ link.title}}</li>
+        <li><a href="{{ link.docUri }}">{{ link.rel }}</a> - {{ link.title}} - {{ link.href}}
     {% endfor %}
 </ul>
 <p><b>Json Schemas</b></p>
@@ -190,7 +190,7 @@ final class Template
         <tr>
             <td>Array</td>
             {% if key == \'$ref\' %}
-                <td><a href="../schema/{{ schema.id  }}">{{ item }}</a></td>
+                <td>{{ item }}<a href="../schema/{{ schema.id  }}"><i class="fas fa-cloud-download-alt"></i></a></td>
             {% else %}
                 <td>{{ item | json_encode()}}</td>
             {% endif %}
