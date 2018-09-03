@@ -8,8 +8,6 @@ use BEAR\Resource\Exception\ResourceNotFoundException;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
-use function file_exists;
-use function is_writable;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
@@ -81,6 +79,7 @@ final class ApiStaticDoc extends ResourceObject
                 $ro->headers['content-type'] = 'text/html; charset=utf-8';
                 $twig = new \Twig_Environment(new \Twig_Loader_Array($this->template), ['debug' => true]);
                 $twig->addExtension(new Twig_Extension_Debug);
+                $twig->addExtension(new RefLinkExtention);
                 $ro->view = $twig->render('index', $ro->body);
 
                 return $ro->view;

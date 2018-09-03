@@ -70,7 +70,7 @@ final class Template
 <p><b>Link Relations</b></p>
 <ul>
     {% for link in links %}
-        <li><a href="{{ link.docUri }}">{{ link.rel }}</a> - {{ link.title}} - {{ link.href}}
+        <li><a href="{{ link.docUri }}">{{ link.rel }}</a> - {{ link.title}} - <span style="color: gray"><conde>{{ link.href}}</conde></span>
     {% endfor %}
 </ul>
 <p><b>Json Schemas</b></p>
@@ -85,6 +85,7 @@ final class Template
      * Relation page content
      */
     const REL = '<h2>{{ href }}</h2>
+<a href="#definitions/veggie">veggie</a>
 {% for method_name, method in doc %}
     <hr style="width: 100%; color: grey; height: 1px; background-color:grey;" />
     <h1>{{ method_name }}</h1>
@@ -144,10 +145,10 @@ final class Template
      * Schema property table
      */
     const SCHEMA_TABLE = '{% if schema.properties %}
-<table class="table table-bordered">
     {%if definition_name %}
-        <caption style="caption-side: top;"><a name="#/definitions/{{ definition_name }}">{{ definition_name }}</a></caption>
+        <caption style="caption-side: top;"><a name="definitions/{{ definition_name }}">{{ definition_name }}</a></caption>
     {% endif %}
+<table class="table table-bordered">
     <tr>
         <th>Property</th>
         <th>Type</th>
@@ -171,7 +172,7 @@ final class Template
                 <td rowspan="{{ constrain_num }}">Optional</td>            
             {% endif %}
             {% for const_name, const_val in attribute(meta.constatins, prop_name).first %}
-                <td>{{ const_name }}: {{ const_val | json_encode(constant(\'JSON_PRETTY_PRINT\') b-or constant(\'JSON_UNESCAPED_SLASHES\')) }}</td>
+                <td>{{ const_name }}: {{ const_val | json_encode(constant(\'JSON_PRETTY_PRINT\') b-or constant(\'JSON_UNESCAPED_SLASHES\')) | reflink | raw}}</td>
             {% else %}
                 <td> </td>
             {% endfor %}
@@ -179,7 +180,7 @@ final class Template
             <tr>
             {% endif %}
                 {% for const_name, const_val in attribute(meta.constatins, prop_name).extra %}
-                        <td>{{ const_name }}: {{ const_val }}</td>
+                    <td>{{ const_name }}: {{ const_val }}</td>
                 {% endfor %}
             {%if attribute(meta.constatins, prop_name).extra %}
             </tr>
