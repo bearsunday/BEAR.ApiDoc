@@ -6,6 +6,7 @@ use BEAR\ApiDoc\Exception\MissingIdException;
 use LogicException;
 use function json_decode;
 use function property_exists;
+use function serialize;
 
 final class JsonSchema
 {
@@ -31,15 +32,16 @@ final class JsonSchema
 
     private function getSchemaId($schema) : string
     {
-        if (! property_exists($schema, 'id')) {
-            throw new MissingIdException($schema);
+        if (! property_exists($schema, 'id') && (! property_exists($schema, '$id'))) {
+            throw new MissingIdException(serialize($schema));
         }
-        $path = parse_url($schema->id, PHP_URL_PATH);
+        $id =  property_exists($schema, 'id') ? $schema->id : $schema->{'$id'};
+        $path = parse_url($id, PHP_URL_PATH);
         if ($path) {
-            return pathinfo($schema->id, PATHINFO_BASENAME);
+            return pathinfo($id, PATHINFO_BASENAME);
         }
 
-        return $schema->id;
+        return $id;
     }
 
     private function getConstrains($properties) : array
