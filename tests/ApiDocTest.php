@@ -6,6 +6,7 @@ use BEAR\Resource\JsonRenderer;
 use BEAR\Resource\Module\JsonSchemaModule;
 use BEAR\Resource\Module\ResourceModule;
 use BEAR\Resource\ResourceInterface;
+use function file_put_contents;
 use PHPUnit\Framework\TestCase;
 use Ray\Di\Injector;
 
@@ -34,14 +35,12 @@ class ApiDocTest extends TestCase
             ),
             $classDir
         ))->getInstance(ResourceInterface::class);
-        $apiDoc = new ApiDoc($routerContainer);
-        $apiDoc->setScehmaDir(__DIR__ . '/Fake/schema');
-        $apiDoc->setResource($resource);
+        $apiDoc = new ApiDoc($resource, $routerContainer, $schemaDir);
         $apiDoc->setRenderer(new JsonRenderer());
         $this->apiDoc = $apiDoc;
     }
 
-    public function testRender()
+    public function testOptions()
     {
         $options = $this->resource->options('app://self/user')->view;
         $expected = '{
@@ -106,5 +105,16 @@ class ApiDocTest extends TestCase
 }
 ';
         $this->assertSame($expected, $options);
+    }
+
+    public function testGetApiDoc()
+    {
+        $ro = $this->apiDoc->onGet('user');
+        $view = (string) $ro;
+        file_put_contents(__DIR__ . '/api_doc.html', $view);
+        $this->assertContains('GET', $view);
+        $this->assertContains('POST', $view);
+        $this->assertContains('Request', $view);
+        $this->assertContains('Response', $view);
     }
 }
