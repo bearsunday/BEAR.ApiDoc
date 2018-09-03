@@ -24,7 +24,7 @@ class ApiDocTest extends TestCase
     public function setUp()
     {
         $routerContainer = new RouterContainer;
-        $schemaDir = __DIR__ . '/Fake/schema';
+        $schemaDir = __DIR__ . '/Fake/app/var/json_schema';
         $classDir = __DIR__ . '/tmp';
         $this->resource = $resource = (new Injector(
             new JsonSchemaModule(
@@ -57,6 +57,9 @@ class ApiDocTest extends TestCase
             ]
         },
         "schema": {
+            "id": "user.json",
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "title": "User",
             "type": "object",
             "properties": {
                 "firstName": {
@@ -70,10 +73,7 @@ class ApiDocTest extends TestCase
                     "pattern": "[a-z\\\\d~+-]+"
                 },
                 "age": {
-                    "type": [
-                        "integer",
-                        "null"
-                    ]
+                    "$ref": "age.json"
                 }
             },
             "required": [
@@ -101,7 +101,6 @@ class ApiDocTest extends TestCase
                 "name",
                 "age"
             ]
-            }
         }
     }
 }
