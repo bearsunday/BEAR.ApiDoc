@@ -39,6 +39,14 @@ class Index extends ResourceObject
             'doc:array' => [
                 'href' => '/array-data',
                 'title' => 'Array'
+            ],
+            'doc:person' => [
+                'href' => '/person',
+                'title' => 'Person'
+            ],
+            'doc:calendar' => [
+                'href' => '/calendar',
+                'title' => 'Calendar'
             ]
         ]
     ];

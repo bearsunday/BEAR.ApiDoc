@@ -13,6 +13,10 @@
     "vegetables": {
       "type": "array",
       "items": { "$ref": "#/definitions/veggie" }
+    },
+    "juice": {
+      "type": "object",
+      "$ref": "#/definitions/juice"
     }
   },
   "definitions": {
@@ -27,6 +31,20 @@
         "veggieLike": {
           "type": "boolean",
           "description": "Do I like this vegetable?"
+        }
+      }
+    },
+    "juice": {
+      "type": "object",
+      "required": [ "juiceName", "juiceLike" ],
+      "properties": {
+        "juiceName": {
+          "type": "string",
+          "description": "The name of the juice."
+        },
+        "juiceLike": {
+          "type": "boolean",
+          "description": "Do I like this juice?"
         }
       }
     }
