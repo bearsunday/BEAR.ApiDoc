@@ -173,7 +173,7 @@ final class Template
             {% for const_name, const_val in attribute(meta.constatins, prop_name).first %}
                 <td>{{ const_name }}: {{ const_val | json_encode(constant(\'JSON_PRETTY_PRINT\') b-or constant(\'JSON_UNESCAPED_SLASHES\')) }}</td>
             {% else %}
-                <td> n/a </td>
+                <td> </td>
             {% endfor %}
             {%if attribute(meta.constatins, prop_name).extra %}
             <tr>
