@@ -82,6 +82,27 @@ class ApiDocTest extends TestCase
                 "age"
             ]
         }
+    },
+    "POST": {
+        "summary": "Create user",
+        "description": "Create user with given name and age",
+        "request": {
+            "parameters": {
+                "name": {
+                    "type": "string",
+                    "description": "user name"
+                },
+                "age": {
+                    "type": "integer",
+                    "description": "user age"
+                }
+            },
+            "required": [
+                "name",
+                "age"
+            ]
+            }
+        }
     }
 }
 ';
