@@ -3,7 +3,6 @@ namespace BEAR\ApiDoc;
 
 use BEAR\ApiDoc\Exception\InvalidJsonException;
 use BEAR\ApiDoc\Exception\MissingIdException;
-use LogicException;
 use function json_decode;
 use function property_exists;
 use function serialize;
@@ -35,7 +34,7 @@ final class JsonSchema
         if (! property_exists($schema, 'id') && (! property_exists($schema, '$id'))) {
             throw new MissingIdException(serialize($schema));
         }
-        $id =  property_exists($schema, 'id') ? $schema->id : $schema->{'$id'};
+        $id = property_exists($schema, 'id') ? $schema->id : $schema->{'$id'};
         $path = parse_url($id, PHP_URL_PATH);
         if ($path) {
             return pathinfo($id, PATHINFO_BASENAME);
