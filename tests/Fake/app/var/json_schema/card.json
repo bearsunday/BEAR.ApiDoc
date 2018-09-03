@@ -1,5 +1,5 @@
 {
-  "id": "card.json",
+  "$id": "card.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Card",
   "description": "A representation of a person, company, organization, or place",

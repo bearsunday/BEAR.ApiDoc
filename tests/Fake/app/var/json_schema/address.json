@@ -1,5 +1,5 @@
 {
-  "id": "address.json",
+  "$id": "address.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Address",
   "description": "An address similar to http://microformats.org/wiki/h-card",

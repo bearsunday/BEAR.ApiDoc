@@ -9,7 +9,7 @@ class User extends ResourceObject
     /**
      * @JsonSchema(schema="user.json")
      */
-    public function onGet(?int $age)
+    public function onGet(int $age)
     {
     }
 
