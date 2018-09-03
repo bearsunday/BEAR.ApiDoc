@@ -13,7 +13,7 @@ final class DocGen
     {
         $meta = new Meta($appName, $cotext);
         $injector = new AppInjector($appName, $cotext, $meta);
-        $apiDoc = $injector->getInstance(ApiStaticDoc::class);
+        $apiDoc = $injector->getInstance(ApiDoc::class);
         /* @var \BEAR\ApiDoc\ApiDoc $apiDoc */
         $apiDoc->setRenderer(new class implements RenderInterface {
             public function render(ResourceObject $ro)
