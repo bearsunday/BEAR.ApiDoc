@@ -13,6 +13,7 @@ final class JsonSchema
     public $docHref;
     public $constatins = [];
     public $constrainNum;
+    public $definitions;
 
     public function __construct(string $json)
     {
@@ -25,6 +26,7 @@ final class JsonSchema
         $this->schema = $schema;
         $this->constatins = isset($schema->properties) ? $this->getConstrains($schema->properties) : [];
         $this->constrainNum = $this->getConstrainNum($this->constatins);
+        $this->definitions = isset($schema->definitios) ? $schema->definitios : [];
     }
 
     private function getSchemaId($schema) : string

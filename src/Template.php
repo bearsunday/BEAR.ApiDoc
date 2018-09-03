@@ -14,6 +14,7 @@ final class Template
     {% block stylesheets %}
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <css 
     {% endblock %}
 </head>
 <body>
@@ -129,6 +130,14 @@ final class Template
     {%  set meta = method.meta%}
     {%  set schema = method.schema%}
     {%  include \'schema.table.html.twig\' %}
+    {% for definition_name, definition in schema.definitions %}
+        {% if loop.first %}
+            <div style="height: 30px">
+            </div><h5>Definitions</h5>
+        {% endif %}
+        {%  set schema = definition %}
+        {%  include \'schema.table.html.twig\' %}
+    {% endfor %}
 {% endfor %}
 ';
     /**
@@ -136,6 +145,9 @@ final class Template
      */
     const SCHEMA_TABLE = '{% if schema.properties %}
 <table class="table table-bordered">
+    {%if definition_name %}
+        <caption style="caption-side: top;"><a name="#/definitions/{{ definition_name }}">{{ definition_name }}</a></caption>
+    {% endif %}
     <tr>
         <th>Property</th>
         <th>Type</th>
@@ -163,16 +175,12 @@ final class Template
             {% else %}
                 <td> n/a </td>
             {% endfor %}
-
             {%if attribute(meta.constatins, prop_name).extra %}
             <tr>
             {% endif %}
-
                 {% for const_name, const_val in attribute(meta.constatins, prop_name).extra %}
                         <td>{{ const_name }}: {{ const_val }}</td>
                 {% endfor %}
-
-
             {%if attribute(meta.constatins, prop_name).extra %}
             </tr>
             {% endif %}
