@@ -8,6 +8,7 @@ use BEAR\Resource\Exception\ResourceNotFoundException;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
+use BEAR\Resource\TransferInterface;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
@@ -92,51 +93,15 @@ final class ApiDoc extends ResourceObject
         return $this->indexPage();
     }
 
-    public function write(string $docDir)
+    public function transfer(TransferInterface $responder, array $server)
     {
-        $this->writeIndex($docDir);
+        if (! $responder instanceof FileResponder) {
+            return parent::transfer($responder, $server);
+        }
         $this->indexPage();
-        $this->writeRel($this->body['links'], $docDir);
-    }
+        $responder->set((string) $this->indexPage(), $this->schemaDir);
 
-    private function writeIndex(string $docDir)
-    {
-        if (! is_dir($docDir) && ! mkdir($docDir, 0777, true) && ! is_dir($docDir)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $docDir));
-        }
-        file_put_contents($docDir . '/index.html', (string) $this->indexPage());
-    }
-
-    private function writeRel(array $links, string $docDir)
-    {
-        foreach ($links as $rel => $relMeta) {
-            $this->view = null;
-            $ro = $this->onGet($rel);
-            $view = (string) $ro;
-            $relsDir = $docDir . '/rels';
-            $schemaDir = $docDir . '/schema';
-            if (! is_dir($relsDir) && ! mkdir($relsDir, 0777, true) && ! is_dir($relsDir)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $relsDir));
-            }
-            if (! is_dir($schemaDir) && ! mkdir($schemaDir, 0777, true) && ! is_dir($schemaDir)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $schemaDir));
-            }
-            file_put_contents("{$relsDir}/{$rel}.html", $view);
-        }
-        $this->copyJson($docDir, $ro);
-    }
-
-    private function schemaPage(string $id) : ResourceObject
-    {
-        $path = realpath($this->schemaDir . '/' . $id);
-        $isInvalidFilePath = (strncmp($path, $this->schemaDir, strlen($this->schemaDir)) !== 0);
-        if ($isInvalidFilePath) {
-            throw new \DomainException($id);
-        }
-        $schema = (array) json_decode(file_get_contents($path), true);
-        $this->body['schema'] = $schema;
-
-        return $this;
+        return parent::transfer($responder, $server);
     }
 
     private function indexPage() : ResourceObject
@@ -156,6 +121,19 @@ final class ApiDoc extends ResourceObject
             'links' => $links,
             'schemas' => $schemas
         ];
+
+        return $this;
+    }
+
+    private function schemaPage(string $id) : ResourceObject
+    {
+        $path = realpath($this->schemaDir . '/' . $id);
+        $isInvalidFilePath = (strncmp($path, $this->schemaDir, strlen($this->schemaDir)) !== 0);
+        if ($isInvalidFilePath) {
+            throw new \DomainException($id);
+        }
+        $schema = (array) json_decode(file_get_contents($path), true);
+        $this->body['schema'] = $schema;
 
         return $this;
     }
@@ -218,13 +196,5 @@ final class ApiDoc extends ResourceObject
         }
 
         return $tempaltedPath;
-    }
-
-    private function copyJson(string $docDir, self $ro)
-    {
-        foreach (glob($ro->schemaDir . '/*.json') as $json) {
-            $dest = str_replace($this->schemaDir, "{$docDir}/schema", $json);
-            copy($json, $dest);
-        }
     }
 }
