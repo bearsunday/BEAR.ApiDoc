@@ -159,7 +159,7 @@ final class Template
                 <td rowspan="{{ constrain_num }}">Optional</td>            
             {% endif %}
             {% for const_name, const_val in attribute(meta.constatins, prop_name).first %}
-                <td>{{ const_name }}: {{ const_val }}</td>
+                <td>{{ const_name }}: {{ const_val | json_encode(constant(\'JSON_PRETTY_PRINT\') b-or constant(\'JSON_UNESCAPED_SLASHES\')) }}</td>
             {% else %}
                 <td> n/a </td>
             {% endfor %}
@@ -192,7 +192,7 @@ final class Template
             {% if key == \'$ref\' %}
                 <td>{{ item }}<a href="../schema/{{ schema.id  }}"><i class="fas fa-cloud-download-alt"></i></a></td>
             {% else %}
-                <td>{{ item | json_encode()}}</td>
+                <td>{{ item | json_encode(constant(\'JSON_PRETTY_PRINT\') b-or constant(\'JSON_UNESCAPED_SLASHES\')) }}</td>
             {% endif %}
         </tr>
         {% endfor %}
