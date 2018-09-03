@@ -15,13 +15,14 @@ final class DocGen
         $injector = new AppInjector($appName, $cotext, $meta);
         $apiDoc = $injector->getInstance(ApiDoc::class);
         /* @var \BEAR\ApiDoc\ApiDoc $apiDoc */
+        // set twig renderer by self
         $apiDoc->setRenderer(new class implements RenderInterface {
             public function render(ResourceObject $ro)
             {
                 return new NullResourceObject;
             }
-        }); // set twig renderer by self
-        $apiDoc->write($docDir);
+        });
+        $apiDoc->transfer(new FileResponder($docDir), []);
 
         return "API Doc is created at {$docDir}" . PHP_EOL;
     }
