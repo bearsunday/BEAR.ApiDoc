@@ -85,7 +85,6 @@ final class Template
      * Relation page content
      */
     const REL = '<h2>{{ href }}</h2>
-<a href="#definitions/veggie">veggie</a>
 {% for method_name, method in doc %}
     <hr style="width: 100%; color: grey; height: 1px; background-color:grey;" />
     <h1>{{ method_name }}</h1>
