@@ -9,12 +9,12 @@ class DocGenTest extends TestCase
 {
     public function test__invoke()
     {
-        (new DocGen)('FakeVendor\FakeProject', __DIR__ . '/Fake/app', 'tests/doc/api');
+        (new DocGen)('FakeVendor\FakeProject', __DIR__ . '/Fake/app', 'tests/doc/api', 'http://example.com/schema/');
         $this->assertFileExists(__DIR__ . '/doc/api/index.html');
         $this->assertFileExists(__DIR__ . '/doc/api/rels/address.html');
         $this->assertFileExists(__DIR__ . '/doc/api/schema/address.json');
         $this->assertContains('<li><a href="rels/ticket.html">ticket</a>', file_get_contents(__DIR__ . '/doc/api/index.html'));
         $this->assertContains('<h2>/address</h2>', file_get_contents(__DIR__ . '/doc/api/rels/address.html'));
-        $this->assertContains('$id": "address.json', file_get_contents(__DIR__ . '/doc/api/schema/address.json'));
+        $this->assertContains('$id": "http://example.com/schema/address.json', file_get_contents(__DIR__ . '/doc/api/schema/address.json'));
     }
 }

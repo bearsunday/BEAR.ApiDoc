@@ -4,6 +4,12 @@ namespace BEAR\ApiDoc;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
 use LogicException;
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
+use function file_get_contents;
+use function file_put_contents;
+use function json_decode;
+use function json_encode;
 
 final class FileResponder implements TransferInterface
 {
@@ -12,13 +18,25 @@ final class FileResponder implements TransferInterface
      */
     private $docDir;
 
+    /**
+     * @var string
+     */
     private $index;
 
+    /**
+     * @var string
+     */
     private $schemaDir;
 
-    public function __construct(string $docDir)
+    /**
+     * @var string
+     */
+    private $host;
+
+    public function __construct(string $docDir, string $host)
     {
         $this->docDir = $docDir;
+        $this->host = $host;
     }
 
     public function __invoke(ResourceObject $ro, array $server)
@@ -51,7 +69,6 @@ final class FileResponder implements TransferInterface
             $ro = $apiDoc->onGet($rel);
             $view = (string) $ro;
             $relsDir = $docDir . '/rels';
-            $schemaDir = $docDir . '/schema';
             if (! is_dir($relsDir) && ! mkdir($relsDir, 0777, true) && ! is_dir($relsDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $relsDir));
             }
@@ -66,9 +83,16 @@ final class FileResponder implements TransferInterface
         if (! is_dir($destDir) && ! mkdir($destDir, 0777, true) && ! is_dir($destDir)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $destDir));
         }
-        foreach (glob($schemaDir . '/*.json') as $json) {
-            $dest = str_replace($schemaDir, $destDir, $json);
-            copy($json, $dest);
+        foreach (glob($schemaDir . '/*.json') as $jsonFile) {
+            $dest = str_replace($schemaDir, $destDir, $jsonFile);
+            $json = json_decode(file_get_contents($jsonFile));
+            if (isset($json->id)) {
+                $json->id = $this->host . $json->id;
+            }
+            if (isset($json->{'$id'})) {
+                $json->{'$id'} = $this->host . $json->{'$id'};
+            }
+            file_put_contents($dest, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
     }
 }
