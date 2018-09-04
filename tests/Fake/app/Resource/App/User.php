@@ -8,8 +8,11 @@ class User extends ResourceObject
 {
     /**
      * @JsonSchema(schema="user.json")
+     *
+     * @param string $id      User ID
+     * @param string $options User Options
      */
-    public function onGet(int $age)
+    public function onGet(string $id, string $options = 'guest')
     {
     }
 
@@ -18,8 +21,8 @@ class User extends ResourceObject
      *
      * Create user with given name and age
      *
-     * @param string   $name user name
-     * @param int|null $age  user age
+     * @param string   $name The name of the user
+     * @param int|null $age  The age of the user
      */
     public function onPost(string $name, ?int $age)
     {

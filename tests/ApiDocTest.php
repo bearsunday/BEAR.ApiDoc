@@ -25,6 +25,7 @@ class ApiDocTest extends TestCase
     public function setUp()
     {
         $routerContainer = new RouterContainer;
+        $routerContainer->getMap()->route('/user', '/user/{id}');
         $schemaDir = __DIR__ . '/Fake/app/var/json_schema';
         $classDir = __DIR__ . '/tmp';
         $this->resource = $resource = (new Injector(

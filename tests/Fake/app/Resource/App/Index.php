@@ -29,8 +29,9 @@ class Index extends ResourceObject
                 'title' => 'Ticket list'
             ],
             'doc:user' => [
-                'href' => '/user',
-                'title' => 'User'
+                'href' => '/users/{id}',
+                'title' => 'User',
+                'templated' => true
             ],
             'doc:address' => [
                 'href' => '/address',

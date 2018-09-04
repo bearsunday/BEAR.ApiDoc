@@ -1,6 +1,7 @@
 <?php
 namespace BEAR\ApiDoc;
 
+use Aura\Router\Exception\RouteNotFound;
 use Aura\Router\Router;
 use Aura\Router\RouterContainer;
 use BEAR\Resource\Exception\HrefNotFoundException;
@@ -9,6 +10,7 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
+use LogicException;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
@@ -36,6 +38,11 @@ final class ApiDoc extends ResourceObject
      */
     private $schemaDir;
 
+    /**
+     * @var string
+     */
+    private $routerFile;
+
     private $template = [
         'index' => Template::INDEX,
         'base.html.twig' => Template::BASE,
@@ -45,13 +52,18 @@ final class ApiDoc extends ResourceObject
     ];
 
     /**
-     * @Named("schemaDir=json_schema_dir")
+     * @Named("schemaDir=json_schema_dir,routerFile=aura_router_file")
      */
-    public function __construct(ResourceInterface $resource, RouterContainer $routerContainer = null, string $schemaDir = '')
-    {
+    public function __construct(
+        ResourceInterface $resource,
+        string $schemaDir = '',
+        RouterContainer $routerContainer = null,
+        string $routerFile = null
+    ) {
         $this->resource = $resource;
         $this->route = $routerContainer;
         $this->schemaDir = $schemaDir;
+        $this->routerFile = $routerFile;
     }
 
     /**
@@ -157,8 +169,9 @@ final class ApiDoc extends ResourceObject
             throw new ResourceNotFoundException($rel);
         }
         $href = $links[$namedRel]['href'];
-        $path = $this->isTemplated($links[$namedRel]) ? $this->match($href) : $href;
-        $uri = 'app://self' . $path;
+        $isTemplated = $this->isTemplated($links[$namedRel]);
+        $path = $isTemplated ? $this->match($href) : $href;
+        $uri = "app://self{$path}";
         try {
             $optionsJson = $this->resource->options($uri)->view;
         } catch (ResourceNotFoundException $e) {
@@ -181,20 +194,23 @@ final class ApiDoc extends ResourceObject
 
     private function isTemplated(array $links) : bool
     {
-        $isTemplated = $this->route instanceof RouterContainer && isset($links['templated']) && $links['templated'] === true;
+        if (! $this->route instanceof RouterContainer) {
+            throw new LogicException('You need bear/aura-router-module ^2.0 for templated path.');
+        }
 
-        return $isTemplated;
+        return isset($links['templated']) && $links['templated'] === true;
     }
 
     private function match($tempaltedPath) : string
     {
-        $routes = $this->route->getMap()->getRoutes();
-        foreach ($routes as $route) {
+        $map = $this->route->getMap();
+        include $this->routerFile;
+        foreach ($map as $route) {
             if ($tempaltedPath === $route->path) {
                 return $route->name;
             }
         }
 
-        return $tempaltedPath;
+        throw new RouteNotFound($tempaltedPath);
     }
 }
