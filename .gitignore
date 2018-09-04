@@ -5,3 +5,4 @@ composer.lock
 /tests/Fake/var/tmp/
 /tests/doc/
 /doc/
+build
