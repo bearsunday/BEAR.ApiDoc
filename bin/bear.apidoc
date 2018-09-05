@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+/**
+ * BEAR/Sunday API Doc generator
+ *
+ * Usage: bear.apidoc \'MyVendor\MyProject\' prod-html-app /path/to/project
+ */
+use BEAR\ApiDoc\DocGen;
+
+if ($argc !== 4) {
+    echo 'usage: bear.apidoc <MyVendor\MyProject>　<app_dir> <doc_dir>' . PHP_EOL;
+    exit(1);
+}
+list(, $appName, $appDir, $docDir) = $argv;
+
+require realpath($appDir) . '/vendor/autoload.php';
+
+try {
+    echo (new DocGen)($appName, realpath($appDir), realpath($docDir));
+    exit(0);
+} catch (\Exception $e) {
+    error_log((string) $e);
+    exit(1);
+}

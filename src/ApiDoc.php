@@ -1,357 +1,218 @@
 <?php
-namespace BEAR\ApiDoc {
-    use Aura\Router\Router;
-    use Aura\Router\RouterContainer;
-    use BEAR\Resource\Exception\HrefNotFoundException;
-    use BEAR\Resource\Exception\ResourceNotFoundException;
-    use BEAR\Resource\RenderInterface;
-    use BEAR\Resource\ResourceInterface;
-    use BEAR\Resource\ResourceObject;
-    use Ray\Di\Di\Inject;
-    use Ray\Di\Di\Named;
+namespace BEAR\ApiDoc;
 
-    class ApiDoc extends ResourceObject
+use Aura\Router\Exception\RouteNotFound;
+use Aura\Router\Map;
+use Aura\Router\Router;
+use Aura\Router\RouterContainer;
+use BEAR\Resource\Exception\HrefNotFoundException;
+use BEAR\Resource\Exception\ResourceNotFoundException;
+use BEAR\Resource\RenderInterface;
+use BEAR\Resource\ResourceInterface;
+use BEAR\Resource\ResourceObject;
+use BEAR\Resource\TransferInterface;
+use Ray\Di\Di\Inject;
+use Ray\Di\Di\Named;
+use Twig_Extension_Debug;
+use function file_get_contents;
+use function json_decode;
+use function json_encode;
+use function str_replace;
+
+final class ApiDoc extends ResourceObject
+{
+    /**
+     * @var ResourceInterface
+     */
+    private $resource;
+
+    /**
+     * Optional aura router
+     *
+     * @var RouterContainer
+     */
+    private $route;
+
+    /**
+     * @var string
+     */
+    private $schemaDir;
+
+    /**
+     * @var string
+     */
+    private $routerFile;
+
+    /**
+     * @var Map
+     */
+    private $map;
+
+    private $template = [
+        'index' => Template::INDEX,
+        'base.html.twig' => Template::BASE,
+        'home.html.twig' => Template::HOME,
+        'rel.html.twig' => Template::REL,
+        'schema.table.html.twig' => Template::SCHEMA_TABLE
+    ];
+
+    /**
+     * @Named("schemaDir=json_schema_dir,routerFile=aura_router_file")
+     */
+    public function __construct(
+        ResourceInterface $resource,
+        string $schemaDir = '',
+        RouterContainer $routerContainer = null,
+        string $routerFile = null
+    ) {
+        $this->resource = $resource;
+        $this->route = $routerContainer;
+        $this->schemaDir = $schemaDir;
+        $this->routerFile = $routerFile;
+        $map = $this->route->getMap();
+        $this->map = $map;
+        include $this->routerFile;
+    }
+
+    /**
+     * @Inject
+     */
+    public function setRenderer(RenderInterface $renderer)
     {
-        /**
-         * @var ResourceInterface
-         */
-        private $resource;
+        unset($renderer);
+        $this->renderer = new class($this->template) implements RenderInterface {
+            private $template;
 
-        /**
-         * Optional aura router
-         *
-         * @var RouterContainer
-         */
-        private $route;
+            public function __construct(array $template)
+            {
+                $this->template = $template;
+            }
 
-        /**
-         * @var string
-         */
-        private $schemaDir;
+            public function render(ResourceObject $ro)
+            {
+                $ro->headers['content-type'] = 'text/html; charset=utf-8';
+                $twig = new \Twig_Environment(new \Twig_Loader_Array($this->template), ['debug' => true]);
+                $twig->addExtension(new Twig_Extension_Debug);
+                $twig->addExtension(new RefLinkExtention);
+                $ro->view = $twig->render('index', $ro->body);
 
-        private $template = [
-            'index' => Template::INDEX,
-            'base.html.twig' => Template::BASE,
-            'home.html.twig' => Template::HOME,
-            'rel.html.twig' => Template::REL,
-            'schema.table.html.twig' => Template::SCHEMA_TABLE
+                return $ro->view;
+            }
+        };
+    }
+
+    public function onGet(string $rel = null, $schema = null) : ResourceObject
+    {
+        if ($rel) {
+            return $this->relPage($rel);
+        }
+        if ($schema) {
+            return $this->schemaPage($schema);
+        }
+
+        return $this->indexPage();
+    }
+
+    public function transfer(TransferInterface $responder, array $server)
+    {
+        if (! $responder instanceof FileResponder) {
+            return parent::transfer($responder, $server); // @codeCoverageIgnore
+        }
+        $this->indexPage();
+        $responder->set((string) $this->indexPage(), $this->schemaDir);
+
+        return parent::transfer($responder, $server);
+    }
+
+    private function indexPage() : ResourceObject
+    {
+        $index = $this->resource->uri('app://self/index')()->body;
+        $curies = new Curies($index['_links']['curies']);
+        $links = [];
+        unset($index['_links']['curies'], $index['_links']['self']);
+        foreach ($index['_links'] as $nameRel => $value) {
+            $rel = str_replace($curies->name . ':', '', $nameRel);
+            $links[$rel] = new Curie($nameRel, $value, $curies);
+        }
+        $schemas = $this->getSchemas();
+        $this->body = [
+            'name' => $curies->name,
+            'message' => $index['message'],
+            'links' => $links,
+            'schemas' => $schemas
         ];
 
-        public function __construct(RouterContainer $routerContainer = null)
-        {
-            $this->route = $routerContainer;
-        }
-
-        /**
-         * @Inject
-         * @Named("schemaDir=json_schema_dir")
-         */
-        public function setScehmaDir(string $schemaDir = '')
-        {
-            $this->schemaDir = $schemaDir;
-        }
-
-        /**
-         * @Inject
-         */
-        public function setResource(ResourceInterface $resource)
-        {
-            $this->resource = $resource;
-        }
-
-        /**
-         * @Inject
-         */
-        public function setRenderer(RenderInterface $renderer)
-        {
-            unset($renderer);
-            $this->renderer = new class($this->template) implements RenderInterface {
-                private $template;
-
-                public function __construct(array $template)
-                {
-                    $this->template = $template;
-                }
-
-                public function render(ResourceObject $ro)
-                {
-                    $ro->headers['content-type'] = 'text/html; charset=utf-8';
-                    $twig = new \Twig_Environment(new \Twig_Loader_Array($this->template));
-                    $ro->view = $twig->render('index', $ro->body);
-
-                    return $ro->view;
-                }
-            };
-        }
-
-        public function onGet(string $rel = null, $schema = null) : ResourceObject
-        {
-            if ($rel) {
-                return $this->relPage($rel);
-            }
-            if ($schema) {
-                return $this->schemaPage($schema);
-            }
-
-            return $this->indexPage();
-        }
-
-        private function schemaPage(string $id) : ResourceObject
-        {
-            $path = realpath($this->schemaDir . '/' . $id);
-            $isInvalidFilePath = (strncmp($path, $this->schemaDir, strlen($this->schemaDir)) !== 0);
-            if ($isInvalidFilePath) {
-                throw new \DomainException($id);
-            }
-            $schema = (array) json_decode(file_get_contents($path), true);
-            $this->body['schema'] = $schema;
-
-            return $this;
-        }
-
-        private function indexPage() : ResourceObject
-        {
-            $index = $this->resource->uri('app://self/index')()->body;
-            $name = $index['_links']['curies']['name'];
-            $links = [];
-            unset($index['_links']['curies'], $index['_links']['self']);
-
-            foreach ($index['_links'] as $rel => $value) {
-                $newRel = str_replace($name . ':', '', $rel);
-                $links[$newRel] = $value;
-            }
-            $this->body = [
-                'name' => $name,
-                'message' => $index['message'],
-                'links' => $links
-            ];
-
-            return $this;
-        }
-
-        private function relPage(string $rel) : ResourceObject
-        {
-            $index = $this->resource->options->uri('app://self/')()->body;
-            $namedRel = sprintf('%s:%s', $index['_links']['curies']['name'], $rel);
-            $links = $index['_links'];
-            if (! isset($links[$namedRel]['href'])) {
-                throw new ResourceNotFoundException($rel);
-            }
-            $href = $links[$namedRel]['href'];
-            $path = $this->isTemplated($links[$namedRel]) ? $this->match($href) : $href;
-            $uri = 'app://self' . $path;
-            try {
-                $optionsJson = $this->resource->options->uri($uri)()->view;
-            } catch (ResourceNotFoundException $e) {
-                throw new HrefNotFoundException($href, 0, $e);
-            }
-            $this->body = [
-                'doc' => json_decode($optionsJson, true),
-                'rel' => $rel,
-                'href' => $href
-            ];
-
-            return $this;
-        }
-
-        private function isTemplated(array $links) : bool
-        {
-            $isTemplated = $this->route instanceof RouterContainer && isset($links['templated']) && $links['templated'] === true;
-
-            return $isTemplated;
-        }
-
-        private function match($tempaltedPath) : string
-        {
-            $routes = $this->route->getMap()->getRoutes();
-            foreach ($routes as $route) {
-                if ($tempaltedPath === $route->path) {
-                    return $route->name;
-                }
-            }
-
-            return $tempaltedPath;
-        }
+        return $this;
     }
-}
-namespace BEAR\ApiDoc {
-    class Template
+
+    private function schemaPage(string $id) : ResourceObject
     {
-        /**
-         * Base template for all content
-         */
-        const BASE = '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8" />
-    <title>{% block title %}Welcome!{% endblock %}</title>
-    {% block stylesheets %}
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    {% endblock %}
-</head>
-<body>
-{% block body %}
-    {% block contents %}
-        <div class="container">
-            {% block content %}
-            {% endblock %}
-        </div>
-    {% endblock %}
-{% endblock %}
-</body>
-</html>
-';
-        /**
-         * Index page content
-         */
-        const INDEX = '{% extends \'base.html.twig\' %}
-{% block title %}{{ rel }}{% endblock %}
-{% block content %}
+        $path = realpath($this->schemaDir . '/' . $id);
+        $isInvalidFilePath = (strncmp($path, $this->schemaDir, strlen($this->schemaDir)) !== 0);
+        if ($isInvalidFilePath) {
+            throw new \DomainException($id);
+        }
+        $schema = (array) json_decode(file_get_contents($path), true);
+        $this->body['schema'] = $schema;
 
-    {% if rel is defined %}
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="./">API Doc</a></li>
-            <li class="breadcrumb-item">rels</a></li>
-            <li class="breadcrumb-item active">{{ rel }}</li>
-        </ol>
-        {% include \'rel.html.twig\' %}
-    {% elseif schema is defined %}
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="./">API Doc</a></li>
-            <li class="breadcrumb-item">schemas</a></li>
-            <li class="breadcrumb-item active">{{ schema.id }}</li>
-        </ol>
-        <h1>{{ schema.id }}</h1>
-        {%  include \'schema.table.html.twig\' %}
-        <p class="lead"><a href="/schemas/{{ schema.id }}">{{ schema.id }} raw file</a></p>
-    {% else %}
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item active">API Doc</li>
-        </ol>
-        {% include \'home.html.twig\' %}
-    {% endif %}
-{% endblock %}
-';
+        return $this;
+    }
 
-        /**
-         * Home page content
-         */
-        const HOME = '
-<p>{{ message }}</p>
-<ul>
-{% for rel, link in links %}
-    <li><a href="?rel={{ rel }}">{{ rel }}</a></li>
-{% endfor %}
-</ul>
-';
+    private function getSchemas() : array
+    {
+        $schemas = [];
+        foreach (glob($this->schemaDir . '/*.json') as $json) {
+            $schemas[] = new JsonSchema(file_get_contents($json));
+        }
 
-        /**
-         * Relation page content
-         */
-        const REL = '<h1 class="display-4">{{ rel }}</h1>
-<h2>{{ href }}</h2>
-{% for method_name, method in doc %}
-    <hr style="width: 100%; color: grey; height: 1px; background-color:grey;" />
-    <h1>{{ method_name }}</h1>
-    <p class="lead">{{ method.summary }}</p>
-    <h3>Parameters</h3>
-    <table class="table table-sm">
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-        </tr>
-    {% for param_name, parameters in method.request.parameters %}
-        <tr>
-            <td>{{ param_name }}</td>
-            <td>{{ parameters.type }}</td>
-            <td>{{ parameters.description }}</td>
-        </tr>
-    {% endfor %}
-    </table>
-    <h6>
-        <span class="badge badge-default">Required</span>
-        <span>{{ method.request.required | join(\', \')}}</span>
-    </h6>
+        return $schemas;
+    }
 
-    {% if method.schema %}
-        <div style="height: 30px"></div>
-        <h3>Schema </h3>
-        <h4><a href="?schema={{ method.schema.id }}">{{ method.schema.id }}</a></h4>
-    {%  endif %}
-    {%  set schema = method.schema%}
-    {%  include \'schema.table.html.twig\' %}
-{% endfor %}
-';
-        /**
-         * Schema property table
-         */
-        const SCHEMA_TABLE = '{% if schema.properties %}
-<table class="table table-sm">
-    <tr>
-        <th>Property</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Constraints</th>
-    </tr>
-    {% for prop_name, prop in schema.properties %}
-        <tr>
-            <td>{{ prop_name }}</td>
-            {% if prop.type is iterable %}
-            <td>{{ prop.type | join(\', \') }}</td>
-            {% else %}
-            <td>{{ prop.type }}</td>
-            {% endif %}
-            <td>{{ prop.description }}</td>
-            <td>
-                <table class="table table-condensed">
-                    {% for const_name, const in prop if const_name != \'type\'%}
-                        {% if not (const_name in [\'description\']) %}
-                            <tr>
-                                <td>{{ const_name }}</td>
-                                <td>{{ const | json_encode()}}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </table>
-            </td>
-        </tr>
-    {% endfor %}
-</table>
-{% endif %}
+    private function relPage(string $rel) : ResourceObject
+    {
+        $index = $this->resource->options->uri('app://self/')()->body;
+        $namedRel = sprintf('%s:%s', $index['_links']['curies']['name'], $rel);
+        $links = $index['_links'];
+        if (! isset($links[$namedRel]['href'])) {
+            throw new ResourceNotFoundException($rel);
+        }
+        $href = $links[$namedRel]['href'];
+        $isTemplated = $this->isTemplated($links[$namedRel]);
+        $path = $isTemplated ? $this->match($href) : $href;
+        $uri = "app://self{$path}";
+        try {
+            $optionsJson = $this->resource->options($uri)->view;
+        } catch (ResourceNotFoundException $e) {
+            throw new HrefNotFoundException($href, 0, $e);
+        }
+        $options = json_decode($optionsJson, true);
+        foreach ($options as &$option) {
+            if (isset($option['schema'])) {
+                $option['meta'] = new JsonSchema(json_encode($option['schema']));
+            }
+        }
+        $this->body = [
+            'doc' => $options,
+            'rel' => $rel,
+            'href' => $href
+        ];
 
-{% if schema.type == \'array\' %}
-    <span class="label label-default">array</span>
-    <table class="table">
-        {% for key, item in schema.items %}
-            <tr>
-                <td>{{ key }}</td>
-                {% if key == \'$ref\' %}
-                    <td><a href="?schema={{ item }}">{{ item }}</a></td>
-                {% else %}
-                    <td>{{ item | json_encode()}}</td>
-                {% endif %}
-            </tr>
-        {% endfor %}
-    </table>
-{% endif %}
+        return $this;
+    }
 
-{% if schema.required is defined %}
-    <div>
-        <h6>
-            <span class="badge badge-default">Required</span>
-            <span>{{ schema.required | join(\', \')}}</span>
-        </h6>
-    </div>
-{% endif %}
-{% if schema.additionalProperties is defined %}
-    <div>
-        <h6>
-            <span class="badge badge-default">additionalProperties</span>
-            <span>{{ schema.additionalProperties ? \'yes\' : \'no\'}}</span>
-        </h6>
-    </div>
-{% endif %}
-';
+    private function isTemplated(array $links) : bool
+    {
+        return isset($links['templated']) && $links['templated'] === true;
+    }
+
+    private function match($tempaltedPath) : string
+    {
+        foreach ($this->map as $route) {
+            if ($tempaltedPath === $route->path) {
+                return $route->name;
+            }
+        }
+
+        throw new RouteNotFound($tempaltedPath);
     }
 }
