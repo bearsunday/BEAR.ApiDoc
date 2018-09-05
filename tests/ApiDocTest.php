@@ -25,9 +25,9 @@ class ApiDocTest extends TestCase
     public function setUp()
     {
         $routerContainer = new RouterContainer;
-        $routerContainer->getMap()->route('/user', '/user/{id}');
         $schemaDir = __DIR__ . '/Fake/app/var/json_schema';
         $classDir = __DIR__ . '/tmp';
+        $routerFile = __DIR__ . '/Fake/app/var/conf/aura.route.php';
         $this->resource = $resource = (new Injector(
             new JsonSchemaModule(
                 $schemaDir,
@@ -36,71 +36,46 @@ class ApiDocTest extends TestCase
             ),
             $classDir
         ))->getInstance(ResourceInterface::class);
-        $apiDoc = new ApiDoc($resource, $routerContainer, $schemaDir);
+        $apiDoc = new ApiDoc($resource, $schemaDir, $routerContainer,$routerFile);
         $apiDoc->setRenderer(new JsonRenderer());
         $this->apiDoc = $apiDoc;
     }
 
     public function testOptions()
     {
-        $options = $this->resource->options('app://self/user')->view;
+        $options = $this->resource->options('app://self/person')->view;
         $expected = '{
     "GET": {
         "request": {
             "parameters": {
-                "age": {
-                    "type": "integer"
+                "id": {
+                    "type": "string",
+                    "description": "The unique ID of the person.",
+                    "default": "koriym"
                 }
-            },
-            "required": [
-                "age"
-            ]
+            }
         },
         "schema": {
-            "id": "user.json",
-            "$schema": "http://json-schema.org/draft-04/schema#",
-            "title": "User",
+            "$id": "person.json",
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Person",
             "type": "object",
             "properties": {
                 "firstName": {
                     "type": "string",
-                    "maxLength": 30,
-                    "pattern": "[a-z\\\\d~+-]+"
+                    "description": "The person\'s first name."
                 },
                 "lastName": {
                     "type": "string",
-                    "maxLength": 30,
-                    "pattern": "[a-z\\\\d~+-]+"
+                    "description": "The person\'s last name."
                 },
                 "age": {
-                    "$ref": "age.json"
-                }
-            },
-            "required": [
-                "firstName",
-                "lastName",
-                "age"
-            ]
-        }
-    },
-    "POST": {
-        "summary": "Create user",
-        "description": "Create user with given name and age",
-        "request": {
-            "parameters": {
-                "name": {
-                    "type": "string",
-                    "description": "user name"
-                },
-                "age": {
+                    "description": "Age in years which must be equal to or greater than zero.",
                     "type": "integer",
-                    "description": "user age"
+                    "minimum": 0
                 }
             },
-            "required": [
-                "name",
-                "age"
-            ]
+            "additionalProperties": false
         }
     }
 }
@@ -117,5 +92,29 @@ class ApiDocTest extends TestCase
         $this->assertContains('POST', $view);
         $this->assertContains('Request', $view);
         $this->assertContains('Response', $view);
+    }
+
+    public function testIndexPage()
+    {
+        $ro = $this->apiDoc->onGet();
+        $indexHtml = (string) $ro;
+        $this->assertContains('<p>Welcome to the our API !<br />', $indexHtml);
+    }
+
+    /**
+     *
+     */
+    public function testRelPage()
+    {
+        $ro = $this->apiDoc->onGet('user');
+        $relHtml = (string) $ro;
+        $this->assertContains('<span>firstName, lastName, age</span>', $relHtml);
+    }
+
+    public function testSchemaPage()
+    {
+        $ro = $this->apiDoc->onGet(null, 'user.json');
+        $relHtml = (string) $ro;
+        $this->assertContains('<h1>user.json</h1>', $relHtml);
     }
 }

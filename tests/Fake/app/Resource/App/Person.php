@@ -7,9 +7,11 @@ use BEAR\Resource\ResourceObject;
 class Person extends ResourceObject
 {
     /**
-     * @JsonSchema(key="parson", schema="parson.json")
+     * @JsonSchema(schema="person.json")
+     *
+     * @param string $id The unique ID of the person
      */
-    public function onGet()
+    public function onGet(string $id = 'koriym')
     {
     }
 }
