@@ -117,7 +117,7 @@ final class ApiDoc extends ResourceObject
     public function transfer(TransferInterface $responder, array $server)
     {
         if (! $responder instanceof FileResponder) {
-            return parent::transfer($responder, $server);
+            return parent::transfer($responder, $server); // @codeCoverageIgnore
         }
         $this->indexPage();
         $responder->set((string) $this->indexPage(), $this->schemaDir);

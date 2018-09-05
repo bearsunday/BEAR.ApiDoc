@@ -47,7 +47,7 @@ final class FileResponder implements TransferInterface
     public function __invoke(ResourceObject $ro, array $server)
     {
         if (! $ro instanceof ApiDoc) {
-            throw new LogicException;
+            throw new LogicException; // @codeCoverageIgnore
         }
         $this->writeIndex($this->index, $this->docDir);
         $this->writeRel($ro, $ro->body['links'], $this->docDir, $this->schemaDir);
@@ -62,7 +62,7 @@ final class FileResponder implements TransferInterface
     public function writeIndex(string $index, string $docDir)
     {
         if (! is_dir($docDir) && ! mkdir($docDir, 0777, true) && ! is_dir($docDir)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $docDir));
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $docDir)); // @codeCoverageIgnore
         }
         file_put_contents($docDir . '/index.html', $index);
     }
@@ -75,7 +75,7 @@ final class FileResponder implements TransferInterface
             $view = (string) $ro;
             $relsDir = $docDir . '/rels';
             if (! is_dir($relsDir) && ! mkdir($relsDir, 0777, true) && ! is_dir($relsDir)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $relsDir));
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $relsDir)); // @codeCoverageIgnore
             }
             file_put_contents("{$relsDir}/{$rel}.html", $view);
         }
