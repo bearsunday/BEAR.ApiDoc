@@ -203,10 +203,6 @@ final class ApiDoc extends ResourceObject
 
     private function isTemplated(array $links) : bool
     {
-        if (! $this->route instanceof RouterContainer) {
-            throw new LogicException('You need bear/aura-router-module ^2.0 for templated path.');
-        }
-
         return isset($links['templated']) && $links['templated'] === true;
     }
 
