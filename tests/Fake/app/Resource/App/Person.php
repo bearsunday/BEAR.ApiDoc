@@ -9,7 +9,7 @@ class Person extends ResourceObject
     /**
      * @JsonSchema(schema="person.json")
      *
-     * @param string $id The unique ID of the person
+     * @param string $id The unique ID of the person.
      */
     public function onGet(string $id = 'koriym')
     {
