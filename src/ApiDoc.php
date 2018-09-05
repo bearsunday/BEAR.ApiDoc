@@ -2,6 +2,7 @@
 namespace BEAR\ApiDoc;
 
 use Aura\Router\Exception\RouteNotFound;
+use Aura\Router\Map;
 use Aura\Router\Router;
 use Aura\Router\RouterContainer;
 use BEAR\Resource\Exception\HrefNotFoundException;
@@ -43,6 +44,11 @@ final class ApiDoc extends ResourceObject
      */
     private $routerFile;
 
+    /**
+     * @var Map
+     */
+    private $map;
+
     private $template = [
         'index' => Template::INDEX,
         'base.html.twig' => Template::BASE,
@@ -64,6 +70,9 @@ final class ApiDoc extends ResourceObject
         $this->route = $routerContainer;
         $this->schemaDir = $schemaDir;
         $this->routerFile = $routerFile;
+        $map = $this->route->getMap();
+        $this->map = $map;
+        include $this->routerFile;
     }
 
     /**
@@ -203,9 +212,7 @@ final class ApiDoc extends ResourceObject
 
     private function match($tempaltedPath) : string
     {
-        $map = $this->route->getMap();
-        include $this->routerFile;
-        foreach ($map as $route) {
+        foreach ($this->map as $route) {
             if ($tempaltedPath === $route->path) {
                 return $route->name;
             }
