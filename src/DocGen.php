@@ -3,7 +3,6 @@ namespace BEAR\ApiDoc;
 
 use BEAR\AppMeta\Meta;
 use BEAR\Package\AppInjector;
-use BEAR\Resource\NullResourceObject;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
 use Ray\Di\AbstractModule;
@@ -34,7 +33,6 @@ final class DocGen
         $apiDoc->setRenderer(new class implements RenderInterface {
             public function render(ResourceObject $ro)
             {
-                return new NullResourceObject;
             }
         });
         $apiDoc->transfer($responder, []);
