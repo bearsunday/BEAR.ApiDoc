@@ -36,7 +36,7 @@ class ApiDocTest extends TestCase
             ),
             $classDir
         ))->getInstance(ResourceInterface::class);
-        $apiDoc = new ApiDoc($resource, $schemaDir, $routerContainer,$routerFile);
+        $apiDoc = new ApiDoc($resource, $schemaDir, $routerContainer, $routerFile);
         $apiDoc->setRenderer(new JsonRenderer());
         $this->apiDoc = $apiDoc;
     }
@@ -101,9 +101,6 @@ class ApiDocTest extends TestCase
         $this->assertContains('<p>Welcome to the our API !<br />', $indexHtml);
     }
 
-    /**
-     *
-     */
     public function testRelPage()
     {
         $ro = $this->apiDoc->onGet('user');

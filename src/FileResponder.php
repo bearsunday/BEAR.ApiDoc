@@ -3,15 +3,15 @@ namespace BEAR\ApiDoc;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
-use const JSON_UNESCAPED_UNICODE;
 use LogicException;
+use Ray\Di\Di\Named;
 use const JSON_PRETTY_PRINT;
 use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
 use function file_get_contents;
 use function file_put_contents;
 use function json_decode;
 use function json_encode;
-use Ray\Di\Di\Named;
 
 final class FileResponder implements TransferInterface
 {

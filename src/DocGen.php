@@ -6,7 +6,6 @@ use BEAR\Package\AppInjector;
 use BEAR\Resource\NullResourceObject;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
-use BEAR\Resource\TransferInterface;
 use Ray\Di\AbstractModule;
 
 final class DocGen
@@ -16,8 +15,9 @@ final class DocGen
         $meta = new Meta($appName, $cotext);
         $injector = new AppInjector($appName, $cotext, $meta);
         $apiDoc = $injector->getInstance(ApiDoc::class);
-        $responder = $injector->getOverrideInstance(new class($docDir) extends AbstractModule{
+        $responder = $injector->getOverrideInstance(new class($docDir) extends AbstractModule {
             private $docDir;
+
             public function __construct(string $docDir, self $module = null)
             {
                 $this->docDir = $docDir;
@@ -28,7 +28,6 @@ final class DocGen
             {
                 $this->bind()->annotatedWith('api_doc_dir')->toInstance($this->docDir);
             }
-
         }, FileResponder::class);
         /* @var \BEAR\ApiDoc\ApiDoc $apiDoc */
         // set twig renderer by self
