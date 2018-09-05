@@ -24,7 +24,7 @@ class User extends ResourceObject
      * @param string   $name The name of the user
      * @param int|null $age  The age of the user
      */
-    public function onPost(string $name, ?int $age)
+    public function onPost(string $name, int $age)
     {
     }
 }
