@@ -15,7 +15,7 @@
             <li class="breadcrumb-item">rels</a></li>
             <li class="breadcrumb-item active">user</li>
         </ol>
-        <h2>/user</h2>
+        <h2>/users/{id}</h2>
     <hr style="width: 100%; color: grey; height: 1px; background-color:grey;" />
     <h1>GET</h1>
     <p class="lead"></p>
@@ -29,16 +29,23 @@
             <th>Required</th>
         </tr>
                 <tr>
-            <td>age</td>
-            <td>integer</td>
-            <td></td>
+            <td>id</td>
+            <td>string</td>
+            <td>User ID</td>
             <td></td>
                         <td>Required</td>
+                    </tr>
+                    <tr>
+            <td>options</td>
+            <td>string</td>
+            <td>User Options</td>
+            <td>guest</td>
+                        <td>Optional</td>            
                     </tr>
         </table>
     <h6>
         <span class="badge badge-default">Required</span>
-        <span>age</span>
+        <span>id</span>
     </h6>
 
             <div style="height: 30px"></div>
@@ -52,9 +59,16 @@
         <th>Constraints</th>
     </tr>
                     <tr>
+            <td rowspan="1">id</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1">The unique ID of the user</td>
+                            <td rowspan="1">Optional</td>            
+                                        <td>maxLength: 30</td>
+                                                            </tr>
+                    <tr>
             <td rowspan="2">firstName</td>
                         <td rowspan="2">string</td>
-                        <td rowspan="2"></td>
+                        <td rowspan="2">The first name of the user</td>
                             <td rowspan="2">Required</td>
                                             <td>maxLength: 30</td>
                                     <tr>
@@ -64,7 +78,7 @@
                     <tr>
             <td rowspan="2">lastName</td>
                         <td rowspan="2">string</td>
-                        <td rowspan="2"></td>
+                        <td rowspan="2">The last name of the user</td>
                             <td rowspan="2">Required</td>
                                             <td>maxLength: 30</td>
                                     <tr>
@@ -72,12 +86,49 @@
                                         </tr>
                     </tr>
                     <tr>
-            <td rowspan="1">age</td>
-                        <td rowspan="1"></td>
-                        <td rowspan="1"></td>
-                            <td rowspan="1">Required</td>
-                                            <td>$ref: "age.json"</td>
+            <td rowspan="2">created</td>
+                        <td rowspan="2">string</td>
+                        <td rowspan="2">When the user record was created</td>
+                            <td rowspan="2">Optional</td>            
+                                        <td>format: "date-time"</td>
+                                    <tr>
+                                                <td>example: 2018-01-01T12:00:00Z</td>
+                                        </tr>
+                    </tr>
+                    <tr>
+            <td rowspan="2">modified</td>
+                        <td rowspan="2">string</td>
+                        <td rowspan="2">When the user record was last modified</td>
+                            <td rowspan="2">Optional</td>            
+                                        <td>format: "date-time"</td>
+                                    <tr>
+                                                <td>example: 2018-01-01T12:00:00Z</td>
+                                        </tr>
+                    </tr>
+                    <tr>
+            <td rowspan="1">email</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1">The email address of the user</td>
+                            <td rowspan="1">Optional</td>            
+                                        <td>format: "email"</td>
                                                             </tr>
+                    <tr>
+            <td rowspan="1">enabled</td>
+                        <td rowspan="1">boolean</td>
+                        <td rowspan="1">Whether the user is enabled or not</td>
+                            <td rowspan="1">Optional</td>            
+                                        <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="2">age</td>
+                        <td rowspan="2"></td>
+                        <td rowspan="2">The age of the user</td>
+                            <td rowspan="2">Required</td>
+                                            <td>$ref: "age.json"</td>
+                                    <tr>
+                                                <td>example: 29</td>
+                                        </tr>
+                    </tr>
     </table>
 
     <div>
@@ -120,14 +171,14 @@
                 <tr>
             <td>name</td>
             <td>string</td>
-            <td>user name</td>
+            <td>The name of the user</td>
             <td></td>
                         <td>Required</td>
                     </tr>
                     <tr>
             <td>age</td>
             <td>integer</td>
-            <td>user age</td>
+            <td>The age of the user</td>
             <td></td>
                         <td>Required</td>
                     </tr>

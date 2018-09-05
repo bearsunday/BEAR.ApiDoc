@@ -11,6 +11,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function json_decode;
 use function json_encode;
+use Ray\Di\Di\Named;
 
 final class FileResponder implements TransferInterface
 {
@@ -34,7 +35,10 @@ final class FileResponder implements TransferInterface
      */
     private $host;
 
-    public function __construct(string $docDir, string $host)
+    /**
+     * @Named("docDir=api_doc_dir,host=json_schema_host")
+     */
+    public function __construct(string $docDir, string $host = '')
     {
         $this->docDir = $docDir;
         $this->host = $host;
