@@ -3,6 +3,7 @@ namespace BEAR\ApiDoc;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
+use const JSON_UNESCAPED_UNICODE;
 use LogicException;
 use const JSON_PRETTY_PRINT;
 use const JSON_UNESCAPED_SLASHES;
@@ -92,7 +93,7 @@ final class FileResponder implements TransferInterface
             if (isset($json->{'$id'})) {
                 $json->{'$id'} = $this->host . $json->{'$id'};
             }
-            file_put_contents($dest, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            file_put_contents($dest, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
         }
     }
 }
