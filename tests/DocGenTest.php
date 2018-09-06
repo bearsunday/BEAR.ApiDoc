@@ -9,7 +9,7 @@ class DocGenTest extends TestCase
 {
     public function test__invoke()
     {
-        (new DocGen)('FakeVendor\FakeProject', __DIR__ . '/Fake/app', 'tests/doc/api');
+        (new DocGen)('FakeVendor\FakeProject', 'tests/doc/api');
         $this->assertFileExists(__DIR__ . '/doc/api/index.html');
         $this->assertFileExists(__DIR__ . '/doc/api/rels/address.html');
         $this->assertFileExists(__DIR__ . '/doc/api/schema/address.json');

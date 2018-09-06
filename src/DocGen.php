@@ -9,7 +9,7 @@ use Ray\Di\AbstractModule;
 
 final class DocGen
 {
-    public function __invoke(string $appName, string $appDir, string $docDir, string $cotext = 'app') : string
+    public function __invoke(string $appName, string $docDir, string $cotext = 'app') : string
     {
         $meta = new Meta($appName, $cotext);
         $injector = new AppInjector($appName, $cotext, $meta);

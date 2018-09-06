@@ -16,7 +16,7 @@ list(, $appName, $appDir, $docDir) = $argv;
 require realpath($appDir) . '/vendor/autoload.php';
 
 try {
-    echo (new DocGen)($appName, realpath($appDir), realpath($docDir));
+    echo (new DocGen)($appName, realpath($docDir));
     exit(0);
 } catch (\Exception $e) {
     error_log((string) $e);
