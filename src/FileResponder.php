@@ -46,6 +46,7 @@ final class FileResponder implements TransferInterface
 
     public function __invoke(ResourceObject $ro, array $server)
     {
+        unset($server);
         if (! $ro instanceof ApiDoc) {
             throw new LogicException; // @codeCoverageIgnore
         }
