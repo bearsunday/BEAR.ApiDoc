@@ -205,6 +205,9 @@ class ApiDoc extends ResourceObject
         return isset($links['templated']) && $links['templated'] === true;
     }
 
+    /**
+     * @throws RouteNotFound
+     */
     private function match($tempaltedPath) : string
     {
         foreach ($this->map as $route) {
