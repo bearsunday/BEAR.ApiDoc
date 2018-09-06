@@ -44,7 +44,7 @@ class ApiDoc extends ResourceObject
     private $routerFile;
 
     /**
-     * @var Map|null
+     * @var Map|array
      */
     private $map;
 
@@ -69,9 +69,11 @@ class ApiDoc extends ResourceObject
         $this->route = $routerContainer;
         $this->schemaDir = $schemaDir;
         $this->routerFile = $routerFile;
-        $map = $this->route instanceof RouterContainer ? $this->route->getMap() : null;
+        $map = $this->route instanceof RouterContainer ? $this->route->getMap() : [];
         $this->map = $map;
-        include $this->routerFile;
+        if ($map instanceof Map) {
+            include $this->routerFile;
+        }
     }
 
     /**
