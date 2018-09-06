@@ -29,7 +29,7 @@ class ApiDoc extends ResourceObject
     /**
      * Optional aura router
      *
-     * @var RouterContainer
+     * @var RouterContainer|null
      */
     private $route;
 
@@ -39,12 +39,12 @@ class ApiDoc extends ResourceObject
     private $schemaDir;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $routerFile;
 
     /**
-     * @var Map
+     * @var Map|null
      */
     private $map;
 
@@ -69,7 +69,7 @@ class ApiDoc extends ResourceObject
         $this->route = $routerContainer;
         $this->schemaDir = $schemaDir;
         $this->routerFile = $routerFile;
-        $map = $this->route->getMap();
+        $map = $this->route instanceof RouterContainer ? $this->route->getMap() : null;
         $this->map = $map;
         include $this->routerFile;
     }
