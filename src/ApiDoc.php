@@ -19,7 +19,7 @@ use function json_decode;
 use function json_encode;
 use function str_replace;
 
-final class ApiDoc extends ResourceObject
+class ApiDoc extends ResourceObject
 {
     /**
      * @var ResourceInterface
