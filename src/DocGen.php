@@ -3,13 +3,12 @@ namespace BEAR\ApiDoc;
 
 use BEAR\AppMeta\Meta;
 use BEAR\Package\AppInjector;
-use BEAR\Resource\RenderInterface;
-use BEAR\Resource\ResourceObject;
+use BEAR\Resource\NullRenderer;
 use Ray\Di\AbstractModule;
 
 final class DocGen
 {
-    public function __invoke(string $appName, string $appDir, string $docDir, string $cotext = 'app') : string
+    public function __invoke(string $appName, string $docDir, string $cotext = 'app') : string
     {
         $meta = new Meta($appName, $cotext);
         $injector = new AppInjector($appName, $cotext, $meta);
@@ -30,11 +29,7 @@ final class DocGen
         }, FileResponder::class);
         /* @var \BEAR\ApiDoc\ApiDoc $apiDoc */
         // set twig renderer by self
-        $apiDoc->setRenderer(new class implements RenderInterface {
-            public function render(ResourceObject $ro)
-            {
-            }
-        });
+        $apiDoc->setRenderer(new NullRenderer);
         $apiDoc->transfer($responder, []);
 
         return "API Doc is created at {$docDir}" . PHP_EOL;

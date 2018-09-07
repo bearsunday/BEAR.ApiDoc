@@ -44,13 +44,19 @@ final class FileResponder implements TransferInterface
         $this->host = $host;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function __invoke(ResourceObject $ro, array $server)
     {
+        unset($server);
         if (! $ro instanceof ApiDoc) {
             throw new LogicException; // @codeCoverageIgnore
         }
         $this->writeIndex($this->index, $this->docDir);
         $this->writeRel($ro, $ro->body['links'], $this->docDir, $this->schemaDir);
+
+        return null;
     }
 
     public function set(string $index, string $schemaDir)

@@ -9,24 +9,46 @@ use function serialize;
 
 final class JsonSchema
 {
+    /**
+     * @var string
+     */
     public $id;
+
+    /**
+     * @var string
+     */
     public $docHref;
+
+    /**
+     * @var array
+     */
     public $constatins = [];
+
+    /**
+     * @var array
+     */
     public $constrainNum;
+
+    /**
+     * @var array
+     */
     public $definitions;
 
-    public function __construct(string $json)
+    /**
+     * @param string $json   JSON data
+     * @param string $source Source file / URI of JSON
+     */
+    public function __construct(string $json, string $source)
     {
         $schema = json_decode($json);
         if ($schema === null) {
-            throw new InvalidJsonException;
+            throw new InvalidJsonException($source);
         }
         $this->id = $this->getSchemaId($schema);
         $this->docHref = 'schema/' . $this->id;
-        $this->schema = $schema;
         $this->constatins = isset($schema->properties) ? $this->getConstrains($schema->properties) : [];
         $this->constrainNum = $this->getConstrainNum($this->constatins);
-        $this->definitions = isset($schema->definitios) ? $schema->definitios : [];
+        $this->definitions = $schema->definitios ?? [];
     }
 
     private function getSchemaId($schema) : string

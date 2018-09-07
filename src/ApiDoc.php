@@ -3,7 +3,6 @@ namespace BEAR\ApiDoc;
 
 use Aura\Router\Exception\RouteNotFound;
 use Aura\Router\Map;
-use Aura\Router\Router;
 use Aura\Router\RouterContainer;
 use BEAR\Resource\Exception\HrefNotFoundException;
 use BEAR\Resource\Exception\ResourceNotFoundException;
@@ -11,6 +10,7 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
+use LogicException;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
@@ -19,7 +19,7 @@ use function json_decode;
 use function json_encode;
 use function str_replace;
 
-final class ApiDoc extends ResourceObject
+class ApiDoc extends ResourceObject
 {
     /**
      * @var ResourceInterface
@@ -29,7 +29,7 @@ final class ApiDoc extends ResourceObject
     /**
      * Optional aura router
      *
-     * @var RouterContainer
+     * @var RouterContainer|null
      */
     private $route;
 
@@ -39,15 +39,18 @@ final class ApiDoc extends ResourceObject
     private $schemaDir;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $routerFile;
 
     /**
-     * @var Map
+     * @var Map|array
      */
     private $map;
 
+    /**
+     * @var array
+     */
     private $template = [
         'index' => Template::INDEX,
         'base.html.twig' => Template::BASE,
@@ -69,9 +72,11 @@ final class ApiDoc extends ResourceObject
         $this->route = $routerContainer;
         $this->schemaDir = $schemaDir;
         $this->routerFile = $routerFile;
-        $map = $this->route->getMap();
+        $map = $this->route instanceof RouterContainer ? $this->route->getMap() : [];
         $this->map = $map;
-        include $this->routerFile;
+        if ($map instanceof Map) {
+            include $this->routerFile;
+        }
     }
 
     /**
@@ -99,6 +104,8 @@ final class ApiDoc extends ResourceObject
                 return $ro->view;
             }
         };
+
+        return $this;
     }
 
     public function onGet(string $rel = null, $schema = null) : ResourceObject
@@ -126,7 +133,7 @@ final class ApiDoc extends ResourceObject
 
     private function indexPage() : ResourceObject
     {
-        $index = $this->resource->uri('app://self/index')()->body;
+        $index = $this->resource->get('app://self/index')->body;
         $curies = new Curies($index['_links']['curies']);
         $links = [];
         unset($index['_links']['curies'], $index['_links']['self']);
@@ -162,7 +169,7 @@ final class ApiDoc extends ResourceObject
     {
         $schemas = [];
         foreach (glob($this->schemaDir . '/*.json') as $json) {
-            $schemas[] = new JsonSchema(file_get_contents($json));
+            $schemas[] = new JsonSchema(file_get_contents($json), $json);
         }
 
         return $schemas;
@@ -170,7 +177,7 @@ final class ApiDoc extends ResourceObject
 
     private function relPage(string $rel) : ResourceObject
     {
-        $index = $this->resource->options->uri('app://self/')()->body;
+        $index = $this->resource->options('app://self/')->body;
         $namedRel = sprintf('%s:%s', $index['_links']['curies']['name'], $rel);
         $links = $index['_links'];
         if (! isset($links[$namedRel]['href'])) {
@@ -185,12 +192,16 @@ final class ApiDoc extends ResourceObject
         } catch (ResourceNotFoundException $e) {
             throw new HrefNotFoundException($href, 0, $e);
         }
+        if ($optionsJson === null) {
+            throw new LogicException('No option view'); // @codeCoverageIgnore
+        }
         $options = json_decode($optionsJson, true);
         foreach ($options as &$option) {
             if (isset($option['schema'])) {
-                $option['meta'] = new JsonSchema(json_encode($option['schema']));
+                $option['meta'] = new JsonSchema(json_encode($option['schema']), $uri);
             }
         }
+        unset($option);
         $this->body = [
             'doc' => $options,
             'rel' => $rel,
@@ -205,6 +216,9 @@ final class ApiDoc extends ResourceObject
         return isset($links['templated']) && $links['templated'] === true;
     }
 
+    /**
+     * @throws RouteNotFound
+     */
     private function match($tempaltedPath) : string
     {
         foreach ($this->map as $route) {
