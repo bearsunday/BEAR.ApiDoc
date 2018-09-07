@@ -10,11 +10,11 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
-use function file_exists;
 use LogicException;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
+use function file_exists;
 use function file_get_contents;
 use function json_decode;
 use function json_encode;
@@ -59,7 +59,7 @@ class ApiDoc extends ResourceObject
      */
     public function __construct(
         ResourceInterface $resource,
-        string $schemaDir = '',
+        string $schemaDir,
         Template $template,
         RouterContainer $routerContainer = null,
         string $routerFile = null
