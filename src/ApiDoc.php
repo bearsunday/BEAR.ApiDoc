@@ -166,7 +166,7 @@ class ApiDoc extends ResourceObject
     {
         $schemas = [];
         foreach (glob($this->schemaDir . '/*.json') as $json) {
-            $schemas[] = new JsonSchema(file_get_contents($json));
+            $schemas[] = new JsonSchema(file_get_contents($json), $json);
         }
 
         return $schemas;
@@ -195,7 +195,7 @@ class ApiDoc extends ResourceObject
         $options = json_decode($optionsJson, true);
         foreach ($options as &$option) {
             if (isset($option['schema'])) {
-                $option['meta'] = new JsonSchema(json_encode($option['schema']));
+                $option['meta'] = new JsonSchema(json_encode($option['schema']), $uri);
             }
         }
         unset($option);

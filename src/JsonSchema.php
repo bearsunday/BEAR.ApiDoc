@@ -34,11 +34,15 @@ final class JsonSchema
      */
     public $definitions;
 
-    public function __construct(string $json)
+    /**
+     * @param string $json   JSON data
+     * @param string $source Source file / URI of JSON
+     */
+    public function __construct(string $json, string $source)
     {
         $schema = json_decode($json);
         if ($schema === null) {
-            throw new InvalidJsonException;
+            throw new InvalidJsonException($source);
         }
         $this->id = $this->getSchemaId($schema);
         $this->docHref = 'schema/' . $this->id;
