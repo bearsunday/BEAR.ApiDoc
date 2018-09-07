@@ -10,6 +10,7 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
+use function file_exists;
 use LogicException;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
@@ -51,13 +52,7 @@ class ApiDoc extends ResourceObject
     /**
      * @var array
      */
-    private $template = [
-        'index' => Template::INDEX,
-        'base.html.twig' => Template::BASE,
-        'home.html.twig' => Template::HOME,
-        'rel.html.twig' => Template::REL,
-        'schema.table.html.twig' => Template::SCHEMA_TABLE
-    ];
+    private $template = [];
 
     /**
      * @Named("schemaDir=json_schema_dir,routerFile=aura_router_file")
@@ -65,6 +60,7 @@ class ApiDoc extends ResourceObject
     public function __construct(
         ResourceInterface $resource,
         string $schemaDir = '',
+        Template $template,
         RouterContainer $routerContainer = null,
         string $routerFile = null
     ) {
@@ -74,9 +70,16 @@ class ApiDoc extends ResourceObject
         $this->routerFile = $routerFile;
         $map = $this->route instanceof RouterContainer ? $this->route->getMap() : [];
         $this->map = $map;
-        if ($map instanceof Map) {
+        if ($map instanceof Map && file_exists($this->routerFile)) {
             include $this->routerFile;
         }
+        $this->template = [
+            'index' => $template->index,
+            'base.html.twig' => $template->base,
+            'home.html.twig' => $template->home,
+            'rel.html.twig' => $template->rel,
+            'schema.table.html.twig' => $template->shcemaTable
+        ];
     }
 
     /**
