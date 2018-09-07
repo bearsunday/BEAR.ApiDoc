@@ -48,7 +48,7 @@ final class JsonSchema
         $this->docHref = 'schema/' . $this->id;
         $this->constatins = isset($schema->properties) ? $this->getConstrains($schema->properties) : [];
         $this->constrainNum = $this->getConstrainNum($this->constatins);
-        $this->definitions = isset($schema->definitios) ? $schema->definitios : [];
+        $this->definitions = $schema->definitios ?? [];
     }
 
     private function getSchemaId($schema) : string
