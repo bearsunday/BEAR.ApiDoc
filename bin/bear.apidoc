@@ -1,23 +1,34 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 /**
  * BEAR/Sunday API Doc generator
  *
  * Usage: bear.apidoc \'MyVendor\MyProject\' prod-html-app /path/to/project
  */
-use BEAR\ApiDoc\DocGen;
+use BEAR\ApiDoc\DocGen;use BEAR\AppMeta\Exception\AppNameException;
 
 if ($argc !== 4) {
-    echo 'usage: bear.apidoc <MyVendor\MyProject>　<app_dir> <doc_dir>' . PHP_EOL;
+    echo 'usage: bear.apidoc <MyVendor\MyProject> </path/to/app_dir> <path/to/doc_dir>' . PHP_EOL;
     exit(1);
 }
 list(, $appName, $appDir, $docDir) = $argv;
 
-require realpath($appDir) . '/vendor/autoload.php';
+$autoload = $appDir . '/vendor/autoload.php';
+if (! file_exists($autoload)) {
+    throw new InvalidArgumentException(sprintf('[%s]: invalid application directory', $appDir));
+}
+
+if (! file_exists($docDir) || ! is_writable($docDir)) {
+    throw new InvalidArgumentException(sprintf('[%s]: invalid documentation directory', $docDir));
+}
+
+require $autoload;
 
 try {
     echo (new DocGen)($appName, realpath($docDir));
     exit(0);
+} catch (AppNameException $e) {
+    throw new InvalidArgumentException(sprintf('[%s]: invalid application name (ex. "Vendor\Project"', $e->getMessage()));
 } catch (\Exception $e) {
     error_log((string) $e);
     exit(1);
