@@ -8,15 +8,20 @@ use Ray\Di\AbstractModule;
 
 final class DocGen
 {
-    
+    /**
+     * @param string $appName       Application name (Vendor\Project)
+     * @param string $docDir        Documentation output directory
+     * @param string $context       Application context
+     * @param string $templateClass Custom template class name
+     */
     public function __invoke(
         string $appName,
         string $docDir,
-        string $cotext = 'app',
+        string $context = 'app',
         string $templateClass = Template::class
     ) : string {
-        $meta = new Meta($appName, $cotext);
-        $injector = new AppInjector($appName, $cotext, $meta);
+        $meta = new Meta($appName, $context);
+        $injector = new AppInjector($appName, $context, $meta);
         $apiDoc = $injector->getInstance(ApiDoc::class);
         $responder = $injector->getOverrideInstance(new class($docDir, $templateClass) extends AbstractModule {
             private $docDir;
