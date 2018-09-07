@@ -14,6 +14,7 @@ use LogicException;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
+use function file_exists;
 use function file_get_contents;
 use function json_decode;
 use function json_encode;
@@ -51,20 +52,15 @@ class ApiDoc extends ResourceObject
     /**
      * @var array
      */
-    private $template = [
-        'index' => Template::INDEX,
-        'base.html.twig' => Template::BASE,
-        'home.html.twig' => Template::HOME,
-        'rel.html.twig' => Template::REL,
-        'schema.table.html.twig' => Template::SCHEMA_TABLE
-    ];
+    private $template = [];
 
     /**
      * @Named("schemaDir=json_schema_dir,routerFile=aura_router_file")
      */
     public function __construct(
         ResourceInterface $resource,
-        string $schemaDir = '',
+        string $schemaDir,
+        Template $template,
         RouterContainer $routerContainer = null,
         string $routerFile = null
     ) {
@@ -74,9 +70,16 @@ class ApiDoc extends ResourceObject
         $this->routerFile = $routerFile;
         $map = $this->route instanceof RouterContainer ? $this->route->getMap() : [];
         $this->map = $map;
-        if ($map instanceof Map) {
+        if ($map instanceof Map && file_exists($this->routerFile)) {
             include $this->routerFile;
         }
+        $this->template = [
+            'index' => $template->index,
+            'base.html.twig' => $template->base,
+            'home.html.twig' => $template->home,
+            'rel.html.twig' => $template->rel,
+            'schema.table.html.twig' => $template->shcemaTable
+        ];
     }
 
     /**

@@ -36,7 +36,7 @@ class ApiDocTest extends TestCase
             ),
             $classDir
         ))->getInstance(ResourceInterface::class);
-        $apiDoc = new ApiDoc($resource, $schemaDir, $routerContainer, $routerFile);
+        $apiDoc = new ApiDoc($resource, $schemaDir, new Template, $routerContainer, $routerFile);
         $apiDoc->setRenderer(new JsonRenderer());
         $this->apiDoc = $apiDoc;
     }
