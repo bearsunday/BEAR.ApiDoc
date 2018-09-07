@@ -3,7 +3,6 @@ namespace BEAR\ApiDoc;
 
 use Aura\Router\Exception\RouteNotFound;
 use Aura\Router\Map;
-use Aura\Router\Router;
 use Aura\Router\RouterContainer;
 use BEAR\Resource\Exception\HrefNotFoundException;
 use BEAR\Resource\Exception\ResourceNotFoundException;
@@ -131,7 +130,7 @@ class ApiDoc extends ResourceObject
 
     private function indexPage() : ResourceObject
     {
-        $index = $this->resource->uri('app://self/index')()->body;
+        $index = $this->resource->get('app://self/index')->body;
         $curies = new Curies($index['_links']['curies']);
         $links = [];
         unset($index['_links']['curies'], $index['_links']['self']);
@@ -199,6 +198,7 @@ class ApiDoc extends ResourceObject
                 $option['meta'] = new JsonSchema(json_encode($option['schema']));
             }
         }
+        unset($option);
         $this->body = [
             'doc' => $options,
             'rel' => $rel,
