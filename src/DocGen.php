@@ -3,8 +3,7 @@ namespace BEAR\ApiDoc;
 
 use BEAR\AppMeta\Meta;
 use BEAR\Package\AppInjector;
-use BEAR\Resource\RenderInterface;
-use BEAR\Resource\ResourceObject;
+use BEAR\Resource\NullRenderer;
 use Ray\Di\AbstractModule;
 
 final class DocGen
@@ -30,11 +29,7 @@ final class DocGen
         }, FileResponder::class);
         /* @var \BEAR\ApiDoc\ApiDoc $apiDoc */
         // set twig renderer by self
-        $apiDoc->setRenderer(new class implements RenderInterface {
-            public function render(ResourceObject $ro)
-            {
-            }
-        });
+        $apiDoc->setRenderer(new NullRenderer);
         $apiDoc->transfer($responder, []);
 
         return "API Doc is created at {$docDir}" . PHP_EOL;
