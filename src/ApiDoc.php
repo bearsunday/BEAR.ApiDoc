@@ -11,6 +11,7 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
+use LogicException;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
@@ -101,6 +102,8 @@ class ApiDoc extends ResourceObject
                 return $ro->view;
             }
         };
+
+        return $this;
     }
 
     public function onGet(string $rel = null, $schema = null) : ResourceObject
@@ -186,6 +189,9 @@ class ApiDoc extends ResourceObject
             $optionsJson = $this->resource->options($uri)->view;
         } catch (ResourceNotFoundException $e) {
             throw new HrefNotFoundException($href, 0, $e);
+        }
+        if ($optionsJson === null) {
+            throw new LogicException('No option view'); // @codeCoverageIgnore
         }
         $options = json_decode($optionsJson, true);
         foreach ($options as &$option) {
