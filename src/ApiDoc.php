@@ -48,6 +48,9 @@ class ApiDoc extends ResourceObject
      */
     private $map;
 
+    /**
+     * @var array
+     */
     private $template = [
         'index' => Template::INDEX,
         'base.html.twig' => Template::BASE,
