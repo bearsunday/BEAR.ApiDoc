@@ -1,8 +1,9 @@
 .idea
-/vendor/
+vendor/
 composer.lock
 .php_cs.cache
 /tests/Fake/var/tmp/
 /tests/doc/
 /doc/
-build
+/build
+/tests/api_html/
