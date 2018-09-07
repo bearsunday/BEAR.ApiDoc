@@ -172,7 +172,7 @@ class ApiDoc extends ResourceObject
 
     private function relPage(string $rel) : ResourceObject
     {
-        $index = $this->resource->options->uri('app://self/')()->body;
+        $index = $this->resource->options('app://self/')->body;
         $namedRel = sprintf('%s:%s', $index['_links']['curies']['name'], $rel);
         $links = $index['_links'];
         if (! isset($links[$namedRel]['href'])) {
