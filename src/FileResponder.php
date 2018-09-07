@@ -44,6 +44,9 @@ final class FileResponder implements TransferInterface
         $this->host = $host;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function __invoke(ResourceObject $ro, array $server)
     {
         unset($server);
@@ -52,6 +55,8 @@ final class FileResponder implements TransferInterface
         }
         $this->writeIndex($this->index, $this->docDir);
         $this->writeRel($ro, $ro->body['links'], $this->docDir, $this->schemaDir);
+
+        return null;
     }
 
     public function set(string $index, string $schemaDir)
