@@ -144,10 +144,11 @@ class ApiDoc extends ResourceObject
             $rel = str_replace($curies->name . ':', '', $nameRel);
             $links[$rel] = new Curie($nameRel, $value, $curies);
         }
+        unset($index['_links']);
         $schemas = $this->getSchemas();
         $this->body = [
             'name' => $curies->name,
-            'message' => $index['message'],
+            'messages' => $index,
             'links' => $links,
             'schemas' => $schemas
         ];

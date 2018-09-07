@@ -65,8 +65,9 @@ abstract class AbstractTemplate
      * Home page content
      */
     public $home = '
-<p>{{ message|raw|nl2br }}</p>
-
+{% for title, message in messages %}
+    <p><b>{{ title }}:</b> {{ message|nl2br }}</p>
+{% endfor %}
 <p><b>Link Relations</b></p>
 <ul>
     {% for link in links %}

@@ -98,7 +98,7 @@ class ApiDocTest extends TestCase
     {
         $ro = $this->apiDoc->onGet();
         $indexHtml = (string) $ro;
-        $this->assertContains('<p>Welcome to the our API !<br />', $indexHtml);
+        $this->assertContains('<b>welcome:</b> Welcome to the our API.</p>', $indexHtml);
     }
 
     public function testRelPage()
