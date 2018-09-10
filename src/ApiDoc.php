@@ -14,7 +14,6 @@ use LogicException;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
-use function file_exists;
 use function file_get_contents;
 use function json_decode;
 use function json_encode;
@@ -68,11 +67,7 @@ class ApiDoc extends ResourceObject
         $this->route = $routerContainer;
         $this->schemaDir = $schemaDir;
         $this->routerFile = $routerFile;
-        $map = $this->route instanceof RouterContainer ? $this->route->getMap() : [];
-        $this->map = $map;
-        if ($map instanceof Map && file_exists($this->routerFile)) {
-            include $this->routerFile;
-        }
+        $this->map = clone $this->route instanceof RouterContainer ? $this->route->getMap() : [];
         $this->template = [
             'index' => $template->index,
             'base.html.twig' => $template->base,
