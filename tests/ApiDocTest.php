@@ -25,9 +25,11 @@ class ApiDocTest extends TestCase
     public function setUp()
     {
         $routerContainer = new RouterContainer;
+        $map = $routerContainer->getMap();
+        $routerFile = __DIR__ . '/Fake/app/var/conf/aura.route.php';
+        require $routerFile;
         $schemaDir = __DIR__ . '/Fake/app/var/json_schema';
         $classDir = __DIR__ . '/tmp';
-        $routerFile = __DIR__ . '/Fake/app/var/conf/aura.route.php';
         $this->resource = $resource = (new Injector(
             new JsonSchemaModule(
                 $schemaDir,
@@ -36,7 +38,7 @@ class ApiDocTest extends TestCase
             ),
             $classDir
         ))->getInstance(ResourceInterface::class);
-        $apiDoc = new ApiDoc($resource, $schemaDir, new Template, $routerContainer, $routerFile);
+        $apiDoc = new ApiDoc($resource, $schemaDir, new Template, $routerContainer);
         $apiDoc->setRenderer(new JsonRenderer());
         $this->apiDoc = $apiDoc;
     }
@@ -98,7 +100,7 @@ class ApiDocTest extends TestCase
     {
         $ro = $this->apiDoc->onGet();
         $indexHtml = (string) $ro;
-        $this->assertContains('<b>welcome:</b> Welcome to the our API.</p>', $indexHtml);
+        $this->assertContains('This is ApiDoc REST API', $indexHtml);
     }
 
     public function testRelPage()
