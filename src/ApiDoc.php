@@ -11,6 +11,7 @@ use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
 use LogicException;
+use manuelodelain\Twig\Extension\LinkifyExtension;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
@@ -97,6 +98,7 @@ class ApiDoc extends ResourceObject
                 $twig = new \Twig_Environment(new \Twig_Loader_Array($this->template), ['debug' => true]);
                 $twig->addExtension(new Twig_Extension_Debug);
                 $twig->addExtension(new RefLinkExtention);
+                $twig->addExtension(new LinkifyExtension);
                 $ro->view = $twig->render('index', $ro->body);
 
                 return $ro->view;

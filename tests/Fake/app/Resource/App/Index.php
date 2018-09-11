@@ -6,9 +6,9 @@ use BEAR\Resource\ResourceObject;
 class Index extends ResourceObject
 {
     public $body = [
-        'welcome' => 'Welcome to the our API.',
-        'hint_1' => 'You need an account to post stuff..',
-        'hint_2' => 'Create one by POSTing via the doc:ticket link..',
+        'Overview' => 'This is ApiDoc REST API.
+You can put "\n" in the text.".',
+        'issue' => 'https://github.com/bearsunday/BEAR.ApiDoc/issues',
         '_links' => [
             'self' => [
                 'href' => '/',
