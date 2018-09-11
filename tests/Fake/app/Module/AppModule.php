@@ -16,8 +16,8 @@ class AppModule extends AbstractAppModule
         $appDir = $this->appMeta->appDir;
         $this->install(new AuraRouterModule($appDir . '/app/var/conf/aura.route.php'));
         $this->install(new JsonSchemaModule(
-                $appDir . '/var/json_schema',
-                $appDir . '/var/json_schema')
+                $appDir . '/app/var/json_schema',
+                $appDir . '/app/var/json_schema')
         );
         $this->install(new JsonSchemaLinkHeaderModule('http://example.com/schema/'));
         $this->install(new PackageModule);
