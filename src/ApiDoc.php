@@ -68,7 +68,7 @@ class ApiDoc extends ResourceObject
         $this->route = $routerContainer;
         $this->schemaDir = $schemaDir;
         $this->routerFile = $routerFile;
-        $this->map = clone $this->route instanceof RouterContainer ? $this->route->getMap() : [];
+        $this->map = $this->route instanceof RouterContainer ? $this->route->getMap() : [];
         $this->template = [
             'index' => $template->index,
             'base.html.twig' => $template->base,
