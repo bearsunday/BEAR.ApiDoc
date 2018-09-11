@@ -77,7 +77,7 @@ abstract class AbstractTemplate
 <p><b>Json Schemas</b></p>
 <ul>
     {% for schema in schemas %}
-        <li><a href="{{ schema.docHref }}">{{ schema.id }}</a> - {{ schema.schema.title }}</li>
+        <li><a href="{{ schema.docHref }}">{{ schema.id }}</a> - {{ schema.title }}</li>
     {% endfor %}
 </ul>
 ';

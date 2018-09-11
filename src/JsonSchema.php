@@ -35,6 +35,11 @@ final class JsonSchema
     public $definitions;
 
     /**
+     * @var string
+     */
+    public $title;
+
+    /**
      * @param string $json   JSON data
      * @param string $source Source file / URI of JSON
      */
@@ -49,6 +54,7 @@ final class JsonSchema
         $this->constatins = isset($schema->properties) ? $this->getConstrains($schema->properties) : [];
         $this->constrainNum = $this->getConstrainNum($this->constatins);
         $this->definitions = $schema->definitios ?? [];
+        $this->title = $schema->title;
     }
 
     private function getSchemaId($schema) : string
