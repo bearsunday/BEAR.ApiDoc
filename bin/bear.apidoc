@@ -7,11 +7,12 @@
  */
 use BEAR\ApiDoc\DocGen;use BEAR\AppMeta\Exception\AppNameException;
 
-if ($argc !== 4) {
-    echo 'usage: bear.apidoc <MyVendor\MyProject> </path/to/app_dir> <path/to/doc_dir>' . PHP_EOL;
+if ($argc !== 4 && $argc !== 5 ) {
+    echo 'usage: bear.apidoc <MyVendor\MyProject> </path/to/app_dir> <path/to/doc_dir> [context]' . PHP_EOL;
     exit(1);
 }
 list(, $appName, $appDir, $docDir) = $argv;
+$context = ($argc === 4) ? 'app' : $argv[4];
 
 $autoload = $appDir . '/vendor/autoload.php';
 if (! file_exists($autoload)) {
@@ -25,7 +26,7 @@ if (! file_exists($docDir) || ! is_writable($docDir)) {
 require $autoload;
 
 try {
-    echo (new DocGen)($appName, realpath($docDir));
+    echo (new DocGen)($appName, realpath($docDir), $context);
     exit(0);
 } catch (AppNameException $e) {
     throw new InvalidArgumentException(sprintf('[%s]: invalid application name (ex. "Vendor\Project"', $e->getMessage()));

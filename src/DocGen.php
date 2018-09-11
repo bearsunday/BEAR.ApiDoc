@@ -22,6 +22,7 @@ final class DocGen
     ) : string {
         $meta = new Meta($appName, $context);
         $injector = new AppInjector($appName, $context, $meta);
+        $injector->clear();
         $apiDoc = $injector->getInstance(ApiDoc::class);
         $responder = $injector->getOverrideInstance(new class($docDir, $templateClass) extends AbstractModule {
             private $docDir;
