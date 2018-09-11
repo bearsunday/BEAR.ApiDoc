@@ -199,7 +199,7 @@ abstract class AbstractTemplate
         <tr>
             <td>Array</td>
             {% if key == \'$ref\' %}
-                <td>{{ item }}<a href="../schema/{{ schema.id  }}"><i class="fas fa-cloud-download-alt"></i></a></td>
+                <td>{{ item }}<a href="../schema/{{ item  }}"><i class="fas fa-cloud-download-alt"></i></a></td>
             {% else %}
                 <td>{{ item | json_encode(constant(\'JSON_PRETTY_PRINT\') b-or constant(\'JSON_UNESCAPED_SLASHES\')) }}</td>
             {% endif %}
