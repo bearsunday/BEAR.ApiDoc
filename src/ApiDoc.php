@@ -15,9 +15,12 @@ use manuelodelain\Twig\Extension\LinkifyExtension;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig_Extension_Debug;
+use function explode;
 use function file_get_contents;
+use function get_class;
 use function json_decode;
 use function json_encode;
+use function sprintf;
 use function str_replace;
 
 class ApiDoc extends ResourceObject
@@ -55,6 +58,11 @@ class ApiDoc extends ResourceObject
     private $template = [];
 
     /**
+     * @var string
+     */
+    private $appName;
+
+    /**
      * @Named("schemaDir=json_schema_dir,routerFile=aura_router_file")
      */
     public function __construct(
@@ -76,6 +84,9 @@ class ApiDoc extends ResourceObject
             'rel.html.twig' => $template->rel,
             'schema.table.html.twig' => $template->shcemaTable
         ];
+        $index = $this->resource->get('app://self/index');
+        $names = explode('\\', get_class($index));
+        $this->appName = sprintf('%s\%s', $names[0], $names[1]);
     }
 
     /**
@@ -144,6 +155,7 @@ class ApiDoc extends ResourceObject
         unset($index['_links']);
         $schemas = $this->getSchemas();
         $this->body = [
+            'app_name' => $this->appName,
             'name' => $curies->name,
             'messages' => $index,
             'links' => $links,
@@ -161,7 +173,10 @@ class ApiDoc extends ResourceObject
             throw new \DomainException($id);
         }
         $schema = (array) json_decode(file_get_contents($path), true);
-        $this->body['schema'] = $schema;
+        $this->body = [
+            'app_name' => $this->appName,
+            'schema' => $schema
+        ];
 
         return $this;
     }
@@ -204,6 +219,7 @@ class ApiDoc extends ResourceObject
         }
         unset($option);
         $this->body = [
+            'app_name' => $this->appName,
             'doc' => $options,
             'rel' => $rel,
             'href' => $href
