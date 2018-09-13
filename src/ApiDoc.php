@@ -1,6 +1,7 @@
 <?php
 namespace BEAR\ApiDoc;
 
+use function array_keys;
 use Aura\Router\Exception\RouteNotFound;
 use Aura\Router\Map;
 use Aura\Router\RouterContainer;
@@ -212,6 +213,7 @@ class ApiDoc extends ResourceObject
             throw new LogicException('No option view'); // @codeCoverageIgnore
         }
         $options = json_decode($optionsJson, true);
+        $allow = array_keys($options);
         foreach ($options as &$option) {
             if (isset($option['schema'])) {
                 $option['meta'] = new JsonSchema(json_encode($option['schema']), $uri);
@@ -220,6 +222,7 @@ class ApiDoc extends ResourceObject
         unset($option);
         $this->body = [
             'app_name' => $this->appName,
+            'allow' => $allow,
             'doc' => $options,
             'rel' => $rel,
             'href' => $href

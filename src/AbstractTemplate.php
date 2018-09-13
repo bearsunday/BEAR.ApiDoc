@@ -86,9 +86,26 @@ abstract class AbstractTemplate
      * Relation page content
      */
     public $rel = '<h2>{{ href }}</h2>
+        {% for method in allow %}
+            {% if method == "GET" %}
+                <a href="#GET" class="badge badge-success">GET</a>
+            {% endif %}
+            {% if method == "POST" %}
+                <a href="#POST" class="badge badge-danger">POST</a>
+            {% endif %}
+            {% if method == "PUT" %}
+                <a href="#PUT" class="badge badge-warning">PUT</a>
+            {% endif %}
+            {% if method == "PATCH" %}
+                <a href="#PATCH" class="badge badge-warning">PATCH</a>
+            {% endif %}
+            {% if method == "DELETE" %}
+                <a href="#DELETE" class="badge badge-warning">DELETE</a>
+            {% endif %}
+        {% endfor %}
 {% for method_name, method in doc %}
     <hr style="width: 100%; color: grey; height: 1px; background-color:grey;" />
-    <h1>{{ method_name }}</h1>
+    <a name="{{ method_name }}"><h1>{{ method_name }}</h1></a>
     <p class="lead">{{ method.summary }}</p>
     <h4>Request</h4>
     {% for param_name, parameters in method.request.parameters %}
