@@ -228,6 +228,6 @@ class ApiDoc extends ResourceObject
             }
         }
 
-        throw new RouteNotFound($tempaltedPath);
+        return $tempaltedPath;
     }
 }
