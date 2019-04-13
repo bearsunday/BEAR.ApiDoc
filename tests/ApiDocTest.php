@@ -6,9 +6,9 @@ use BEAR\Resource\JsonRenderer;
 use BEAR\Resource\Module\JsonSchemaModule;
 use BEAR\Resource\Module\ResourceModule;
 use BEAR\Resource\ResourceInterface;
-use function file_put_contents;
 use PHPUnit\Framework\TestCase;
 use Ray\Di\Injector;
+use function file_put_contents;
 
 class ApiDocTest extends TestCase
 {

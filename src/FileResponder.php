@@ -1,17 +1,17 @@
 <?php
 namespace BEAR\ApiDoc;
 
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
+use LogicException;
+use Ray\Di\Di\Named;
 use function file_get_contents;
 use function file_put_contents;
 use function json_decode;
 use function json_encode;
-use const JSON_PRETTY_PRINT;
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
-use LogicException;
-use Ray\Di\Di\Named;
 
 final class FileResponder implements TransferInterface
 {

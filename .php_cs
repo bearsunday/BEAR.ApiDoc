@@ -73,7 +73,7 @@ return \PhpCsFixer\Config::create()
         'not_operator_with_successor_space' => true,
         'object_operator_without_whitespace' => true,
         'ordered_class_elements' => true,
-        'ordered_imports' => true,
+        'ordered_imports' => ['imports_order' => ['const', 'class', 'function']],
         'php_unit_construct' => true,
         'php_unit_dedicate_assert' => true,
         'php_unit_fqcn_annotation' => true,
