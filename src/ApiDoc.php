@@ -10,12 +10,12 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
-use function file_get_contents;
-use function json_decode;
-use function json_encode;
 use LogicException;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
+use function file_get_contents;
+use function json_decode;
+use function json_encode;
 use function str_replace;
 
 class ApiDoc extends ResourceObject
@@ -53,6 +53,11 @@ class ApiDoc extends ResourceObject
     private $template = [];
 
     /**
+     * @var string
+     */
+    private $appName;
+
+    /**
      * @Named("schemaDir=json_schema_dir,routerFile=aura_router_file")
      */
     public function __construct(
@@ -74,6 +79,9 @@ class ApiDoc extends ResourceObject
             'rel.html.twig' => $template->rel,
             'schema.table.html.twig' => $template->shcemaTable
         ];
+        $index = $this->resource->get('app://self/index');
+        $names = explode('\\', get_class($index));
+        $this->appName = sprintf('%s\%s', $names[0], $names[1]);
     }
 
     /**
@@ -123,6 +131,7 @@ class ApiDoc extends ResourceObject
         unset($index['_links']);
         $schemas = $this->getSchemas();
         $this->body = [
+            'app_name' => $this->appName,
             'name' => $curies->name,
             'messages' => $index,
             'links' => $links,
@@ -140,7 +149,10 @@ class ApiDoc extends ResourceObject
             throw new \DomainException($id);
         }
         $schema = (array) json_decode(file_get_contents($path), true);
-        $this->body['schema'] = $schema;
+        $this->body = [
+            'app_name' => $this->appName,
+            'schema' => $schema
+        ];
 
         return $this;
     }
@@ -176,6 +188,7 @@ class ApiDoc extends ResourceObject
             throw new LogicException('No option view'); // @codeCoverageIgnore
         }
         $options = json_decode($optionsJson, true);
+        $allow = array_keys($options);
         foreach ($options as &$option) {
             if (isset($option['schema'])) {
                 $option['meta'] = new JsonSchema(json_encode($option['schema']), $uri);
@@ -183,6 +196,8 @@ class ApiDoc extends ResourceObject
         }
         unset($option);
         $this->body = [
+            'app_name' => $this->appName,
+            'allow' => $allow,
             'doc' => $options,
             'rel' => $rel,
             'href' => $href
