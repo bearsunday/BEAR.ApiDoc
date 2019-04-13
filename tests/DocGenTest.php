@@ -2,10 +2,10 @@
 namespace BEAR\ApiDoc;
 namespace BEAR\ApiDoc;
 
-use PHPUnit\Framework\TestCase;
 use function dirname;
 use function file_get_contents;
 use function passthru;
+use PHPUnit\Framework\TestCase;
 
 class DocGenTest extends TestCase
 {
