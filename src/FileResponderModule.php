@@ -27,6 +27,8 @@ class FileResponderModule extends AbstractModule
     {
         $this->bind()->annotatedWith('api_doc_dir')->toInstance($this->docDir);
         $this->bind(AbstractTemplate::class)->to($this->templateClass);
-        $this->bind(RouterContainer::class)->annotatedWith('router_container')->toProvider(RouterContainerProvider::class);
+        if (class_exists(RouterContainer::class)) {
+            $this->bind(RouterContainer::class)->annotatedWith('router_container')->toProvider(RouterContainerProvider::class);
+        }
     }
 }
