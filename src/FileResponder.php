@@ -96,7 +96,7 @@ final class FileResponder implements TransferInterface
         }
         foreach (glob($schemaDir . '/*.json') as $jsonFile) {
             $dest = str_replace($schemaDir, $destDir, $jsonFile);
-            $json = json_decode(file_get_contents($jsonFile));
+            $json = json_decode((string) file_get_contents($jsonFile));
             if (isset($json->id)) {
                 $json->id = $this->host . $json->id;
             }
