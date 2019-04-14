@@ -147,13 +147,7 @@ class ApiDoc extends ResourceObject
     private function indexPage() : ResourceObject
     {
         $index = $this->resource->get('app://self/index')->body;
-        $curies = new Curies($index['_links']['curies']);
-        $links = [];
-        unset($index['_links']['curies'], $index['_links']['self']);
-        foreach ($index['_links'] as $nameRel => $value) {
-            $rel = (string) str_replace($curies->name . ':', '', $nameRel);
-            $links[$rel] = new Curie($nameRel, $value, $curies);
-        }
+        list($curies, $links, $index) = $this->getRels($index);
         unset($index['_links']);
         $schemas = $this->getSchemas();
         $this->body = [
@@ -246,5 +240,18 @@ class ApiDoc extends ResourceObject
         }
 
         return $tempaltedPath;
+    }
+
+    private function getRels(array $index) : array
+    {
+        $curies = new Curies($index['_links']['curies']);
+        $links = [];
+        unset($index['_links']['curies'], $index['_links']['self']);
+        foreach ($index['_links'] as $nameRel => $value) {
+            $rel = (string) str_replace($curies->name . ':', '', $nameRel);
+            $links[$rel] = new Curie($nameRel, $value, $curies);
+        }
+
+        return [$curies, $links, $index];
     }
 }
