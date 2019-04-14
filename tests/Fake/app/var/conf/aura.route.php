@@ -1,5 +1,4 @@
-
 <?php
-/* @var $map \Aura\Router\Map */
 
+/* @var Aura\Router\Map $map */
 $map->route('/user', '/users/{id}');

@@ -1,7 +1,6 @@
 <?php
 namespace BEAR\ApiDoc;
 
-use Aura\Router\Exception\RouteNotFound;
 use Aura\Router\Map;
 use Aura\Router\RouterContainer;
 use BEAR\Resource\Exception\HrefNotFoundException;
@@ -11,11 +10,17 @@ use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
 use LogicException;
+use manuelodelain\Twig\Extension\LinkifyExtension;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
+use Twig_Extension_Debug;
+use function array_keys;
+use function explode;
 use function file_get_contents;
+use function get_class;
 use function json_decode;
 use function json_encode;
+use function sprintf;
 use function str_replace;
 
 class ApiDoc extends ResourceObject
@@ -58,13 +63,13 @@ class ApiDoc extends ResourceObject
     private $appName;
 
     /**
-     * @Named("schemaDir=json_schema_dir,routerFile=aura_router_file")
+     * @Named("schemaDir=json_schema_dir,routerContainer=router_container,routerFile=aura_router_file")
      */
     public function __construct(
         ResourceInterface $resource,
         string $schemaDir,
         Template $template,
-        RouterContainer $routerContainer = null,
+        $routerContainer,
         string $routerFile = null
     ) {
         $this->resource = $resource;
@@ -90,7 +95,26 @@ class ApiDoc extends ResourceObject
     public function setRenderer(RenderInterface $renderer)
     {
         unset($renderer);
-        $this->renderer = new TwigRenderer($this->template);
+        $this->renderer = new class($this->template) implements RenderInterface {
+            private $template;
+
+            public function __construct(array $template)
+            {
+                $this->template = $template;
+            }
+
+            public function render(ResourceObject $ro)
+            {
+                $ro->headers['content-type'] = 'text/html; charset=utf-8';
+                $twig = new \Twig_Environment(new \Twig_Loader_Array($this->template), ['debug' => true]);
+                $twig->addExtension(new Twig_Extension_Debug);
+                $twig->addExtension(new RefLinkExtention);
+                $twig->addExtension(new LinkifyExtension);
+                $ro->view = $twig->render('index', $ro->body);
+
+                return $ro->view;
+            }
+        };
 
         return $this;
     }
@@ -125,7 +149,7 @@ class ApiDoc extends ResourceObject
         $links = [];
         unset($index['_links']['curies'], $index['_links']['self']);
         foreach ($index['_links'] as $nameRel => $value) {
-            $rel = str_replace($curies->name . ':', '', $nameRel);
+            $rel = (string) str_replace($curies->name . ':', '', $nameRel);
             $links[$rel] = new Curie($nameRel, $value, $curies);
         }
         unset($index['_links']);
@@ -143,12 +167,12 @@ class ApiDoc extends ResourceObject
 
     private function schemaPage(string $id) : ResourceObject
     {
-        $path = realpath($this->schemaDir . '/' . $id);
+        $path = (string) realpath($this->schemaDir . '/' . $id);
         $isInvalidFilePath = (strncmp($path, $this->schemaDir, strlen($this->schemaDir)) !== 0);
         if ($isInvalidFilePath) {
             throw new \DomainException($id);
         }
-        $schema = (array) json_decode(file_get_contents($path), true);
+        $schema = (array) json_decode((string) file_get_contents($path), true);
         $this->body = [
             'app_name' => $this->appName,
             'schema' => $schema
@@ -161,7 +185,7 @@ class ApiDoc extends ResourceObject
     {
         $schemas = [];
         foreach (glob($this->schemaDir . '/*.json') as $json) {
-            $schemas[] = new JsonSchema(file_get_contents($json), $json);
+            $schemas[] = new JsonSchema((string) file_get_contents($json), $json);
         }
 
         return $schemas;
@@ -191,7 +215,7 @@ class ApiDoc extends ResourceObject
         $allow = array_keys($options);
         foreach ($options as &$option) {
             if (isset($option['schema'])) {
-                $option['meta'] = new JsonSchema(json_encode($option['schema']), $uri);
+                $option['meta'] = new JsonSchema((string) json_encode($option['schema']), $uri);
             }
         }
         unset($option);
@@ -211,9 +235,6 @@ class ApiDoc extends ResourceObject
         return isset($links['templated']) && $links['templated'] === true;
     }
 
-    /**
-     * @throws RouteNotFound
-     */
     private function match($tempaltedPath) : string
     {
         foreach ($this->map as $route) {
