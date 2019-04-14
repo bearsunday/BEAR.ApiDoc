@@ -22,6 +22,6 @@ final class RefLinkExtention extends AbstractExtension
         }
         $linked = preg_replace('/#\/definitions\/(\w+)/', '<a href="#definitions/${1}">${0}</a>', $json);
 
-        return $linked;
+        return (string) $linked;
     }
 }
