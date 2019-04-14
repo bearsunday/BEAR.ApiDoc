@@ -1,7 +1,6 @@
 <?php
 namespace BEAR\ApiDoc;
 
-use function array_keys;
 use Aura\Router\Exception\RouteNotFound;
 use Aura\Router\Map;
 use Aura\Router\RouterContainer;
@@ -12,16 +11,11 @@ use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
 use LogicException;
-use manuelodelain\Twig\Extension\LinkifyExtension;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
-use Twig_Extension_Debug;
-use function explode;
 use function file_get_contents;
-use function get_class;
 use function json_decode;
 use function json_encode;
-use function sprintf;
 use function str_replace;
 
 class ApiDoc extends ResourceObject
@@ -96,26 +90,7 @@ class ApiDoc extends ResourceObject
     public function setRenderer(RenderInterface $renderer)
     {
         unset($renderer);
-        $this->renderer = new class($this->template) implements RenderInterface {
-            private $template;
-
-            public function __construct(array $template)
-            {
-                $this->template = $template;
-            }
-
-            public function render(ResourceObject $ro)
-            {
-                $ro->headers['content-type'] = 'text/html; charset=utf-8';
-                $twig = new \Twig_Environment(new \Twig_Loader_Array($this->template), ['debug' => true]);
-                $twig->addExtension(new Twig_Extension_Debug);
-                $twig->addExtension(new RefLinkExtention);
-                $twig->addExtension(new LinkifyExtension);
-                $ro->view = $twig->render('index', $ro->body);
-
-                return $ro->view;
-            }
-        };
+        $this->renderer = new TwigRenderer($this->template);
 
         return $this;
     }
@@ -247,6 +222,6 @@ class ApiDoc extends ResourceObject
             }
         }
 
-        throw new RouteNotFound($tempaltedPath);
+        return $tempaltedPath;
     }
 }

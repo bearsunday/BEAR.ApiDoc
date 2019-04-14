@@ -1,13 +1,13 @@
 <?php
 namespace BEAR\ApiDoc;
 
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
 use LogicException;
 use Ray\Di\Di\Named;
-use const JSON_PRETTY_PRINT;
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
 use function file_get_contents;
 use function file_put_contents;
 use function json_decode;
