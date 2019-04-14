@@ -24,14 +24,14 @@
         "ext-json": "*",
         "twig/twig": "^2.5",
         "twig/extensions": "^1.5",
-        "bear/aura-router-module": "^2.0.5",
         "manuelodelain/linkify-twig-extension": "^1.0"
     },
     "require-dev": {
         "bear/resource": "^1.11.1",
         "phpunit/phpunit": "^6.4",
         "bear/app-meta": "^1.4",
-        "bear/package": "^1.8"
+        "bear/package": "^1.8",
+        "bear/aura-router-module": "^2.0.5"
     },
     "scripts": {
         "test": ["phpunit"],
