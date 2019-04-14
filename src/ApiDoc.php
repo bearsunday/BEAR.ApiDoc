@@ -13,7 +13,9 @@ use LogicException;
 use manuelodelain\Twig\Extension\LinkifyExtension;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
-use Twig_Extension_Debug;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\ArrayLoader;
 use function array_keys;
 use function explode;
 use function file_get_contents;
@@ -106,8 +108,8 @@ class ApiDoc extends ResourceObject
             public function render(ResourceObject $ro)
             {
                 $ro->headers['content-type'] = 'text/html; charset=utf-8';
-                $twig = new \Twig_Environment(new \Twig_Loader_Array($this->template), ['debug' => true]);
-                $twig->addExtension(new Twig_Extension_Debug);
+                $twig = new Environment(new ArrayLoader($this->template), ['debug' => true]);
+                $twig->addExtension(new DebugExtension);
                 $twig->addExtension(new RefLinkExtention);
                 $twig->addExtension(new LinkifyExtension);
                 $ro->view = $twig->render('index', $ro->body);
