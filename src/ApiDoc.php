@@ -149,7 +149,7 @@ class ApiDoc extends ResourceObject
         $links = [];
         unset($index['_links']['curies'], $index['_links']['self']);
         foreach ($index['_links'] as $nameRel => $value) {
-            $rel = str_replace($curies->name . ':', '', $nameRel);
+            $rel = (string) str_replace($curies->name . ':', '', $nameRel);
             $links[$rel] = new Curie($nameRel, $value, $curies);
         }
         unset($index['_links']);
@@ -167,12 +167,12 @@ class ApiDoc extends ResourceObject
 
     private function schemaPage(string $id) : ResourceObject
     {
-        $path = realpath($this->schemaDir . '/' . $id);
+        $path = (string) realpath($this->schemaDir . '/' . $id);
         $isInvalidFilePath = (strncmp($path, $this->schemaDir, strlen($this->schemaDir)) !== 0);
         if ($isInvalidFilePath) {
             throw new \DomainException($id);
         }
-        $schema = (array) json_decode(file_get_contents($path), true);
+        $schema = (array) json_decode((string) file_get_contents($path), true);
         $this->body = [
             'app_name' => $this->appName,
             'schema' => $schema
@@ -185,7 +185,7 @@ class ApiDoc extends ResourceObject
     {
         $schemas = [];
         foreach (glob($this->schemaDir . '/*.json') as $json) {
-            $schemas[] = new JsonSchema(file_get_contents($json), $json);
+            $schemas[] = new JsonSchema((string) file_get_contents($json), $json);
         }
 
         return $schemas;
@@ -215,7 +215,7 @@ class ApiDoc extends ResourceObject
         $allow = array_keys($options);
         foreach ($options as &$option) {
             if (isset($option['schema'])) {
-                $option['meta'] = new JsonSchema(json_encode($option['schema']), $uri);
+                $option['meta'] = new JsonSchema((string) json_encode($option['schema']), $uri);
             }
         }
         unset($option);
