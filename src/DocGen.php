@@ -22,9 +22,10 @@ final class DocGen
         $meta = new Meta($appName, $context);
         $injector = new AppInjector($appName, $context, $meta);
         $injector->clear();
-        $apiDoc = $injector->getInstance(ApiDoc::class);
-        $responder = $injector->getOverrideInstance(new ApiDocModule($docDir, $templateClass), FileResponder::class);
-        /* @var \BEAR\ApiDoc\ApiDoc $apiDoc */
+        /** @var ApiDoc $apiDoc */
+        $apiDoc = $injector->getOverrideInstance(new ApiDocModule, ApiDoc::class);
+        /** @var FileResponder $responder */
+        $responder = $injector->getOverrideInstance(new FileResponderModule($docDir, $templateClass), FileResponder::class);
         // set twig renderer by self
         $apiDoc->setRenderer(new NullRenderer);
         $apiDoc->transfer($responder, []);
