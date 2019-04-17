@@ -1,3 +1,5 @@
 parameters:
-	ignoreErrors:
-		- '#Undefined variable: \$map#'
+    excludes_analyse:
+        - 'tests/Fake/var/tmp'
+        - 'tests/Fake/src/var/conf/aura.route.php'
+

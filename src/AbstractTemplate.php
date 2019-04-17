@@ -35,7 +35,13 @@ abstract class AbstractTemplate
 {% block title %}{{ rel }}{% endblock %}
 {% block content %}
 
-    {% if rel is defined %}
+    {% if uri is defined %}
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
+            <li class="breadcrumb-item">URIs</a></li>
+        </ol>
+    {% include \'rel.html.twig\' %}
+    {% elseif rel is defined %}
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
             <li class="breadcrumb-item">rels</a></li>
@@ -71,6 +77,12 @@ abstract class AbstractTemplate
 <ul>
     {% for link in links %}
         <li><a href="{{ link.docUri }}">{{ link.rel }}</a> - {{ link.title}} - <span style="color: gray"><conde>{{ link.href}}</conde></span>
+    {% endfor %}
+</ul>
+<p><b>URIs</b></p>
+<ul>
+    {% for key, uri in uris %}
+        <li><a href="{{ uri.filePath }}">{{ key }}</a> 
     {% endfor %}
 </ul>
 <p><b>Json Schemas</b></p>
@@ -147,6 +159,30 @@ abstract class AbstractTemplate
     {%  set meta = method.meta%}
     {%  set schema = method.schema%}
     {%  include \'schema.table.html.twig\' %}
+    
+    {% for link in method.links %}
+        {% if loop.first %}
+            <div style="height: 30px"></div>
+            <h4>Link</h4>
+            <table class="table table-bordered">
+                <tr>
+                    <th>rel</th>
+                    <th>href</th>
+                    <th>method</th>
+                    <th>title</th>
+                </tr>
+        {% endif %}
+                <tr>
+                <td>{{ link.rel }}</td>
+                <td>{{ link.href }}</td>
+                <td>{{ link.method|upper }}</td>
+                <td>{{ link.title }}</td>
+            </tr>
+        {% if loop.last %}
+            </table>
+        {% endif %}
+    {% endfor %}
+    
     {% for definition_name, definition in schema.definitions %}
         {% if loop.first %}
             <div style="height: 30px">
@@ -265,4 +301,5 @@ abstract class AbstractTemplate
     </div>
 {% endif %}
 ';
+    public $ext = 'html';
 }

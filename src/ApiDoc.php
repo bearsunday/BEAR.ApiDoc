@@ -3,6 +3,7 @@ namespace BEAR\ApiDoc;
 
 use Aura\Router\Map;
 use Aura\Router\RouterContainer;
+use BEAR\AppMeta\Meta;
 use BEAR\Resource\Exception\HrefNotFoundException;
 use BEAR\Resource\Exception\ResourceNotFoundException;
 use BEAR\Resource\RenderInterface;
@@ -13,7 +14,9 @@ use LogicException;
 use manuelodelain\Twig\Extension\LinkifyExtension;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
-use Twig_Extension_Debug;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\ArrayLoader;
 use function array_keys;
 use function explode;
 use function file_get_contents;
@@ -63,6 +66,11 @@ class ApiDoc extends ResourceObject
     private $appName;
 
     /**
+     * @var string
+     */
+    private $ext;
+
+    /**
      * @Named("schemaDir=json_schema_dir,routerContainer=router_container,routerFile=aura_router_file")
      */
     public function __construct(
@@ -84,6 +92,7 @@ class ApiDoc extends ResourceObject
             'rel.html.twig' => $template->rel,
             'schema.table.html.twig' => $template->shcemaTable
         ];
+        $this->ext = $template->ext;
         $index = $this->resource->get('app://self/index');
         $names = explode('\\', get_class($index));
         $this->appName = sprintf('%s\%s', $names[0], $names[1]);
@@ -106,8 +115,8 @@ class ApiDoc extends ResourceObject
             public function render(ResourceObject $ro)
             {
                 $ro->headers['content-type'] = 'text/html; charset=utf-8';
-                $twig = new \Twig_Environment(new \Twig_Loader_Array($this->template), ['debug' => true]);
-                $twig->addExtension(new Twig_Extension_Debug);
+                $twig = new Environment(new ArrayLoader($this->template), ['debug' => true]);
+                $twig->addExtension(new DebugExtension);
                 $twig->addExtension(new RefLinkExtention);
                 $twig->addExtension(new LinkifyExtension);
                 $ro->view = $twig->render('index', $ro->body);
@@ -119,39 +128,26 @@ class ApiDoc extends ResourceObject
         return $this;
     }
 
-    public function onGet(string $rel = null, $schema = null) : ResourceObject
+    public function onGet(string $rel) : ResourceObject
     {
-        if ($rel) {
-            return $this->relPage($rel);
-        }
-        if ($schema) {
-            return $this->schemaPage($schema);
-        }
-
-        return $this->indexPage();
+        return $this->relPage($rel);
     }
 
     public function transfer(TransferInterface $responder, array $server)
     {
         if (! $responder instanceof FileResponder) {
-            return parent::transfer($responder, $server); // @codeCoverageIgnore
+            throw new LogicException(); // @codeCoverageIgnore
         }
-        $this->indexPage();
-        $responder->set((string) $this->indexPage(), $this->schemaDir);
+        $uris = $this->getUri();
+        $responder->set((string) $this->indexPage($uris), $this->schemaDir, $uris, $this->ext);
 
         return parent::transfer($responder, $server);
     }
 
-    private function indexPage() : ResourceObject
+    private function indexPage(array $uris) : ResourceObject
     {
         $index = $this->resource->get('app://self/index')->body;
-        $curies = new Curies($index['_links']['curies']);
-        $links = [];
-        unset($index['_links']['curies'], $index['_links']['self']);
-        foreach ($index['_links'] as $nameRel => $value) {
-            $rel = (string) str_replace($curies->name . ':', '', $nameRel);
-            $links[$rel] = new Curie($nameRel, $value, $curies);
-        }
+        list($curies, $links, $index) = $this->getRels($index);
         unset($index['_links']);
         $schemas = $this->getSchemas();
         $this->body = [
@@ -159,10 +155,61 @@ class ApiDoc extends ResourceObject
             'name' => $curies->name,
             'messages' => $index,
             'links' => $links,
-            'schemas' => $schemas
+            'schemas' => $schemas,
+            'uris' => $uris
         ];
 
         return $this;
+    }
+
+    private function getUri() : array
+    {
+        $uris = [];
+        $meta = new Meta($this->appName, 'app');
+        foreach ($meta->getGenerator('app') as $resMeta) {
+            $path = $resMeta->uriPath;
+            if ($path === '/index') {
+                continue;
+            }
+            $routedUri = $this->getRoutedUri($path);
+            $uri = 'app://self' . $path;
+            $options = json_decode((string) $this->resource->options($uri)->view, true);
+            $this->setMeta($options, $uri);
+            $allow = array_keys($options);
+            $uris[$routedUri] = [
+                'allow' => $allow,
+                'doc' => $options,
+                'href' => $path,
+                'filePath' => $this->getUriFilePath($path)
+            ];
+        }
+
+        return $uris;
+    }
+
+    private function getUriFilePath($path)
+    {
+        return sprintf('uri%s.%s', $path, $this->ext);
+    }
+
+    private function getRoutedUri(string $path) : string
+    {
+        foreach ($this->map as $route) {
+            if ($route->name === $path) {
+                return $route->path;
+            }
+        }
+
+        return $path;
+    }
+
+    private function setMeta(array &$options, string $uri)
+    {
+        foreach ($options as &$option) {
+            if (isset($option['schema'])) {
+                $option['meta'] = new JsonSchema((string) json_encode($option['schema']), $uri);
+            }
+        }
     }
 
     private function schemaPage(string $id) : ResourceObject
@@ -244,5 +291,32 @@ class ApiDoc extends ResourceObject
         }
 
         return $tempaltedPath;
+    }
+
+    private function getRels(array $index) : array
+    {
+        $curieLinks = $index['_links']['curies'];
+        $curies = new Curies($curieLinks);
+        $links = [];
+        unset($index['_links']['curies'], $index['_links']['self']);
+        foreach ($index['_links'] as $nameRel => $value) {
+            $rel = (string) str_replace($curies->name . ':', '', $nameRel);
+            $links[$rel] = new Curie($nameRel, $value, $curies);
+        }
+
+        return [$curies, $links, $index];
+    }
+
+    private function getUriRel(array $index) : array
+    {
+        $curies = new Curies($index['_links']['curies']);
+        $links = [];
+        unset($index['_links']['curies'], $index['_links']['self']);
+        foreach ($index['_links'] as $nameRel => $value) {
+            $rel = (string) str_replace($curies->name . ':', '', $nameRel);
+            $links[$rel] = new Curie($nameRel, $value, $curies);
+        }
+
+        return [$curies, $links, $index];
     }
 }
