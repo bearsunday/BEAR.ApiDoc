@@ -159,6 +159,30 @@ abstract class AbstractTemplate
     {%  set meta = method.meta%}
     {%  set schema = method.schema%}
     {%  include \'schema.table.html.twig\' %}
+    
+    {% for link in method.links %}
+        {% if loop.first %}
+            <div style="height: 30px"></div>
+            <h4>Link</h4>
+            <table class="table table-bordered">
+                <tr>
+                    <th>rel</th>
+                    <th>href</th>
+                    <th>method</th>
+                    <th>title</th>
+                </tr>
+        {% endif %}
+                <tr>
+                <td>{{ link.rel }}</td>
+                <td>{{ link.href }}</td>
+                <td>{{ link.method|upper }}</td>
+                <td>{{ link.title }}</td>
+            </tr>
+        {% if loop.last %}
+            </table>
+        {% endif %}
+    {% endfor %}
+    
     {% for definition_name, definition in schema.definitions %}
         {% if loop.first %}
             <div style="height: 30px">
