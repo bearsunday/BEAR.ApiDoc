@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>API Doc: FakeVendor\FakeProject</title>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    </head>
+<body>
+            <div class="container">
+            
+            <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
+            <li class="breadcrumb-item">rels</a></li>
+            <li class="breadcrumb-item active">calendar</li>
+        </ol>
+        <h2>/calendar</h2>
+                                    <a href="#GET" class="badge badge-success">GET</a>
+                                                                        <hr style="width: 100%; color: grey; height: 1px; background-color:grey;" />
+    <a name="GET"><h1>GET</h1></a>
+    <p class="lead"></p>
+    <h4>Request</h4>
+        <div style="height: 15px"></div>
+       No parameters required.
+    <div style="height: 15px"></div>
+        </table>
+    <h6>
+        <span class="badge badge-default">Required</span>
+        <span></span>
+    </h6>
+
+            <div style="height: 30px"></div>
+        <h4>Response </h4>
+                    <table class="table table-bordered">
+    <tr>
+        <th>Property</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Required</th>
+        <th>Constraints</th>
+    </tr>
+                    <tr>
+            <td rowspan="1">dtstart</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1">Event starting time</td>
+                            <td rowspan="1">Required</td>
+                                            <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="1">dtend</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1">Event ending time</td>
+                            <td rowspan="1">Optional</td>            
+                                        <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="1">summary</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1"></td>
+                            <td rowspan="1">Required</td>
+                                            <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="1">location</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1"></td>
+                            <td rowspan="1">Optional</td>            
+                                        <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="1">url</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1"></td>
+                            <td rowspan="1">Optional</td>            
+                                        <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="1">duration</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1">Event duration</td>
+                            <td rowspan="1">Optional</td>            
+                                        <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="1">rdate</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1">Recurrence date</td>
+                            <td rowspan="1">Optional</td>            
+                                        <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="1">rrule</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1">Recurrence rule</td>
+                            <td rowspan="1">Optional</td>            
+                                        <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="1">category</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1"></td>
+                            <td rowspan="1">Optional</td>            
+                                        <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="1">description</td>
+                        <td rowspan="1">string</td>
+                        <td rowspan="1"></td>
+                            <td rowspan="1">Optional</td>            
+                                        <td> </td>
+                                                            </tr>
+                    <tr>
+            <td rowspan="1">geo</td>
+                        <td rowspan="1"></td>
+                        <td rowspan="1"></td>
+                            <td rowspan="1">Optional</td>            
+                                        <td>$ref: "geo.json"</td>
+                                                            </tr>
+    </table>
+
+    <div>
+        <h6>
+            <span class="badge badge-default">type</span>
+            <span>object</span>
+        </h6>
+    </div>
+    <div>
+        <h6>
+            <span class="badge badge-default">title</span>
+            <span>Calendar</span>
+        </h6>
+    </div>
+    <div>
+        <h6>
+            <span class="badge badge-default">required</span>
+            <span>dtstart, summary</span>
+        </h6>
+    </div>
+                </div>
+    </body>
+</html>

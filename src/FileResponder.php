@@ -36,6 +36,16 @@ final class FileResponder implements TransferInterface
     private $host;
 
     /**
+     * @var array
+     */
+    private $uris;
+
+    /**
+     * @var string
+     */
+    private $ext;
+
+    /**
      * @Named("docDir=api_doc_dir,host=json_schema_host")
      */
     public function __construct(string $docDir, string $host = '')
@@ -47,22 +57,26 @@ final class FileResponder implements TransferInterface
     /**
      * {@inheritdoc}
      */
-    public function __invoke(ResourceObject $ro, array $server)
+    public function __invoke(ResourceObject $apiDoc, array $server)
     {
         unset($server);
-        if (! $ro instanceof ApiDoc) {
+        if (! $apiDoc instanceof ApiDoc) {
             throw new LogicException; // @codeCoverageIgnore
         }
+        $links = $apiDoc->body['links'];
         $this->writeIndex($this->index, $this->docDir);
-        $this->writeRel($ro, $ro->body['links'], $this->docDir, $this->schemaDir);
+        $this->writeUris($apiDoc, $this->uris, $this->docDir);
+        $this->writeRel($apiDoc, $links, $this->docDir, $this->schemaDir);
 
         return null;
     }
 
-    public function set(string $index, string $schemaDir)
+    public function set(string $index, string $schemaDir, array $uris, string $ext)
     {
         $this->index = $index;
         $this->schemaDir = $schemaDir;
+        $this->uris = $uris;
+        $this->ext = $ext;
     }
 
     public function writeIndex(string $index, string $docDir)
@@ -71,6 +85,20 @@ final class FileResponder implements TransferInterface
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $docDir)); // @codeCoverageIgnore
         }
         file_put_contents($docDir . '/index.html', $index);
+    }
+
+    private function writeUris(ApiDoc $apiDoc, array $uris, string $docDir)
+    {
+        foreach ($uris as $uri) {
+            $apiDoc->body = $uri + ['uri' => ''];
+            $apiDoc->view = null;
+            $view = (string) $apiDoc;
+            $uriDir = $docDir . '/uri';
+            if (! is_dir($uriDir) && ! mkdir($uriDir, 0777, true) && ! is_dir($uriDir)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $uriDir)); // @codeCoverageIgnore
+            }
+            file_put_contents(sprintf('%s/%s', $docDir, $uri['filePath']), $view);
+        }
     }
 
     private function writeRel(ApiDoc $apiDoc, array $links, string $docDir, string $schemaDir)
