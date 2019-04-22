@@ -76,8 +76,8 @@ final class FileResponder implements TransferInterface
         if (! $apiDoc instanceof ApiDoc) {
             throw new LogicException; // @codeCoverageIgnore
         }
+        // root
         $links = $apiDoc->body['links'];
-
         $this->writeIndex($this->index, $this->docDir);
         $this->writeUris($apiDoc, $this->uris, $this->docDir);
         $errors = $this->writeRel($apiDoc, $this->rels, $this->docDir, $this->schemaDir);
@@ -133,8 +133,14 @@ final class FileResponder implements TransferInterface
                 $errors[] = "Link target not exists rel:{$rel} href:{$href} method:{$method} from:{$relMeta['link_from']}";
                 continue;
             }
+            // write JSON
             $targetLink = $this->uris[$href]->doc[$method];
             ($this->jsonSaver)($docDir . '/rels', $rel, (object) $targetLink);
+            // write HTML
+            $apiDoc->body = $targetLink  + ['relation' => ''];
+            $apiDoc->view = null;
+            $view = (string) $apiDoc;
+            file_put_contents(sprintf('%s/rels/%s.html', $docDir, $relMeta['rel']), $view);
         }
 
         return $errors;
