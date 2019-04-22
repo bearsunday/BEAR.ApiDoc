@@ -139,9 +139,25 @@ class ApiDoc extends ResourceObject
             throw new LogicException(); // @codeCoverageIgnore
         }
         $uris = $this->getUri();
-        $responder->set((string) $this->indexPage($uris), $this->schemaDir, $uris, $this->ext);
+        $rels = $this->getRelDoc($uris);
+        $responder->set((string) $this->indexPage($uris), $this->schemaDir, $uris, $this->ext, $rels);
 
         return parent::transfer($responder, $server);
+    }
+
+    private function getRelDoc(array $uris) : array
+    {
+        $relDoc = [];
+        foreach ($uris as $uri) {
+            foreach ($uri->doc as $method => $docItem) {
+                $links = $docItem['links'] ?? [];
+                foreach ($links as $link) {
+                    $relDoc[] = $link + ['link_from' => $uri->uriPath];
+                }
+            }
+        }
+
+        return $relDoc;
     }
 
     private function indexPage(array $uris) : ResourceObject
@@ -237,10 +253,6 @@ class ApiDoc extends ResourceObject
     {
         $index = $this->resource->options('app://self/')->body;
         $namedRel = sprintf('%s:%s', $index['_links']['curies']['name'], $rel);
-        $links = $index['_links'];
-        if (! isset($links[$namedRel]['href'])) {
-            throw new ResourceNotFoundException($rel);
-        }
         $href = $links[$namedRel]['href'];
         $isTemplated = $this->isTemplated($links[$namedRel]);
         $path = $isTemplated ? $this->match($href) : $href;
