@@ -232,7 +232,7 @@ abstract class AbstractTemplate
             <tr>
             {% endif %}
                 {% for const_name, const_val in attribute(meta.constatins, prop_name).extra %}
-                    <td>{{ const_name }}: {{ const_val }}</td>
+                    <td>{{ const_name }}: {{ const_val | json_encode(constant(\'JSON_PRETTY_PRINT\') b-or constant(\'JSON_UNESCAPED_SLASHES\'))}}</td>
                 {% endfor %}
             {%if attribute(meta.constatins, prop_name).extra %}
             </tr>
