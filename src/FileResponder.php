@@ -23,7 +23,7 @@ final class FileResponder implements TransferInterface
     private $docDir;
 
     /**
-     * @var string
+     * @var array
      */
     private $index;
 
@@ -76,11 +76,9 @@ final class FileResponder implements TransferInterface
         if (! $apiDoc instanceof ApiDoc) {
             throw new LogicException; // @codeCoverageIgnore
         }
-        // root
-        $links = $apiDoc->body['links'];
-        $this->writeIndex($this->index, $this->docDir);
+        [$rels, $errors] = $this->writeRel($apiDoc, $this->rels, $this->docDir);
+        $this->writeIndex($apiDoc, $this->index, $this->docDir, $rels);
         $this->writeUris($apiDoc, $this->uris, $this->docDir);
-        $errors = $this->writeRel($apiDoc, $this->rels, $this->docDir, $this->schemaDir);
         $this->copyJson($this->docDir, $this->schemaDir);
         foreach ($errors as $error) {
             trigger_error($error);
@@ -89,7 +87,7 @@ final class FileResponder implements TransferInterface
         return null;
     }
 
-    public function set(string $index, string $schemaDir, array $uris, string $ext, array $rels)
+    public function set(array $index, string $schemaDir, array $uris, string $ext, array $rels)
     {
         $this->index = $index;
         $this->schemaDir = $schemaDir;
@@ -98,12 +96,15 @@ final class FileResponder implements TransferInterface
         $this->rels = $rels;
     }
 
-    public function writeIndex(string $index, string $docDir)
+    public function writeIndex(ApiDoc $apiDoc, array $index, string $docDir, array $rels)
     {
         if (! is_dir($docDir) && ! mkdir($docDir, 0777, true) && ! is_dir($docDir)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $docDir)); // @codeCoverageIgnore
         }
-        file_put_contents($docDir . '/index.html', $index);
+        $apiDoc->body = $index + ['rels' => $rels];
+        $apiDoc->view = null;
+        $view = (string) $apiDoc;
+        file_put_contents($docDir . '/index.html', $view);
     }
 
     private function writeUris(ApiDoc $apiDoc, array $uris, string $docDir)
@@ -125,7 +126,7 @@ final class FileResponder implements TransferInterface
      */
     private function writeRel(ApiDoc $apiDoc, array $links, string $docDir) : array
     {
-        $errors = [];
+        $errors = $rels = [];
         foreach ($links as $relMeta) {
             $apiDoc->view = null;
             [$rel, $href, $method] = [$relMeta['rel'], $relMeta['href'], strtoupper($relMeta['method'])];
@@ -135,15 +136,23 @@ final class FileResponder implements TransferInterface
             }
             // write JSON
             $targetLink = $this->uris[$href]->doc[$method];
-            ($this->jsonSaver)($docDir . '/rels', $rel, (object) $targetLink);
+            $json = [
+                'rel' => $rel,
+                'summary' => $targetLink['request'] ?? '',
+                'method' => $method,
+                'request' => $targetLink['request'] ?? [],
+                'response_schema' => $targetLink['schema'] ?? []
+            ];
+            ($this->jsonSaver)($docDir . '/rels', $rel, (object) $json);
             // write HTML
-            $apiDoc->body = $targetLink  + ['relation' => ''];
+            $apiDoc->body = $targetLink + ['relation' => ''] + ['relMeta' => $relMeta];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
             file_put_contents(sprintf('%s/rels/%s.html', $docDir, $relMeta['rel']), $view);
+            $rels[] = $rel;
         }
 
-        return $errors;
+        return [$rels, $errors];
     }
 
     private function copyJson(string $docDir, string $schemaDir)

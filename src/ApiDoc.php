@@ -89,8 +89,13 @@ class ApiDoc extends ResourceObject
             'index' => $template->index,
             'base.html.twig' => $template->base,
             'home.html.twig' => $template->home,
+            'uri.html.twig' => $template->uri,
             'rel.html.twig' => $template->rel,
-            'schema.table.html.twig' => $template->shcemaTable
+            'allow.html.twig' => $template->allow,
+            'request.html.twig' => $template->request,
+            'link.html.twig' => $template->links,
+            'definition.html.twig' => $template->definition,
+            'schema.html.twig' => $template->shcemaTable,
         ];
         $this->ext = $template->ext;
         $index = $this->resource->get('app://self/index');
@@ -140,7 +145,7 @@ class ApiDoc extends ResourceObject
         }
         $uris = $this->getUri();
         $rels = $this->getRelDoc($uris);
-        $responder->set((string) $this->indexPage($uris), $this->schemaDir, $uris, $this->ext, $rels);
+        $responder->set($this->indexPage($uris), $this->schemaDir, $uris, $this->ext, $rels);
 
         return parent::transfer($responder, $server);
     }
@@ -160,22 +165,21 @@ class ApiDoc extends ResourceObject
         return $relDoc;
     }
 
-    private function indexPage(array $uris) : ResourceObject
+    private function indexPage(array $uris) : array
     {
         $index = $this->resource->get('app://self/index')->body;
         list($curies, $links, $index) = $this->getRels($index);
         unset($index['_links']);
         $schemas = $this->getSchemas();
-        $this->body = [
+        $index += [
             'app_name' => $this->appName,
             'name' => $curies->name,
             'messages' => $index,
-            'links' => $links,
             'schemas' => $schemas,
             'uris' => $uris
         ];
 
-        return $this;
+        return $index;
     }
 
     private function getUri() : array
