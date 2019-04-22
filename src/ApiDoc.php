@@ -119,7 +119,7 @@ class ApiDoc extends ResourceObject
                 $twig->addExtension(new DebugExtension);
                 $twig->addExtension(new RefLinkExtention);
                 $twig->addExtension(new LinkifyExtension);
-                $ro->view = $twig->render('index', $ro->body);
+                $ro->view = $twig->render('index', (array) $ro->body);
 
                 return $ro->view;
             }
@@ -176,12 +176,7 @@ class ApiDoc extends ResourceObject
             $options = json_decode((string) $this->resource->options($uri)->view, true);
             $this->setMeta($options, $uri);
             $allow = array_keys($options);
-            $uris[$routedUri] = [
-                'allow' => $allow,
-                'doc' => $options,
-                'href' => $path,
-                'filePath' => $this->getUriFilePath($path)
-            ];
+            $uris[$routedUri] = new Uri($allow, $options, $path, $this->getUriFilePath($path));
         }
 
         return $uris;

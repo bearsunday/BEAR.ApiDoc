@@ -90,14 +90,14 @@ final class FileResponder implements TransferInterface
     private function writeUris(ApiDoc $apiDoc, array $uris, string $docDir)
     {
         foreach ($uris as $uri) {
-            $apiDoc->body = $uri + ['uri' => ''];
+            $apiDoc->body = (array) $uri + ['uri' => ''];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
             $uriDir = $docDir . '/uri';
             if (! is_dir($uriDir) && ! mkdir($uriDir, 0777, true) && ! is_dir($uriDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $uriDir)); // @codeCoverageIgnore
             }
-            file_put_contents(sprintf('%s/%s', $docDir, $uri['filePath']), $view);
+            file_put_contents(sprintf('%s/%s', $docDir, $uri->filePath), $view);
         }
     }
 
