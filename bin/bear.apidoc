@@ -5,7 +5,9 @@
  *
  * Usage: bear.apidoc \'MyVendor\MyProject\' prod-html-app /path/to/project
  */
-use BEAR\ApiDoc\DocGen;use BEAR\AppMeta\Exception\AppNameException;
+use BEAR\ApiDoc\DocGen;
+use BEAR\ApiDoc\MarkdownTemplate;
+use BEAR\AppMeta\Exception\AppNameException;
 
 if ($argc !== 4 && $argc !== 5 ) {
     echo 'usage: bear.apidoc <MyVendor\MyProject> </path/to/app_dir> <path/to/doc_dir> [context]' . PHP_EOL;
@@ -26,7 +28,7 @@ if (! file_exists($docDir) || ! is_writable($docDir)) {
 require $autoload;
 
 try {
-    echo (new DocGen)($appName, realpath($docDir), $context);
+    echo (new DocGen)($appName, realpath($docDir), $context, MarkdownTemplate::class);
     exit(0);
 } catch (AppNameException $e) {
     throw new InvalidArgumentException(sprintf('[%s]: invalid application name (ex. "Vendor\Project"', $e->getMessage()));
