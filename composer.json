@@ -32,8 +32,15 @@
         "phpunit/phpunit": "^6.4",
         "bear/app-meta": "1.x-dev",
         "bear/package": "^1.8",
-        "bear/aura-router-module": "^2.0.5"
+        "bear/aura-router-module": "^2.0.5",
+        "leko/json-schema-faker": "dev-ref-schema"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/koriym/php-json-schema-faker"
+        }
+    ],
     "scripts": {
         "test": ["phpunit"],
         "tests": ["@cs", "phpstan analyse -l max src -c phpstan.neon --no-progress", "@test"],

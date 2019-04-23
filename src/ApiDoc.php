@@ -4,8 +4,6 @@ namespace BEAR\ApiDoc;
 use Aura\Router\Map;
 use Aura\Router\RouterContainer;
 use BEAR\AppMeta\Meta;
-use BEAR\Resource\Exception\HrefNotFoundException;
-use BEAR\Resource\Exception\ResourceNotFoundException;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
@@ -89,8 +87,13 @@ class ApiDoc extends ResourceObject
             'index' => $template->index,
             'base.html.twig' => $template->base,
             'home.html.twig' => $template->home,
+            'uri.html.twig' => $template->uri,
             'rel.html.twig' => $template->rel,
-            'schema.table.html.twig' => $template->shcemaTable
+            'allow.html.twig' => $template->allow,
+            'request.html.twig' => $template->request,
+            'link.html.twig' => $template->links,
+            'definition.html.twig' => $template->definition,
+            'schema.html.twig' => $template->shcemaTable,
         ];
         $this->ext = $template->ext;
         $index = $this->resource->get('app://self/index');
@@ -119,7 +122,7 @@ class ApiDoc extends ResourceObject
                 $twig->addExtension(new DebugExtension);
                 $twig->addExtension(new RefLinkExtention);
                 $twig->addExtension(new LinkifyExtension);
-                $ro->view = $twig->render('index', $ro->body);
+                $ro->view = $twig->render('index', (array) $ro->body);
 
                 return $ro->view;
             }
@@ -128,38 +131,48 @@ class ApiDoc extends ResourceObject
         return $this;
     }
 
-    public function onGet(string $rel) : ResourceObject
-    {
-        return $this->relPage($rel);
-    }
-
     public function transfer(TransferInterface $responder, array $server)
     {
         if (! $responder instanceof FileResponder) {
             throw new LogicException(); // @codeCoverageIgnore
         }
         $uris = $this->getUri();
-        $responder->set((string) $this->indexPage($uris), $this->schemaDir, $uris, $this->ext);
+        $rels = $this->getRelDoc($uris);
+        $responder->set($this->indexPage($uris), $this->schemaDir, $uris, $this->ext, $rels);
 
         return parent::transfer($responder, $server);
     }
 
-    private function indexPage(array $uris) : ResourceObject
+    private function getRelDoc(array $uris) : array
+    {
+        $relDoc = [];
+        foreach ($uris as $uri) {
+            foreach ($uri->doc as $method => $docItem) {
+                $links = $docItem['links'] ?? [];
+                foreach ($links as $link) {
+                    $relDoc[] = $link + ['link_from' => $uri->uriPath];
+                }
+            }
+        }
+
+        return $relDoc;
+    }
+
+    private function indexPage(array $uris) : array
     {
         $index = $this->resource->get('app://self/index')->body;
         list($curies, $links, $index) = $this->getRels($index);
         unset($index['_links']);
         $schemas = $this->getSchemas();
-        $this->body = [
+        $index += [
             'app_name' => $this->appName,
             'name' => $curies->name,
             'messages' => $index,
-            'links' => $links,
             'schemas' => $schemas,
             'uris' => $uris
         ];
 
-        return $this;
+        return $index;
     }
 
     private function getUri() : array
@@ -176,12 +189,7 @@ class ApiDoc extends ResourceObject
             $options = json_decode((string) $this->resource->options($uri)->view, true);
             $this->setMeta($options, $uri);
             $allow = array_keys($options);
-            $uris[$routedUri] = [
-                'allow' => $allow,
-                'doc' => $options,
-                'href' => $path,
-                'filePath' => $this->getUriFilePath($path)
-            ];
+            $uris[$routedUri] = new Uri($allow, $options, $path, $this->getUriFilePath($path));
         }
 
         return $uris;
@@ -212,22 +220,6 @@ class ApiDoc extends ResourceObject
         }
     }
 
-    private function schemaPage(string $id) : ResourceObject
-    {
-        $path = (string) realpath($this->schemaDir . '/' . $id);
-        $isInvalidFilePath = (strncmp($path, $this->schemaDir, strlen($this->schemaDir)) !== 0);
-        if ($isInvalidFilePath) {
-            throw new \DomainException($id);
-        }
-        $schema = (array) json_decode((string) file_get_contents($path), true);
-        $this->body = [
-            'app_name' => $this->appName,
-            'schema' => $schema
-        ];
-
-        return $this;
-    }
-
     private function getSchemas() : array
     {
         $schemas = [];
@@ -238,78 +230,10 @@ class ApiDoc extends ResourceObject
         return $schemas;
     }
 
-    private function relPage(string $rel) : ResourceObject
-    {
-        $index = $this->resource->options('app://self/')->body;
-        $namedRel = sprintf('%s:%s', $index['_links']['curies']['name'], $rel);
-        $links = $index['_links'];
-        if (! isset($links[$namedRel]['href'])) {
-            throw new ResourceNotFoundException($rel);
-        }
-        $href = $links[$namedRel]['href'];
-        $isTemplated = $this->isTemplated($links[$namedRel]);
-        $path = $isTemplated ? $this->match($href) : $href;
-        $uri = "app://self{$path}";
-        try {
-            $optionsJson = $this->resource->options($uri)->view;
-        } catch (ResourceNotFoundException $e) {
-            throw new HrefNotFoundException($href, 0, $e);
-        }
-        if ($optionsJson === null) {
-            throw new LogicException('No option view'); // @codeCoverageIgnore
-        }
-        $options = json_decode($optionsJson, true);
-        $allow = array_keys($options);
-        foreach ($options as &$option) {
-            if (isset($option['schema'])) {
-                $option['meta'] = new JsonSchema((string) json_encode($option['schema']), $uri);
-            }
-        }
-        unset($option);
-        $this->body = [
-            'app_name' => $this->appName,
-            'allow' => $allow,
-            'doc' => $options,
-            'rel' => $rel,
-            'href' => $href
-        ];
-
-        return $this;
-    }
-
-    private function isTemplated(array $links) : bool
-    {
-        return isset($links['templated']) && $links['templated'] === true;
-    }
-
-    private function match($tempaltedPath) : string
-    {
-        foreach ($this->map as $route) {
-            if ($tempaltedPath === $route->path) {
-                return $route->name;
-            }
-        }
-
-        return $tempaltedPath;
-    }
-
     private function getRels(array $index) : array
     {
         $curieLinks = $index['_links']['curies'];
         $curies = new Curies($curieLinks);
-        $links = [];
-        unset($index['_links']['curies'], $index['_links']['self']);
-        foreach ($index['_links'] as $nameRel => $value) {
-            $rel = (string) str_replace($curies->name . ':', '', $nameRel);
-            $links[$rel] = new Curie($nameRel, $value, $curies);
-        }
-
-        return [$curies, $links, $index];
-    }
-
-    private function getUriRel(array $index) : array
-    {
-        $curies = new Curies($index['_links']['curies']);
         $links = [];
         unset($index['_links']['curies'], $index['_links']['self']);
         foreach ($index['_links'] as $nameRel => $value) {

@@ -8,7 +8,6 @@ use BEAR\Resource\Module\ResourceModule;
 use BEAR\Resource\ResourceInterface;
 use PHPUnit\Framework\TestCase;
 use Ray\Di\Injector;
-use function file_put_contents;
 
 class ApiDocTest extends TestCase
 {
@@ -84,29 +83,4 @@ class ApiDocTest extends TestCase
 ';
         $this->assertSame($expected, $options);
     }
-
-    public function testGetApiDoc()
-    {
-        $ro = $this->apiDoc->onGet('user');
-        $view = (string) $ro;
-        file_put_contents(__DIR__ . '/api_doc.html', $view);
-        $this->assertContains('GET', $view);
-        $this->assertContains('POST', $view);
-        $this->assertContains('Request', $view);
-        $this->assertContains('Response', $view);
-    }
-
-    public function testRelPage()
-    {
-        $ro = $this->apiDoc->onGet('user');
-        $relHtml = (string) $ro;
-        $this->assertContains('<span>firstName, lastName, age</span>', $relHtml);
-    }
-
-//    public function testSchemaPage()
-//    {
-//        $ro = $this->apiDoc->onGet(null, 'user.json');
-//        $relHtml = (string) $ro;
-//        $this->assertContains('<h1>user.json</h1>', $relHtml);
-//    }
 }

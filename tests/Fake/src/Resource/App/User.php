@@ -14,9 +14,9 @@ class User extends ResourceObject
      * @param string $id      User ID
      * @param string $options User Options
      *
-     * @Link(rel="profile", href="/profile", method="get")
-     * @Link(rel="setting", href="/setting", method="get")
-     * @Embed(rel="blog", src="/blog/{id}")
+     * @Link(rel="person", href="/person", method="get")
+     * @Link(rel="calendar", href="/calendar", method="get")
+     * @Embed(rel="ticket", src="/ticket/{id}")
      */
     public function onGet(string $id, string $options = 'guest')
     {

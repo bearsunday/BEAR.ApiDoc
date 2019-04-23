@@ -40,14 +40,21 @@ abstract class AbstractTemplate
             <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
             <li class="breadcrumb-item">URIs</a></li>
         </ol>
-    {% include \'rel.html.twig\' %}
+        {% include \'uri.html.twig\' %}
+    {% elseif relation is defined %}
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
+            <li class="breadcrumb-item">Rels</a></li>
+            <li class="breadcrumb-item active">{{ rel }}</li>
+        </ol>
+        {% include \'rel.html.twig\' %}
     {% elseif rel is defined %}
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
             <li class="breadcrumb-item">rels</a></li>
             <li class="breadcrumb-item active">{{ rel }}</li>
         </ol>
-        {% include \'rel.html.twig\' %}
+        {% include \'uri.html.twig\' %}
     {% elseif schema is defined %}
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
@@ -55,7 +62,7 @@ abstract class AbstractTemplate
             <li class="breadcrumb-item active">{{ schema.id }}</li>
         </ol>
         <h1>{{ schema.id }}</h1>
-        {%  include \'schema.table.html.twig\' %}
+        {%  include \'schema.html.twig\' %}
         <p class="lead"><a href="/schemas/{{ schema.id }}">{{ schema.id }} raw file</a></p>
     {% else %}
         <ol class="breadcrumb">
@@ -75,8 +82,8 @@ abstract class AbstractTemplate
 {% endfor %}
 <p><b>Link Relations</b></p>
 <ul>
-    {% for link in links %}
-        <li><a href="{{ link.docUri }}">{{ link.rel }}</a> - {{ link.title}} - <span style="color: gray"><conde>{{ link.href}}</conde></span>
+    {% for rel in rels %}
+        <li><a href="../docs/rels/{{ rel }}.html">{{ rel }}</a>
     {% endfor %}
 </ul>
 <p><b>URIs</b></p>
@@ -94,9 +101,80 @@ abstract class AbstractTemplate
 ';
 
     /**
-     * Relation page content
+     * Link Relation Page
+     *
+     * @var string
      */
-    public $rel = '<h2>{{ href }}</h2>
+    public $rel = '
+    <h1>{{ relMeta.rel }} (relation)</h1>
+    <p>{{ summary }}</p>
+    <div style="height: 30px"></div>
+    <h2>{{ relMeta.method|upper }}</h2>
+    <p><code>{{ relMeta.href }}</code></p>
+    {% include \'request.html.twig\' %}';
+
+    /**
+     * URI based API page
+     */
+    public $uri = '
+ {%  include \'allow.html.twig\' %}
+ {% for method_name, method in doc %}
+    <hr style="width: 100%; color: grey; height: 1px; background-color:grey;" />
+    <a name="{{ method_name }}"><h1>{{ method_name }}</h1></a>
+    <p class="lead">{{ method.summary }}</p>
+    <h4>Request</h4>
+    {% set request = method.request %}
+    {% include \'request.html.twig\' %}
+    <h6>
+        <span class="badge badge-default">Required</span>
+        <span>{{ method.request.required | join(\', \')}}</span>
+    </h6>
+
+    {% if method.schema %}
+        <div style="height: 30px"></div>
+        <h4>Response </h4>
+    {%  endif %}
+    {%  set meta = method.meta%}
+    {%  set schema = method.schema%}
+    {%  include \'schema.html.twig\' %}
+    {%  include \'link.html.twig\' %}
+    {%  include \'definition.html.twig\' %}
+{% endfor %}
+';
+    public $definition = '    {% for definition_name, definition in schema.definitions %}
+        {% if loop.first %}
+            <div style="height: 30px">
+            </div><h5>Definitions</h5>
+        {% endif %}
+        {%  set schema = definition %}
+        {%  include \'schema.html.twig\' %}
+    {% endfor %}
+';
+
+    public $links = ' {% for link in method.links %}
+        {% if loop.first %}
+            <div style="height: 30px"></div>
+            <h4>Link</h4>
+            <table class="table table-bordered">
+                <tr>
+                    <th>rel</th>
+                    <th>href</th>
+                    <th>method</th>
+                    <th>title</th>
+                </tr>
+        {% endif %}
+                <tr>
+                <td>{{ link.rel }}</td>
+                <td>{{ link.href }}</td>
+                <td>{{ link.method|upper }}</td>
+                <td>{{ link.title }}</td>
+            </tr>
+        {% if loop.last %}
+            </table>
+        {% endif %}
+    {% endfor %}';
+
+    public $allow = '<h2>{{ href }}</h2>
         {% for method in allow %}
             {% if method == "GET" %}
                 <a href="#GET" class="badge badge-success">GET</a>
@@ -113,13 +191,13 @@ abstract class AbstractTemplate
             {% if method == "DELETE" %}
                 <a href="#DELETE" class="badge badge-warning">DELETE</a>
             {% endif %}
-        {% endfor %}
-{% for method_name, method in doc %}
-    <hr style="width: 100%; color: grey; height: 1px; background-color:grey;" />
-    <a name="{{ method_name }}"><h1>{{ method_name }}</h1></a>
-    <p class="lead">{{ method.summary }}</p>
-    <h4>Request</h4>
-    {% for param_name, parameters in method.request.parameters %}
+        {% endfor %}';
+
+    /**
+     * Request parameter table
+     */
+    public $request = '
+    {% for param_name, parameters in request.parameters %}
         {% if loop.first %}
     <table class="table table-bordered">
         <tr>
@@ -147,52 +225,8 @@ abstract class AbstractTemplate
     <div style="height: 15px"></div>
     {% endfor %}
     </table>
-    <h6>
-        <span class="badge badge-default">Required</span>
-        <span>{{ method.request.required | join(\', \')}}</span>
-    </h6>
-
-    {% if method.schema %}
-        <div style="height: 30px"></div>
-        <h4>Response </h4>
-    {%  endif %}
-    {%  set meta = method.meta%}
-    {%  set schema = method.schema%}
-    {%  include \'schema.table.html.twig\' %}
-    
-    {% for link in method.links %}
-        {% if loop.first %}
-            <div style="height: 30px"></div>
-            <h4>Link</h4>
-            <table class="table table-bordered">
-                <tr>
-                    <th>rel</th>
-                    <th>href</th>
-                    <th>method</th>
-                    <th>title</th>
-                </tr>
-        {% endif %}
-                <tr>
-                <td>{{ link.rel }}</td>
-                <td>{{ link.href }}</td>
-                <td>{{ link.method|upper }}</td>
-                <td>{{ link.title }}</td>
-            </tr>
-        {% if loop.last %}
-            </table>
-        {% endif %}
-    {% endfor %}
-    
-    {% for definition_name, definition in schema.definitions %}
-        {% if loop.first %}
-            <div style="height: 30px">
-            </div><h5>Definitions</h5>
-        {% endif %}
-        {%  set schema = definition %}
-        {%  include \'schema.table.html.twig\' %}
-    {% endfor %}
-{% endfor %}
 ';
+
     /**
      * Schema property table
      */
@@ -232,7 +266,7 @@ abstract class AbstractTemplate
             <tr>
             {% endif %}
                 {% for const_name, const_val in attribute(meta.constatins, prop_name).extra %}
-                    <td>{{ const_name }}: {{ const_val }}</td>
+                    <td>{{ const_name }}: {{ const_val | json_encode(constant(\'JSON_PRETTY_PRINT\') b-or constant(\'JSON_UNESCAPED_SLASHES\'))}}</td>
                 {% endfor %}
             {%if attribute(meta.constatins, prop_name).extra %}
             </tr>

@@ -13,10 +13,12 @@ class DocGenTest extends TestCase
     {
         (new DocGen)('FakeVendor\FakeProject', __DIR__ . '/doc/api');
         $this->assertFileExists(__DIR__ . '/doc/api/index.html');
-        $this->assertFileExists(__DIR__ . '/doc/api/rels/address.html');
+        $this->assertFileExists(__DIR__ . '/doc/api/rels/person.html');
+        $this->assertFileExists(__DIR__ . '/doc/api/rels/person.json');
         $this->assertFileExists(__DIR__ . '/doc/api/schema/address.json');
-        $this->assertContains('<li><a href="rels/ticket.html">ticket</a>', file_get_contents(__DIR__ . '/doc/api/index.html'));
-        $this->assertContains('<h2>/address</h2>', file_get_contents(__DIR__ . '/doc/api/rels/address.html'));
+        $this->assertFileExists(__DIR__ . '/doc/api/schema/address.json');
+        $this->assertContains('<h1>person', file_get_contents(__DIR__ . '/doc/api/rels/person.html'));
+        $this->assertContains(' "rel": "person"', file_get_contents(__DIR__ . '/doc/api/rels/person.json'));
         $this->assertContains('$id": "http://example.com/schema/address.json', file_get_contents(__DIR__ . '/doc/api/schema/address.json'));
     }
 

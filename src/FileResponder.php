@@ -12,6 +12,8 @@ use function file_get_contents;
 use function file_put_contents;
 use function json_decode;
 use function json_encode;
+use function strtoupper;
+use function trigger_error;
 
 final class FileResponder implements TransferInterface
 {
@@ -21,7 +23,7 @@ final class FileResponder implements TransferInterface
     private $docDir;
 
     /**
-     * @var string
+     * @var array
      */
     private $index;
 
@@ -46,12 +48,23 @@ final class FileResponder implements TransferInterface
     private $ext;
 
     /**
+     * @var array
+     */
+    private $rels;
+
+    /**
+     * @var JsonSaver
+     */
+    private $jsonSaver;
+
+    /**
      * @Named("docDir=api_doc_dir,host=json_schema_host")
      */
     public function __construct(string $docDir, string $host = '')
     {
         $this->docDir = $docDir;
         $this->host = $host;
+        $this->jsonSaver = new JsonSaver;
     }
 
     /**
@@ -63,57 +76,80 @@ final class FileResponder implements TransferInterface
         if (! $apiDoc instanceof ApiDoc) {
             throw new LogicException; // @codeCoverageIgnore
         }
-        $links = $apiDoc->body['links'];
-        $this->writeIndex($this->index, $this->docDir);
+        [$rels, $errors] = $this->writeRel($apiDoc, $this->rels, $this->docDir);
+        $this->writeIndex($apiDoc, $this->index, $this->docDir, $rels);
         $this->writeUris($apiDoc, $this->uris, $this->docDir);
-        $this->writeRel($apiDoc, $links, $this->docDir, $this->schemaDir);
+        $this->copyJson($this->docDir, $this->schemaDir);
+        foreach ($errors as $error) {
+            trigger_error($error);
+        }
 
         return null;
     }
 
-    public function set(string $index, string $schemaDir, array $uris, string $ext)
+    public function set(array $index, string $schemaDir, array $uris, string $ext, array $rels)
     {
         $this->index = $index;
         $this->schemaDir = $schemaDir;
         $this->uris = $uris;
         $this->ext = $ext;
+        $this->rels = $rels;
     }
 
-    public function writeIndex(string $index, string $docDir)
+    public function writeIndex(ApiDoc $apiDoc, array $index, string $docDir, array $rels)
     {
         if (! is_dir($docDir) && ! mkdir($docDir, 0777, true) && ! is_dir($docDir)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $docDir)); // @codeCoverageIgnore
         }
-        file_put_contents($docDir . '/index.html', $index);
+        $apiDoc->body = $index + ['rels' => $rels];
+        $apiDoc->view = null;
+        $view = (string) $apiDoc;
+        file_put_contents($docDir . '/index.html', $view);
     }
 
     private function writeUris(ApiDoc $apiDoc, array $uris, string $docDir)
     {
         foreach ($uris as $uri) {
-            $apiDoc->body = $uri + ['uri' => ''];
+            $uriDir = $docDir . '/uri';
+            $apiDoc->body = (array) $uri + ['uri' => ''];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
-            $uriDir = $docDir . '/uri';
             if (! is_dir($uriDir) && ! mkdir($uriDir, 0777, true) && ! is_dir($uriDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $uriDir)); // @codeCoverageIgnore
             }
-            file_put_contents(sprintf('%s/%s', $docDir, $uri['filePath']), $view);
+            file_put_contents(sprintf('%s/%s', $docDir, $uri->filePath), $view);
         }
     }
 
-    private function writeRel(ApiDoc $apiDoc, array $links, string $docDir, string $schemaDir)
+    private function writeRel(ApiDoc $apiDoc, array $links, string $docDir) : array
     {
-        foreach ($links as $rel => $relMeta) {
+        $errors = $rels = [];
+        foreach ($links as $relMeta) {
             $apiDoc->view = null;
-            $ro = $apiDoc->onGet($rel);
-            $view = (string) $ro;
-            $relsDir = $docDir . '/rels';
-            if (! is_dir($relsDir) && ! mkdir($relsDir, 0777, true) && ! is_dir($relsDir)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $relsDir)); // @codeCoverageIgnore
+            [$rel, $href, $method] = [$relMeta['rel'], $relMeta['href'], strtoupper($relMeta['method'])];
+            if (! isset($this->uris[$href]->doc[$method])) {
+                $errors[] = "Link target not exists rel:{$rel} href:{$href} method:{$method} from:{$relMeta['link_from']}";
+                continue;
             }
-            file_put_contents("{$relsDir}/{$rel}.html", $view);
+            // write JSON
+            $targetLink = $this->uris[$href]->doc[$method];
+            $json = [
+                'rel' => $rel,
+                'summary' => $targetLink['request'] ?? '',
+                'method' => $method,
+                'request' => $targetLink['request'] ?? [],
+                'response_schema' => $targetLink['schema'] ?? []
+            ];
+            ($this->jsonSaver)($docDir . '/rels', $rel, (object) $json);
+            // write HTML
+            $apiDoc->body = $targetLink + ['relation' => ''] + ['relMeta' => $relMeta];
+            $apiDoc->view = null;
+            $view = (string) $apiDoc;
+            file_put_contents(sprintf('%s/rels/%s.html', $docDir, $relMeta['rel']), $view);
+            $rels[] = $rel;
         }
-        $this->copyJson($docDir, $schemaDir);
+
+        return [$rels, $errors];
     }
 
     private function copyJson(string $docDir, string $schemaDir)
