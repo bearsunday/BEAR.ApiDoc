@@ -4,8 +4,6 @@ namespace BEAR\ApiDoc;
 use Aura\Router\Map;
 use Aura\Router\RouterContainer;
 use BEAR\AppMeta\Meta;
-use BEAR\Resource\Exception\HrefNotFoundException;
-use BEAR\Resource\Exception\ResourceNotFoundException;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
@@ -133,11 +131,6 @@ class ApiDoc extends ResourceObject
         return $this;
     }
 
-    public function onGet(string $rel) : ResourceObject
-    {
-        return $this->relPage($rel);
-    }
-
     public function transfer(TransferInterface $responder, array $server)
     {
         if (! $responder instanceof FileResponder) {
@@ -227,22 +220,6 @@ class ApiDoc extends ResourceObject
         }
     }
 
-    private function schemaPage(string $id) : ResourceObject
-    {
-        $path = (string) realpath($this->schemaDir . '/' . $id);
-        $isInvalidFilePath = (strncmp($path, $this->schemaDir, strlen($this->schemaDir)) !== 0);
-        if ($isInvalidFilePath) {
-            throw new \DomainException($id);
-        }
-        $schema = (array) json_decode((string) file_get_contents($path), true);
-        $this->body = [
-            'app_name' => $this->appName,
-            'schema' => $schema
-        ];
-
-        return $this;
-    }
-
     private function getSchemas() : array
     {
         $schemas = [];
@@ -253,74 +230,10 @@ class ApiDoc extends ResourceObject
         return $schemas;
     }
 
-    private function relPage(string $rel) : ResourceObject
-    {
-        $index = $this->resource->options('app://self/')->body;
-        $namedRel = sprintf('%s:%s', $index['_links']['curies']['name'], $rel);
-        $href = $links[$namedRel]['href'];
-        $isTemplated = $this->isTemplated($links[$namedRel]);
-        $path = $isTemplated ? $this->match($href) : $href;
-        $uri = "app://self{$path}";
-        try {
-            $optionsJson = $this->resource->options($uri)->view;
-        } catch (ResourceNotFoundException $e) {
-            throw new HrefNotFoundException($href, 0, $e);
-        }
-        if ($optionsJson === null) {
-            throw new LogicException('No option view'); // @codeCoverageIgnore
-        }
-        $options = json_decode($optionsJson, true);
-        $allow = array_keys($options);
-        foreach ($options as &$option) {
-            if (isset($option['schema'])) {
-                $option['meta'] = new JsonSchema((string) json_encode($option['schema']), $uri);
-            }
-        }
-        unset($option);
-        $this->body = [
-            'app_name' => $this->appName,
-            'allow' => $allow,
-            'doc' => $options,
-            'rel' => $rel,
-            'href' => $href
-        ];
-
-        return $this;
-    }
-
-    private function isTemplated(array $links) : bool
-    {
-        return isset($links['templated']) && $links['templated'] === true;
-    }
-
-    private function match($tempaltedPath) : string
-    {
-        foreach ($this->map as $route) {
-            if ($tempaltedPath === $route->path) {
-                return $route->name;
-            }
-        }
-
-        return $tempaltedPath;
-    }
-
     private function getRels(array $index) : array
     {
         $curieLinks = $index['_links']['curies'];
         $curies = new Curies($curieLinks);
-        $links = [];
-        unset($index['_links']['curies'], $index['_links']['self']);
-        foreach ($index['_links'] as $nameRel => $value) {
-            $rel = (string) str_replace($curies->name . ':', '', $nameRel);
-            $links[$rel] = new Curie($nameRel, $value, $curies);
-        }
-
-        return [$curies, $links, $index];
-    }
-
-    private function getUriRel(array $index) : array
-    {
-        $curies = new Curies($index['_links']['curies']);
         $links = [];
         unset($index['_links']['curies'], $index['_links']['self']);
         foreach ($index['_links'] as $nameRel => $value) {

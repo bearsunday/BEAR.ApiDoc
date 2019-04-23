@@ -15,7 +15,7 @@ class DocGenTest extends TestCase
         $this->assertFileExists(__DIR__ . '/doc/api/index.html');
         $this->assertFileExists(__DIR__ . '/doc/api/rels/address.html');
         $this->assertFileExists(__DIR__ . '/doc/api/schema/address.json');
-        $this->assertContains('<li><a href="rels/ticket.html">ticket</a>', file_get_contents(__DIR__ . '/doc/api/index.html'));
+        $this->assertContains('<li><a href="../docs/rels/person.html">person</a>', file_get_contents(__DIR__ . '/doc/api/index.html'));
         $this->assertContains('<h2>/address</h2>', file_get_contents(__DIR__ . '/doc/api/rels/address.html'));
         $this->assertContains('$id": "http://example.com/schema/address.json', file_get_contents(__DIR__ . '/doc/api/schema/address.json'));
     }
