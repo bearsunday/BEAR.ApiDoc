@@ -76,7 +76,7 @@ final class FileResponder implements TransferInterface
         if (! $apiDoc instanceof ApiDoc) {
             throw new LogicException; // @codeCoverageIgnore
         }
-        [$rels, $errors] = $this->writeRel($apiDoc, $this->rels, $this->docDir);
+        [$rels, $errors] = $this->writeRels($apiDoc, $this->rels, $this->docDir);
         $this->writeIndex($apiDoc, $this->index, $this->docDir, $rels);
         $this->writeUris($apiDoc, $this->uris, $this->docDir);
         $this->copyJson($this->docDir, $this->schemaDir);
@@ -101,7 +101,7 @@ final class FileResponder implements TransferInterface
         if (! is_dir($docDir) && ! mkdir($docDir, 0777, true) && ! is_dir($docDir)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $docDir)); // @codeCoverageIgnore
         }
-        $apiDoc->body = $index + ['rels' => $rels];
+        $apiDoc->body = $index + ['rels' => $rels, 'page' => 'index'];
         $apiDoc->view = null;
         $view = (string) $apiDoc;
         file_put_contents($docDir . '/index.html', $view);
@@ -111,7 +111,7 @@ final class FileResponder implements TransferInterface
     {
         foreach ($uris as $uri) {
             $uriDir = $docDir . '/uri';
-            $apiDoc->body = (array) $uri + ['uri' => ''];
+            $apiDoc->body = (array) $uri + ['page' => 'uri'];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
             if (! is_dir($uriDir) && ! mkdir($uriDir, 0777, true) && ! is_dir($uriDir)) {
@@ -121,7 +121,7 @@ final class FileResponder implements TransferInterface
         }
     }
 
-    private function writeRel(ApiDoc $apiDoc, array $links, string $docDir) : array
+    private function writeRels(ApiDoc $apiDoc, array $links, string $docDir) : array
     {
         $errors = $rels = [];
         foreach ($links as $relMeta) {
@@ -142,7 +142,7 @@ final class FileResponder implements TransferInterface
             ];
             ($this->jsonSaver)($docDir . '/rels', $rel, (object) $json);
             // write HTML
-            $apiDoc->body = $targetLink + ['relation' => ''] + ['relMeta' => $relMeta];
+            $apiDoc->body = $targetLink + ['page' => 'rel'] + ['relMeta' => $relMeta];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
             file_put_contents(sprintf('%s/rels/%s.html', $docDir, $relMeta['rel']), $view);

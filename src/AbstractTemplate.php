@@ -29,33 +29,29 @@ abstract class AbstractTemplate
 </html>
 ';
     /**
-     * Index page content
+     * Root Page
      */
     public $index = '{% extends \'base.html.twig\' %}
 {% block title %}{{ rel }}{% endblock %}
 {% block content %}
-
-    {% if uri is defined %}
+    {% if page == "index" %}
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">API Doc</li>
+        </ol>
+        {% include \'home.html.twig\' %}
+    {% elseif page == "uri" %}
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
             <li class="breadcrumb-item">URIs</a></li>
         </ol>
         {% include \'uri.html.twig\' %}
-    {% elseif relation is defined %}
+    {% elseif page == "rel" %}
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
             <li class="breadcrumb-item">Rels</a></li>
-            <li class="breadcrumb-item active">{{ rel }}</li>
         </ol>
         {% include \'rel.html.twig\' %}
-    {% elseif rel is defined %}
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
-            <li class="breadcrumb-item">rels</a></li>
-            <li class="breadcrumb-item active">{{ rel }}</li>
-        </ol>
-        {% include \'uri.html.twig\' %}
-    {% elseif schema is defined %}
+    {% elseif page == "schema" %}
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../index.html">API Doc</a></li>
             <li class="breadcrumb-item">schemas</a></li>
@@ -65,10 +61,7 @@ abstract class AbstractTemplate
         {%  include \'schema.html.twig\' %}
         <p class="lead"><a href="/schemas/{{ schema.id }}">{{ schema.id }} raw file</a></p>
     {% else %}
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item active">API Doc</li>
-        </ol>
-        {% include \'home.html.twig\' %}
+        Unknown page runtime exception !
     {% endif %}
 {% endblock %}
 ';
@@ -117,6 +110,7 @@ abstract class AbstractTemplate
      * URI based API page
      */
     public $uri = '
+ <h1>{{ uriPath }}</h1>
  {%  include \'allow.html.twig\' %}
  {% for method_name, method in doc %}
     <hr style="width: 100%; color: grey; height: 1px; background-color:grey;" />
