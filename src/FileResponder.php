@@ -60,11 +60,12 @@ final class FileResponder implements TransferInterface
     /**
      * @Named("docDir=api_doc_dir,host=json_schema_host")
      */
-    public function __construct(string $docDir, string $host = '')
+    public function __construct(string $docDir, string $host, AbstractTemplate $template)
     {
         $this->docDir = $docDir;
         $this->host = $host;
         $this->jsonSaver = new JsonSaver;
+        $this->ext = $template->ext;
     }
 
     /**
@@ -104,7 +105,7 @@ final class FileResponder implements TransferInterface
         $apiDoc->body = $index + ['rels' => $rels, 'page' => 'index'];
         $apiDoc->view = null;
         $view = (string) $apiDoc;
-        file_put_contents($docDir . '/index.html', $view);
+        file_put_contents($docDir . '/index.' . $this->ext, $view);
     }
 
     private function writeUris(ApiDoc $apiDoc, array $uris, string $docDir)
@@ -117,7 +118,8 @@ final class FileResponder implements TransferInterface
             if (! is_dir($uriDir) && ! mkdir($uriDir, 0777, true) && ! is_dir($uriDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $uriDir)); // @codeCoverageIgnore
             }
-            file_put_contents(sprintf('%s/%s', $docDir, $uri->filePath), $view);
+            $file = sprintf('%s/uri%s.%s', $docDir, $uri->uriPath, $this->ext);
+            file_put_contents($file, $view);
         }
     }
 
@@ -145,7 +147,7 @@ final class FileResponder implements TransferInterface
             $apiDoc->body = $targetLink + ['page' => 'rel'] + ['relMeta' => $relMeta];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
-            file_put_contents(sprintf('%s/rels/%s.html', $docDir, $relMeta['rel']), $view);
+            file_put_contents(sprintf('%s/rels/%s.%s', $docDir, $relMeta['rel'], $this->ext), $view);
             $rels[] = $rel;
         }
 
