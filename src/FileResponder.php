@@ -121,9 +121,6 @@ final class FileResponder implements TransferInterface
         }
     }
 
-    /**
-     * @return string[]
-     */
     private function writeRel(ApiDoc $apiDoc, array $links, string $docDir) : array
     {
         $errors = $rels = [];
