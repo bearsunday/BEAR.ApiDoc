@@ -102,7 +102,11 @@ final class FileResponder implements TransferInterface
         if (! is_dir($docDir) && ! mkdir($docDir, 0777, true) && ! is_dir($docDir)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $docDir)); // @codeCoverageIgnore
         }
-        $apiDoc->body = $index + ['rels' => $rels, 'page' => 'index'];
+        $apiDoc->body = $index + [
+            'rels' => $rels,
+            'page' => 'index',
+            'ext' => $this->ext
+        ];
         $apiDoc->view = null;
         $view = (string) $apiDoc;
         file_put_contents($docDir . '/index.' . $this->ext, $view);
@@ -112,7 +116,10 @@ final class FileResponder implements TransferInterface
     {
         foreach ($uris as $uri) {
             $uriDir = $docDir . '/uri';
-            $apiDoc->body = (array) $uri + ['page' => 'uri'];
+            $apiDoc->body = (array) $uri + [
+                'page' => 'uri',
+                'ext' => $this->ext
+            ];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
             if (! is_dir($uriDir) && ! mkdir($uriDir, 0777, true) && ! is_dir($uriDir)) {
@@ -144,7 +151,11 @@ final class FileResponder implements TransferInterface
             ];
             ($this->jsonSaver)($docDir . '/rels', $rel, (object) $json);
             // write HTML
-            $apiDoc->body = $targetLink + ['page' => 'rel'] + ['relMeta' => $relMeta];
+            $apiDoc->body = $targetLink + [
+                'page' => 'rel',
+                'relMeta' => $relMeta,
+                'ext' => $this->ext
+            ];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
             file_put_contents(sprintf('%s/rels/%s.%s', $docDir, $relMeta['rel'], $this->ext), $view);

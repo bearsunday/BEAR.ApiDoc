@@ -76,7 +76,7 @@ abstract class AbstractTemplate
 <p><b>Link Relations</b></p>
 <ul>
     {% for rel in rels %}
-        <li><a href="../docs/rels/{{ rel }}.html">{{ rel }}</a>
+        <li><a href="../docs/rels/{{ rel }}.{{ ext }}">{{ rel }}</a>
     {% endfor %}
 </ul>
 <p><b>URIs</b></p>
