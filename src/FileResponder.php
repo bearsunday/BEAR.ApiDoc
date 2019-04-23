@@ -60,11 +60,12 @@ final class FileResponder implements TransferInterface
     /**
      * @Named("docDir=api_doc_dir,host=json_schema_host")
      */
-    public function __construct(string $docDir, string $host = '')
+    public function __construct(string $docDir, string $host, AbstractTemplate $template)
     {
         $this->docDir = $docDir;
         $this->host = $host;
         $this->jsonSaver = new JsonSaver;
+        $this->ext = $template->ext;
     }
 
     /**
@@ -101,23 +102,31 @@ final class FileResponder implements TransferInterface
         if (! is_dir($docDir) && ! mkdir($docDir, 0777, true) && ! is_dir($docDir)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $docDir)); // @codeCoverageIgnore
         }
-        $apiDoc->body = $index + ['rels' => $rels, 'page' => 'index'];
+        $apiDoc->body = $index + [
+            'rels' => $rels,
+            'page' => 'index',
+            'ext' => $this->ext
+        ];
         $apiDoc->view = null;
         $view = (string) $apiDoc;
-        file_put_contents($docDir . '/index.html', $view);
+        file_put_contents($docDir . '/index.' . $this->ext, $view);
     }
 
     private function writeUris(ApiDoc $apiDoc, array $uris, string $docDir)
     {
         foreach ($uris as $uri) {
             $uriDir = $docDir . '/uri';
-            $apiDoc->body = (array) $uri + ['page' => 'uri'];
+            $apiDoc->body = (array) $uri + [
+                'page' => 'uri',
+                'ext' => $this->ext
+            ];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
             if (! is_dir($uriDir) && ! mkdir($uriDir, 0777, true) && ! is_dir($uriDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $uriDir)); // @codeCoverageIgnore
             }
-            file_put_contents(sprintf('%s/%s', $docDir, $uri->filePath), $view);
+            $file = sprintf('%s/uri%s.%s', $docDir, $uri->uriPath, $this->ext);
+            file_put_contents($file, $view);
         }
     }
 
@@ -142,10 +151,14 @@ final class FileResponder implements TransferInterface
             ];
             ($this->jsonSaver)($docDir . '/rels', $rel, (object) $json);
             // write HTML
-            $apiDoc->body = $targetLink + ['page' => 'rel'] + ['relMeta' => $relMeta];
+            $apiDoc->body = $targetLink + [
+                'page' => 'rel',
+                'relMeta' => $relMeta,
+                'ext' => $this->ext
+            ];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
-            file_put_contents(sprintf('%s/rels/%s.html', $docDir, $relMeta['rel']), $view);
+            file_put_contents(sprintf('%s/rels/%s.%s', $docDir, $relMeta['rel'], $this->ext), $view);
             $rels[] = $rel;
         }
 

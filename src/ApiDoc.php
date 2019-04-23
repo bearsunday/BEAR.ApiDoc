@@ -74,7 +74,7 @@ class ApiDoc extends ResourceObject
     public function __construct(
         ResourceInterface $resource,
         string $schemaDir,
-        Template $template,
+        AbstractTemplate $template,
         $routerContainer,
         string $routerFile = null
     ) {
