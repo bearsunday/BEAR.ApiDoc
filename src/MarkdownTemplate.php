@@ -65,6 +65,7 @@ EOT;
     public $uri = /* @lang Markdown */ <<< 'EOT'
 # {{ uriPath }}
 {% for method_name, method in doc %}
+
 ## {{ method_name }}
 
 {{ method.summary }}
@@ -72,7 +73,6 @@ EOT;
 ### Request
     {% set request = method.request %}
     {% include 'request.html.twig' %}
-
 
 ### Response
 
@@ -111,7 +111,7 @@ EOT;
 | Name  | Type  | Description | Default | Required | 
 |-------|-------|-------------|---------|----------|          
 {% endif %}
-| {{ param_name }} | {{ parameters.type }} | {{ parameters.description }} | {{ parameters.default }} | {% if param_name in method.request.required %}Required{% else %}Optional{% endif %}
+| {{ param_name }} | {{ parameters.type }} | {{ parameters.description }} | {{ parameters.default }} | {% if param_name in request.required %} Required {% else %} Optional {% endif %}
 {% else %}
 
 (No parameters required.)
@@ -128,7 +128,6 @@ EOT;
 {% for prop_name, prop in schema.properties %}
 | {{ prop_name }} | {{ prop.type }} | {{ prop.description }} |  {{ prop.default }} | {% if prop_name in schema.required %} Required {% else %} Optional {% endif %} | 
 {% endfor %}
-[{{ meta.id }}](../{{ meta.docHref }})
 {% endif %}
 
 {% if schema.type == 'array' %}
@@ -143,8 +142,12 @@ EOT;
 {% endif %}
 
 {% if schema.type is defined %}
-* **Type** {{ schema.type }}</span>
+* **type** {{ schema.type }}</span>
+{% if meta.id is defined %}
+* **schema** [{{ meta.id }}](../{{ meta.docHref }})</span>
 {% endif %}
+{% endif %}
+
 EOT;
 
     public $ext = 'md';
