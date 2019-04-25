@@ -21,10 +21,10 @@ final class ConstrainExtention extends AbstractExtension
     {
         $consrains = [];
         foreach ($prop as $key => $item) {
-            if ($key[0] === '$' || $key === 'type') {
+            if ($key[0] === '$' || $key === 'type' || $key = 'items') {
                 continue;
             }
-            $consrainVal = is_array($item) ? json_encode($item) : (string) $item;
+            $consrainVal = is_array($item) ? json_encode($item, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : (string) $item;
             $consrains[] = sprintf('%s:%s', $key, $consrainVal);
         }
 
