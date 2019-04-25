@@ -14,6 +14,7 @@ use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
+use Twig\Extensions\TextExtension;
 use Twig\Loader\ArrayLoader;
 use function array_keys;
 use function explode;
@@ -122,6 +123,9 @@ class ApiDoc extends ResourceObject
                 $twig->addExtension(new DebugExtension);
                 $twig->addExtension(new RefLinkExtention);
                 $twig->addExtension(new LinkifyExtension);
+                $twig->addExtension(new PropTypeExtention);
+                $twig->addExtension(new ConstrainExtention);
+                $twig->addExtension(new TextExtension);
                 $ro->view = $twig->render('index', (array) $ro->body);
 
                 return $ro->view;
