@@ -185,9 +185,6 @@ class ApiDoc extends ResourceObject
         $meta = new Meta($this->appName, 'app');
         foreach ($meta->getGenerator('app') as $resMeta) {
             $path = $resMeta->uriPath;
-            if ($path === '/index') {
-                continue;
-            }
             $routedUri = $this->getRoutedUri($path);
             $uri = 'app://self' . $path;
             $options = json_decode((string) $this->resource->options($uri)->view, true);
