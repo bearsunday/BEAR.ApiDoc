@@ -25,7 +25,8 @@
         "ext-json": "*",
         "twig/twig": "^2.5",
         "twig/extensions": "^1.5",
-        "manuelodelain/linkify-twig-extension": "^1.0"
+        "manuelodelain/linkify-twig-extension": "^1.0",
+        "koriym/alps": "dev-master"
     },
     "require-dev": {
         "bear/resource": "1.x-dev",

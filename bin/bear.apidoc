@@ -8,27 +8,28 @@
 use BEAR\ApiDoc\DocGen;
 use BEAR\ApiDoc\MarkdownTemplate;
 use BEAR\AppMeta\Exception\AppNameException;
+use Koriym\Alps\Alps;
+use Koriym\Alps\NullAlps;
+use Symfony\Component\DependencyInjection\Alias;
 
-if ($argc !== 4 && $argc !== 5 ) {
-    echo 'usage: bear.apidoc <MyVendor\MyProject> </path/to/app_dir> <path/to/doc_dir> [context]' . PHP_EOL;
+if ($argc !== 4 && $argc !== 5) {
+    echo 'usage: bear.apidoc <MyVendor\MyProject> </path/to/app_dir> <path/to/doc_dir> [alps_file]' . PHP_EOL;
     exit(1);
 }
-list(, $appName, $appDir, $docDir) = $argv;
-$context = ($argc === 4) ? 'app' : $argv[4];
-
+[, $appName, $appDir, $docDir] = $argv;
 $autoload = $appDir . '/vendor/autoload.php';
 if (! file_exists($autoload)) {
-    throw new InvalidArgumentException(sprintf('[%s]: invalid application directory', $appDir));
+    throw new InvalidArgumentException($autoload);
 }
+require $autoload;
 
 if (! file_exists($docDir) || ! is_writable($docDir)) {
     throw new InvalidArgumentException(sprintf('[%s]: invalid documentation directory', $docDir));
 }
-
-require $autoload;
+$alps = ($argc === 5) ? new Alps(realpath(getcwd() . '/' . $argv[4])) : new NullAlps;
 
 try {
-    echo (new DocGen)($appName, realpath($docDir), $context, MarkdownTemplate::class);
+    echo (new DocGen)($appName, realpath($docDir), 'app', MarkdownTemplate::class, $alps);
     exit(0);
 } catch (AppNameException $e) {
     throw new InvalidArgumentException(sprintf('[%s]: invalid application name (ex. "Vendor\Project"', $e->getMessage()));

@@ -4,6 +4,8 @@ namespace BEAR\ApiDoc;
 use BEAR\AppMeta\Meta;
 use BEAR\Package\AppInjector;
 use BEAR\Resource\NullRenderer;
+use Koriym\Alps\AbstractAlps;
+use Koriym\Alps\NullAlps;
 
 final class DocGen
 {
@@ -17,14 +19,16 @@ final class DocGen
         string $appName,
         string $docDir,
         string $context = 'app',
-        string $templateClass = Template::class
+        string $templateClass = Template::class,
+        AbstractAlps $alps = null
     ) : string {
         $meta = new Meta($appName, $context);
         $injector = new AppInjector($appName, $context, $meta);
         $injector->clear();
         $responderModule = new FileResponderModule($docDir, $templateClass);
+        $alps = $alps ?? new NullAlps;
         /** @var ApiDoc $apiDoc */
-        $apiDoc = $injector->getOverrideInstance(new ApiDocModule($responderModule), ApiDoc::class);
+        $apiDoc = $injector->getOverrideInstance(new ApiDocModule($alps, $responderModule), ApiDoc::class);
         /** @var FileResponder $responder */
         $responder = $injector->getOverrideInstance($responderModule, FileResponder::class);
         // set twig renderer by self

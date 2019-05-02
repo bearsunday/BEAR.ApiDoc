@@ -2,7 +2,6 @@
 namespace BEAR\ApiDoc;
 
 use Aura\Router\RouterContainer;
-use BEAR\Resource\JsonRenderer;
 use BEAR\Resource\Module\JsonSchemaModule;
 use BEAR\Resource\Module\ResourceModule;
 use BEAR\Resource\ResourceInterface;
@@ -37,9 +36,6 @@ class ApiDocTest extends TestCase
             ),
             $classDir
         ))->getInstance(ResourceInterface::class);
-        $apiDoc = new ApiDoc($resource, $schemaDir, new Template, $routerContainer);
-        $apiDoc->setRenderer(new JsonRenderer());
-        $this->apiDoc = $apiDoc;
     }
 
     public function testOptions()

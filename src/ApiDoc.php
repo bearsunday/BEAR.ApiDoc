@@ -8,6 +8,7 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
+use Koriym\Alps\AbstractAlps;
 use LogicException;
 use manuelodelain\Twig\Extension\LinkifyExtension;
 use Ray\Di\Di\Inject;
@@ -70,12 +71,18 @@ class ApiDoc extends ResourceObject
     private $ext;
 
     /**
+     * @var AbstractAlps
+     */
+    private $alps;
+
+    /**
      * @Named("schemaDir=json_schema_dir,routerContainer=router_container,routerFile=aura_router_file")
      */
     public function __construct(
         ResourceInterface $resource,
         string $schemaDir,
         AbstractTemplate $template,
+        AbstractAlps $alps,
         $routerContainer,
         string $routerFile = null
     ) {
@@ -100,6 +107,7 @@ class ApiDoc extends ResourceObject
         $index = $this->resource->get('app://self/index');
         $names = explode('\\', get_class($index));
         $this->appName = sprintf('%s\%s', $names[0], $names[1]);
+        $this->alps = $alps;
     }
 
     /**
@@ -108,12 +116,21 @@ class ApiDoc extends ResourceObject
     public function setRenderer(RenderInterface $renderer)
     {
         unset($renderer);
-        $this->renderer = new class($this->template) implements RenderInterface {
+        $this->renderer = new class($this->template, $this->alps) implements RenderInterface {
+            /**
+             * @var array
+             */
             private $template;
 
-            public function __construct(array $template)
+            /**
+             * @var AbstractAlps
+             */
+            private $alps;
+
+            public function __construct(array $template, AbstractAlps $alps)
             {
                 $this->template = $template;
+                $this->alps = $alps;
             }
 
             public function render(ResourceObject $ro)
@@ -126,6 +143,7 @@ class ApiDoc extends ResourceObject
                 $twig->addExtension(new PropTypeExtention);
                 $twig->addExtension(new ConstrainExtention);
                 $twig->addExtension(new TextExtension);
+                $twig->addExtension(new DescExtension($this->alps));
                 $ro->view = $twig->render('index', (array) $ro->body);
 
                 return $ro->view;
