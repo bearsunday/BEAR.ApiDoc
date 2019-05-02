@@ -113,7 +113,7 @@ EOT;
 | Name  | Type  | Description | Default | Required | 
 |-------|-------|-------------|---------|----------|          
 {% endif %}
-| {{ param_name }} | {{ parameters.type }} | {{ parameters.description }} | {{ parameters.default }} | {% if param_name in request.required %} Required {% else %} Optional {% endif %}
+| {{ param_name }} | {{ parameters.type }} | {{ parameters.description | desc(param_name) | raw }} | {{ parameters.default }} | {% if param_name in request.required %} Required {% else %} Optional {% endif %}
 {% else %}
 
 (No parameters required.)
@@ -133,7 +133,7 @@ EOT;
 | Name  | Type  | Description | Default | Required | Constrain |
 |-------|-------|-------------|---------|----------|-----------| 
 {% for prop_name, prop in schema.properties %}
-| {{ prop_name }} | {{ prop.type | default('') | prop_type(prop, meta.docHref) }} | {{ prop.description }} |  {{ prop.default }} | {% if prop_name in schema.required %} Required {% else %} Optional {% endif %} | {{ constrain(prop) | truncate(32, false, '..')}} |
+| {{ prop_name }} | {{ prop.type | default('') | prop_type(prop, meta.docHref) }} | {{ prop.description | desc(prop_name, prop, schema) | raw }} |  {{ prop.default }} | {% if prop_name in schema.required %} Required {% else %} Optional {% endif %} | {{ constrain(prop) | truncate(32, false, '..')}} |
 {% endfor %}
 {% endif %}
 

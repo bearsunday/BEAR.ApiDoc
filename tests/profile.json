@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/koriym/spec/schema/schemas/alps.json",
+  "alps": {
+    "doc": {
+      "value": "ALPS Profile"
+    },
+    "version": "1.0",
+    "descriptor": [
+      {
+        "id": "extended-address",
+        "type": "semantic",
+        "doc": {
+          "value": "Extended Address"
+        }
+      },
+      {
+        "id": "id",
+        "type": "semantic",
+        "def": "https://schema.org/identifier"
+      },
+      {
+        "id": "link-list",
+        "type": "safe",
+        "name": "Link List",
+        "rt": "LinkList"
+      },
+      {
+        "id": "link-item",
+        "type": "safe",
+        "name": "Link Item",
+        "descriptor": [
+          {
+            "href": "#id"
+          }
+        ]
+      }
+    ]
+  }
+}
+

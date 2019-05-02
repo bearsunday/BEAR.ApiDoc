@@ -2,7 +2,6 @@
 namespace BEAR\ApiDoc;
 
 use Aura\Router\RouterContainer;
-use BEAR\Resource\JsonRenderer;
 use BEAR\Resource\Module\JsonSchemaModule;
 use BEAR\Resource\Module\ResourceModule;
 use BEAR\Resource\ResourceInterface;
