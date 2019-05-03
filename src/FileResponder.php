@@ -124,9 +124,7 @@ final class FileResponder implements TransferInterface
             ];
             $apiDoc->view = null;
             $view = (string) $apiDoc;
-            if (! is_dir($uriDir) && ! mkdir($uriDir, 0777, true) && ! is_dir($uriDir)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $uriDir)); // @codeCoverageIgnore
-            }
+            $this->mkdir($uriDir);
             $file = sprintf('%s/uri%s.%s', $docDir, $uri->uriPath, $this->ext);
             file_put_contents($file, $view);
         }
@@ -182,10 +180,7 @@ final class FileResponder implements TransferInterface
             if (isset($json->{'$id'})) {
                 $json->{'$id'} = $this->host . $json->{'$id'};
             }
-            $dir = dirname($dest);
-            if (! is_dir($dir) && ! mkdir($dir, 0777, true) && ! is_dir($dir)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
-            }
+            $this->mkdir(dirname($dest));
             file_put_contents($dest, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
         }
     }
@@ -204,5 +199,12 @@ final class FileResponder implements TransferInterface
                 "/^.+\\.{$ext}/",
                 \RecursiveRegexIterator::MATCH
             );
+    }
+
+    private function mkdir(string $uriDir) : void
+    {
+        if (! is_dir($uriDir) && ! mkdir($uriDir, 0777, true) && ! is_dir($uriDir)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $uriDir)); // @codeCoverageIgnore
+        }
     }
 }
