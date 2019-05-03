@@ -8,7 +8,7 @@ use function is_array;
 use function json_encode;
 use function sprintf;
 
-final class ConstrainExtention extends AbstractExtension
+final class ConstrainExtension extends AbstractExtension
 {
     public function getFunctions()
     {

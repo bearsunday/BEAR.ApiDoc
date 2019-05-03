@@ -5,7 +5,7 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use function str_replace;
 
-final class PropTypeExtention extends AbstractExtension
+final class PropTypeExtension extends AbstractExtension
 {
     public function getFilters()
     {

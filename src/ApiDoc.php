@@ -138,10 +138,10 @@ class ApiDoc extends ResourceObject
                 $ro->headers['content-type'] = 'text/html; charset=utf-8';
                 $twig = new Environment(new ArrayLoader($this->template), ['debug' => true]);
                 $twig->addExtension(new DebugExtension);
-                $twig->addExtension(new RefLinkExtention);
+                $twig->addExtension(new RefLinkExtension);
                 $twig->addExtension(new LinkifyExtension);
-                $twig->addExtension(new PropTypeExtention);
-                $twig->addExtension(new ConstrainExtention);
+                $twig->addExtension(new PropTypeExtension);
+                $twig->addExtension(new ConstrainExtension);
                 $twig->addExtension(new TextExtension);
                 $twig->addExtension(new DescExtension($this->alps));
                 $ro->view = $twig->render('index', (array) $ro->body);
