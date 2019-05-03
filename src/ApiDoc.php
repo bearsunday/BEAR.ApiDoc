@@ -99,6 +99,7 @@ class ApiDoc extends ResourceObject
             'rel.html.twig' => $template->rel,
             'allow.html.twig' => $template->allow,
             'request.html.twig' => $template->request,
+            'embed.html.twig' => $template->embed,
             'link.html.twig' => $template->links,
             'definition.html.twig' => $template->definition,
             'schema.html.twig' => $template->shcemaTable,
@@ -116,7 +117,7 @@ class ApiDoc extends ResourceObject
     public function setRenderer(RenderInterface $renderer)
     {
         unset($renderer);
-        $this->renderer = new class($this->template, $this->alps) implements RenderInterface {
+        $this->renderer = new class($this->template, $this->alps, $this->map) implements RenderInterface {
             /**
              * @var array
              */
@@ -127,10 +128,16 @@ class ApiDoc extends ResourceObject
              */
             private $alps;
 
-            public function __construct(array $template, AbstractAlps $alps)
+            /**
+             * @var iterable
+             */
+            private $map;
+
+            public function __construct(array $template, AbstractAlps $alps, iterable $map)
             {
                 $this->template = $template;
                 $this->alps = $alps;
+                $this->map = $map;
             }
 
             public function render(ResourceObject $ro)
@@ -144,6 +151,7 @@ class ApiDoc extends ResourceObject
                 $twig->addExtension(new ConstrainExtension);
                 $twig->addExtension(new TextExtension);
                 $twig->addExtension(new DescExtension($this->alps));
+                $twig->addExtension(new RevRouteExtension($this->map));
                 $ro->view = $twig->render('index', (array) $ro->body);
 
                 return $ro->view;

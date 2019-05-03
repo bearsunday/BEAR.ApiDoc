@@ -79,6 +79,7 @@ EOT;
 {%  set schema = method.schema %}
 
 {%  include 'schema.html.twig' %}
+{%  include 'embed.html.twig' %}
 {%  include 'link.html.twig' %}
 {% endfor %}
 
@@ -87,6 +88,17 @@ EOT;
     public $definition =  /* @lang Markdown */ <<< 'EOT'
 {% for definition_name, definition in schema.definitions %}
     {% if loop.first %}
+EOT;
+
+    public $embed = /* @lang Markdown */ <<< 'EOT'
+{% for embed in method.embed %}
+{% if loop.first %}
+
+### Embedded
+
+{% endif %}
+ * {{ embed.rel}} - [{{ embed.src }}](../uri{{ embed.src | rev_route }}.{{ ext }})
+{% endfor %}
 EOT;
 
     public $links =  /* @lang Markdown */ <<< 'EOT'

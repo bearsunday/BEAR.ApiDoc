@@ -329,5 +329,6 @@ abstract class AbstractTemplate
     </div>
 {% endif %}
 ';
+    public $embed;
     public $ext = 'html';
 }
