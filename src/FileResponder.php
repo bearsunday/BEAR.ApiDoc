@@ -8,8 +8,10 @@ use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
 use LogicException;
 use Ray\Di\Di\Named;
+use function dirname;
 use function file_get_contents;
 use function file_put_contents;
+use function is_dir;
 use function json_decode;
 use function json_encode;
 use function strtoupper;
@@ -171,7 +173,7 @@ final class FileResponder implements TransferInterface
         if (! is_dir($destDir) && ! mkdir($destDir, 0777, true) && ! is_dir($destDir)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $destDir));
         }
-        foreach (glob($schemaDir . '/*.json') as $jsonFile) {
+        foreach ($this->files($schemaDir, 'json') as $jsonFile) {
             $dest = str_replace($schemaDir, $destDir, $jsonFile);
             $json = json_decode((string) file_get_contents($jsonFile));
             if (isset($json->id)) {
@@ -180,7 +182,27 @@ final class FileResponder implements TransferInterface
             if (isset($json->{'$id'})) {
                 $json->{'$id'} = $this->host . $json->{'$id'};
             }
+            $dir = dirname($dest);
+            if (! is_dir($dir) && ! mkdir($dir, 0777, true) && ! is_dir($dir)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
+            }
             file_put_contents($dest, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
         }
+    }
+
+    private function files(string $dir, string $ext) : \Iterator
+    {
+        return
+            new \RegexIterator(
+                new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator(
+                        $dir,
+                        \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::SKIP_DOTS
+                    ),
+                    \RecursiveIteratorIterator::LEAVES_ONLY
+                ),
+                "/^.+\\.{$ext}/",
+                \RecursiveRegexIterator::MATCH
+            );
     }
 }
