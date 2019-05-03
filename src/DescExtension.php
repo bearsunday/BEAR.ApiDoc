@@ -6,7 +6,6 @@ use Koriym\Alps\Alps;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use function implode;
-use function json_encode;
 use function sprintf;
 
 final class DescExtension extends AbstractExtension
@@ -49,9 +48,7 @@ final class DescExtension extends AbstractExtension
             return $this->getDescription($semantic, 'name');
         }
         if ($semanticName[0] !== '_' && $this->alps instanceof Alps) {
-            $id = $schema['$id'] ?? json_encode($schema);
-            $msg = sprintf('Missing semantic name|doc [%s] in [%s]', $semanticName, $id);
-            error_log($msg);
+            $this->errorLog((string) $semanticName, $schema);
         }
 
         return '';
@@ -68,5 +65,12 @@ final class DescExtension extends AbstractExtension
         }
 
         return implode(', ', $names);
+    }
+
+    private function errorLog(string $semanticName, $schema) : void
+    {
+        $id = $schema['$id'] ?? '';
+        $msg = $id ? sprintf('Missing semantic doc [%s] in [%s]', $semanticName, $id) : sprintf('Missing semantic doc [$%s]', $semanticName);
+        error_log($msg);
     }
 }
