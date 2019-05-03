@@ -6,7 +6,7 @@ use Twig\TwigFilter;
 use function preg_replace;
 use function strpos;
 
-final class RefLinkExtention extends AbstractExtension
+final class RefLinkExtension extends AbstractExtension
 {
     public function getFilters()
     {
