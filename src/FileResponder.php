@@ -136,12 +136,14 @@ final class FileResponder implements TransferInterface
         foreach ($links as $relMeta) {
             $apiDoc->view = null;
             [$rel, $href, $method] = [$relMeta['rel'], $relMeta['href'], strtoupper($relMeta['method'])];
-            if (! isset($this->uris[$href]->doc[$method])) {
-                $errors[] = "Link target not exists rel:{$rel} href:{$href} method:{$method} from:{$relMeta['link_from']}";
+            $path = uri_template($href, []);
+            unset($href);
+            if (! isset($this->uris[$path]->doc[$method])) {
+                $errors[] = "Link target not exists rel:{$rel} href:{$path} method:{$method} from:{$relMeta['link_from']}";
                 continue;
             }
             // write JSON
-            $targetLink = $this->uris[$href]->doc[$method];
+            $targetLink = $this->uris[$path]->doc[$method];
             $json = [
                 'rel' => $rel,
                 'summary' => $targetLink['request'] ?? '',
