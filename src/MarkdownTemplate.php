@@ -68,11 +68,7 @@ EOT;
 
 ## {{ method_name }}
 
-{{ method.summary }}
-
-{{ method.description }}
-
-### Request
+{{ method.summary | add_nl}}{{ method.description | add_nl}}### Request
     {% set request = method.request %}
     {% include 'request.html.twig' %}
 
