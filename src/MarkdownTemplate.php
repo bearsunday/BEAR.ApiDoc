@@ -70,6 +70,8 @@ EOT;
 
 {{ method.summary }}
 
+{{ method.description }}
+
 ### Request
     {% set request = method.request %}
     {% include 'request.html.twig' %}
@@ -125,7 +127,7 @@ EOT;
 | Name  | Type  | Description | Default | Required | 
 |-------|-------|-------------|---------|----------|          
 {% endif %}
-| {{ param_name }} | {{ parameters.type }} | {{ parameters.description | desc(param_name) | raw }} | {{ parameters.default }} | {% if param_name in request.required %} Required {% else %} Optional {% endif %}
+| {{ param_name }} | {{ parameters.type }} | {{ parameters.description | param_desc(param_name) | raw }} | {{ parameters.default }} | {% if param_name in request.required %} Required {% else %} Optional {% endif %}
 
 {% else %}
 
@@ -146,7 +148,7 @@ EOT;
 | Name  | Type  | Description | Default | Required | Constrain |
 |-------|-------|-------------|---------|----------|-----------| 
 {% for prop_name, prop in schema.properties %}
-| {{ prop_name }} | {{ prop.type | default('') | prop_type(prop, meta.docHref) }} | {{ prop.description | desc(prop_name, prop, schema) | raw }} |  {{ prop.default }} | {% if prop_name in schema.required %} Required {% else %} Optional {% endif %} | {{ constrain(prop) | truncate(32, false, '..')}} |
+| {{ prop_name }} | {{ prop.type | default('') | prop_type(prop, meta.docHref) }} | {{ prop.description | param_desc(prop_name, prop, schema) | raw }} |  {{ prop.default }} | {% if prop_name in schema.required %} Required {% else %} Optional {% endif %} | {{ constrain(prop) | truncate(32, false, '..')}} |
 {% endfor %}
 {% endif %}
 

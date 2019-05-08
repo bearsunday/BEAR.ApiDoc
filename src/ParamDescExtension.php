@@ -8,7 +8,8 @@ use Twig\TwigFilter;
 use function implode;
 use function sprintf;
 
-final class DescExtension extends AbstractExtension
+
+final class ParamDescExtension extends AbstractExtension
 {
     /**
      * @var AbstractAlps
@@ -23,11 +24,11 @@ final class DescExtension extends AbstractExtension
     public function getFilters() : array
     {
         return [
-            new TwigFilter('desc', [$this, 'desc'])
+            new TwigFilter('param_desc', [$this, 'param_desc'])
         ];
     }
 
-    public function desc(string $description = null, string $semanticName = null, $prop = null, $schema = null) : string
+    public function param_desc(string $description = null, string $semanticName = null, $prop = null, $schema = null) : string
     {
         if ($description) {
             return $description;
