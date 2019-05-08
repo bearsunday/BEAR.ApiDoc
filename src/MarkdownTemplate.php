@@ -126,6 +126,7 @@ EOT;
 |-------|-------|-------------|---------|----------|          
 {% endif %}
 | {{ param_name }} | {{ parameters.type }} | {{ parameters.description | desc(param_name) | raw }} | {{ parameters.default }} | {% if param_name in request.required %} Required {% else %} Optional {% endif %}
+
 {% else %}
 
 (No parameters required.)
