@@ -8,7 +8,6 @@ use Twig\TwigFilter;
 use function implode;
 use function sprintf;
 
-
 final class ParamDescExtension extends AbstractExtension
 {
     /**
