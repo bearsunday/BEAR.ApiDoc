@@ -51,9 +51,7 @@ EOT;
     public $rel = /* @lang Markdown */ <<< 'EOT'
 # {{ relMeta.rel }} (relation)
 
-{{ summary }}
-
-## {{ relMeta.method|upper }}
+{{ summary | add_nl }}{{ description | add_nl }}## {{ relMeta.method|upper }}
 
 [{{ relMeta.href }}](../uri/{{ relMeta.href }}.{{ ext }})
 {% include 'request.html.twig' %}
@@ -68,7 +66,7 @@ EOT;
 
 ## {{ method_name }}
 
-{{ method.summary | add_nl}}{{ method.description | add_nl}}### Request
+{{ method.summary | add_nl }}{{ method.description | add_nl }}### Request
     {% set request = method.request %}
     {% include 'request.html.twig' %}
 
