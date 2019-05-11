@@ -153,6 +153,7 @@ class ApiDoc extends ResourceObject
                 $twig->addExtension(new ParamDescExtension($this->alps));
                 $twig->addExtension(new RevRouteExtension($this->map));
                 $twig->addExtension(new AddNlExtension);
+                $twig->addExtension(new MarkdownEscapeExtension);
                 $ro->view = $twig->render('index', (array) $ro->body);
 
                 return $ro->view;
