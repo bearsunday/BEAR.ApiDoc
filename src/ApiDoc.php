@@ -182,10 +182,11 @@ class ApiDoc extends ResourceObject
             foreach ($uri->doc as $method => $docItem) {
                 $links = $docItem['links'] ?? [];
                 foreach ($links as $link) {
-                    $relDoc[] = $link + ['link_from' => $uri->uriPath];
+                    $relDoc[$link['rel']] = $link + ['link_from' => $uri->uriPath];
                 }
             }
         }
+        sort($relDoc);
 
         return $relDoc;
     }
