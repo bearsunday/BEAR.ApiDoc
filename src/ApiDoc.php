@@ -3,6 +3,7 @@ namespace BEAR\ApiDoc;
 
 use Aura\Router\Map;
 use Aura\Router\RouterContainer;
+use BEAR\AppMeta\AbstractAppMeta;
 use BEAR\AppMeta\Meta;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
@@ -18,9 +19,7 @@ use Twig\Extension\DebugExtension;
 use Twig\Extensions\TextExtension;
 use Twig\Loader\ArrayLoader;
 use function array_keys;
-use function explode;
 use function file_get_contents;
-use function get_class;
 use function json_decode;
 use function json_encode;
 use function sprintf;
@@ -84,6 +83,7 @@ class ApiDoc extends ResourceObject
         AbstractTemplate $template,
         AbstractAlps $alps,
         $routerContainer,
+        AbstractAppMeta $meta,
         string $routerFile = null
     ) {
         $this->resource = $resource;
@@ -106,8 +106,7 @@ class ApiDoc extends ResourceObject
         ];
         $this->ext = $template->ext;
         $index = $this->resource->get('app://self/index');
-        $names = explode('\\', get_class($index));
-        $this->appName = sprintf('%s\%s', $names[0], $names[1]);
+        $this->appName = $meta->name;
         $this->alps = $alps;
     }
 
