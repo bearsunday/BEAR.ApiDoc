@@ -7,7 +7,6 @@ use const JSON_UNESCAPED_UNICODE;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
 use LogicException;
-use function parse_url;
 use Ray\Di\Di\Named;
 use function dirname;
 use function file_get_contents;
@@ -19,7 +18,6 @@ use function strlen;
 use function strpos;
 use function strtoupper;
 use function substr;
-use function trigger_error;
 
 final class FileResponder implements TransferInterface
 {
