@@ -7,6 +7,7 @@ use const JSON_UNESCAPED_UNICODE;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
 use LogicException;
+use function parse_url;
 use Ray\Di\Di\Named;
 use function dirname;
 use function file_get_contents;
@@ -14,7 +15,10 @@ use function file_put_contents;
 use function is_dir;
 use function json_decode;
 use function json_encode;
+use function strlen;
+use function strpos;
 use function strtoupper;
+use function substr;
 use function trigger_error;
 
 final class FileResponder implements TransferInterface
@@ -84,7 +88,7 @@ final class FileResponder implements TransferInterface
         $this->writeUris($apiDoc, $this->uris, $this->docDir);
         $this->copyJson($this->docDir, $this->schemaDir);
         foreach ($errors as $error) {
-            trigger_error($error);
+            error_log($error);
         }
 
         return null;
@@ -136,10 +140,11 @@ final class FileResponder implements TransferInterface
         foreach ($links as $relMeta) {
             $apiDoc->view = null;
             [$rel, $href, $method] = [$relMeta['rel'], $relMeta['href'], strtoupper($relMeta['method'])];
-            $path = uri_template($href, []);
+            $length = strpos($href, '?') ?: strlen($href);
+            $path = substr($href, 0, $length);
             unset($href);
             if (! isset($this->uris[$path]->doc[$method])) {
-                $errors[] = "Link target not exists rel:{$rel} href:{$path} method:{$method} from:{$relMeta['link_from']}";
+                $errors[] = "Missing relation rel:[{$rel}] href:[{$path}] method:[{$method}] from:[{$relMeta['link_from']}]";
                 continue;
             }
             // write JSON
