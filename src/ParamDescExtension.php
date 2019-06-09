@@ -23,11 +23,11 @@ final class ParamDescExtension extends AbstractExtension
     public function getFilters() : array
     {
         return [
-            new TwigFilter('param_desc', [$this, 'param_desc'])
+            new TwigFilter('param_desc', [$this, 'paramDesc'])
         ];
     }
 
-    public function param_desc(string $description = null, string $semanticName = null, $prop = null, $schema = null) : string
+    public function paramDesc(string $description = null, string $semanticName = null, $prop = null, $schema = null) : string
     {
         if ($description) {
             return $description;
