@@ -252,8 +252,8 @@ class ApiDoc extends ResourceObject
     private function getSchemas() : array
     {
         $schemas = [];
-        foreach (glob($this->schemaDir . '/*.json') as $json) {
-            $schemas[] = new JsonSchema((string) file_get_contents($json), $json);
+        foreach ((array) glob($this->schemaDir . '/*.json') as $json) {
+            $schemas[] = new JsonSchema((string) file_get_contents((string) $json), (string) $json);
         }
 
         return $schemas;

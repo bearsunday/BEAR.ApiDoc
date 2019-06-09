@@ -41,7 +41,7 @@ final class RevRouteExtension extends AbstractExtension
     {
         $p = (new Parser())->parse($uri);
         $token = $p[0]->getToken();
-        $uri = parse_url($token)['path'] ?? $uri; // resolve app://self/path full path
+        $uri = parse_url($token, PHP_URL_PATH) ?? $uri; // resolve app://self/path full path
 
         return $uri;
     }
