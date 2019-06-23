@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace BEAR\ApiDoc;
 
 use Aura\Router\RouterContainer;
@@ -20,7 +23,7 @@ class ApiDocTest extends TestCase
      */
     private $resource;
 
-    public function setUp()
+    protected function setUp()
     {
         $routerContainer = new RouterContainer;
         $map = $routerContainer->getMap();

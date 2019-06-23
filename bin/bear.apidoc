@@ -27,8 +27,7 @@ if (! file_exists($docDir) || ! is_writable($docDir)) {
     throw new InvalidArgumentException(sprintf('[%s]: invalid documentation directory', $docDir));
 }
 
-$alpsFile = realpath($argv[4]);
-$alps = ($argc === 5) ? new Alps($alpsFile) : new NullAlps;
+$alps = ($argc === 5) ? new Alps(realpath($argv[4])) : new NullAlps;
 
 try {
     echo (new DocGen)($appName, realpath($docDir), 'app', MarkdownTemplate::class, $alps);

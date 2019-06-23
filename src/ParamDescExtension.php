@@ -1,12 +1,13 @@
 <?php
+
 namespace BEAR\ApiDoc;
 
+use function implode;
 use Koriym\Alps\AbstractAlps;
 use Koriym\Alps\Alps;
+use function sprintf;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
-use function implode;
-use function sprintf;
 
 final class ParamDescExtension extends AbstractExtension
 {

@@ -1,6 +1,8 @@
 <?php
+
 namespace BEAR\ApiDoc;
 
+use function array_keys;
 use Aura\Router\Map;
 use Aura\Router\RouterContainer;
 use BEAR\AppMeta\AbstractAppMeta;
@@ -9,21 +11,20 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
+use function file_get_contents;
+use function json_decode;
+use function json_encode;
 use Koriym\Alps\AbstractAlps;
 use LogicException;
 use manuelodelain\Twig\Extension\LinkifyExtension;
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
+use function sprintf;
+use function str_replace;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Extensions\TextExtension;
 use Twig\Loader\ArrayLoader;
-use function array_keys;
-use function file_get_contents;
-use function json_decode;
-use function json_encode;
-use function sprintf;
-use function str_replace;
 
 class ApiDoc extends ResourceObject
 {
@@ -35,7 +36,7 @@ class ApiDoc extends ResourceObject
     /**
      * Optional aura router
      *
-     * @var RouterContainer|null
+     * @var null|RouterContainer
      */
     private $route;
 
@@ -45,12 +46,12 @@ class ApiDoc extends ResourceObject
     private $schemaDir;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $routerFile;
 
     /**
-     * @var Map|array
+     * @var array|Map
      */
     private $map;
 
@@ -153,6 +154,7 @@ class ApiDoc extends ResourceObject
                 $twig->addExtension(new RevRouteExtension($this->map));
                 $twig->addExtension(new AddNlExtension);
                 $twig->addExtension(new MarkdownEscapeExtension);
+                $twig->addExtension(new SnakeCaseExtension);
                 $ro->view = $twig->render('index', (array) $ro->body);
 
                 return $ro->view;
