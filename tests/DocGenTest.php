@@ -1,12 +1,16 @@
 <?php
-namespace BEAR\ApiDoc;
+
+declare(strict_types=1);
+
 namespace BEAR\ApiDoc;
 
-use Koriym\Alps\Alps;
-use PHPUnit\Framework\TestCase;
+namespace BEAR\ApiDoc;
+
 use function dirname;
 use function file_get_contents;
+use Koriym\Alps\Alps;
 use function passthru;
+use PHPUnit\Framework\TestCase;
 
 class DocGenTest extends TestCase
 {
@@ -40,9 +44,9 @@ class DocGenTest extends TestCase
     {
         $appDir = dirname(__DIR__); // for autoloader
         $bin = $appDir . '/bin/bear.apidoc';
-        $appName = "'FakeVendor\FakeProject'";
+        $appName = "'FakeVendor\\FakeProject'";
         $docDir = __DIR__ . '/api_html';
-        $command = "$bin $appName $appDir $docDir";
+        $command = "${bin} ${appName} ${appDir} ${docDir}";
         passthru($command, $exitCode);
         $this->assertSame(0, $exitCode);
     }
@@ -51,9 +55,9 @@ class DocGenTest extends TestCase
     {
         $appDir = dirname(__DIR__); // for autoloader
         $bin = $appDir . '/bin/bear.apidoc';
-        $appName = "'FakeVendor\FakeProject'";
+        $appName = "'FakeVendor\\FakeProject'";
         $docDir = __DIR__ . '/api_html';
-        $command = "$bin $appName $appDir $docDir";
+        $command = "${bin} ${appName} ${appDir} ${docDir}";
         passthru($command, $exitCode);
         $this->assertSame(0, $exitCode);
     }
