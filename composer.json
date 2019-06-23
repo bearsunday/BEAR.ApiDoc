@@ -26,15 +26,16 @@
         "twig/twig": "^2.5",
         "twig/extensions": "^1.5",
         "manuelodelain/linkify-twig-extension": "^1.0",
-        "koriym/alps": "dev-master"
+        "koriym/alps": "^0.1"
     },
     "require-dev": {
-        "bear/resource": "1.x-dev",
-        "phpunit/phpunit": "^6.4",
-        "bear/app-meta": "1.x-dev",
+        "bear/resource": "^1.9",
+        "phpunit/phpunit": "^7.5",
+        "bear/app-meta": "^1.5",
         "bear/package": "^1.8",
         "bear/aura-router-module": "^2.0.5",
-        "koriym/json-schema-faker": "^0.1"
+        "koriym/json-schema-faker": "^0.1",
+        "vimeo/psalm": "dev-master"
     },
     "scripts": {
         "test": ["phpunit"],
