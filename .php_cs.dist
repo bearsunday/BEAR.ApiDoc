@@ -14,10 +14,8 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__);
 
 return \PhpCsFixer\Config::create()
-    ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
-        '@PHP70Migration:risky' => true,
         'align_multiline_comment' => true,
         'array_indentation' => true,
         'array_syntax' => ['syntax' => 'short'],
@@ -36,23 +34,17 @@ return \PhpCsFixer\Config::create()
         'concat_space' => ['spacing' => 'one'], // @Symfony
 //      'date_time_immutable' => true,
         'declare_equal_normalize' => true, // @Symfony
-        'dir_constant' => true, // @Symfony:risky
-        'ereg_to_preg' => true, // @Symfony:risky
-        'error_suppression' => true, // @Symfony:risky
         'escape_implicit_backslashes' => true,
         'explicit_indirect_variable' => true,
         'explicit_string_variable' => true,
 //      'final_internal_class' => true,
         'fully_qualified_strict_types' => true,
-        'function_to_constant' => true, // @Symfony:risky
         'function_typehint_space' => true, // @Symfony
         'general_phpdoc_annotation_remove' => ['author', 'category', 'package', 'copyright', 'version'],
         'header_comment' => ['header' => $header, 'comment_type' => 'comment'],
         'heredoc_to_nowdoc' => true,
-        'include' => true, // @Symfony
 //      'increment_style' => 'pre', // @Symfony
         'indentation_type' => true,
-        'is_null' => ['use_yoda_style' => false], // @Symfony:risky
         'linebreak_after_opening_tag' => true,
 //      'list_syntax' => true,
 //      'logical_operators' => true,
@@ -62,14 +54,12 @@ return \PhpCsFixer\Config::create()
 //      'mb_str_functions' => true,
         'method_chaining_indentation' => true,
         'method_separation' => true,
-        'modernize_types_casting' => true, // @Symfony:risky
         'multiline_comment_opening_closing' => true,
         'multiline_whitespace_before_semicolons' => true,
 //      'native_constant_invocation' => true,
         'native_function_casing' => true, // @Symfony
 //      'native_function_invocation' => true,
 //      'new_with_braces' => true, // @Symfony
-        'no_alias_functions' => true, // @Symfony:risky
         'no_alternative_syntax' => true,
         'no_binary_string' => true,
         'no_blank_lines_after_class_opening' => true, // @Symfony
@@ -79,13 +69,11 @@ return \PhpCsFixer\Config::create()
         'no_empty_phpdoc' => true, // @Symfony
         'no_empty_statement' => true, // @Symfony
         'no_extra_blank_lines' => true,
-        'no_homoglyph_names' => true, // @Symfony:risky
         'no_leading_import_slash' => true, // @Symfony
         'no_leading_namespace_whitespace' => true, // @Symfony
         'no_mixed_echo_print' => true, // @Symfony
         'no_multiline_whitespace_around_double_arrow' => true, // @Symfony
         'no_null_property_initialization' => true,
-        'no_php4_constructor' => true,
         'no_short_bool_cast' => true, // @Symfony
         'no_short_echo_tag' => false,
         'no_singleline_whitespace_before_semicolons' => true, // @Symfony
@@ -99,31 +87,21 @@ return \PhpCsFixer\Config::create()
         'no_unneeded_control_parentheses' => true, // @Symfony
         'no_unneeded_curly_braces' => true, // @Symfony
         'no_unneeded_final_method' => true, // @Symfony
-        'no_unreachable_default_argument_value' => true,
-        'no_unset_on_property' => true,
         'no_unused_imports' => true,
         'no_useless_else' => true,
         'no_useless_return' => true,
         'no_whitespace_before_comma_in_array' => true, // @Symfony
         'no_whitespace_in_blank_line' => true, // @Symfony
-        'non_printable_character' => true, // @Symfony
         'normalize_index_brace' => true, // @Symfony
         'not_operator_with_space' => false,
         'not_operator_with_successor_space' => true,
         'object_operator_without_whitespace' => true, // @Symfony
         'ordered_class_elements' => true,
         'ordered_imports' => true,
-        'php_unit_construct' => true, // @Symfony:risky
-        'php_unit_dedicate_assert' => true,
-        'php_unit_expectation' => true,
         'php_unit_fqcn_annotation' => true, // @Symfony
 //      'php_unit_internal_class' => true, // @Symfony]
 //      'php_unit_mock' => true,
-        'php_unit_namespaced' => true,
-        'php_unit_no_expectation_annotation' => true,
         'php_unit_ordered_covers' => true,
-        'php_unit_set_up_tear_down_visibility' => true,
-        'php_unit_strict' => true,
 //      'php_unit_test_annotation' => true,
 //      'php_unit_test_case_static_method_calls' => true,
 //      'php_unit_test_class_requires_covers' => true,
@@ -150,14 +128,9 @@ return \PhpCsFixer\Config::create()
         'phpdoc_types_order' => true, // @Symfony
         'phpdoc_var_without_name' => true, // @Symfony
         'protected_to_private' => true,
-        'psr0' => true,
-        'psr4' => true, // @Symfony:risky
         'return_assignment' => true,
         'return_type_declaration' =>  ['space_before' => 'one'],
-        'self_accessor' => true, // @Symfony:risky
         'semicolon_after_instruction' => true, // @Symfony
-        'set_type_to_cast' => true, // @Symfony:risky
-        'short_scalar_cast' => true, // @Symfony:risky
 //      'simplified_null_return' => true,
         'single_blank_line_before_namespace' => true, // @Symfony
 //      'single_line_comment_style' => true, // @Symfony
@@ -168,7 +141,6 @@ return \PhpCsFixer\Config::create()
         'standardize_not_equals' => true, // @Symfony
 //      'static_lambda' => true,
 //      'strict_comparison' => true,
-        'strict_param' => true,
 //      'string_line_ending' => true,
         'switch_case_semicolon_to_colon' => true,
         'switch_case_space' => true,
@@ -177,7 +149,6 @@ return \PhpCsFixer\Config::create()
         'trim_array_spaces' => true, // @Symfony
         'unary_operator_spaces' => true, // @Symfony
         'visibility_required' => true,
-//      'void_return' => true, // @PHP71Migration:risky
         'whitespace_after_comma_in_array' => true, // @Symfony
 //      'yoda_style' => true // @Symfony
     ])
