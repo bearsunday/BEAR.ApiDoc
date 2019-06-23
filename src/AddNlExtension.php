@@ -1,4 +1,5 @@
 <?php
+
 namespace BEAR\ApiDoc;
 
 use const PHP_EOL;

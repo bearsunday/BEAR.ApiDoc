@@ -1,4 +1,5 @@
 <?php
+
 namespace BEAR\ApiDoc;
 
 abstract class AbstractTemplate

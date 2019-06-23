@@ -1,19 +1,20 @@
 <?php
+
 namespace BEAR\ApiDoc;
 
-use const JSON_PRETTY_PRINT;
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
-use LogicException;
-use Ray\Di\Di\Named;
 use function dirname;
 use function file_get_contents;
 use function file_put_contents;
 use function is_dir;
 use function json_decode;
 use function json_encode;
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
+use LogicException;
+use Ray\Di\Di\Named;
 use function strlen;
 use function strpos;
 use function strtoupper;
@@ -143,6 +144,7 @@ final class FileResponder implements TransferInterface
             unset($href);
             if (! isset($this->uris[$path]->doc[$method])) {
                 $errors[] = "Missing relation rel:[{$rel}] href:[{$path}] method:[{$method}] from:[{$relMeta['link_from']}]";
+
                 continue;
             }
             // write JSON

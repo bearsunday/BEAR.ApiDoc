@@ -1,4 +1,5 @@
 <?php
+
 namespace BEAR\ApiDoc;
 
 use BEAR\ApiDoc\Exception\InvalidJsonException;
@@ -92,6 +93,7 @@ final class JsonSchema
                         'first' => [$id => $val],
                         'extra' => []
                     ];
+
                     continue;
                 }
                 $constatins[$name]['extra'] = [$id => $val];

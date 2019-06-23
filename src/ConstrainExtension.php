@@ -1,12 +1,13 @@
 <?php
+
 namespace BEAR\ApiDoc;
 
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
 use function implode;
 use function is_array;
 use function json_encode;
 use function sprintf;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 final class ConstrainExtension extends AbstractExtension
 {

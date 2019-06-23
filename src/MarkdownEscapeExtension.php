@@ -1,9 +1,10 @@
 <?php
+
 namespace BEAR\ApiDoc;
 
+use function str_replace;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
-use function str_replace;
 
 final class MarkdownEscapeExtension extends AbstractExtension
 {

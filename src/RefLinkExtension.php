@@ -1,10 +1,11 @@
 <?php
+
 namespace BEAR\ApiDoc;
 
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
 use function preg_replace;
 use function strpos;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 final class RefLinkExtension extends AbstractExtension
 {

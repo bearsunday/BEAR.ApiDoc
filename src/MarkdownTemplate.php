@@ -1,4 +1,5 @@
 <?php
+
 namespace BEAR\ApiDoc;
 
 final class MarkdownTemplate extends AbstractTemplate
