@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php declare(strict_types=1);
+<?php
 /**
  * BEAR/Sunday API Doc generator
  *
@@ -26,7 +26,9 @@ require $autoload;
 if (! file_exists($docDir) || ! is_writable($docDir)) {
     throw new InvalidArgumentException(sprintf('[%s]: invalid documentation directory', $docDir));
 }
-$alps = ($argc === 5) ? new Alps(realpath(getcwd() . '/' . $argv[4])) : new NullAlps;
+
+$alpsFile = realpath($argv[4]);
+$alps = ($argc === 5) ? new Alps($alpsFile) : new NullAlps;
 
 try {
     echo (new DocGen)($appName, realpath($docDir), 'app', MarkdownTemplate::class, $alps);
