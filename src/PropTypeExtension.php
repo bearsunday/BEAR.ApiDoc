@@ -15,8 +15,11 @@ final class PropTypeExtension extends AbstractExtension
         ];
     }
 
-    public function propType(string $type, array $prop, string $schemaFile) : string
+    public function propType($type, array $prop, string $schemaFile) : string
     {
+        if (is_array($type)) {
+            $type = implode('|', $type);
+        }
         $linkType = $this->link($prop, $type, $schemaFile);
         if ($type === 'array') {
             $linkType .= '[]';

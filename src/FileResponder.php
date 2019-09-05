@@ -129,6 +129,10 @@ final class FileResponder implements TransferInterface
             $view = (string) $apiDoc;
             $this->mkdir($uriDir);
             $file = sprintf('%s/uri%s.%s', $docDir, $uri->uriPath, $this->ext);
+            $dir = dirname($file);
+            if (! is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
             file_put_contents($file, $view);
         }
     }

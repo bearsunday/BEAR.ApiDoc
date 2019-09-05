@@ -195,6 +195,9 @@ class ApiDoc extends ResourceObject
     private function indexPage(array $uris) : array
     {
         $index = $this->resource->get('app://self/index')->body;
+        if (! isset($index['_links'])) {
+            throw new \RuntimeException('No _links in index');
+        }
         list($curies, $links, $index) = $this->getRels($index);
         unset($index['_links']);
         $schemas = $this->getSchemas();
