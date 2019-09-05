@@ -3,6 +3,7 @@
 namespace BEAR\ApiDoc;
 
 use function parse_url;
+use Rize\UriTemplate\Node\Abstraction;
 use Rize\UriTemplate\Parser;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -40,6 +41,7 @@ final class RevRouteExtension extends AbstractExtension
     private function cleanupUriTemplate(string $uri) : string
     {
         $p = (new Parser())->parse($uri);
+        /** @var Abstraction[] $p */
         $token = $p[0]->getToken();
 
         return parse_url($token, PHP_URL_PATH) ?? $uri; // resolve app://self/path full path
