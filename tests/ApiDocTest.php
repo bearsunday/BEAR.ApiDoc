@@ -23,7 +23,7 @@ class ApiDocTest extends TestCase
      */
     private $resource;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $routerContainer = new RouterContainer;
         $map = $routerContainer->getMap();

@@ -22,9 +22,9 @@ class DocGenTest extends TestCase
         $this->assertFileExists(__DIR__ . '/doc/api/rels/person.json');
         $this->assertFileExists(__DIR__ . '/doc/api/schema/address.json');
         $this->assertFileExists(__DIR__ . '/doc/api/schema/address.json');
-        $this->assertContains('<h1>person', file_get_contents(__DIR__ . '/doc/api/rels/person.html'));
-        $this->assertContains(' "rel": "person"', file_get_contents(__DIR__ . '/doc/api/rels/person.json'));
-        $this->assertContains('$id": "http://example.com/schema/address.json', file_get_contents(__DIR__ . '/doc/api/schema/address.json'));
+        $this->assertStringContainsString('<h1>person', file_get_contents(__DIR__ . '/doc/api/rels/person.html'));
+        $this->assertStringContainsString(' "rel": "person"', file_get_contents(__DIR__ . '/doc/api/rels/person.json'));
+        $this->assertStringContainsString('$id": "http://example.com/schema/address.json', file_get_contents(__DIR__ . '/doc/api/schema/address.json'));
     }
 
     public function testMarkdown()
@@ -35,9 +35,9 @@ class DocGenTest extends TestCase
         $this->assertFileExists(__DIR__ . '/doc/api/rels/person.json');
         $this->assertFileExists(__DIR__ . '/doc/api/schema/address.json');
         $this->assertFileExists(__DIR__ . '/doc/api/schema/address.json');
-        $this->assertContains('<h1>person', file_get_contents(__DIR__ . '/doc/api/rels/person.html'));
-        $this->assertContains(' "rel": "person"', file_get_contents(__DIR__ . '/doc/api/rels/person.json'));
-        $this->assertContains('$id": "http://example.com/schema/address.json', file_get_contents(__DIR__ . '/doc/api/schema/address.json'));
+        $this->assertStringContainsString('<h1>person', file_get_contents(__DIR__ . '/doc/api/rels/person.html'));
+        $this->assertStringContainsString(' "rel": "person"', file_get_contents(__DIR__ . '/doc/api/rels/person.json'));
+        $this->assertStringContainsString('$id": "http://example.com/schema/address.json', file_get_contents(__DIR__ . '/doc/api/schema/address.json'));
     }
 
     public function testApiDocHtml()
