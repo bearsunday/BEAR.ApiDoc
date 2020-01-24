@@ -22,7 +22,7 @@ final class ConstrainExtension extends AbstractExtension
     {
         $consrains = [];
         foreach ($prop as $key => $item) {
-            if ($key[0] === '$' || $key === 'type' || $key === 'items' || $key === 'description') {
+            if (substr($key, 0, 1) === '$' || $key === 'type' || $key === 'items' || $key === 'description') {
                 continue;
             }
             $consrainVal = is_array($item) ? json_encode($item, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : (string) $item;
