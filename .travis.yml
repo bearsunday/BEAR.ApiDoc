@@ -49,7 +49,6 @@ jobs:
     script:
       - ./vendor/bin/phpstan analyse -l max -c phpstan.neon src tests --no-progress --no-interaction;
       - ./vendor/bin/psalm
-      - ./vendor/bin/phpmetrics --excluded-dirs=src/Exception src
 
   - stage: Code Quality
     name: Coding standards
