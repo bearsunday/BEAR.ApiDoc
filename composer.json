@@ -34,8 +34,7 @@
         "bear/app-meta": "^1.5",
         "bear/package": "^1.9.3",
         "bear/aura-router-module": "^2.0.5",
-        "koriym/json-schema-faker": "^0.1",
-        "vimeo/psalm": "dev-master"
+        "koriym/json-schema-faker": "^0.1"
     },
     "scripts": {
         "test": ["phpunit"],
