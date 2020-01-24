@@ -39,7 +39,8 @@ final class ParamDescExtension extends AbstractExtension
                 return $desc;
             }
         }
-        $name = lcfirst(strtr(ucwords(strtr((string) $semanticName, ['_' => ' '])), [' ' => '']));
+        assert(is_string($semanticName));
+        $name = lcfirst(strtr(ucwords(strtr($semanticName, ['_' => ' '])), [' ' => '']));
         $semantic = $this->alps->semantics[$name] ?? null;
         if ($semantic) {
             if ($semantic->def) {

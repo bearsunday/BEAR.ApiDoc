@@ -152,6 +152,7 @@ final class FileResponder implements TransferInterface
                 continue;
             }
             // write JSON
+            assert(isset($this->uris[$path]->doc[$method]));
             $targetLink = $this->uris[$path]->doc[$method];
             $json = [
                 'rel' => $rel,

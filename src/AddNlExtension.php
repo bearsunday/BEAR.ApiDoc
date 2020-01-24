@@ -17,8 +17,8 @@ final class AddNlExtension extends AbstractExtension
 
     public function addNl(?string $text) : string
     {
-        if ((string) $text) {
-            return $text . PHP_EOL . PHP_EOL;
+        if ($text) {
+            return (string) $text . PHP_EOL . PHP_EOL;
         }
 
         return '';
