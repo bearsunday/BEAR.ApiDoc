@@ -150,7 +150,7 @@ EOT;
 {% if schema.type == 'array' %}
 {% for key, item in schema.items %}
 {% if key == '$ref' %}
-* [{{ item  }}]("../schema/{{ item  }}")
+* [{{ item  }}](../schema/{{ item  }})
             {% else %}
 * {{ item | json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES')) }}
             {% endif %}
