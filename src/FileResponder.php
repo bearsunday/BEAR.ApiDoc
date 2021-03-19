@@ -146,6 +146,7 @@ final class FileResponder implements TransferInterface
             $length = strpos($href, '?') ?: strlen($href);
             $path = substr($href, 0, $length);
             unset($href);
+            $path = parse_url($path)['path'];
             if (! isset($this->uris[$path]->doc[$method])) {
                 $errors[] = "Missing relation rel:[{$rel}] href:[{$path}] method:[{$method}] from:[{$relMeta['link_from']}]";
 
