@@ -21,7 +21,7 @@
         }
     },
     "require": {
-        "php": ">=7.2.0",
+        "php": "^7.2 || ^8.0",
         "ext-json": "*",
         "twig/twig": "^2.11",
         "twig/extensions": "^1.5",
