@@ -23,9 +23,10 @@
     "require": {
         "php": "^7.3 || ^8.0",
         "ext-json": "*",
-        "twig/twig": "^2.11",
-        "manuelodelain/linkify-twig-extension": "^1.0",
-        "koriym/alps": "^0.1"
+        "twig/twig": "^2.11 || ^3.0",
+        "manuelodelain/linkify-twig-extension": "^1.0 || ^2.0",
+        "koriym/alps": "^0.1",
+        "koriym/psr4list": "^1.0.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
