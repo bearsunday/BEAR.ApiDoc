@@ -149,7 +149,6 @@ class ApiDoc extends ResourceObject
                 $twig->addExtension(new LinkifyExtension);
                 $twig->addExtension(new PropTypeExtension);
                 $twig->addExtension(new ConstrainExtension);
-                $twig->addExtension(new TextExtension);
                 $twig->addExtension(new ParamDescExtension($this->alps));
                 $twig->addExtension(new RevRouteExtension($this->map));
                 $twig->addExtension(new AddNlExtension);

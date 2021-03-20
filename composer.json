@@ -24,7 +24,6 @@
         "php": "^7.3 || ^8.0",
         "ext-json": "*",
         "twig/twig": "^2.11",
-        "twig/extensions": "^1.5",
         "manuelodelain/linkify-twig-extension": "^1.0",
         "koriym/alps": "^0.1"
     },
