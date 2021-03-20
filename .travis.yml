@@ -1,10 +1,9 @@
 language: php
-sudo: false
 
 php:
-  - 7.2
   - 7.3
   - 7.4
+  - 8.0
 
 cache:
   directories:
@@ -28,12 +27,12 @@ jobs:
   include:
   - stage: Test
     name: Lowest dependencies
-    php: 7.2
+    php: 7.4
     install: composer update --prefer-dist --prefer-lowest
 
   - stage: Test
     name: Code coverage
-    php: 7.2
+    php: 7.4
     before_script:
     - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{.disabled,}
     - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
