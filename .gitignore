@@ -1,4 +1,3 @@
-.idea
 vendor/
 composer.lock
 .php_cs.cache
@@ -7,3 +6,5 @@ composer.lock
 /doc/
 /build
 /tests/api_html/
+/.phpunit.result.cache
+/tests/tmp/
