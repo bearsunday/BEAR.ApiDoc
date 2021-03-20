@@ -27,7 +27,7 @@
         "bear/package": "^1.10",
         "bear/resource": "^1.15",
         "koriym/alps": "^0.1",
-        "koriym/psr4list": "^1.0.4",
+        "koriym/psr4list": "^1.0.3",
         "manuelodelain/linkify-twig-extension": "^1.0 || ^2.0",
         "ray/di": "^2.12",
         "rize/uri-template": "^0.3.3",
@@ -48,8 +48,6 @@
     "bin": [
         "bin/bear.apidoc"
     ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "config": {
         "sort-packages": true
     }
