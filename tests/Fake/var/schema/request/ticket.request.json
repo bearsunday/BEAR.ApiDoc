@@ -1,0 +1,15 @@
+{
+  "id": "ticket.request.json",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for a ticket.",
+      "minLength": 1,
+      "maxLength": 10
+    }
+  },
+  "required": ["id"]
+}
+

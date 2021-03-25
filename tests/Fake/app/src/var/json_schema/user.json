@@ -1,0 +1,53 @@
+{
+  "id": "user.json",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "User",
+  "description": "Schema for one user",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique ID of the user",
+      "maxLength": 30
+    },
+    "firstName": {
+      "type": "string",
+      "description": "The first name of the user",
+      "maxLength": 30,
+      "pattern": "[a-z\\d~+-]+"
+    },
+    "lastName": {
+      "type": "string",
+      "description": "The last name of the user",
+      "maxLength": 30,
+      "pattern": "[a-z\\d~+-]+"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the user record was created",
+      "example": "2018-01-01T12:00:00Z"
+    },
+    "modified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the user record was last modified",
+      "example": "2018-01-01T12:00:00Z"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "The email address of the user"
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "Whether the user is enabled or not"
+    },
+    "age": {
+      "$ref": "age.json",
+      "description": "The age of the user",
+      "example": 29
+    }
+  },
+  "required": ["firstName", "lastName", "age"]
+}
