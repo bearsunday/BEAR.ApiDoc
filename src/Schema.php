@@ -71,16 +71,16 @@ final class Schema
         return <<<EOT
 {$this->title()}
 
-| Type  | Item Type |  Constrain |
-|-------|-----------|------------|
-| Array | {$type} | {$constraint} |         
+| Item Type |  Constrain |
+|-----------|------------|
+| {$type} | {$constraint} |         
 EOT;
     }
 
     private function getItemType(object $schema): string
     {
         if (isset($schema->type)) {
-            return $schema->type;
+            return $this->returnType($schema->type);
         }
 
         if (isset($schema->{'$ref'})) {

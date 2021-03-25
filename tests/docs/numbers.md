@@ -8,6 +8,6 @@
 ### Response
 [Array: Numbers](schema/numbers.json)
 
-| Type  | Item Type |  Constrain |
-|-------|-----------|------------|
-| Array | integer | {"uniqueItems":true} |                
+| Item Type |  Constrain |
+|-----------|------------|
+| int | {"uniqueItems":true} |                

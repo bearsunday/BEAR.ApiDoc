@@ -8,6 +8,6 @@
 ### Response
 [Array: Collection of Tickets](schema/tickets.json)
 
-| Type  | Item Type |  Constrain |
-|-------|-----------|------------|
-| Array | object | {"$ref":"[ticket.json](schema\/ticket.json)"} |                
+| Item Type |  Constrain |
+|-----------|------------|
+| object | {"$ref":"[ticket.json](schema\/ticket.json)"} |                
