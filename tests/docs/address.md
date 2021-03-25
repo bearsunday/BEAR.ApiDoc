@@ -22,7 +22,7 @@ This is the summary of Address. line 2
 | extended-address | string |  | Optional |  |  |
 | street-address | string |  | Optional |  |  |
 | locality | string |  | Optional |  |  |
-| region | string |  | Optional |  |  |
+| region | int&#124;string |  | Optional |  |  |
 | postal-code | string |  | Optional |  |  |
 | country-name | string |  | Optional |  |  |
                

@@ -6,7 +6,10 @@ namespace BEAR\ApiDoc;
 
 use SplFileInfo;
 
+use function array_map;
 use function assert;
+use function implode;
+use function is_array;
 use function is_object;
 use function is_string;
 use function json_encode;
@@ -117,16 +120,25 @@ EOT;
         if ($propertyRef) {
             $ref = new Ref($propertyRef, $this->file, $schema);
             $this->refs[] = $ref;
-            $type = $ref->type;
 
-            return $this->returnType($type);
+            return $this->returnType($ref->type);
         }
 
         return $this->returnType($property->type);
     }
 
-    private function returnType(string $type): string
+    /**
+     * @param string|array $type
+     */
+    private function returnType($type): string
     {
+        if (is_array($type)) {
+            $type = array_map(static function (string $item): string {
+                return $item === 'integer' ? 'int' : $item;
+            }, $type);
+            $type = implode('&#124;', $type);
+        }
+
         return $type === 'integer' ? 'int' : $type;
     }
 }
