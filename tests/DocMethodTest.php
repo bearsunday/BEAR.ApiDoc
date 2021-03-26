@@ -25,8 +25,8 @@ class DocMethodTest extends TestCase
     {
         $requestSchemaFile = __DIR__ . '/Fake/var/schema/request/ticket.request.json';
         $responseSchemaFile = __DIR__ . '/Fake/var/schema/response/ticket.json';
-        $requestSchema = new Schema('name', new SplFileInfo($requestSchemaFile), json_decode((string) file_get_contents($requestSchemaFile)));
-        $responseSchema = new Schema('', new SplFileInfo($responseSchemaFile), json_decode((string) file_get_contents($responseSchemaFile)));
+        $requestSchema = new Schema(new SplFileInfo($requestSchemaFile), json_decode((string) file_get_contents($requestSchemaFile)));
+        $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), json_decode((string) file_get_contents($responseSchemaFile)));
         $docMethod = new DocMethod(new ReflectionMethod(FakeParamDoc::class, 'onGet'), $requestSchema, $responseSchema);
         $this->assertInstanceOf(DocMethod::class, $docMethod);
 
@@ -48,7 +48,25 @@ class DocMethodTest extends TestCase
         $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), json_decode((string) file_get_contents($responseSchemaFile)));
         $docMethod = new DocMethod(new ReflectionMethod(FakeParamDoc::class, 'onGet'), null, $responseSchema);
         $this->assertInstanceOf(DocMethod::class, $docMethod);
+        $expected = <<<EOT
+## GET
 
-        $this->assertSame('', (string) $docMethod);
+### Request
+| Name  | Type  | Description | Default | Example |
+|-------|-------|-------------|---------|---------| 
+| id | string | This is fake id |  |  |
+        
+
+### Response
+[Object: Array](schema/array.json)
+
+| Name  | Type  | Description | Required | Constraint | Example |
+|-------|-------|-------------|----------|------------|---------| 
+| fruits | array |  | Optional | {"items":{"type":"string"}} |  |
+| vegetables | array |  | Optional | {"items":{"\$ref":"#\/definitions\/veggie"}} |  |
+| juice | object |  | Optional | {"\$ref":"#\/definitions\/juice"}
+EOT;
+
+        $this->assertStringContainsString($expected, (string) $docMethod);
     }
 }

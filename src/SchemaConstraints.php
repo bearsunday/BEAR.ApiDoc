@@ -14,7 +14,7 @@ use function sprintf;
 
 use const FILTER_VALIDATE_URL;
 
-final class SchemaConstrains
+final class SchemaConstraints
 {
     /**
      * @var array<string, mixed>
@@ -45,7 +45,7 @@ final class SchemaConstrains
         $this->constrains = $constrains;
     }
 
-    private function getRefLink(string $value, SplFileInfo $file)
+    private function getRefLink(string $value, SplFileInfo $file): string
     {
         if (filter_var($value, FILTER_VALIDATE_URL)) {
             return sprintf('[%s](%s)', $value, $value);
@@ -59,7 +59,7 @@ final class SchemaConstrains
         return $value;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->constrains === [] ? '' : (string) json_encode($this->constrains);
     }

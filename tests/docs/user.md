@@ -12,8 +12,8 @@
 ### Response
 [Object: User](schema/user.json)
 
-| Name  | Type  | Description | Required | Constrain | Example |
-|-------|-------|-------------|----------|-----------|---------| 
+| Name  | Type  | Description | Required | Constraint | Example |
+|-------|-------|-------------|----------|------------|---------| 
 | id | string | The unique ID of the user | Optional | {"maxLength":30} |  |
 | firstName | string | The first name of the user | Optional | {"maxLength":30,"pattern":"[a-z\\d~+-]+"} |  |
 | lastName | string | The last name of the user | Optional | {"maxLength":30,"pattern":"[a-z\\d~+-]+"} |  |

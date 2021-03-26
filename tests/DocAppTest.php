@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace FakeVendor\FakeProject;
+namespace BEAR\ApiDoc;
 
-use BEAR\ApiDoc\DocApp;
 use PHPUnit\Framework\TestCase;
 
 class DocAppTest extends TestCase
@@ -13,5 +12,6 @@ class DocAppTest extends TestCase
     {
         $docApp = new DocApp('FakeVendor\FakeProject');
         $docApp(__DIR__ . '/docs', 'app');
+        $this->assertFileExists(__DIR__ . '/docs/address.md');
     }
 }

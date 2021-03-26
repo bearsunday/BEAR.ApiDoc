@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+use Composer\Semver\Constraint\Constraint;
 use ReflectionParameter;
 
 use function sprintf;
@@ -39,6 +40,8 @@ final class DocParam
 
     /** @var string  */
     private $example = '';
+
+    /** @var Constraint */
     public $constains;
 
     public function __construct(
@@ -59,13 +62,13 @@ final class DocParam
 
     private function setByProp(SchemaProp $prop): void
     {
-        $this->constains = $prop->constrains;
+        $this->constains = $prop->constraints;
         if (! $this->descripton) {
-            $this->descripton = $prop->descripton;
+            $this->descripton = $prop->description;
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $requred = $this->isOptional ? 'Optional' : 'Required';
 

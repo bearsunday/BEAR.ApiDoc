@@ -16,18 +16,11 @@ use const PHP_EOL;
 
 final class DocMethod
 {
-    /** @var string */
-    private $httpMethod;
-
     /**
      * @var string
      * @readonly
      */
-    private $summary = '';
-
-    /** @var string
-     * @readonly */
-    private $description = '';
+    private $httpMethod;
 
     /**
      * @var array<int, DocParam>
@@ -39,7 +32,7 @@ final class DocMethod
      * @var Schema
      * @readonly
      */
-    private $response = [];
+    private $response;
 
     /**
      * Return docBloc and parameter metas of method
@@ -56,7 +49,7 @@ final class DocMethod
             $tagParams = $this->getTagParams($docblock);
         }
 
-        /** @var array<string, TagParam>|null */
+        /** @var array<string, TagParam>|null $tagParams */
         $tagParams = $tagParams ?? null;
         $this->params = $this->getDocParamas($method, $tagParams, $request);
         $this->response = $response;
@@ -98,7 +91,7 @@ final class DocMethod
         return $tagParams;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $format = <<<EOT
 ## %s
@@ -141,36 +134,26 @@ EOT;
         if ($this->response === null) {
             return '(No response body)';
         }
+
         if ($this->response->type === 'array') {
             return $this->response->toStringTypeArray();
         }
+
         $rows = '';
         foreach ($this->response->props as $prop) {
             $rows .= (string) $prop . PHP_EOL;
         }
-        $view = $this->getObjectTable($this->response->title(), $rows);
 
-        return $view;
+        return $this->getObjectTable($this->response->title(), $rows);
     }
 
-    private function getArrayResponseView(string $responseTitle, string $rows)
+    private function getObjectTable(string $responseTitle, string $rows): string
     {
         return <<<EOT
 {$responseTitle}
 
-| Type  | Name | Example |
-|-------|------|---------|
-{$rows}        
-EOT;
-    }
-
-    private function getObjectTable(string $responseTitle, string $rows)
-    {
-        return <<<EOT
-{$responseTitle}
-
-| Name  | Type  | Description | Required | Constrain | Example |
-|-------|-------|-------------|----------|-----------|---------| 
+| Name  | Type  | Description | Required | Constraint | Example |
+|-------|-------|-------------|----------|------------|---------| 
 {$rows}        
 EOT;
     }

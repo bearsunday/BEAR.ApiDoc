@@ -13,7 +13,7 @@ class DocParamTest extends TestCase
     public function testFromParameter(): void
     {
         $param = new ReflectionParameter([FakeIndex::class, 'onGet'], 'id');
-        $docParam = new DocParam($param, new TagParam('', ''));
+        $docParam = new DocParam($param, new TagParam('', ''), null);
         $this->assertInstanceOf(DocParam::class, $docParam);
         $this->assertSame('id', $docParam->name);
         $this->assertSame('string', $docParam->type);

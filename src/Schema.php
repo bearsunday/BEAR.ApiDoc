@@ -30,9 +30,6 @@ final class Schema
     /** @var string */
     public $type;
 
-    /** @var string */
-    private $name;
-
     /** @var SplFileInfo */
     public $file;
 
@@ -41,9 +38,6 @@ final class Schema
 
     /** @var object */
     private $schema;
-
-    /** @var array */
-    private $example;
 
     public function __construct(SplFileInfo $file, object $schema)
     {
@@ -59,7 +53,7 @@ final class Schema
         }
     }
 
-    public function title()
+    public function title(): string
     {
         $title = $this->title ? sprintf('%s: %s', ucfirst($this->type), $this->title) : ucfirst($this->type);
 
@@ -69,12 +63,12 @@ final class Schema
     public function toStringTypeArray(): string
     {
         $type = $this->getItemType($this->schema->items);
-        $constraint = (string) new SchemaConstrains($this->schema->items, $this->file);
+        $constraint = (string) new SchemaConstraints($this->schema->items, $this->file);
 
         return <<<EOT
 {$this->title()}
 
-| Item Type |  Constrain |
+| Item Type |  Constraint |
 |-----------|------------|
 | {$type} | {$constraint} |         
 EOT;
@@ -101,16 +95,14 @@ EOT;
         foreach ($schema->properties as $name => $property) {
             assert(is_string($name));
             assert(is_object($property));
-            /** @var string */
             $title = $property->title ?? ''; // @phpstan-ignore-line
             $description = $property->description ?? ''; // @phpstan-ignore-line
             $titleDescrptipon = $title && $description ? sprintf('%s - %s', $title, $description) : $title . $description;
-            /** @var string */
             $type = $this->getType($property, $schema);
-            $constrain = new SchemaConstrains($property, $this->file);
+            $constraint = new SchemaConstraints($property, $this->file);
             $isOptional = ! isset($requierd[$name]);
             $example = $property->example ?? '';
-            $this->props[$name] = new SchemaProp($name, $type, $isOptional, $titleDescrptipon, $constrain, (string) $example);
+            $this->props[$name] = new SchemaProp($name, $type, $isOptional, $titleDescrptipon, $constraint, (string) $example);
         }
     }
 
@@ -128,7 +120,7 @@ EOT;
     }
 
     /**
-     * @param string|array $type
+     * @param string|list<string> $type
      */
     private function returnType($type): string
     {

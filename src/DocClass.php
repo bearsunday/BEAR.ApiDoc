@@ -26,12 +26,6 @@ use const PHP_EOL;
  */
 final class DocClass
 {
-    /** @var string */
-    private $summary = '';
-
-    /** @var string */
-    private $description = '';
-
     /** @var Reader */
     private $reader;
 
@@ -40,9 +34,6 @@ final class DocClass
 
     /** @var string */
     private $responseSchemaDir;
-
-    /** @var string|TagLinks */
-    private $links = '';
 
     /** @var ArrayObject */
     private $modelRepository;
@@ -77,7 +68,10 @@ final class DocClass
 EOT;
     }
 
-    private function classTag(ReflectionClass $class)
+    /**
+     * @return array{string, string, string}
+     */
+    private function classTag(ReflectionClass $class): array
     {
         $factory = DocBlockFactory::createInstance();
         $docComment = $class->getDocComment();

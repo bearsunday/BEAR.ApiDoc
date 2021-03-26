@@ -35,12 +35,13 @@ use function substr;
 
 final class DocApp
 {
+    /** @var Meta */
     private $meta;
 
     /** @var DocClass */
     private $docClass;
 
-    /** @var array */
+    /** @var array<string, string> */
     private $routes;
 
     /** @var string */
@@ -92,23 +93,12 @@ final class DocApp
     private function getRouterMap(InjectorInterface $injector): ?Map
     {
         try {
-            /** @var RouterContainer */
             $routerContainer = $injector->getInstance(RouterContainer::class);
+            assert($routerContainer instanceof RouterContainer);
 
             return $routerContainer->getMap();
         } catch (Unbound $e) {
             return null;
         }
-    }
-
-    private function getPath(string $path): string
-    {
-        foreach ($this->map as $route) {
-            if ($route->name === $path) {
-                return $route->path;
-            }
-        }
-
-        return $path;
     }
 }

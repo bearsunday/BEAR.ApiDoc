@@ -9,16 +9,16 @@ use function sprintf;
 final class SchemaProp
 {
     /**
-     * @var SchemaConstrains
+     * @var SchemaConstraints
      * @readonly
      */
-    public $constrains;
+    public $constraints;
 
     /**
      * @var string
      * @readonly
      */
-    public $descripton;
+    public $description;
 
     /** @var string */
     public $example;
@@ -32,20 +32,20 @@ final class SchemaProp
     /** @var bool */
     private $isOptional;
 
-    public function __construct(string $name, string $type, bool $isOptional, string $description, SchemaConstrains $constrains, string $example)
+    public function __construct(string $name, string $type, bool $isOptional, string $description, SchemaConstraints $constrains, string $example)
     {
         $this->name = $name;
         $this->type = $type;
         $this->isOptional = $isOptional;
-        $this->descripton = $description;
-        $this->constrains = $constrains;
+        $this->description = $description;
+        $this->constraints = $constrains;
         $this->example = $example;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        $requred = $this->isOptional ? 'Optional' : 'Required';
+        $required = $this->isOptional ? 'Optional' : 'Required';
 
-        return sprintf('| %s | %s | %s | %s | %s | %s |', $this->name, $this->type, $this->descripton, $requred, (string) $this->constrains, $this->example);
+        return sprintf('| %s | %s | %s | %s | %s | %s |', $this->name, $this->type, $this->description, $required, (string) $this->constraints, $this->example);
     }
 }

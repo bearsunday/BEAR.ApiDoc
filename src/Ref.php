@@ -20,7 +20,10 @@ use const FILTER_VALIDATE_URL;
 
 final class Ref
 {
-    /** @var array */
+    /**
+     * @var string
+     * @readonly
+     */
     public $title;
 
     /**
@@ -29,13 +32,22 @@ final class Ref
      */
     public $type = '';
 
-    /** @var object */
+    /**
+     * @var object
+     * @readonly
+     */
     public $json;
 
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     public $href;
 
-    /** @var object */
+    /**
+     * @var object
+     * @readonly
+     */
     public $schema;
 
     public function __construct(string $ref, SplFileInfo $file, object $schema)
