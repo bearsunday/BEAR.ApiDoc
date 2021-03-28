@@ -14,32 +14,34 @@ final class DocParam
      * @var string
      * @readonly
      */
-    public $name;
+    private $name;
 
     /**
      * @var string
      * @readonly
      */
-    public $type;
+    private $type;
 
     /**
      * @var string
      * @readonly
      */
-    public $descripton;
+    private $descripton;
 
     /**
      * @var bool
      * @readonly
      */
-    public $isOptional;
+    private $isOptional;
 
     /** @var string  */
     private $default = '';
 
     /** @var string  */
     private $example = '';
-    public $constains;
+
+    /** @var SchemaConstrains */
+    private $constaints;
 
     public function __construct(
         ReflectionParameter $parameter,
@@ -59,8 +61,9 @@ final class DocParam
 
     private function setByProp(SchemaProp $prop): void
     {
-        $this->constains = $prop->constrains;
+        $this->constaints = $prop->constrains;
         if (! $this->descripton) {
+            /** @psalm-suppress InaccessibleProperty */
             $this->descripton = $prop->descripton;
         }
     }
@@ -69,6 +72,6 @@ final class DocParam
     {
         $requred = $this->isOptional ? 'Optional' : 'Required';
 
-        return sprintf('| %s | %s | %s | %s | %s |', $this->name, $this->type, $this->descripton, $this->default, $this->example);
+        return sprintf('| %s | %s | %s | %s | %s | %s |', $this->name, $this->type, $this->descripton, $this->default, $this->constaints, $this->example);
     }
 }

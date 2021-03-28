@@ -10,6 +10,7 @@ This is the summary of Address. line 2
 
 ## GET
 
+
 ### Request
 (No parameters required)
 

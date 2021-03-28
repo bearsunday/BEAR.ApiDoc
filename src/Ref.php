@@ -20,7 +20,7 @@ use const FILTER_VALIDATE_URL;
 
 final class Ref
 {
-    /** @var array */
+    /** @var string */
     public $title;
 
     /**
@@ -37,6 +37,9 @@ final class Ref
 
     /** @var object */
     public $schema;
+
+    /** @var string  */
+    private $fileName;
 
     public function __construct(string $ref, SplFileInfo $file, object $schema)
     {
@@ -55,6 +58,7 @@ final class Ref
 
         assert(isset($target->type));
         $this->json = $target;
+        /** @psalm-suppress InaccessibleProperty */
         $this->type = $target->type;
         $this->href = $path;
         $this->title = $target->title ?? $path;
@@ -64,6 +68,7 @@ final class Ref
     {
         [$filePath, $href] = $this->getFilePath($ref, $file);
         $this->json = $schema = json_decode((string) file_get_contents($filePath));
+        /** @psalm-suppress InaccessibleProperty */
         $this->type = $schema->type ?? '';
         $this->href = sprintf('schema/%s', $ref);
         $this->title = $schema->title ?? '';

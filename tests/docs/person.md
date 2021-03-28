@@ -2,10 +2,11 @@
 
 ## GET
 
+
 ### Request
 | Name  | Type  | Description | Default | Example |
 |-------|-------|-------------|---------|---------| 
-| id | string | The unique ID of the person. | koriym |  |
+| id | string | The unique ID of the person. | koriym |  |  |
         
 
 ### Response

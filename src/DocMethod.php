@@ -17,17 +17,13 @@ use const PHP_EOL;
 final class DocMethod
 {
     /** @var string */
+    private $title;
+
+    /** @var string */
+    private $description;
+
+    /** @var string */
     private $httpMethod;
-
-    /**
-     * @var string
-     * @readonly
-     */
-    private $summary = '';
-
-    /** @var string
-     * @readonly */
-    private $description = '';
 
     /**
      * @var array<int, DocParam>
@@ -39,7 +35,7 @@ final class DocMethod
      * @var Schema
      * @readonly
      */
-    private $response = [];
+    private $response;
 
     /**
      * Return docBloc and parameter metas of method
@@ -51,12 +47,11 @@ final class DocMethod
         $docComment = $method->getDocComment();
         if ($docComment) {
             $docblock = $factory->create($docComment);
-            $this->summary = $docblock->getSummary();
+            $this->title = $docblock->getSummary();
             $this->description = (string) $docblock->getDescription();
             $tagParams = $this->getTagParams($docblock);
         }
 
-        /** @var array<string, TagParam>|null */
         $tagParams = $tagParams ?? null;
         $this->params = $this->getDocParamas($method, $tagParams, $request);
         $this->response = $response;
@@ -102,6 +97,7 @@ final class DocMethod
     {
         $format = <<<EOT
 ## %s
+{$this->lineString($this->title)}{$this->lineString($this->description)}
 
 ### Request
 %s
@@ -141,27 +137,17 @@ EOT;
         if ($this->response === null) {
             return '(No response body)';
         }
+
         if ($this->response->type === 'array') {
             return $this->response->toStringTypeArray();
         }
+
         $rows = '';
         foreach ($this->response->props as $prop) {
             $rows .= (string) $prop . PHP_EOL;
         }
-        $view = $this->getObjectTable($this->response->title(), $rows);
 
-        return $view;
-    }
-
-    private function getArrayResponseView(string $responseTitle, string $rows)
-    {
-        return <<<EOT
-{$responseTitle}
-
-| Type  | Name | Example |
-|-------|------|---------|
-{$rows}        
-EOT;
+        return $this->getObjectTable($this->response->title(), $rows);
     }
 
     private function getObjectTable(string $responseTitle, string $rows)
@@ -173,5 +159,10 @@ EOT;
 |-------|-------|-------------|----------|-----------|---------| 
 {$rows}        
 EOT;
+    }
+
+    private function lineString(?string $string): string
+    {
+        return ! $string ? '' : $string . PHP_EOL . PHP_EOL;
     }
 }

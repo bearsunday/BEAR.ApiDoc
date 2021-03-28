@@ -7,15 +7,18 @@ namespace BEAR\ApiDoc;
 use ArrayObject;
 use BEAR\Resource\Annotation\JsonSchema;
 use Doctrine\Common\Annotations\Reader;
+use phpDocumentor\Reflection\DocBlock\Tags\Link;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use ReflectionMethod;
 use SplFileInfo;
 
+use function assert;
 use function file_get_contents;
 use function implode;
 use function in_array;
 use function is_file;
+use function is_object;
 use function json_decode;
 use function sprintf;
 
@@ -26,12 +29,6 @@ use const PHP_EOL;
  */
 final class DocClass
 {
-    /** @var string */
-    private $summary = '';
-
-    /** @var string */
-    private $description = '';
-
     /** @var Reader */
     private $reader;
 
@@ -40,9 +37,6 @@ final class DocClass
 
     /** @var string */
     private $responseSchemaDir;
-
-    /** @var string|TagLinks */
-    private $links = '';
 
     /** @var ArrayObject */
     private $modelRepository;
@@ -77,7 +71,10 @@ final class DocClass
 EOT;
     }
 
-    private function classTag(ReflectionClass $class)
+    /**
+     * @return array{0: string, 1:string, 2:string}
+     */
+    private function classTag(ReflectionClass $class): array
     {
         $factory = DocBlockFactory::createInstance();
         $docComment = $class->getDocComment();
@@ -88,7 +85,9 @@ EOT;
         $docblock = $factory->create($docComment);
         $summary = $docblock->getSummary() . PHP_EOL . PHP_EOL;
         $description = (string) $docblock->getDescription() . PHP_EOL . PHP_EOL;
-        $links = (string) new TagLinks($docblock->getTagsByName('link')) . PHP_EOL . PHP_EOL;
+        /** @var list<Link> $tagLinks */
+        $tagLinks = $docblock->getTagsByName('link');
+        $links = (string) new TagLinks($tagLinks) . PHP_EOL . PHP_EOL;
 
         return [$summary, $description, $links];
     }
@@ -103,11 +102,13 @@ EOT;
 
     private function getResponseSchema(string $dir, string $file): ?Schema
     {
-        if (isset($schemaJson->title) && isset($schemaJson->type) && $schemaJson->type === 'object') {
+        $schemaJson = $this->getSchema($dir, $file);
+        /** @psalm-suppress RedundantConditionGivenDocblockType */
+        if (isset($schemaJson->type) && $schemaJson->type === 'object') {
             $this->modelRepository[] = $schemaJson->title;
         }
 
-        return $this->getSchema($dir, $file);
+        return $schemaJson;
     }
 
     private function getSchema(string $dir, string $file): ?Schema
@@ -118,6 +119,7 @@ EOT;
         }
 
         $schemaJson = json_decode((string) file_get_contents($schemaFile));
+        assert(is_object($schemaJson));
         $fileInfo = new SplFileInfo($schemaFile);
 
         return new Schema($fileInfo, $schemaJson);
