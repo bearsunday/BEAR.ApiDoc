@@ -9,6 +9,6 @@
 ### Response
 [Array: Numbers](schema/numbers.json)
 
-| Item Type |  Constrain |
+| Item Type |  Constraint |
 |-----------|------------|
 | int | {"uniqueItems":true} |                

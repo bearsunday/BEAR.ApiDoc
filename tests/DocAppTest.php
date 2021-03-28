@@ -13,5 +13,6 @@ class DocAppTest extends TestCase
     {
         $docApp = new DocApp('FakeVendor\FakeProject');
         $docApp(__DIR__ . '/docs', 'app');
+        $this->assertFileExists(__DIR__ . '/docs/address.md');
     }
 }

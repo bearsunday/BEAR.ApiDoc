@@ -9,7 +9,7 @@
 ### Response
 [Object: Calendar](schema/calendar.json)
 
-| Name  | Type  | Description | Required | Constrain | Example |
+| Name  | Type  | Description | Required | Constraint | Example |
 |-------|-------|-------------|----------|-----------|---------| 
 | dtstart | string | Event starting time | Optional |  |  |
 | dtend | string | Event ending time | Optional |  |  |

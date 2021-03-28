@@ -9,7 +9,7 @@
 ### Response
 [Object: Array](schema/array.json)
 
-| Name  | Type  | Description | Required | Constrain | Example |
+| Name  | Type  | Description | Required | Constraint | Example |
 |-------|-------|-------------|----------|-----------|---------| 
 | fruits | array |  | Optional | {"items":{"type":"string"}} |  |
 | vegetables | array |  | Optional | {"items":{"$ref":"#\/definitions\/veggie"}} |  |

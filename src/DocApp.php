@@ -21,6 +21,7 @@ use RecursiveDirectoryIterator;
 use ReflectionClass;
 use SplFileInfo;
 
+use function array_unique;
 use function assert;
 use function class_exists;
 use function copy;
@@ -81,16 +82,20 @@ final class DocApp
     public function __invoke(string $docDir, string $scheme): void
     {
         $generator = $this->meta->getGenerator($scheme);
+        $paths = [];
         foreach ($generator as $meta) {
             $path = $this->routes[$meta->uriPath] ?? $meta->uriPath;
             $classView = ($this->docClass)($path, new ReflectionClass($meta->class));
             $file = sprintf('%s/%s.md', $docDir, substr($meta->uriPath, 1));
             file_put_contents($file, $classView);
+            $paths[$path] = substr($meta->uriPath, 1);
         }
 
         $outputDir = sprintf('%s/schema', $docDir);
-//        $models = array_unique((array) $this->modelRepository);
+        $objects = array_unique((array) $this->modelRepository);
         ! is_dir($outputDir) && ! mkdir($outputDir) && ! is_dir($outputDir);
+        $index = (string) new Index($this->meta->name, '', $paths, $objects);
+        file_put_contents(sprintf('%s/index.md', $docDir), $index);
         $this->copySchema($this->responseSchemaDir, $outputDir);
     }
 

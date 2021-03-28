@@ -67,12 +67,12 @@ final class Schema
     public function toStringTypeArray(): string
     {
         $type = $this->getItemType($this->schema->items);
-        $constraint = (string) new SchemaConstrains($this->schema->items, $this->file);
+        $constraint = (string) new SchemaConstraints($this->schema->items, $this->file);
 
         return <<<EOT
 {$this->title()}
 
-| Item Type |  Constrain |
+| Item Type |  Constraint |
 |-----------|------------|
 | {$type} | {$constraint} |         
 EOT;
@@ -107,11 +107,11 @@ EOT;
             $titleDescrptipon = $title && $description ? sprintf('%s - %s', $title, $description) : $title . $description;
             /** @var string */
             $type = $this->getType($property, $schema);
-            $constrain = new SchemaConstrains($property, $this->file);
+            $constraint = new SchemaConstraints($property, $this->file);
             $isOptional = ! isset($requierd[$name]);
             $example = $property->example ?? '';
             /** @psalm-suppress InaccessibleProperty */
-            $this->props[$name] = new SchemaProp($name, $type, $isOptional, $titleDescrptipon, $constrain, (string) $example);
+            $this->props[$name] = new SchemaProp($name, $type, $isOptional, $titleDescrptipon, $constraint, (string) $example);
         }
     }
 

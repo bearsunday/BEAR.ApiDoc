@@ -38,12 +38,8 @@ final class Ref
     /** @var object */
     public $schema;
 
-    /** @var string  */
-    private $fileName;
-
     public function __construct(string $ref, SplFileInfo $file, object $schema)
     {
-        $this->fileName = $file->getFilename();
         $isInlineRef = $ref[0] === '#';
         $isInlineRef ? $this->getInlineRef($ref, $file, $schema) :  $this->getExternalRef($ref, $file);
     }

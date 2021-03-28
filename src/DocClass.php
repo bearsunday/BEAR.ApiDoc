@@ -105,7 +105,7 @@ EOT;
         $schemaJson = $this->getSchema($dir, $file);
         /** @psalm-suppress RedundantConditionGivenDocblockType */
         if (isset($schemaJson->type) && $schemaJson->type === 'object') {
-            $this->modelRepository[] = $schemaJson->title;
+            $this->modelRepository[$schemaJson->title] = $file;
         }
 
         return $schemaJson;

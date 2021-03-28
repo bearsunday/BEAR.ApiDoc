@@ -16,10 +16,16 @@ use const PHP_EOL;
 
 final class DocMethod
 {
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     private $title;
 
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     private $description;
 
     /** @var string */
@@ -95,9 +101,11 @@ final class DocMethod
 
     public function __toString()
     {
+        $title = $this->title;
+        $description = $this->description;
         $format = <<<EOT
 ## %s
-{$this->lineString($this->title)}{$this->lineString($this->description)}
+{$this->lineString($title)}{$this->lineString($description)}
 
 ### Request
 %s
@@ -155,7 +163,7 @@ EOT;
         return <<<EOT
 {$responseTitle}
 
-| Name  | Type  | Description | Required | Constrain | Example |
+| Name  | Type  | Description | Required | Constraint | Example |
 |-------|-------|-------------|----------|-----------|---------| 
 {$rows}        
 EOT;

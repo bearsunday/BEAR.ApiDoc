@@ -14,7 +14,7 @@ use function sprintf;
 
 use const FILTER_VALIDATE_URL;
 
-final class SchemaConstrains
+final class SchemaConstraints
 {
     /**
      * @var array<string, mixed>

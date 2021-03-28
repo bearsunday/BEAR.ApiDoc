@@ -9,6 +9,6 @@
 ### Response
 [Array: Collection of Tickets](schema/tickets.json)
 
-| Item Type |  Constrain |
+| Item Type |  Constraint |
 |-----------|------------|
 | object | {"$ref":"[ticket.json](schema\/ticket.json)"} |                

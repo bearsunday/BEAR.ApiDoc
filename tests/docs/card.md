@@ -9,7 +9,7 @@
 ### Response
 [Object: Card](schema/card.json)
 
-| Name  | Type  | Description | Required | Constrain | Example |
+| Name  | Type  | Description | Required | Constraint | Example |
 |-------|-------|-------------|----------|-----------|---------| 
 | fn | string | Formatted Name | Optional |  |  |
 | familyName | string |  | Optional |  |  |

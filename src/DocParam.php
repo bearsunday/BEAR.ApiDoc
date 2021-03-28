@@ -40,7 +40,7 @@ final class DocParam
     /** @var string  */
     private $example = '';
 
-    /** @var SchemaConstrains */
+    /** @var SchemaConstraints */
     private $constaints;
 
     public function __construct(
@@ -61,7 +61,7 @@ final class DocParam
 
     private function setByProp(SchemaProp $prop): void
     {
-        $this->constaints = $prop->constrains;
+        $this->constaints = $prop->constraints;
         if (! $this->descripton) {
             /** @psalm-suppress InaccessibleProperty */
             $this->descripton = $prop->descripton;

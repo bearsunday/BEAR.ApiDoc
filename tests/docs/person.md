@@ -12,7 +12,7 @@
 ### Response
 [Object: Person](schema/person.json)
 
-| Name  | Type  | Description | Required | Constrain | Example |
+| Name  | Type  | Description | Required | Constraint | Example |
 |-------|-------|-------------|----------|-----------|---------| 
 | firstName | string | The person's first name. | Optional |  |  |
 | lastName | string | The person's last name. | Optional |  |  |
