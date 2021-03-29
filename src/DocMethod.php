@@ -6,7 +6,6 @@ namespace BEAR\ApiDoc;
 
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\Link;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
