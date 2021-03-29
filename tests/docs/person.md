@@ -7,7 +7,7 @@
 | Name  | Type  | Description | Default | Example |
 |-------|-------|-------------|---------|---------| 
 | id | string | The unique ID of the person. | koriym |  |  |
-        
+
 
 ### Response
 [Object: Person](schema/person.json)
@@ -17,4 +17,16 @@
 | firstName | string | The person's first name. | Optional |  |  |
 | lastName | string | The person's last name. | Optional |  |  |
 | age | int | Age in years which must be equal to or greater than zero. | Optional | {"minimum":0} |  |
-               
+
+#### Embedded
+
+| rel | src |
+|-----|-----|
+| org | [/org?id={org_id}](org.md) |
+
+#### Links
+
+| rel | href |
+|-----|-----|
+| card | [/card?id={card_id}](card.md) |
+| tickets | [/tickets](tickets.md) |

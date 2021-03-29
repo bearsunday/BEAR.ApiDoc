@@ -46,7 +46,8 @@ final class Index
         }
 
         return <<<EOT
-# {$this->title}
+# API Doc
+ * {$this->title}
 
 {$this->description}
 

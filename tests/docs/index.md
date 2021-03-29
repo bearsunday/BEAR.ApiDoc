@@ -1,4 +1,5 @@
-# FakeVendor\FakeProject
+# API Doc
+ * FakeVendor\FakeProject
 
 
 
@@ -9,6 +10,7 @@
  * [/card](card.md) 
  * [/index](index.md) 
  * [/numbers](numbers.md) 
+ * [/org](org.md) 
  * [/person](person.md) 
  * [/ticket/{id}](ticket.md) 
  * [/tickets](tickets.md) 

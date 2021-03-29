@@ -26,4 +26,3 @@ This is the summary of Address. line 2
 | region | int&#124;string |  | Optional |  |  |
 | postal-code | string |  | Optional |  |  |
 | country-name | string |  | Optional |  |  |
-               

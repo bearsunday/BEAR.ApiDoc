@@ -31,4 +31,3 @@
 | title | string |  | Optional |  |  |
 | role | string |  | Optional |  |  |
 | org | object |  | Optional | {"properties":{"organizationName":{"type":"string"},"organizationUnit":{"type":"string"}}} |  |
-               

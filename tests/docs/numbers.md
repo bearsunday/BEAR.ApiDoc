@@ -11,4 +11,4 @@
 
 | Item Type |  Constraint |
 |-----------|------------|
-| int | {"uniqueItems":true} |                
+| int | {"uniqueItems":true} |         

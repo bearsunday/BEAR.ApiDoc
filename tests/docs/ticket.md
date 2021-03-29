@@ -7,10 +7,10 @@
 | Name  | Type  | Description | Default | Example |
 |-------|-------|-------------|---------|---------| 
 | id | string | The unique identifier for a ticket. |  |  |  |
-        
+
 
 ### Response
-(No response body)       
+(No response body)
 ## POST
 
 
@@ -20,7 +20,7 @@
 | title | string |  |  |  |  |
 | description | string |  | default desc |  |  |
 | assignee | string |  | default assignee |  |  |
-        
+
 
 ### Response
-(No response body)       
+(No response body)

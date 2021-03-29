@@ -97,7 +97,7 @@ EOT;
         $schema = $this->reader->getMethodAnnotation($method, JsonSchema::class);
         [$request, $response] = $schema instanceof JsonSchema ? [$this->getSchema($this->requestSchemaDir, $schema->params), $this->getResponseSchema($this->responseSchemaDir, $schema->schema)] : [null, null];
 
-        return (string) new DocMethod($method, $request, $response);
+        return (string) new DocMethod($this->reader, $method, $request, $response);
     }
 
     private function getResponseSchema(string $dir, string $file): ?Schema

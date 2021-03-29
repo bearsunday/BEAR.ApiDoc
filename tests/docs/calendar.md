@@ -21,4 +21,3 @@
 | rrule | string | Recurrence rule | Optional |  |  |
 | category | string |  | Optional |  |  |
 | description | string |  | Optional |  |  |
-               

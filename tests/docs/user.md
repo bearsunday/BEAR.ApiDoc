@@ -8,7 +8,7 @@
 |-------|-------|-------------|---------|---------| 
 | id | string | User ID |  |  |  |
 | options | string | User Options | guest |  |  |
-        
+
 
 ### Response
 [Object: User](schema/user.json)
@@ -23,7 +23,19 @@
 | email | string | The email address of the user | Optional | {"format":"email"} |  |
 | enabled | boolean | Whether the user is enabled or not | Optional |  |  |
 | age | int | The age of the user | Optional | {"$ref":"[age.json](schema\/age.json)"} | 29 |
-               
+
+#### Embedded
+
+| rel | src |
+|-----|-----|
+| ticket | [/ticket/{id}](ticket/.md) |
+
+#### Links
+
+| rel | href |
+|-----|-----|
+| person | [/person](person.md) |
+| calendar | [/calendar](calendar.md) |
 ## POST
 Create user
 
@@ -36,7 +48,7 @@ Create user with given name and age
 |-------|-------|-------------|---------|---------| 
 | name | string | The name of the user |  |  |  |
 | age | int | The age of the user |  |  |  |
-        
+
 
 ### Response
-(No response body)       
+(No response body)

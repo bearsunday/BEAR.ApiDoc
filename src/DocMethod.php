@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+use BEAR\Resource\Annotation\Embed;
+use BEAR\Resource\Annotation\Link;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
 
+use function implode;
 use function sprintf;
 use function strtoupper;
 use function substr;
@@ -43,11 +48,18 @@ final class DocMethod
      */
     private $response;
 
+    /** @var Reader */
+    private $reader;
+
+    /** @var ReflectionMethod  */
+    private $method;
+
     /**
      * Return docBloc and parameter metas of method
      */
-    public function __construct(ReflectionMethod $method, ?Schema $request, ?Schema $response)
+    public function __construct(Reader $reader, ReflectionMethod $method, ?Schema $request, ?Schema $response)
     {
+        $this->method = $method;
         $this->httpMethod = substr($method->name, 2);
         $factory = DocBlockFactory::createInstance();
         $docComment = $method->getDocComment();
@@ -61,6 +73,7 @@ final class DocMethod
         $tagParams = $tagParams ?? null;
         $this->params = $this->getDocParamas($method, $tagParams, $request);
         $this->response = $response;
+        $this->reader = $reader;
     }
 
     /**
@@ -111,10 +124,15 @@ final class DocMethod
 %s
 
 ### Response
-%s       
+%s
 EOT;
 
-        return sprintf($format, strtoupper($this->httpMethod), $this->toStringRequest(), $this->toStringResponse());
+        return sprintf(
+            $format,
+            strtoupper($this->httpMethod),
+            $this->toStringRequest(),
+            $this->toStringResponse()
+        );
     }
 
     private function toStringRequest(): string
@@ -136,7 +154,7 @@ EOT;
         return <<<EOT
 | Name  | Type  | Description | Default | Example |
 |-------|-------|-------------|---------|---------| 
-{$table}        
+{$table}
 EOT;
     }
 
@@ -155,7 +173,9 @@ EOT;
             $rows .= (string) $prop . PHP_EOL;
         }
 
-        return $this->getObjectTable($this->response->title(), $rows);
+        $object =  $this->getObjectTable($this->response->title(), $rows);
+
+        return $object . $this->getEmbeds() . $this->getLinks();
     }
 
     private function getObjectTable(string $responseTitle, string $rows)
@@ -165,12 +185,67 @@ EOT;
 
 | Name  | Type  | Description | Required | Constraint | Example |
 |-------|-------|-------------|----------|-----------|---------| 
-{$rows}        
+{$rows}
 EOT;
     }
 
     private function lineString(?string $string): string
     {
         return ! $string ? '' : $string . PHP_EOL . PHP_EOL;
+    }
+
+    private function getEmbeds(): string
+    {
+        /** @var list<Embed> $annotations */
+        $annotations = $this->reader->getMethodAnnotations($this->method);
+        $items = [];
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Embed) {
+                $items[] = sprintf('| %s | %s |', $annotation->rel, (string) new Src($annotation->src));
+            }
+        }
+
+        $rows = implode(PHP_EOL, $items);
+
+        if (! $rows) {
+            return '';
+        }
+
+        return <<<EOT
+
+#### Embedded
+
+| rel | src |
+|-----|-----|
+{$rows}
+EOT;
+    }
+
+    private function getLinks(): string
+    {
+        /** @var list<Link> $annotations */
+        $annotations = $this->reader->getMethodAnnotations($this->method);
+        $items = [];
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Link) {
+                $items[] = sprintf('| %s | %s |', $annotation->rel, (string) new Src($annotation->href));
+            }
+        }
+
+        $rows = implode(PHP_EOL, $items);
+
+        if (! $rows) {
+            return '';
+        }
+
+        return <<<EOT
+
+
+#### Links
+
+| rel | href |
+|-----|-----|
+{$rows}
+EOT;
     }
 }
