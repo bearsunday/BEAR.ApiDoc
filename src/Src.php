@@ -8,6 +8,7 @@ use Rize\UriTemplate;
 use Rize\UriTemplate\Node\Literal;
 
 use function assert;
+use function is_array;
 use function ltrim;
 use function parse_url;
 use function preg_replace;
@@ -25,7 +26,7 @@ final class Src
         $this->src = $src;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $uriTemplate = new UriTemplate($this->src);
         $parser = $uriTemplate->getParser();
@@ -34,6 +35,7 @@ final class Src
         assert($literal instanceof Literal);
         $token = $literal->getToken();
         $parseUrl = parse_url(substr($token, 1));
+        assert(is_array($parseUrl));
         assert(isset($parseUrl['path']));
         $resourcePath = substr($parseUrl['path'], 1);
 

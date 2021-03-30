@@ -6,8 +6,8 @@
 ### Request
 | Name  | Type  | Description | Default | Example |
 |-------|-------|-------------|---------|---------| 
-| id | string | User ID |  |  |  |
-| options | string | User Options | guest |  |  |
+| id | string | User ID |  |  | Required |  |
+| options | string | User Options | guest |  | Optional |  |
 
 
 ### Response
@@ -46,8 +46,8 @@ Create user with given name and age
 ### Request
 | Name  | Type  | Description | Default | Example |
 |-------|-------|-------------|---------|---------| 
-| name | string | The name of the user |  |  |  |
-| age | int | The age of the user |  |  |  |
+| name | string | The name of the user |  |  | Required |  |
+| age | int | The age of the user |  |  | Required |  |
 
 
 ### Response

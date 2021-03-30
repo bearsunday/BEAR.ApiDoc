@@ -10,6 +10,6 @@ class SrcTest extends TestCase
 {
     public function testSrc(): void
     {
-        $this->assertSame('[/org{?id}](org.md)', (string) new Src('/org{?id}'));
+        $this->assertSame('[<code>/org{?id}</code>](rg.md)', (string) new Src('/org{?id}'));
     }
 }

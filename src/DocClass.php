@@ -38,12 +38,15 @@ final class DocClass
     /** @var string */
     private $responseSchemaDir;
 
-    /** @var ArrayObject */
+    /** @var ArrayObject<string, string> */
     private $modelRepository;
 
-    /** @var ArrayObject */
+    /** @var ArrayObject<string, string> */
     private $semanticDictionary;
 
+    /**
+     * @param ArrayObject<string, string> $modelRepository
+     */
     public function __construct(Reader $reader, string $requestSchemaDir, string $responseSchemaDir, ArrayObject $modelRepository)
     {
         $this->reader = $reader;
@@ -52,6 +55,10 @@ final class DocClass
         $this->modelRepository = $modelRepository;
     }
 
+    /**
+     * @param ReflectionClass<object>     $class
+     * @param ArrayObject<string, string> $semanticDictionary
+     */
     public function __invoke(string $path, ReflectionClass $class, ArrayObject $semanticDictionary): string
     {
         $this->semanticDictionary = $semanticDictionary;
@@ -76,6 +83,8 @@ EOT;
     }
 
     /**
+     * @param ReflectionClass<object> $class
+     *
      * @return array{0: string, 1:string, 2:string}
      */
     private function classTag(ReflectionClass $class): array

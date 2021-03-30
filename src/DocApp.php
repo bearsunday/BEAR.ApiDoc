@@ -51,11 +51,8 @@ final class DocApp
     /** @var string */
     private $responseSchemaDir;
 
-    /** @var ArrayObject<mixed, mixed> */
+    /** @var ArrayObject<string, string> */
     private $modelRepository;
-
-    /** @var ArrayObject */
-    private $semanticDictionary;
 
     public function __construct(string $appName)
     {
@@ -66,12 +63,13 @@ final class DocApp
         $injector = new Injector(new $appModule($this->meta, new Module\AppMetaModule($this->meta)));
         assert($injector instanceof InjectorInterface);
         $reader = $injector->getInstance(Reader::class);
-        /** @var string responseSchemaDir */
-        $this->responseSchemaDir = $injector->getInstance('', 'json_schema_dir');
+        /** @var string responseSchemaDir $responseSchemaDir */
+        $responseSchemaDir = $injector->getInstance('', 'json_schema_dir');
+        $this->responseSchemaDir = $responseSchemaDir;
         $requestSchemaDir = $injector->getInstance('', 'json_validate_dir');
         assert(is_string($requestSchemaDir));
         $this->modelRepository = new ArrayObject();
-        $this->docClass = new DocClass($reader, $requestSchemaDir, $this->responseSchemaDir, $this->modelRepository, $this->semanticDictionary);
+        $this->docClass = new DocClass($reader, $requestSchemaDir, $this->responseSchemaDir, $this->modelRepository);
         $map = $this->getRouterMap($injector);
         if (! is_iterable($map)) {
             return;
@@ -104,6 +102,9 @@ final class DocApp
         $this->copySchema($this->responseSchemaDir, $outputDir);
     }
 
+    /**
+     * @return ArrayObject<string, string>
+     */
     private function registerAlpsProfile(string $file): ArrayObject
     {
         assert(file_exists($file));
@@ -143,7 +144,7 @@ final class DocApp
         }
     }
 
-    private function getRouterMap(InjectorInterface $injector): ?Map
+    private function getRouterMap(InjectorInterface $injector): ?Map // @phpstan-ignore-line
     {
         try {
             /** @var RouterContainer */

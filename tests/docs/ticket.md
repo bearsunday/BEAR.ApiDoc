@@ -6,7 +6,7 @@
 ### Request
 | Name  | Type  | Description | Default | Example |
 |-------|-------|-------------|---------|---------| 
-| id | string | The unique identifier for a ticket. |  |  |  |
+| id | string | The unique identifier for a ticket. |  |  | Required |  |
 
 
 ### Response
@@ -17,9 +17,9 @@
 ### Request
 | Name  | Type  | Description | Default | Example |
 |-------|-------|-------------|---------|---------| 
-| title | string |  |  |  |  |
-| description | string |  | default desc |  |  |
-| assignee | string |  | default assignee |  |  |
+| title | string |  |  |  | Required |  |
+| description | string |  | default desc |  | Optional |  |
+| assignee | string |  | default assignee |  | Optional |  |
 
 
 ### Response

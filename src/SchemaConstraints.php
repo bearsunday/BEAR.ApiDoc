@@ -22,9 +22,6 @@ final class SchemaConstraints
      */
     public $constrains;
 
-    /**
-     * @param array<string, mixed> $constrains
-     */
     public function __construct(object $property, SplFileInfo $file)
     {
         $constrains = [];
@@ -45,7 +42,7 @@ final class SchemaConstraints
         $this->constrains = $constrains;
     }
 
-    private function getRefLink(string $value, SplFileInfo $file)
+    private function getRefLink(string $value, SplFileInfo $file): string
     {
         if (filter_var($value, FILTER_VALIDATE_URL)) {
             return sprintf('[%s](%s)', $value, $value);
@@ -59,7 +56,7 @@ final class SchemaConstraints
         return $value;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->constrains === [] ? '' : (string) json_encode($this->constrains);
     }

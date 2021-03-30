@@ -41,13 +41,14 @@ final class Ref
     public function __construct(string $ref, SplFileInfo $file, object $schema)
     {
         $isInlineRef = $ref[0] === '#';
-        $isInlineRef ? $this->getInlineRef($ref, $file, $schema) :  $this->getExternalRef($ref, $file);
+        $isInlineRef ? $this->getInlineRef($ref, $schema) :  $this->getExternalRef($ref, $file);
     }
 
-    private function getInlineRef(string $ref, SplFileInfo $file, object $schema): void
+    private function getInlineRef(string $ref, object $schema): void
     {
         $target = $schema;
         $paths = explode('/', substr($ref, 2));
+        $path = '';
         foreach ($paths as $path) {
             $target = $target->{$path};
         }
@@ -56,27 +57,22 @@ final class Ref
         $this->json = $target;
         /** @psalm-suppress InaccessibleProperty */
         $this->type = $target->type;
-        $this->href = $path;
-        $this->title = $target->title ?? $path;
+        $this->title = $target->title ??  $path;
     }
 
     private function getExternalRef(string $ref, SplFileInfo $file): void
     {
-        [$filePath, $href] = $this->getFilePath($ref, $file);
+        $filePath = $this->getFilePath($ref, $file);
         $this->json = $schema = json_decode((string) file_get_contents($filePath));
         /** @psalm-suppress InaccessibleProperty */
         $this->type = $schema->type ?? '';
-        $this->href = sprintf('schema/%s', $ref);
         $this->title = $schema->title ?? '';
     }
 
-    /**
-     * @return array|string[]
-     */
-    private function getFilePath(string $ref, SplFileInfo $file): array
+    private function getFilePath(string $ref, SplFileInfo $file): string
     {
         if (filter_var($ref, FILTER_VALIDATE_URL)) {
-            return [$ref, $ref];
+            return $ref;
         }
 
         $refFile = sprintf('%s/%s', $file->getPath(), $ref);
@@ -84,6 +80,6 @@ final class Ref
             throw new LogicException('Invalid $ref' . $ref);
         }
 
-        return [$refFile, $ref];
+        return $refFile;
     }
 }

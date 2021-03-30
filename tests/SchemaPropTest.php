@@ -18,9 +18,8 @@ class SchemaPropTest extends TestCase
     protected function setUp(): void
     {
         $file = __DIR__ . '/Fake/app/src/var/json_schema/person.json';
-        $age = json_decode(file_get_contents($file))->properties->age;
+        $age = json_decode((string) file_get_contents($file))->properties->age;
 
-        //     public function __construct(string $name, string $type, bool $isOptional, string $description, SchemaConstrains $constrains, string $example)
         $this->prop = new SchemaProp('name', 'type', true, 'desc', new SchemaConstraints($age, new SplFileInfo($file)), '');
     }
 

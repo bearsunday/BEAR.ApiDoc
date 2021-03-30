@@ -34,7 +34,7 @@ final class Index
         $this->objects = $objects;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $paths = $objects = '';
         foreach ($this->paths as $route => $path) {

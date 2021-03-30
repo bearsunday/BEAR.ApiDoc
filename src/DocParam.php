@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
+use ReflectionNamedType;
 use ReflectionParameter;
 
 use function is_array;
@@ -33,7 +34,7 @@ final class DocParam
      * @var string
      * @readonly
      */
-    private $descripton;
+    private $description;
 
     /**
      * @var bool
@@ -42,17 +43,20 @@ final class DocParam
     private $isOptional;
 
     /** @var string  */
-    private $default = '';
+    private $default;
 
     /** @var string  */
-    private $example = '';
+    private $example;
 
     /** @var SchemaConstraints */
-    private $constaints;
+    private $constraints;
 
-    /** @var ArrayObject */
+    /** @var ArrayObject<string, string> */
     private $semanticDictionary;
 
+    /**
+     * @param ArrayObject<string, string> $semanticDictionary
+     */
     public function __construct(
         ReflectionParameter $parameter,
         TagParam $tagParam,
@@ -60,16 +64,26 @@ final class DocParam
         ArrayObject $semanticDictionary
     ) {
         $this->name = $parameter->name;
-        $this->type = $parameter->getType()->getName() ?: $tagParam->type;
+        $this->type = $this->getType($parameter);
         $this->isOptional = $parameter->isOptional();
         $this->default = $parameter->isDefaultValueAvailable() ? $this->getDefaultString($parameter) : '';
-        $this->descripton = $tagParam->description;
+        $this->description = $tagParam->description;
         $this->example = $prop->example ?? '';
         if ($prop) {
             $this->setByProp($prop);
         }
 
         $this->semanticDictionary = $semanticDictionary;
+    }
+
+    private function getType(ReflectionParameter $parameter): string
+    {
+        $namedType = $parameter->getType();
+        if (! $namedType instanceof ReflectionNamedType) {
+            return '';
+        }
+
+        return (string) $namedType->getName();
     }
 
     private function getDefaultString(ReflectionParameter $parameter): string
@@ -89,17 +103,17 @@ final class DocParam
 
     private function setByProp(SchemaProp $prop): void
     {
-        $this->constaints = $prop->constraints;
-        if (! $this->descripton) {
+        $this->constraints = $prop->constraints;
+        if (! $this->description) {
             /** @psalm-suppress InaccessibleProperty */
-            $this->descripton = $prop->descripton;
+            $this->description = $prop->description;
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        $requred = $this->isOptional ? 'Optional' : 'Required';
+        $required = $this->isOptional ? 'Optional' : 'Required';
 
-        return sprintf('| %s | %s | %s | %s | %s | %s |', $this->name, $this->type, $this->descripton, $this->default, $this->constaints, $this->example);
+        return sprintf('| %s | %s | %s | %s | %s | %s | %s |', $this->name, $this->type, $this->description, $this->default, $this->constraints, $required, $this->example);
     }
 }

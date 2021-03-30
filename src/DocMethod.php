@@ -40,10 +40,10 @@ final class DocMethod
      * @var array<int, DocParam>
      * @readonly
      */
-    private $params = [];
+    private $params;
 
     /**
-     * @var Schema
+     * @var ?Schema
      * @readonly
      */
     private $response;
@@ -55,7 +55,7 @@ final class DocMethod
     private $method;
 
     /**
-     * Return docBloc and parameter metas of method
+     * @param ArrayObject<string, string> $semanticDictionary
      */
     public function __construct(Reader $reader, ReflectionMethod $method, ?Schema $request, ?Schema $response, ArrayObject $semanticDictionary)
     {
@@ -71,17 +71,18 @@ final class DocMethod
         }
 
         $tagParams = $tagParams ?? null;
-        $this->params = $this->getDocParamas($method, $tagParams, $request, $semanticDictionary);
+        $this->params = $this->getDocParams($method, $tagParams, $request, $semanticDictionary);
         $this->response = $response;
         $this->reader = $reader;
     }
 
     /**
      * @param array<string, TagParam>|null $tagParams
+     * @param ArrayObject<string, string>  $semanticDictionary
      *
      * @return array<int, DocParam>
      */
-    private function getDocParamas(ReflectionMethod $method, ?array $tagParams, ?Schema $request, ArrayObject $semanticDictionary): array
+    private function getDocParams(ReflectionMethod $method, ?array $tagParams, ?Schema $request, ArrayObject $semanticDictionary): array
     {
         $parameters = $method->getParameters();
         $docParams = [];
@@ -89,7 +90,7 @@ final class DocMethod
             $name = $parameter->getName();
             $hasTagParam = $tagParams && isset($tagParams[$name]);
             $tagParam = $hasTagParam ? $tagParams[$name] : new TagParam('', ''); // @phpstan-ignore-line
-            $prop = $request->props[$name] ?? null;
+            $prop = $request->props[$name] ?? null; // @phpstan-ignore-line
             $docParams[] = new DocParam($parameter, $tagParam, $prop, $semanticDictionary);
         }
 
@@ -112,7 +113,7 @@ final class DocMethod
         return $tagParams;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $title = $this->title;
         $description = $this->description;
@@ -178,7 +179,7 @@ EOT;
         return $object . $this->getEmbeds() . $this->getLinks();
     }
 
-    private function getObjectTable(string $responseTitle, string $rows)
+    private function getObjectTable(string $responseTitle, string $rows): string
     {
         return <<<EOT
 {$responseTitle}

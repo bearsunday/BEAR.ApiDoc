@@ -25,7 +25,7 @@ final class TagLinks
         $this->links = $links;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $view = [];
         foreach ($this->links as $link) {
