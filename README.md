@@ -36,3 +36,7 @@ Use `title` to describe the term, or `def` to link to a URI where the meaning of
 ```
 
 For more information about ALPS, please visit [alps.io](http://alps.io/)
+
+## Demo
+
+Try the online APIdoc [demo](https://github.com/bearsunday/BEAR.ApiDoc/blob/1.x/tests/docs/index.md).
