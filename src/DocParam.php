@@ -7,8 +7,12 @@ namespace BEAR\ApiDoc;
 use ReflectionParameter;
 
 use function is_array;
-use function print_r;
 use function sprintf;
+use function str_replace;
+use function strtolower;
+use function var_export;
+
+use const PHP_EOL;
 
 final class DocParam
 {
@@ -65,7 +69,7 @@ final class DocParam
     {
         $default = $parameter->getDefaultValue();
         if (is_array($default)) {
-            return print_r($default, true);
+            return str_replace(PHP_EOL, '', strtolower(var_export($default, true)));
         }
 
         return (string) $default;
