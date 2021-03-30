@@ -2,7 +2,7 @@
 
 ## Installation
 
-    composer require bear/api-doc --dev
+    composer require bear/api-doc 1.x-dev --dev
 
 ## Usage
 
