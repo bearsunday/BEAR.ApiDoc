@@ -11,14 +11,20 @@
     "require": {
         "php": "^7.2 || ^8.0",
         "ext-json": "*",
+        "ext-filter": "*",
         "phpdocumentor/reflection-docblock": "^5.2",
-        "koriym/attributes": "^1.0",
-        "bear/resource": "^1.15",
+        "bear/resource": "^1.14",
         "bear/sunday": "^1.5",
-        "bear/aura-router-module": "^2.2"
+        "bear/app-meta": "^1.6",
+        "doctrine/annotations": "^1.12",
+        "ray/di": "^2.12",
+        "rize/uri-template": "^0.3.3",
+        "bear/package": "^1.10"
     },
     "require-dev": {
+        "bear/aura-router-module": "^2.0",
         "bamarni/composer-bin-plugin": "^1.4",
+        "koriym/attributes": "^1.0",
         "phpunit/phpunit": "^9.5"
     },
     "autoload": {
@@ -63,6 +69,7 @@
             "@pcov",
             "@metrics"
         ],
+        "min-check": "~/.composer/vendor/bin/composer-require-checker check --config-file=./.composer-require-checker.config.json",
         "post-install-cmd": "@composer bin all install --ansi",
         "post-update-cmd": "@composer bin all update --ansi"
     },

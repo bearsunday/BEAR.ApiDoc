@@ -11,6 +11,7 @@ use Aura\Router\RouterContainer;
 use BEAR\AppMeta\Meta;
 use BEAR\Package\Module;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 use FilesystemIterator;
 use Koriym\Attributes\AttributeReader;
 use Koriym\Attributes\DualReader;
@@ -61,7 +62,7 @@ final class DocApp
         /** @psalm-suppress all */
         $injector = new Injector(new $appModule($this->meta, new Module\AppMetaModule($this->meta)));
         assert($injector instanceof InjectorInterface);
-        $reader = new DualReader(new AnnotationReader(), new AttributeReader());
+        $reader = $injector->getInstance(Reader::class);
         /** @var string responseSchemaDir */
         $this->responseSchemaDir = $injector->getInstance('', 'json_schema_dir');
         $requestSchemaDir = $injector->getInstance('', 'json_validate_dir');
