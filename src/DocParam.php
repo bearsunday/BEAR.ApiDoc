@@ -6,6 +6,8 @@ namespace BEAR\ApiDoc;
 
 use ReflectionParameter;
 
+use function is_array;
+use function print_r;
 use function sprintf;
 
 final class DocParam
@@ -49,14 +51,24 @@ final class DocParam
         ?SchemaProp $prop
     ) {
         $this->name = $parameter->name;
-        $this->type = (string) $parameter->getType() ?: $tagParam->type;
+        $this->type = $parameter->getType()->getName() ?: $tagParam->type;
         $this->isOptional = $parameter->isOptional();
-        $this->default = $parameter->isDefaultValueAvailable() ? (string) $parameter->getDefaultValue() : '';
+        $this->default = $parameter->isDefaultValueAvailable() ? $this->getDefaultString($parameter) : '';
         $this->descripton = $tagParam->description;
         $this->example = $prop->example ?? '';
         if ($prop) {
             $this->setByProp($prop);
         }
+    }
+
+    private function getDefaultString(ReflectionParameter $parameter): string
+    {
+        $default = $parameter->getDefaultValue();
+        if (is_array($default)) {
+            return print_r($default, true);
+        }
+
+        return (string) $default;
     }
 
     private function setByProp(SchemaProp $prop): void
