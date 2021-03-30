@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+use ArrayObject;
 use ReflectionParameter;
 
 use function is_array;
@@ -49,10 +50,14 @@ final class DocParam
     /** @var SchemaConstraints */
     private $constaints;
 
+    /** @var ArrayObject */
+    private $semanticDictionary;
+
     public function __construct(
         ReflectionParameter $parameter,
         TagParam $tagParam,
-        ?SchemaProp $prop
+        ?SchemaProp $prop,
+        ArrayObject $semanticDictionary
     ) {
         $this->name = $parameter->name;
         $this->type = $parameter->getType()->getName() ?: $tagParam->type;
@@ -63,6 +68,8 @@ final class DocParam
         if ($prop) {
             $this->setByProp($prop);
         }
+
+        $this->semanticDictionary = $semanticDictionary;
     }
 
     private function getDefaultString(ReflectionParameter $parameter): string
@@ -72,7 +79,12 @@ final class DocParam
             return str_replace(PHP_EOL, '', strtolower(var_export($default, true)));
         }
 
-        return (string) $default;
+        $stringDefault = (string) $default;
+        if ($stringDefault) {
+            return $stringDefault;
+        }
+
+        return $this->semanticDictionary[$parameter->name] ?? '';
     }
 
     private function setByProp(SchemaProp $prop): void

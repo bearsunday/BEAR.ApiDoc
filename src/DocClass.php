@@ -41,6 +41,9 @@ final class DocClass
     /** @var ArrayObject */
     private $modelRepository;
 
+    /** @var ArrayObject */
+    private $semanticDictionary;
+
     public function __construct(Reader $reader, string $requestSchemaDir, string $responseSchemaDir, ArrayObject $modelRepository)
     {
         $this->reader = $reader;
@@ -49,8 +52,9 @@ final class DocClass
         $this->modelRepository = $modelRepository;
     }
 
-    public function __invoke(string $path, ReflectionClass $class): string
+    public function __invoke(string $path, ReflectionClass $class, ArrayObject $semanticDictionary): string
     {
+        $this->semanticDictionary = $semanticDictionary;
         [$summary, $description, $links] = $this->classTag($class);
         $methods = $class->getMethods();
         $views = [];
@@ -97,7 +101,7 @@ EOT;
         $schema = $this->reader->getMethodAnnotation($method, JsonSchema::class);
         [$request, $response] = $schema instanceof JsonSchema ? [$this->getSchema($this->requestSchemaDir, $schema->params), $this->getResponseSchema($this->responseSchemaDir, $schema->schema)] : [null, null];
 
-        return (string) new DocMethod($this->reader, $method, $request, $response);
+        return (string) new DocMethod($this->reader, $method, $request, $response, $this->semanticDictionary);
     }
 
     private function getResponseSchema(string $dir, string $file): ?Schema
@@ -122,6 +126,6 @@ EOT;
         assert(is_object($schemaJson));
         $fileInfo = new SplFileInfo($schemaFile);
 
-        return new Schema($fileInfo, $schemaJson);
+        return new Schema($fileInfo, $schemaJson, $this->semanticDictionary);
     }
 }

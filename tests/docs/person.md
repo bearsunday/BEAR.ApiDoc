@@ -14,19 +14,19 @@
 
 | Name  | Type  | Description | Required | Constraint | Example |
 |-------|-------|-------------|----------|-----------|---------| 
-| firstName | string | The person's first name. | Optional |  |  |
-| lastName | string | The person's last name. | Optional |  |  |
+| firstName | string | 名前 | Optional |  |  |
+| familyName | string | [https://schema.org/familyName](https://schema.org/familyName) | Optional |  |  |
 | age | int | Age in years which must be equal to or greater than zero. | Optional | {"minimum":0} |  |
 
 #### Embedded
 
 | rel | src |
 |-----|-----|
-| org | [/org?id={org_id}](org.md) |
+| org | [<code>/org?id={org_id}</code>](rg.md) |
 
 #### Links
 
 | rel | href |
 |-----|-----|
-| card | [/card?id={card_id}](card.md) |
-| tickets | [/tickets](tickets.md) |
+| card | [<code>/card?id={card_id}</code>](ard.md) |
+| tickets | [<code>/tickets</code>](ickets.md) |

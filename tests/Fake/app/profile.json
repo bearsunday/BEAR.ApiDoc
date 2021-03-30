@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/koriym/spec/master/schemas/alps.json",
+  "alps": {
+    "descriptor": [
+      {"id": "firstName", "title": "The person's first name."},
+      {"id": "familyName", "def": "https://schema.org/familyName"},
+      {"id": "age", "title": "Age in years which must be equal to or greater than zero."}
+    ]
+  }
+}

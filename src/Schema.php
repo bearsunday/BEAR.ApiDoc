@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+use ArrayObject;
 use RuntimeException;
 use SplFileInfo;
 
@@ -39,7 +40,10 @@ final class Schema
     /** @var object */
     private $schema;
 
-    public function __construct(SplFileInfo $file, object $schema)
+    /** @var ArrayObject */
+    private $semanticDictionary;
+
+    public function __construct(SplFileInfo $file, object $schema, ArrayObject $semanticDictionary)
     {
         $this->title = $schema->title ?? '';
         $this->file = $file;
@@ -47,6 +51,7 @@ final class Schema
         assert(isset($schema->type));
         $this->type = $schema->type;
         $requierd = $schema->required ?? [];
+        $this->semanticDictionary = $semanticDictionary;
         if ($schema->type === 'object') {
             $this->setObject($schema, $requierd);
         }
@@ -111,8 +116,17 @@ EOT;
             $isOptional = ! isset($requierd[$name]);
             $example = $property->example ?? '';
             /** @psalm-suppress InaccessibleProperty */
-            $this->props[$name] = new SchemaProp($name, $type, $isOptional, $titleDescrptipon, $constraint, (string) $example);
+            $this->props[$name] = new SchemaProp($name, $type, $isOptional, $this->getDescription($titleDescrptipon, $name), $constraint, (string) $example);
         }
+    }
+
+    private function getDescription(string $titleDescription, string $id): string
+    {
+        if ($titleDescription) {
+            return $titleDescription;
+        }
+
+        return $this->semanticDictionary[$id] ?? '';
     }
 
     private function getType(object $property, object $schema): string

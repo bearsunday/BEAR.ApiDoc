@@ -10,11 +10,10 @@ use Aura\Router\Route;
 use Aura\Router\RouterContainer;
 use BEAR\AppMeta\Meta;
 use BEAR\Package\Module;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use FilesystemIterator;
-use Koriym\Attributes\AttributeReader;
-use Koriym\Attributes\DualReader;
+use Koriym\AppStateDiagram\AlpsProfile;
+use Koriym\AppStateDiagram\SemanticDescriptor;
 use Ray\Di\Exception\Unbound;
 use Ray\Di\Injector;
 use Ray\Di\InjectorInterface;
@@ -26,6 +25,7 @@ use function array_unique;
 use function assert;
 use function class_exists;
 use function copy;
+use function file_exists;
 use function file_put_contents;
 use function is_dir;
 use function is_iterable;
@@ -54,6 +54,9 @@ final class DocApp
     /** @var ArrayObject<mixed, mixed> */
     private $modelRepository;
 
+    /** @var ArrayObject */
+    private $semanticDictionary;
+
     public function __construct(string $appName)
     {
         $appModule = sprintf('%s\\Module\\AppModule', $appName);
@@ -68,7 +71,7 @@ final class DocApp
         $requestSchemaDir = $injector->getInstance('', 'json_validate_dir');
         assert(is_string($requestSchemaDir));
         $this->modelRepository = new ArrayObject();
-        $this->docClass = new DocClass($reader, $requestSchemaDir, $this->responseSchemaDir, $this->modelRepository);
+        $this->docClass = new DocClass($reader, $requestSchemaDir, $this->responseSchemaDir, $this->modelRepository, $this->semanticDictionary);
         $map = $this->getRouterMap($injector);
         if (! is_iterable($map)) {
             return;
@@ -80,13 +83,14 @@ final class DocApp
         }
     }
 
-    public function __invoke(string $docDir, string $scheme): void
+    public function __invoke(string $docDir, string $scheme, string $alpsFile = ''): void
     {
+        $semanticDictionary = $alpsFile ? $this->registerAlpsProfile($alpsFile) : new ArrayObject();
         $generator = $this->meta->getGenerator($scheme);
         $paths = [];
         foreach ($generator as $meta) {
             $path = $this->routes[$meta->uriPath] ?? $meta->uriPath;
-            $classView = ($this->docClass)($path, new ReflectionClass($meta->class));
+            $classView = ($this->docClass)($path, new ReflectionClass($meta->class), $semanticDictionary);
             $file = sprintf('%s/%s.md', $docDir, substr($meta->uriPath, 1));
             file_put_contents($file, $classView);
             $paths[$path] = substr($meta->uriPath, 1);
@@ -98,6 +102,37 @@ final class DocApp
         $index = (string) new Index($this->meta->name, '', $paths, $objects);
         file_put_contents(sprintf('%s/index.md', $docDir), $index);
         $this->copySchema($this->responseSchemaDir, $outputDir);
+    }
+
+    private function registerAlpsProfile(string $file): ArrayObject
+    {
+        assert(file_exists($file));
+        $alps = new AlpsProfile($file);
+        $semanticDictionary = new ArrayObject();
+        foreach ($alps->descriptors as $descriptor) {
+            if ($descriptor instanceof SemanticDescriptor) {
+                $semanticDictionary[$descriptor->id] = $this->getSematicTitle($descriptor);
+            }
+        }
+
+        return $semanticDictionary;
+    }
+
+    private function getSematicTitle(SemanticDescriptor $descriptor): string
+    {
+        if ($descriptor->title) {
+            return $descriptor->title;
+        }
+
+        if (isset($descriptor->doc->value)) {
+            return $descriptor->doc->value;
+        }
+
+        if (isset($descriptor->def)) {
+            return sprintf('[%s](%s)', $descriptor->def, $descriptor->def);
+        }
+
+        return '';
     }
 
     private function copySchema(string $inputDir, string $outputDir): void

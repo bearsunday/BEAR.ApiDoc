@@ -15,4 +15,11 @@ class DocAppTest extends TestCase
         $docApp(__DIR__ . '/docs', 'app');
         $this->assertFileExists(__DIR__ . '/docs/address.md');
     }
+
+    public function testInvokeWithAlpsProfile(): void
+    {
+        $docApp = new DocApp('FakeVendor\FakeProject');
+        $docApp(__DIR__ . '/docs', 'app', __DIR__ . '/Fake/app/profile.json');
+        $this->assertFileExists(__DIR__ . '/docs/address.md');
+    }
 }

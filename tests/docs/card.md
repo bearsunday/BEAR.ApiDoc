@@ -12,7 +12,7 @@
 | Name  | Type  | Description | Required | Constraint | Example |
 |-------|-------|-------------|----------|-----------|---------| 
 | fn | string | Formatted Name | Optional |  |  |
-| familyName | string |  | Optional |  |  |
+| familyName | string | [https://schema.org/familyName](https://schema.org/familyName) | Optional |  |  |
 | givenName | string |  | Optional |  |  |
 | additionalName | array |  | Optional | {"items":{"type":"string"}} |  |
 | honorificPrefix | array |  | Optional | {"items":{"type":"string"}} |  |

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+use ArrayObject;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\Link;
 use Doctrine\Common\Annotations\Reader;
@@ -56,7 +57,7 @@ final class DocMethod
     /**
      * Return docBloc and parameter metas of method
      */
-    public function __construct(Reader $reader, ReflectionMethod $method, ?Schema $request, ?Schema $response)
+    public function __construct(Reader $reader, ReflectionMethod $method, ?Schema $request, ?Schema $response, ArrayObject $semanticDictionary)
     {
         $this->method = $method;
         $this->httpMethod = substr($method->name, 2);
@@ -70,7 +71,7 @@ final class DocMethod
         }
 
         $tagParams = $tagParams ?? null;
-        $this->params = $this->getDocParamas($method, $tagParams, $request);
+        $this->params = $this->getDocParamas($method, $tagParams, $request, $semanticDictionary);
         $this->response = $response;
         $this->reader = $reader;
     }
@@ -80,7 +81,7 @@ final class DocMethod
      *
      * @return array<int, DocParam>
      */
-    private function getDocParamas(ReflectionMethod $method, ?array $tagParams, ?Schema $request): array
+    private function getDocParamas(ReflectionMethod $method, ?array $tagParams, ?Schema $request, ArrayObject $semanticDictionary): array
     {
         $parameters = $method->getParameters();
         $docParams = [];
@@ -89,7 +90,7 @@ final class DocMethod
             $hasTagParam = $tagParams && isset($tagParams[$name]);
             $tagParam = $hasTagParam ? $tagParams[$name] : new TagParam('', ''); // @phpstan-ignore-line
             $prop = $request->props[$name] ?? null;
-            $docParams[] = new DocParam($parameter, $tagParam, $prop);
+            $docParams[] = new DocParam($parameter, $tagParam, $prop, $semanticDictionary);
         }
 
         return $docParams;

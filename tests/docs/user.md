@@ -28,14 +28,14 @@
 
 | rel | src |
 |-----|-----|
-| ticket | [/ticket/{id}](ticket/.md) |
+| ticket | [<code>/ticket/{id}</code>](icket/.md) |
 
 #### Links
 
 | rel | href |
 |-----|-----|
-| person | [/person](person.md) |
-| calendar | [/calendar](calendar.md) |
+| person | [<code>/person</code>](erson.md) |
+| calendar | [<code>/calendar</code>](alendar.md) |
 ## POST
 Create user
 
