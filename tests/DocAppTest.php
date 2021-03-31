@@ -9,17 +9,17 @@ use PHPUnit\Framework\TestCase;
 
 class DocAppTest extends TestCase
 {
-    public function testInvoke(): void
+    public function testDumpMarkdown(): void
     {
         $docApp = new DocApp('FakeVendor\FakeProject');
-        $docApp(__DIR__ . '/docs', 'app');
-        $this->assertFileExists(__DIR__ . '/docs/address.md');
+        $docApp->dumpMarkDown(__DIR__ . '/markdown', 'app');
+        $this->assertFileExists(__DIR__ . '/markdown/address.md');
     }
 
-    public function testInvokeWithAlpsProfile(): void
+    public function testDumpMarkdownWithAlpsProfile(): void
     {
         $docApp = new DocApp('FakeVendor\FakeProject');
-        $docApp(__DIR__ . '/docs', 'app', __DIR__ . '/Fake/app/profile.json');
-        $this->assertFileExists(__DIR__ . '/docs/address.md');
+        $docApp->dumpMarkDown(__DIR__ . '/markdown', 'app', __DIR__ . '/Fake/app/profile.json');
+        $this->assertFileExists(__DIR__ . '/markdown/address.md');
     }
 }

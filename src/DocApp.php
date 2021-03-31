@@ -12,6 +12,7 @@ use BEAR\AppMeta\Meta;
 use BEAR\Package\Module;
 use Doctrine\Common\Annotations\Reader;
 use FilesystemIterator;
+use Generator;
 use Koriym\AppStateDiagram\AlpsProfile;
 use Koriym\AppStateDiagram\SemanticDescriptor;
 use Ray\Di\Exception\Unbound;
@@ -81,19 +82,40 @@ final class DocApp
         }
     }
 
-    public function __invoke(string $docDir, string $scheme, string $alpsFile = ''): void
+    public function dumpMarkDown(string $docDir, string $scheme, string $alpsFile = ''): void
+    {
+        $genMarkDown = $this->getGenMarkdown($docDir, $scheme, $alpsFile);
+        foreach ($genMarkDown as $file => $markdown) {
+            file_put_contents($file, $markdown);
+        }
+    }
+
+    /**
+     * @return Generator<string, string>
+     */
+    private function getGenMarkdown(string $docDir, string $scheme, string $alpsFile = ''): Generator
     {
         $semanticDictionary = $alpsFile ? $this->registerAlpsProfile($alpsFile) : new ArrayObject();
         $generator = $this->meta->getGenerator($scheme);
         $paths = [];
         foreach ($generator as $meta) {
             $path = $this->routes[$meta->uriPath] ?? $meta->uriPath;
-            $classView = ($this->docClass)($path, new ReflectionClass($meta->class), $semanticDictionary);
+            assert(class_exists($meta->class));
+            $markdown = ($this->docClass)($path, new ReflectionClass($meta->class), $semanticDictionary);
             $file = sprintf('%s/%s.md', $docDir, substr($meta->uriPath, 1));
-            file_put_contents($file, $classView);
             $paths[$path] = substr($meta->uriPath, 1);
+
+            yield $file => $markdown;
         }
 
+        $this->copySchemas($docDir, $paths);
+    }
+
+    /**
+     * @param array<string, string> $paths
+     */
+    private function copySchemas(string $docDir, array $paths): void
+    {
         $outputDir = sprintf('%s/schema', $docDir);
         $objects = array_unique((array) $this->modelRepository);
         ! is_dir($outputDir) && ! mkdir($outputDir) && ! is_dir($outputDir);
@@ -144,6 +166,10 @@ final class DocApp
         }
     }
 
+    /**
+     * @phpstan-return Map<string, Route>
+     * @psalm-return Map
+     */
     private function getRouterMap(InjectorInterface $injector): ?Map // @phpstan-ignore-line
     {
         try {
