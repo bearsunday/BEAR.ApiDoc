@@ -21,8 +21,8 @@
 | url | string |  | Optional |  |  |
 | email | object |  | Optional | {"properties":{"type":{"type":"string"},"value":{"type":"string"}}} |  |
 | tel | object |  | Optional | {"properties":{"type":{"type":"string"},"value":{"type":"string"}}} |  |
-| adr | object |  | Optional | {"$ref":"[https:\/\/json-schema.org\/learn\/examples\/address.schema.json](https:\/\/json-schema.org\/learn\/examples\/address.schema.json)"} |  |
-| geo | object |  | Optional | {"$ref":"[https:\/\/json-schema.org\/learn\/examples\/geographical-location.schema.json](https:\/\/json-schema.org\/learn\/examples\/geographical-location.schema.json)"} |  |
+| adr | object |  | Optional | {"$ref":"[https://json-schema.org/learn/examples/address.schema.json](https://json-schema.org/learn/examples/address.schema.json)"} |  |
+| geo | object |  | Optional | {"$ref":"[https://json-schema.org/learn/examples/geographical-location.schema.json](https://json-schema.org/learn/examples/geographical-location.schema.json)"} |  |
 | tz | string |  | Optional |  |  |
 | photo | string |  | Optional |  |  |
 | logo | string |  | Optional |  |  |

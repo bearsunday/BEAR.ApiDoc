@@ -15,6 +15,7 @@ use function json_encode;
 use function sprintf;
 
 use const FILTER_VALIDATE_URL;
+use const JSON_UNESCAPED_SLASHES;
 
 final class SchemaConstraints
 {
@@ -61,6 +62,6 @@ final class SchemaConstraints
 
     public function __toString(): string
     {
-        return $this->constrains === [] ? '' : (string) json_encode($this->constrains);
+        return $this->constrains === [] ? '' : (string) json_encode($this->constrains, JSON_UNESCAPED_SLASHES);
     }
 }

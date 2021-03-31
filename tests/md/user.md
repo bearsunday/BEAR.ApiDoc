@@ -22,7 +22,7 @@
 | modified | string | When the user record was last modified | Optional | {"format":"date-time"} | 2018-01-01T12:00:00Z |
 | email | string | The email address of the user | Optional | {"format":"email"} |  |
 | enabled | boolean | Whether the user is enabled or not | Optional |  |  |
-| age | int | The age of the user | Optional | {"$ref":"[age.json](schema\/age.json)"} | 29 |
+| age | int | The age of the user | Optional | {"$ref":"[age.json](schema/age.json)"} | 29 |
 
 #### Embedded
 

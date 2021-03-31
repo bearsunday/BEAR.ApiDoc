@@ -11,4 +11,4 @@
 
 | Item Type |  Constraint |
 |-----------|------------|
-| object | {"$ref":"[ticket.json](schema\/ticket.json)"} |         
+| object | {"$ref":"[ticket.json](schema/ticket.json)"} |         
