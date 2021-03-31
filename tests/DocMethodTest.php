@@ -62,7 +62,8 @@ class DocMethodTest extends TestCase
 | juice | object |  | Optional | {"\$ref":"#\/definitions\/juice"} |  |
 EOT;
 
-        $this->assertStringContainsString($expected, (string) $docMethod);
+        $result = (string) $docMethod;
+        $this->assertStringContainsString($expected, $result);
     }
 
     public function testEmbed(): void

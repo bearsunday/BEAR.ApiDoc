@@ -53,6 +53,9 @@ final class DocClass
         $this->requestSchemaDir = $requestSchemaDir;
         $this->responseSchemaDir = $responseSchemaDir;
         $this->modelRepository = $modelRepository;
+        /** @var ArrayObject<string, string> $nullDictinary */
+        $nullDictinary = new ArrayObject();
+        $this->semanticDictionary = $nullDictinary;
     }
 
     /**

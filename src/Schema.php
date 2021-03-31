@@ -35,7 +35,7 @@ final class Schema
     public $file;
 
     /** @var array<Ref> */
-    private $refs;
+    private $refs = [];
 
     /** @var object */
     private $schema;
@@ -48,11 +48,14 @@ final class Schema
      */
     public function __construct(SplFileInfo $file, object $schema, ArrayObject $semanticDictionary)
     {
+        /** @psalm-suppress MixedAssignment */
         $this->title = $schema->title ?? ''; // @phpstan-ignore-line
         $this->file = $file;
         $this->schema = $schema;
         assert(isset($schema->type));
+        assert(is_string($schema->type));
         $this->type = $schema->type;
+        /** @var array<string, string> $required */
         $required = $schema->required ?? []; // @phpstan-ignore-line
         $this->semanticDictionary = $semanticDictionary;
         if ($schema->type === 'object') {
@@ -74,7 +77,7 @@ final class Schema
 
     public function toStringTypeArray(): string
     {
-        assert(isset($this->schema->items));
+        assert(isset($this->schema->items) && is_object($this->schema->items));
         $type = $this->getItemType($this->schema->items);
         $constraint = (string) new SchemaConstraints($this->schema->items, $this->file);
 
@@ -89,12 +92,12 @@ EOT;
 
     private function getItemType(object $schema): string
     {
-        if (isset($schema->type)) {
+        if (isset($schema->type) && is_string($schema->type)) {
             return $this->returnType($schema->type);
         }
 
         if (isset($schema->{'$ref'})) {
-            $ref = new Ref($schema->{'$ref'}, $this->file, $this->schema);
+            $ref = new Ref((string) $schema->{'$ref'}, $this->file, $this->schema);
 
             return $ref->type;
         }
@@ -103,7 +106,7 @@ EOT;
     }
 
     /**
-     * @param array<string> $required
+     * @param array<string, string> $required
      */
     private function setObject(object $schema, array $required): void
     {
@@ -111,14 +114,14 @@ EOT;
         foreach ($schema->properties as $name => $property) {
             assert(is_string($name));
             assert(is_object($property));
-            /** @var string */
-            $title = $property->title ?? ''; // @phpstan-ignore-line
             $description = $property->description ?? ''; // @phpstan-ignore-line
+            assert(is_string($description));
+            $title = $property->title ?? '';
             $titleDescription = $title && $description ? sprintf('%s - %s', $title, $description) : $title . $description; // @phpstan-ignore-line
-            /** @var string */
             $type = $this->getType($property, $schema);
             $constraint = new SchemaConstraints($property, $this->file);
             $isOptional = ! isset($required[$name]);
+            /** @psalm-suppress MixedAssignment */
             $example = $property->example ?? ''; // @phpstan-ignore-line
             /** @psalm-suppress InaccessibleProperty */
             $this->props[$name] = new SchemaProp($name, $type, $isOptional, $this->getDescription($titleDescription, $name), $constraint, (string) $example);
@@ -137,6 +140,7 @@ EOT;
     private function getType(object $property, object $schema): string
     {
         $propertyRef = $property->{'$ref'} ?? ''; // @phpstan-ignore-line
+        assert(is_string($propertyRef));
         if ($propertyRef) {
             $ref = new Ref($propertyRef, $this->file, $schema);
             $this->refs[] = $ref;
@@ -144,7 +148,11 @@ EOT;
             return $this->returnType($ref->type);
         }
 
-        return $this->returnType($property->type); // @phpstan-ignore-line
+        assert(isset($property->type));
+        /** @var list<string>|string $type */
+        $type = $property->type;
+
+        return $this->returnType($type);
     }
 
     /**

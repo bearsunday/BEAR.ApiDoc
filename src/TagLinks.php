@@ -6,7 +6,6 @@ namespace BEAR\ApiDoc;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Link;
 
-use function assert;
 use function implode;
 use function sprintf;
 
@@ -29,8 +28,7 @@ final class TagLinks
     {
         $view = [];
         foreach ($this->links as $link) {
-            assert($link instanceof Link);
-            $view[] = sprintf(' * @link [%s](%s) %s', $link->getLink(), $link->getLink(), $link->getDescription());
+            $view[] = sprintf(' * @link [%s](%s) %s', $link->getLink(), $link->getLink(), (string) $link->getDescription());
         }
 
         return implode(PHP_EOL, $view);

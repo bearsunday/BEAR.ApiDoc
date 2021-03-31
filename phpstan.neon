@@ -5,7 +5,3 @@ parameters:
     - tests
   excludePaths:
     - tests/Fake/*
-  ignoreErrors:
-    -
-        message: '#return type has no value#'
-        path: /src/DocApp.php

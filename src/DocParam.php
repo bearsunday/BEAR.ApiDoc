@@ -48,8 +48,8 @@ final class DocParam
     /** @var string  */
     private $example;
 
-    /** @var SchemaConstraints */
-    private $constraints;
+    /** @var ?SchemaConstraints */
+    private $constraints = null;
 
     /** @var ArrayObject<string, string> */
     private $semanticDictionary;
@@ -83,11 +83,12 @@ final class DocParam
             return '';
         }
 
-        return (string) $namedType->getName();
+        return $namedType->getName();
     }
 
     private function getDefaultString(ReflectionParameter $parameter): string
     {
+        /** @var array<mixed>|bool|int|float|string $default */
         $default = $parameter->getDefaultValue();
         if (is_array($default)) {
             return str_replace(PHP_EOL, '', strtolower(var_export($default, true)));
@@ -114,6 +115,6 @@ final class DocParam
     {
         $required = $this->isOptional ? 'Optional' : 'Required';
 
-        return sprintf('| %s | %s | %s | %s | %s | %s | %s |', $this->name, $this->type, $this->description, $this->default, $this->constraints, $required, $this->example);
+        return sprintf('| %s | %s | %s | %s | %s | %s | %s |', $this->name, $this->type, $this->description, $this->default, (string) $this->constraints, $required, $this->example);
     }
 }

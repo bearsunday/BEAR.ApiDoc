@@ -12,6 +12,8 @@ use function explode;
 use function file_exists;
 use function file_get_contents;
 use function filter_var;
+use function is_object;
+use function is_string;
 use function json_decode;
 use function sprintf;
 use function substr;
@@ -21,21 +23,18 @@ use const FILTER_VALIDATE_URL;
 final class Ref
 {
     /** @var string */
-    public $title;
+    public $title = '';
 
-    /**
-     * @var string
-     * @readonly
-     */
+    /** @var string */
     public $type = '';
 
-    /** @var object */
+    /** @var ?object */
     public $json;
 
     /** @var string */
-    public $href;
+    public $href = '';
 
-    /** @var object */
+    /** @var ?object */
     public $schema;
 
     public function __construct(string $ref, SplFileInfo $file, object $schema)
@@ -48,24 +47,29 @@ final class Ref
     {
         $target = $schema;
         $paths = explode('/', substr($ref, 2));
-        $path = '';
         foreach ($paths as $path) {
+            /** @psalm-suppress MixedAssignment */
             $target = $target->{$path};
+            assert(is_object($target));
         }
 
         assert(isset($target->type));
+        assert(is_string($target->type));
         $this->json = $target;
         /** @psalm-suppress InaccessibleProperty */
         $this->type = $target->type;
-        $this->title = $target->title ??  $path;
+        $title = $target->title ?? $path; // @phpstan-ignore-line
+        assert(is_string($title));
+        $this->title = $title;
     }
 
     private function getExternalRef(string $ref, SplFileInfo $file): void
     {
         $filePath = $this->getFilePath($ref, $file);
-        $this->json = $schema = json_decode((string) file_get_contents($filePath));
-        /** @psalm-suppress InaccessibleProperty */
+        $this->json = $schema = (object) json_decode((string) file_get_contents($filePath));
+        /** @psalm-suppress MixedAssignment */
         $this->type = $schema->type ?? '';
+        /** @psalm-suppress MixedAssignment */
         $this->title = $schema->title ?? '';
     }
 

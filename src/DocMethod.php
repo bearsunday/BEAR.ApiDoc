@@ -25,13 +25,13 @@ final class DocMethod
      * @var string
      * @readonly
      */
-    private $title;
+    private $title = '';
 
     /**
      * @var string
      * @readonly
      */
-    private $description;
+    private $description = '';
 
     /** @var string */
     private $httpMethod;
@@ -70,6 +70,7 @@ final class DocMethod
             $tagParams = $this->getTagParams($docblock);
         }
 
+        /** @var  ?array<string, TagParam> $tagParams */
         $tagParams = $tagParams ?? null;
         $this->params = $this->getDocParams($method, $tagParams, $request, $semanticDictionary);
         $this->response = $response;
@@ -98,7 +99,7 @@ final class DocMethod
     }
 
     /**
-     * @return array<TagParam>
+     * @return array<string, TagParam>
      */
     private function getTagParams(DocBlock $docblock): array
     {
@@ -197,7 +198,6 @@ EOT;
 
     private function getEmbeds(): string
     {
-        /** @var list<Embed> $annotations */
         $annotations = $this->reader->getMethodAnnotations($this->method);
         $items = [];
         foreach ($annotations as $annotation) {
@@ -224,7 +224,6 @@ EOT;
 
     private function getLinks(): string
     {
-        /** @var list<Link> $annotations */
         $annotations = $this->reader->getMethodAnnotations($this->method);
         $items = [];
         foreach ($annotations as $annotation) {

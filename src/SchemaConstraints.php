@@ -6,9 +6,11 @@ namespace BEAR\ApiDoc;
 
 use SplFileInfo;
 
+use function assert;
 use function file_exists;
 use function filter_var;
 use function in_array;
+use function is_string;
 use function json_encode;
 use function sprintf;
 
@@ -32,6 +34,7 @@ final class SchemaConstraints
             }
 
             if ($name === '$ref') {
+                assert(is_string($value));
                 $constrains['$ref'] = $this->getRefLink($value, $file);
                 continue;
             }

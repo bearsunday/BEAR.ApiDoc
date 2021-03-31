@@ -64,12 +64,15 @@ final class DocApp
         $injector = new Injector(new $appModule($this->meta, new Module\AppMetaModule($this->meta)));
         assert($injector instanceof InjectorInterface);
         $reader = $injector->getInstance(Reader::class);
+        assert($reader instanceof Reader);
         /** @var string responseSchemaDir $responseSchemaDir */
         $responseSchemaDir = $injector->getInstance('', 'json_schema_dir');
         $this->responseSchemaDir = $responseSchemaDir;
         $requestSchemaDir = $injector->getInstance('', 'json_validate_dir');
         assert(is_string($requestSchemaDir));
-        $this->modelRepository = new ArrayObject();
+        /** @var ArrayObject<string, string> $modelRepository */
+        $modelRepository = new ArrayObject();
+        $this->modelRepository = $modelRepository;
         $this->docClass = new DocClass($reader, $requestSchemaDir, $this->responseSchemaDir, $this->modelRepository);
         $map = $this->getRouterMap($injector);
         if (! is_iterable($map)) {
@@ -95,7 +98,9 @@ final class DocApp
      */
     private function getGenMarkdown(string $docDir, string $scheme, string $alpsFile = ''): Generator
     {
-        $semanticDictionary = $alpsFile ? $this->registerAlpsProfile($alpsFile) : new ArrayObject();
+        /** @var ArrayObject<string, string> $nullDictionary */
+        $nullDictionary = new ArrayObject();
+        $semanticDictionary = $alpsFile ? $this->registerAlpsProfile($alpsFile) : $nullDictionary;
         $generator = $this->meta->getGenerator($scheme);
         $paths = [];
         foreach ($generator as $meta) {
@@ -117,6 +122,7 @@ final class DocApp
     private function copySchemas(string $docDir, array $paths): void
     {
         $outputDir = sprintf('%s/schema', $docDir);
+        /** @var array<string, string> $objects */
         $objects = array_unique((array) $this->modelRepository);
         ! is_dir($outputDir) && ! mkdir($outputDir) && ! is_dir($outputDir);
         $index = (string) new Index($this->meta->name, '', $paths, $objects);
@@ -131,24 +137,25 @@ final class DocApp
     {
         assert(file_exists($file));
         $alps = new AlpsProfile($file);
+        /** @var  ArrayObject<string, string> $semanticDictionary */
         $semanticDictionary = new ArrayObject();
         foreach ($alps->descriptors as $descriptor) {
             if ($descriptor instanceof SemanticDescriptor) {
-                $semanticDictionary[$descriptor->id] = $this->getSematicTitle($descriptor);
+                $semanticDictionary[$descriptor->id] = $this->getSemanticTitle($descriptor);
             }
         }
 
         return $semanticDictionary;
     }
 
-    private function getSematicTitle(SemanticDescriptor $descriptor): string
+    private function getSemanticTitle(SemanticDescriptor $descriptor): string
     {
         if ($descriptor->title) {
             return $descriptor->title;
         }
 
         if (isset($descriptor->doc->value)) {
-            return $descriptor->doc->value;
+            return (string) $descriptor->doc->value;
         }
 
         if (isset($descriptor->def)) {
@@ -167,8 +174,8 @@ final class DocApp
     }
 
     /**
-     * @phpstan-return Map<string, Route>
      * @psalm-return Map
+     * @phpstan-return Map<string, Route>
      */
     private function getRouterMap(InjectorInterface $injector): ?Map // @phpstan-ignore-line
     {
