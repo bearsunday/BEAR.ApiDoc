@@ -4,17 +4,17 @@
 
 
 ### Request
-| Name  | Type  | Description | Default | Example |
-|-------|-------|-------------|---------|---------| 
-| id | string | User ID |  |  | Required |  |
-| options | string | User Options | guest |  | Optional |  |
+| Name  | Type  | Description | Default | Required | Constraints | Example |
+|-------|-------|-------------|---------|----------|-------------|---------| 
+| id | string | User ID |  | Required |  |  
+| options | string | User Options | guest | Optional |  |  
 
 
 ### Response
 [Object: User](schema/user.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |
-|-------|-------|-------------|----------|-----------|---------| 
+|-------|-------|-------------|----------|------------|---------| 
 | id | string | The unique ID of the user | Optional | {"maxLength":30} |  |
 | firstName | string | The first name of the user | Optional | {"maxLength":30,"pattern":"[a-z\\d~+-]+"} |  |
 | lastName | string | The last name of the user | Optional | {"maxLength":30,"pattern":"[a-z\\d~+-]+"} |  |
@@ -28,14 +28,14 @@
 
 | rel | src |
 |-----|-----|
-| ticket | [<code>/ticket/{id}</code>](icket/.md) |
+| ticket | [<code>/ticket/{id}</code>](ticket/.md) |
 
 #### Links
 
 | rel | href |
 |-----|-----|
-| person | [<code>/person</code>](erson.md) |
-| calendar | [<code>/calendar</code>](alendar.md) |
+| person | [<code>/person</code>](person.md) |
+| calendar | [<code>/calendar</code>](calendar.md) |
 ## POST
 Create user
 
@@ -44,10 +44,10 @@ Create user with given name and age
 
 
 ### Request
-| Name  | Type  | Description | Default | Example |
-|-------|-------|-------------|---------|---------| 
-| name | string | The name of the user |  |  | Required |  |
-| age | int | The age of the user |  |  | Required |  |
+| Name  | Type  | Description | Default | Required | Constraints | Example |
+|-------|-------|-------------|---------|----------|-------------|---------| 
+| name | string | The name of the user |  | Required |  |  
+| age | int | The age of the user |  | Required |  |  
 
 
 ### Response

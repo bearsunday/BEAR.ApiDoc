@@ -19,26 +19,30 @@ final class Index
     /** @var array<string, string> */
     private $paths;
 
-    /** @var array<string, string> */
+    /** @var list<string> */
     private $objects;
+
+    /** @var string */
+    private $ext;
 
     /**
      * @param array<string, string> $paths
-     * @param array<string, string> $objects
+     * @param list<string> $objects
      */
-    public function __construct(string $title, string $description, array $paths, array $objects)
+    public function __construct(string $title, string $description, array $paths, array $objects, string $ext)
     {
         $this->title = $title;
         $this->description = $description;
         $this->paths = $paths;
         $this->objects = $objects;
+        $this->ext = $ext;
     }
 
     public function __toString(): string
     {
         $paths = $objects = '';
         foreach ($this->paths as $route => $path) {
-            $paths .= sprintf(' * [%s](%s.md) ', $route, $path) . PHP_EOL;
+            $paths .= sprintf(' * [%s](%s.%s) ', $route, $path, $this->ext) . PHP_EOL;
         }
 
         foreach ($this->objects as $objectName => $objectFile) {

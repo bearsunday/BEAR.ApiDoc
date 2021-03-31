@@ -14,6 +14,7 @@ use Doctrine\Common\Annotations\Reader;
 use FilesystemIterator;
 use Generator;
 use Koriym\AppStateDiagram\AlpsProfile;
+use Koriym\AppStateDiagram\MdToHtml;
 use Koriym\AppStateDiagram\SemanticDescriptor;
 use Ray\Di\Exception\Unbound;
 use Ray\Di\Injector;
@@ -33,6 +34,7 @@ use function is_iterable;
 use function is_string;
 use function mkdir;
 use function sprintf;
+use function str_replace;
 use function substr;
 
 /**
@@ -85,18 +87,29 @@ final class DocApp
         }
     }
 
-    public function dumpMarkDown(string $docDir, string $scheme, string $alpsFile = ''): void
+    public function dumpMd(string $docDir, string $scheme, string $alpsFile = ''): void
     {
-        $genMarkDown = $this->getGenMarkdown($docDir, $scheme, $alpsFile);
+        $genMarkDown = $this->getGenMarkdown($docDir, $scheme, 'md', $alpsFile);
         foreach ($genMarkDown as $file => $markdown) {
-            file_put_contents($file, $markdown);
+            file_put_contents($file . '.md', $markdown);
         }
     }
+
+    public function dumpHtml(string $docDir, string $scheme, string $alpsFile = ''): void
+    {
+        $genMarkDown = $this->getGenMarkdown($docDir, $scheme, 'html', $alpsFile);
+        $mdToHtml = new MdToHtml();
+        foreach ($genMarkDown as $file => $markdown) {
+            $html = $mdToHtml('title', $markdown);
+            file_put_contents($file . '.html', $html);
+        }
+    }
+
 
     /**
      * @return Generator<string, string>
      */
-    private function getGenMarkdown(string $docDir, string $scheme, string $alpsFile = ''): Generator
+    private function getGenMarkdown(string $docDir, string $scheme, string $ext, string $alpsFile = ''): Generator
     {
         /** @var ArrayObject<string, string> $nullDictionary */
         $nullDictionary = new ArrayObject();
@@ -106,27 +119,25 @@ final class DocApp
         foreach ($generator as $meta) {
             $path = $this->routes[$meta->uriPath] ?? $meta->uriPath;
             assert(class_exists($meta->class));
-            $markdown = ($this->docClass)($path, new ReflectionClass($meta->class), $semanticDictionary);
-            $file = sprintf('%s/%s.md', $docDir, substr($meta->uriPath, 1));
+            $markdown = ($this->docClass)($path, new ReflectionClass($meta->class), $semanticDictionary, $ext);
+            $file = sprintf('%s/%s', $docDir, substr($meta->uriPath, 1));
             $paths[$path] = substr($meta->uriPath, 1);
 
             yield $file => $markdown;
         }
 
-        $this->copySchemas($docDir, $paths);
+        $this->copySchemas($docDir);
+        /** @var list<string> $objects */
+        $objects = array_unique((array) $this->modelRepository);
+        $index = (string) new Index($this->meta->name, '', $paths, $objects, $ext);
+        yield sprintf('%s/index', $docDir) => $index;
+
     }
 
-    /**
-     * @param array<string, string> $paths
-     */
-    private function copySchemas(string $docDir, array $paths): void
+    private function copySchemas(string $docDir): void
     {
         $outputDir = sprintf('%s/schema', $docDir);
-        /** @var array<string, string> $objects */
-        $objects = array_unique((array) $this->modelRepository);
         ! is_dir($outputDir) && ! mkdir($outputDir) && ! is_dir($outputDir);
-        $index = (string) new Index($this->meta->name, '', $paths, $objects);
-        file_put_contents(sprintf('%s/index.md', $docDir), $index);
         $this->copySchema($this->responseSchemaDir, $outputDir);
     }
 

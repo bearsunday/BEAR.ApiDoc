@@ -20,7 +20,7 @@ class DocClassTest extends TestCase
             __DIR__ . '/Fake/var/schema/request',
             __DIR__ . '/Fake/var/schema/response',
             new ArrayObject(),
-        ))('/path', $class, new ArrayObject());
+        ))('/path', $class, new ArrayObject(), 'md');
         $this->assertStringContainsString('/path', $view);
         $this->assertStringContainsString('## GET', $view);
         $this->assertStringContainsString('### Request', $view);

@@ -1,0 +1,37 @@
+{
+  "$id": "address.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Address",
+  "description": "An address similar to http://microformats.org/wiki/h-card",
+  "type": "object",
+  "properties": {
+    "post-office-box": {
+      "type": "string",
+      "title": "Post Office Box",
+      "description": "where a person or business can have mail delivered."
+    },
+    "extended-address": {
+      "type": "string"
+    },
+    "street-address": {
+      "type": "string"
+    },
+    "locality": {
+      "type": "string"
+    },
+    "region": {
+      "type": ["integer", "string"]
+    },
+    "postal-code": {
+      "type": "string"
+    },
+    "country-name": {
+      "type": "string"
+    }
+  },
+  "required": [ "locality", "region", "country-name" ],
+  "dependencies": {
+    "post-office-box": [ "street-address" ],
+    "extended-address": [ "street-address" ]
+  }
+}

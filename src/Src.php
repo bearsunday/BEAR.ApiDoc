@@ -22,9 +22,13 @@ final class Src
     /** @var string */
     private $src;
 
-    public function __construct(string $src)
+    /** @var string */
+    private $ext;
+
+    public function __construct(string $src, string $ext)
     {
         $this->src = $src;
+        $this->ext = $ext;
     }
 
     public function __toString(): string
@@ -39,9 +43,9 @@ final class Src
         $parseUrl = parse_url(substr($token, 1));
         assert(is_array($parseUrl));
         assert(isset($parseUrl['path']));
-        $resourcePath = substr($parseUrl['path'], 1);
+        $resourcePath = $parseUrl['path'];
 
-        return sprintf('[<code>%s</code>](%s.md)', $this->src, $this->camel2kebab($resourcePath));
+        return sprintf('[<code>%s</code>](%s.%s)', $this->src, $this->camel2kebab($resourcePath), $this->ext);
     }
 
     private function camel2kebab(string $str): string

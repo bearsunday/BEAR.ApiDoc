@@ -62,7 +62,7 @@ final class DocClass
      * @param ReflectionClass<object>     $class
      * @param ArrayObject<string, string> $semanticDictionary
      */
-    public function __invoke(string $path, ReflectionClass $class, ArrayObject $semanticDictionary): string
+    public function __invoke(string $path, ReflectionClass $class, ArrayObject $semanticDictionary, string $ext): string
     {
         $this->semanticDictionary = $semanticDictionary;
         [$summary, $description, $links] = $this->classTag($class);
@@ -72,7 +72,7 @@ final class DocClass
             $name = $method->getName();
             $isRequestMethod = in_array($name, ['onGet', 'onPut', 'onPost', 'onPatch', 'onDelete']);
             if ($isRequestMethod) {
-                $views[] = $this->getMethodView($method);
+                $views[] = $this->getMethodView($method, $ext);
             }
         }
 
@@ -108,12 +108,12 @@ EOT;
         return [$summary, $description, $links];
     }
 
-    private function getMethodView(ReflectionMethod $method): string
+    private function getMethodView(ReflectionMethod $method, string $ext): string
     {
         $schema = $this->reader->getMethodAnnotation($method, JsonSchema::class);
         [$request, $response] = $schema instanceof JsonSchema ? [$this->getSchema($this->requestSchemaDir, $schema->params), $this->getResponseSchema($this->responseSchemaDir, $schema->schema)] : [null, null];
 
-        return (string) new DocMethod($this->reader, $method, $request, $response, $this->semanticDictionary);
+        return (string) new DocMethod($this->reader, $method, $request, $response, $this->semanticDictionary, $ext);
     }
 
     private function getResponseSchema(string $dir, string $file): ?Schema

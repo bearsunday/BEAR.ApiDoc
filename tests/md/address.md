@@ -18,7 +18,7 @@ This is the summary of Address. line 2
 [Object: Address](schema/address.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |
-|-------|-------|-------------|----------|-----------|---------| 
+|-------|-------|-------------|----------|------------|---------| 
 | post-office-box | string | Post Office Box - where a person or business can have mail delivered. | Optional |  |  |
 | extended-address | string |  | Optional |  |  |
 | street-address | string |  | Optional |  |  |

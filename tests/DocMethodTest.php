@@ -20,7 +20,7 @@ class DocMethodTest extends TestCase
 {
     public function testNoPhpDoc(): void
     {
-        $docMethod = new DocMethod(ServiceLocator::getReader(), new ReflectionMethod(FakeNoDoc::class, 'onGet'), null, null, new ArrayObject());
+        $docMethod = new DocMethod(ServiceLocator::getReader(), new ReflectionMethod(FakeNoDoc::class, 'onGet'), null, null, new ArrayObject(), 'md');
         $this->assertInstanceOf(DocMethod::class, $docMethod);
     }
 
@@ -30,7 +30,7 @@ class DocMethodTest extends TestCase
         $responseSchemaFile = __DIR__ . '/Fake/var/schema/response/ticket.json';
         $requestSchema = new Schema(new SplFileInfo($requestSchemaFile), json_decode((string) file_get_contents($requestSchemaFile)), new ArrayObject());
         $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
-        $docMethod = new DocMethod(ServiceLocator::getReader(), new ReflectionMethod(FakeParamDoc::class, 'onGet'), $requestSchema, $responseSchema, new ArrayObject());
+        $docMethod = new DocMethod(ServiceLocator::getReader(), new ReflectionMethod(FakeParamDoc::class, 'onGet'), $requestSchema, $responseSchema, new ArrayObject(), 'md');
         $this->assertInstanceOf(DocMethod::class, $docMethod);
 
         return $docMethod;
@@ -49,14 +49,23 @@ class DocMethodTest extends TestCase
     {
         $responseSchemaFile = __DIR__ . '/Fake/app/src/var/json_schema/array.json';
         $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
-        $docMethod = new DocMethod(ServiceLocator::getReader(), new ReflectionMethod(FakeParamDoc::class, 'onGet'), null, $responseSchema, new ArrayObject());
+        $docMethod = new DocMethod(ServiceLocator::getReader(), new ReflectionMethod(FakeParamDoc::class, 'onGet'), null, $responseSchema, new ArrayObject(), 'md');
         $this->assertInstanceOf(DocMethod::class, $docMethod);
         $expected = <<<EOT
+## GET
+
+
+### Request
+| Name  | Type  | Description | Default | Required | Constraints | Example |
+|-------|-------|-------------|---------|----------|-------------|---------| 
+| id | string | This is fake id |  | Required |  |  
+
+
 ### Response
 [Object: Array](schema/array.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |
-|-------|-------|-------------|----------|-----------|---------| 
+|-------|-------|-------------|----------|------------|---------| 
 | fruits | array |  | Optional | {"items":{"type":"string"}} |  |
 | vegetables | array |  | Optional | {"items":{"\$ref":"#\/definitions\/veggie"}} |  |
 | juice | object |  | Optional | {"\$ref":"#\/definitions\/juice"} |  |
@@ -70,11 +79,11 @@ EOT;
     {
         $responseSchemaFile = __DIR__ . '/Fake/app/src/var/json_schema/person.json';
         $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
-        $docMethod = (string) new DocMethod(ServiceLocator::getReader(), new ReflectionMethod(Person::class, 'onGet'), null, $responseSchema, new ArrayObject());
+        $docMethod = (string) new DocMethod(ServiceLocator::getReader(), new ReflectionMethod(Person::class, 'onGet'), null, $responseSchema, new ArrayObject(), 'md');
         $expected = <<<EOT
 | rel | src |
 |-----|-----|
-| org | [<code>/org?id={org_id}</code>](rg.md) |
+| org | [<code>/org?id={org_id}</code>](org.md) |
 EOT;
         $this->assertStringContainsString($expected, $docMethod);
     }

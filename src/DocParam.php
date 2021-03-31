@@ -115,6 +115,6 @@ final class DocParam
     {
         $required = $this->isOptional ? 'Optional' : 'Required';
 
-        return sprintf('| %s | %s | %s | %s | %s | %s | %s |', $this->name, $this->type, $this->description, $this->default, (string) $this->constraints, $required, $this->example);
+        return sprintf('| %s | %s | %s | %s | %s | %s | %s ', $this->name, $this->type, $this->description, $this->default, $required, (string) $this->constraints, $this->example);
     }
 }

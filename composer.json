@@ -20,7 +20,8 @@
         "ray/di": "^2.12",
         "rize/uri-template": "^0.3.3",
         "bear/package": "^1.10",
-        "koriym/app-state-diagram": "^0.3.4"
+        "koriym/app-state-diagram": "^0.3.4",
+        "michelf/php-markdown": "^1.9"
     },
     "require-dev": {
         "bear/aura-router-module": "^2.0",

@@ -54,10 +54,13 @@ final class DocMethod
     /** @var ReflectionMethod  */
     private $method;
 
+    /** @var string */
+    private $ext;
+
     /**
      * @param ArrayObject<string, string> $semanticDictionary
      */
-    public function __construct(Reader $reader, ReflectionMethod $method, ?Schema $request, ?Schema $response, ArrayObject $semanticDictionary)
+    public function __construct(Reader $reader, ReflectionMethod $method, ?Schema $request, ?Schema $response, ArrayObject $semanticDictionary, string $ext)
     {
         $this->method = $method;
         $this->httpMethod = substr($method->name, 2);
@@ -75,6 +78,7 @@ final class DocMethod
         $this->params = $this->getDocParams($method, $tagParams, $request, $semanticDictionary);
         $this->response = $response;
         $this->reader = $reader;
+        $this->ext = $ext;
     }
 
     /**
@@ -154,8 +158,8 @@ EOT;
         }
 
         return <<<EOT
-| Name  | Type  | Description | Default | Example |
-|-------|-------|-------------|---------|---------| 
+| Name  | Type  | Description | Default | Required | Constraints | Example |
+|-------|-------|-------------|---------|----------|-------------|---------| 
 {$table}
 EOT;
     }
@@ -186,7 +190,7 @@ EOT;
 {$responseTitle}
 
 | Name  | Type  | Description | Required | Constraint | Example |
-|-------|-------|-------------|----------|-----------|---------| 
+|-------|-------|-------------|----------|------------|---------| 
 {$rows}
 EOT;
     }
@@ -202,7 +206,7 @@ EOT;
         $items = [];
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Embed) {
-                $items[] = sprintf('| %s | %s |', $annotation->rel, (string) new Src($annotation->src));
+                $items[] = sprintf('| %s | %s |', $annotation->rel, (string) new Src($annotation->src, $this->ext));
             }
         }
 
@@ -228,7 +232,7 @@ EOT;
         $items = [];
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Link) {
-                $items[] = sprintf('| %s | %s |', $annotation->rel, (string) new Src($annotation->href));
+                $items[] = sprintf('| %s | %s |', $annotation->rel, (string) new Src($annotation->href, $this->ext));
             }
         }
 

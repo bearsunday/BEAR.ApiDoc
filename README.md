@@ -15,15 +15,26 @@ This not only saves you the trouble of writing IDL, but also allows you to gener
 
 Basic usage:
 
+Create `bin/doc.php` api doc script file as follows.
+
 ```php
-(new DocApp('FakeVendor\FakeProject'))('/path/to/docs', 'app');
+use BEAR\ApiDoc\DocApp;
+
+$docApp = new DocApp('FakeVendor\FakeProject');
+$docApp->dumpHtml('/path/to/docs', 'app');
 ```
+
+You can also choose markdown format.
+
+```php
+$docApp->dumpMd('/path/to/md_docs', 'app');
+```
+
 
 Instead of adding explanations for each of them, the ALPS profile can be used to centralize the explanation of terms. In other words, it is a dictionary of terms used in the application.
 
-
 ```php
-(new DocApp('FakeVendor\FakeProject'))('/path/to/docs', 'app', '/path/to/profile.json');
+$docApp->dumpHtml('/path/to/html', 'app', '/path/to/profile.json');
 ```
 
 ### ALPS file
@@ -46,4 +57,7 @@ For more information about ALPS, please visit [alps.io](http://alps.io/)
 
 ## Demo
 
-Try the online APIdoc [demo](https://github.com/bearsunday/BEAR.ApiDoc/blob/1.x/tests/docs/index.md).
+Try the online APIdoc demo.
+
+ * [HTML](https://bearsunday.github.io/BEAR.ApiDoc/)
+ * [Mark Down](https://github.com/bearsunday/BEAR.ApiDoc/blob/1.x/tests/md/index.md)
