@@ -6,13 +6,12 @@ namespace FakeVendor\FakeProject;
 
 use BEAR\ApiDoc\DocApp;
 use PHPUnit\Framework\TestCase;
+
 use function dirname;
 
 class DocAppTest extends TestCase
 {
-    /**
-     * @var DocApp
-     */
+    /** @var DocApp */
     protected $docApp;
 
     protected function setUp(): void
@@ -22,7 +21,6 @@ class DocAppTest extends TestCase
 
     public function testDumpMarkdown(): void
     {
-
         $this->docApp->dumpMd(__DIR__ . '/md', 'app');
         $this->assertFileExists(__DIR__ . '/md/address.md');
     }
@@ -38,5 +36,4 @@ class DocAppTest extends TestCase
         $this->docApp->dumpHtml(dirname(__DIR__) . '/docs', 'app');
         $this->assertFileExists(dirname(__DIR__) . '/docs/address.html');
     }
-
 }

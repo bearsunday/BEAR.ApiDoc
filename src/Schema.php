@@ -116,8 +116,8 @@ EOT;
             assert(is_object($property));
             $description = $property->description ?? ''; // @phpstan-ignore-line
             assert(is_string($description));
-            /** @var string $title */
             $title = $property->title ?? ''; // @phpstan-ignore-line
+            assert(is_string($title));
             $titleDescription = $title && $description ? sprintf('%s - %s', $title, $description) : $title . $description; // @phpstan-ignore-line
             $type = $this->getType($property, $schema);
             $constraint = new SchemaConstraints($property, $this->file);

@@ -27,7 +27,7 @@ final class Index
 
     /**
      * @param array<string, string> $paths
-     * @param list<string> $objects
+     * @param list<string>          $objects
      */
     public function __construct(string $title, string $description, array $paths, array $objects, string $ext)
     {

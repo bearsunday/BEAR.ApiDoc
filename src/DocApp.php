@@ -34,7 +34,6 @@ use function is_iterable;
 use function is_string;
 use function mkdir;
 use function sprintf;
-use function str_replace;
 use function substr;
 
 /**
@@ -105,7 +104,6 @@ final class DocApp
         }
     }
 
-
     /**
      * @return Generator<string, string>
      */
@@ -118,7 +116,6 @@ final class DocApp
         $paths = [];
         foreach ($generator as $meta) {
             $path = $this->routes[$meta->uriPath] ?? $meta->uriPath;
-            assert(class_exists($meta->class));
             $markdown = ($this->docClass)($path, new ReflectionClass($meta->class), $semanticDictionary, $ext);
             $file = sprintf('%s/%s', $docDir, substr($meta->uriPath, 1));
             $paths[$path] = substr($meta->uriPath, 1);
@@ -130,8 +127,8 @@ final class DocApp
         /** @var list<string> $objects */
         $objects = array_unique((array) $this->modelRepository);
         $index = (string) new Index($this->meta->name, '', $paths, $objects, $ext);
-        yield sprintf('%s/index', $docDir) => $index;
 
+        yield sprintf('%s/index', $docDir) => $index;
     }
 
     private function copySchemas(string $docDir): void
