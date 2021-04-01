@@ -9,7 +9,7 @@ use Aura\Router\Map;
 use Aura\Router\Route;
 use Aura\Router\RouterContainer;
 use BEAR\AppMeta\Meta;
-use BEAR\Package\Module;
+use BEAR\AppMeta\ResMeta;
 use Doctrine\Common\Annotations\Reader;
 use FilesystemIterator;
 use Generator;
@@ -62,7 +62,7 @@ final class DocApp
         assert(class_exists($appModule));
         $this->meta = new Meta($appName);
         /** @psalm-suppress all */
-        $injector = new Injector(new $appModule($this->meta, new Module\AppMetaModule($this->meta)));
+        $injector = new Injector(new $appModule($this->meta, new AppMetaModule($this->meta)));
         assert($injector instanceof InjectorInterface);
         $reader = $injector->getInstance(Reader::class);
         assert($reader instanceof Reader);
