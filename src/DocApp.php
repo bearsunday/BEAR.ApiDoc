@@ -9,7 +9,6 @@ use Aura\Router\Map;
 use Aura\Router\Route;
 use Aura\Router\RouterContainer;
 use BEAR\AppMeta\Meta;
-use BEAR\AppMeta\ResMeta;
 use Doctrine\Common\Annotations\Reader;
 use FilesystemIterator;
 use Generator;
@@ -67,9 +66,19 @@ final class DocApp
         $reader = $injector->getInstance(Reader::class);
         assert($reader instanceof Reader);
         /** @var string responseSchemaDir $responseSchemaDir */
-        $responseSchemaDir = $injector->getInstance('', 'json_schema_dir');
+        try {
+            $responseSchemaDir = $injector->getInstance('', 'json_schema_dir');
+        } catch (Unbound $e) {
+            $responseSchemaDir = '';
+        }
+
         $this->responseSchemaDir = $responseSchemaDir;
-        $requestSchemaDir = $injector->getInstance('', 'json_validate_dir');
+        try {
+            $requestSchemaDir = $injector->getInstance('', 'json_validate_dir');
+        } catch (Unbound $e) {
+            $requestSchemaDir = '';
+        }
+
         assert(is_string($requestSchemaDir));
         /** @var ArrayObject<string, string> $modelRepository */
         $modelRepository = new ArrayObject();
@@ -123,7 +132,10 @@ final class DocApp
             yield $file => $markdown;
         }
 
-        $this->copySchemas($docDir);
+        if ($this->responseSchemaDir) {
+            $this->copySchemas($docDir);
+        }
+
         /** @var list<string> $objects */
         $objects = array_unique((array) $this->modelRepository);
         $index = (string) new Index($this->meta->name, '', $paths, $objects, $ext);
