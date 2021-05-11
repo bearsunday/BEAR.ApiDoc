@@ -46,6 +46,7 @@
         }
     },
     "scripts": {
+        "bin": "bin/apidoc.php",
         "setup": "php bin/setup.php",
         "test": "./vendor/bin/phpunit",
         "coverage": "php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage",
@@ -73,7 +74,6 @@
             "@pcov",
             "@metrics"
         ],
-        "min-check": "~/.composer/vendor/bin/composer-require-checker check --config-file=./.composer-require-checker.config.json",
         "post-install-cmd": "@composer bin all install --ansi",
         "post-update-cmd": "@composer bin all update --ansi"
     },
