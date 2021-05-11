@@ -23,6 +23,6 @@ class DocClassTest extends TestCase
         ))('/path', $class, new ArrayObject(), 'md');
         $this->assertStringContainsString('/path', $view);
         $this->assertStringContainsString('## GET', $view);
-        $this->assertStringContainsString('### Request', $view);
+        $this->assertStringContainsString('Request', $view);
     }
 }

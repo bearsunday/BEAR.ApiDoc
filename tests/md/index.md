@@ -1,20 +1,19 @@
-# API Doc
- * FakeVendor\FakeProject
+# FakeVendor\FakeProject
 
-
+desc
 
 ## Paths
- * [/address](address.md) 
- * [/array-data](array-data.md) 
- * [/calendar](calendar.md) 
- * [/card](card.md) 
- * [/index](index.md) 
- * [/numbers](numbers.md) 
- * [/org](org.md) 
- * [/person](person.md) 
- * [/ticket/{id}](ticket.md) 
- * [/tickets](tickets.md) 
- * [/users/{id}](user.md) 
+ * [/address](paths/address.md) 
+ * [/array-data](paths/array-data.md) 
+ * [/calendar](paths/calendar.md) 
+ * [/card](paths/card.md) 
+ * [/index](paths/index.md) 
+ * [/numbers](paths/numbers.md) 
+ * [/org](paths/org.md) 
+ * [/person](paths/person.md) 
+ * [/ticket/{id}](paths/ticket.md) 
+ * [/tickets](paths/tickets.md) 
+ * [/users/{id}](paths/user.md) 
 
 
 ## Objects

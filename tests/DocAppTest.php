@@ -28,7 +28,7 @@ class DocAppTest extends TestCase
     public function testDumpMarkdownWithAlpsProfile(): void
     {
         $this->docApp->dumpMd(__DIR__ . '/md', 'app', __DIR__ . '/Fake/app/profile.json');
-        $this->assertFileExists(__DIR__ . '/md/address.md');
+        $this->assertFileExists(__DIR__ . '/md/paths/address.md');
     }
 
     public function testDumpHtml(): void

@@ -12,9 +12,11 @@ This is the summary of Address. line 2
 
 
 **Request**
+
 (No parameters required)
 
 **Response**
+
 [Object: Address](schema/address.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |

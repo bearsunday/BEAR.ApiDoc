@@ -4,12 +4,14 @@
 
 
 **Request**
+
 | Name  | Type  | Description | Default | Required | Constraints | Example |
 |-------|-------|-------------|---------|----------|-------------|---------| 
 | id | string | The unique ID of the person. | koriym | Optional |  |  
 
 
 **Response**
+
 [Object: Person](schema/person.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |
