@@ -69,18 +69,27 @@ final class DocParam
         $this->default = $parameter->isDefaultValueAvailable() ? $this->getDefaultString($parameter) : '';
         $this->description = $tagParam->description;
         $this->example = $prop->example ?? '';
+        $this->semanticDictionary = $semanticDictionary;
         if ($prop) {
             $this->setByProp($prop);
         }
 
-        $this->semanticDictionary = $semanticDictionary;
+        if ($tagParam->description) {
+            $this->description = $tagParam->description;
+
+            return;
+        }
+
+        $this->description = $semanticDictionary[$parameter->name] ?? '';
     }
 
     private function getType(ReflectionParameter $parameter): string
     {
         $namedType = $parameter->getType();
         if (! $namedType instanceof ReflectionNamedType) {
+            // @codeCoverageIgnoreStart
             return '';
+            // @codeCoverageIgnoreEnd
         }
 
         return $namedType->getName();
@@ -94,12 +103,7 @@ final class DocParam
             return str_replace(PHP_EOL, '', strtolower(var_export($default, true)));
         }
 
-        $stringDefault = (string) $default;
-        if ($stringDefault) {
-            return $stringDefault;
-        }
-
-        return $this->semanticDictionary[$parameter->name] ?? '';
+        return (string) $default;
     }
 
     private function setByProp(SchemaProp $prop): void

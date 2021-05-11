@@ -7,8 +7,6 @@ namespace BEAR\ApiDoc;
 use ArrayObject;
 use BEAR\Resource\Annotation\JsonSchema;
 use Doctrine\Common\Annotations\Reader;
-use phpDocumentor\Reflection\DocBlock\Tags\Link;
-use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use ReflectionMethod;
 use SplFileInfo;
@@ -65,7 +63,7 @@ final class DocClass
     public function __invoke(string $path, ReflectionClass $class, ArrayObject $semanticDictionary, string $ext): string
     {
         $this->semanticDictionary = $semanticDictionary;
-        $docComment = (string) (new ReflectionClass($class))->getDocComment();
+        $docComment = (string) $class->getDocComment();
         [$summary, $description, $links] = (new PhpDoc())($docComment);
         $methods = $class->getMethods();
         $views = [];

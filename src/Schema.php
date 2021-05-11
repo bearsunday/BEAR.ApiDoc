@@ -14,6 +14,7 @@ use function implode;
 use function is_array;
 use function is_object;
 use function is_string;
+use function property_exists;
 use function sprintf;
 use function ucfirst;
 
@@ -63,11 +64,6 @@ final class Schema
         }
     }
 
-    public function accept(VisitorInterface $visitor): void
-    {
-        $visitor->visitSchema($this);
-    }
-
     public function title(): string
     {
         $title = $this->title ? sprintf('%s: %s', ucfirst($this->type), $this->title) : ucfirst($this->type);
@@ -102,7 +98,9 @@ EOT;
             return $ref->type;
         }
 
+        // @codeCoverageIgnoreStart
         throw new RuntimeException();
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -114,18 +112,15 @@ EOT;
         foreach ($schema->properties as $name => $property) {
             assert(is_string($name));
             assert(is_object($property));
-            $description = $property->description ?? ''; // @phpstan-ignore-line
-            assert(is_string($description));
-            $title = $property->title ?? ''; // @phpstan-ignore-line
-            assert(is_string($title));
-            $titleDescription = $title && $description ? sprintf('%s - %s', $title, $description) : $title . $description; // @phpstan-ignore-line
+            $description = property_exists($property, 'description') ? (string) $property->description : '';
+            $title = property_exists($property, 'title') ? (string) $property->title : '';
+            $titleDescription = $title && $description ? sprintf('%s - %s', $title, $description) : $title . $description;
             $type = $this->getType($property, $schema);
             $constraint = new SchemaConstraints($property, $this->file);
             $isOptional = ! isset($required[$name]);
-            /** @psalm-suppress MixedAssignment */
-            $example = $property->example ?? ''; // @phpstan-ignore-line
+            $example = property_exists($property, 'example') ? (string) $property->example : '';
             /** @psalm-suppress InaccessibleProperty */
-            $this->props[$name] = new SchemaProp($name, $type, $isOptional, $this->getDescription($titleDescription, $name), $constraint, (string) $example);
+            $this->props[$name] = new SchemaProp($name, $type, $isOptional, $this->getDescription($titleDescription, $name), $constraint, $example);
         }
     }
 
