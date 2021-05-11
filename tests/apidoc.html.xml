@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../apidoc.xsd">
+    <appName>FakeVendor\FakeProject</appName>
+    <scheme>app</scheme>
+    <docDir>../../docs</docDir>
+    <format>html</format>
+    <title>API Doc Title</title>
+    <description>This is the description of API Doc</description>
+    <links>
+        <link rel="Google" href="https://www.google.com/" />
+        <link rel="Twitter" href="https://www.twitter.com/" />
+    </links>
+</apidoc>

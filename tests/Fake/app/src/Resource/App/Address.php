@@ -19,8 +19,10 @@ class Address extends ResourceObject
 {
     /**
      * @JsonSchema(key="address", schema="address.json")
+     *
+     * @param string $id Address ID
      */
-    public function onGet()
+    public function onGet(string $id)
     {
     }
 }

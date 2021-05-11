@@ -19,4 +19,8 @@ class Person extends ResourceObject
     public function onGet(string $id = 'koriym')
     {
     }
+
+    public function onPost(string $firstName)
+    {
+    }
 }

@@ -1,12 +1,4 @@
 # /address
-Address
-
-This is the summary of Address. line 1
-This is the summary of Address. line 2
-
- * @link [http://www.example.com/1](http://www.example.com/1) Link description 1
- * @link [http://www.example.com/2](http://www.example.com/2) Link description 2
-
 
 ## GET
 
