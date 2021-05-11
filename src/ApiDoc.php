@@ -180,7 +180,7 @@ final class ApiDoc
         }
 
         // @codeCoverageIgnoreStart
-        mkdir($dir, 777, true);
+        mkdir($dir, 0777, true);
     }
 
         // @codeCoverageIgnoreEnd
