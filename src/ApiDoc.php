@@ -181,6 +181,8 @@ final class ApiDoc
 
         // @codeCoverageIgnoreStart
         mkdir($dir, 0777, true);
+        chmod(dirname($dir), 0777);
+        chmod($dir, 0777);
     }
 
         // @codeCoverageIgnoreEnd
