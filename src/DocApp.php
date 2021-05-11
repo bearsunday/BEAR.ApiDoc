@@ -12,7 +12,6 @@ use BEAR\AppMeta\Meta;
 use Doctrine\Common\Annotations\Reader;
 use FilesystemIterator;
 use Generator;
-use Koriym\AppStateDiagram\AlpsProfile;
 use Koriym\AppStateDiagram\MdToHtml;
 use Koriym\AppStateDiagram\Profile;
 use Koriym\AppStateDiagram\SemanticDescriptor;
@@ -102,6 +101,7 @@ final class DocApp
 
     public function dumpMd(string $docDir, string $scheme, string $alpsFile = ''): void
     {
+        $this->mkDir($docDir);
         $genMarkDown = $this->getGenMarkdown($docDir, $scheme, 'md', $alpsFile);
         foreach ($genMarkDown as $file => [$markdown]) {
             file_put_contents($file . '.md', $markdown);
@@ -110,13 +110,24 @@ final class DocApp
 
     public function dumpHtml(string $docDir, string $scheme, string $alpsFile = ''): void
     {
+        $this->mkDir($docDir);
         $genMarkDown = $this->getGenMarkdown($docDir, $scheme, 'html', $alpsFile);
         $mdToHtml = new MdToHtml();
-        foreach ($genMarkDown as $file =>  [$markdown, $path]) {
+        foreach ($genMarkDown as $file => [$markdown, $path]) {
             $title = sprintf('%s %s', $this->appName, $path);
             $html = $mdToHtml($title, $markdown);
             file_put_contents($file . '.html', $html);
         }
+    }
+
+    private function mkDir(string $docDir): void
+    {
+        $dir = sprintf('%s/paths', $docDir);
+        if (is_dir($dir)) {
+            return;
+        }
+
+        mkdir($dir);
     }
 
     /**
@@ -132,7 +143,7 @@ final class DocApp
         foreach ($generator as $meta) {
             $path = $this->routes[$meta->uriPath] ?? $meta->uriPath;
             $markdown = ($this->docClass)($path, new ReflectionClass($meta->class), $semanticDictionary, $ext);
-            $file = sprintf('%s/%s', $docDir, substr($meta->uriPath, 1));
+            $file = sprintf('%s/paths/%s', $docDir, substr($meta->uriPath, 1));
             $paths[$path] = substr($meta->uriPath, 1);
 
             yield $file => [$markdown, $path];
@@ -144,7 +155,7 @@ final class DocApp
 
         /** @var list<string> $objects */
         $objects = array_unique((array) $this->modelRepository);
-        $index = (string) new Index($this->meta->name, '', $paths, $objects, $ext);
+        $index = (string) new Index($this->meta->name, 'desc', $paths, $objects, $ext);
 
         yield sprintf('%s/index', $docDir) => [$index, ''];
     }

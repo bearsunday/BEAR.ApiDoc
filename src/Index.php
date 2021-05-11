@@ -42,7 +42,7 @@ final class Index
     {
         $paths = $objects = '';
         foreach ($this->paths as $route => $path) {
-            $paths .= sprintf(' * [%s](%s.%s) ', $route, $path, $this->ext) . PHP_EOL;
+            $paths .= sprintf(' * [%s](paths/%s.%s) ', $route, $path, $this->ext) . PHP_EOL;
         }
 
         foreach ($this->objects as $objectName => $objectFile) {
@@ -50,8 +50,7 @@ final class Index
         }
 
         return <<<EOT
-# API Doc
- * {$this->title}
+# {$this->title}
 
 {$this->description}
 
