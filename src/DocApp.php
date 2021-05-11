@@ -14,6 +14,7 @@ use FilesystemIterator;
 use Generator;
 use Koriym\AppStateDiagram\AlpsProfile;
 use Koriym\AppStateDiagram\MdToHtml;
+use Koriym\AppStateDiagram\Profile;
 use Koriym\AppStateDiagram\SemanticDescriptor;
 use Ray\Di\Exception\Unbound;
 use Ray\Di\Injector;
@@ -40,6 +41,9 @@ use function substr;
  */
 final class DocApp
 {
+    /** @var string */
+    private $appName;
+
     /** @var Meta */
     private $meta;
 
@@ -57,6 +61,7 @@ final class DocApp
 
     public function __construct(string $appName)
     {
+        $this->appName = $appName;
         $appModule = sprintf('%s\\Module\\AppModule', $appName);
         assert(class_exists($appModule));
         $this->meta = new Meta($appName);
@@ -65,8 +70,8 @@ final class DocApp
         assert($injector instanceof InjectorInterface);
         $reader = $injector->getInstance(Reader::class);
         assert($reader instanceof Reader);
-        /** @var string responseSchemaDir $responseSchemaDir */
         try {
+            /** @var string responseSchemaDir $responseSchemaDir */
             $responseSchemaDir = $injector->getInstance('', 'json_schema_dir');
         } catch (Unbound $e) {
             $responseSchemaDir = '';
@@ -98,7 +103,7 @@ final class DocApp
     public function dumpMd(string $docDir, string $scheme, string $alpsFile = ''): void
     {
         $genMarkDown = $this->getGenMarkdown($docDir, $scheme, 'md', $alpsFile);
-        foreach ($genMarkDown as $file => $markdown) {
+        foreach ($genMarkDown as $file => [$markdown]) {
             file_put_contents($file . '.md', $markdown);
         }
     }
@@ -107,14 +112,15 @@ final class DocApp
     {
         $genMarkDown = $this->getGenMarkdown($docDir, $scheme, 'html', $alpsFile);
         $mdToHtml = new MdToHtml();
-        foreach ($genMarkDown as $file => $markdown) {
-            $html = $mdToHtml('title', $markdown);
+        foreach ($genMarkDown as $file =>  [$markdown, $path]) {
+            $title = sprintf('%s %s', $this->appName, $path);
+            $html = $mdToHtml($title, $markdown);
             file_put_contents($file . '.html', $html);
         }
     }
 
     /**
-     * @return Generator<string, string>
+     * @return Generator<string, array{0: string, 1:string}>
      */
     private function getGenMarkdown(string $docDir, string $scheme, string $ext, string $alpsFile = ''): Generator
     {
@@ -129,7 +135,7 @@ final class DocApp
             $file = sprintf('%s/%s', $docDir, substr($meta->uriPath, 1));
             $paths[$path] = substr($meta->uriPath, 1);
 
-            yield $file => $markdown;
+            yield $file => [$markdown, $path];
         }
 
         if ($this->responseSchemaDir) {
@@ -140,7 +146,7 @@ final class DocApp
         $objects = array_unique((array) $this->modelRepository);
         $index = (string) new Index($this->meta->name, '', $paths, $objects, $ext);
 
-        yield sprintf('%s/index', $docDir) => $index;
+        yield sprintf('%s/index', $docDir) => [$index, ''];
     }
 
     private function copySchemas(string $docDir): void
@@ -156,7 +162,7 @@ final class DocApp
     private function registerAlpsProfile(string $file): ArrayObject
     {
         assert(file_exists($file));
-        $alps = new AlpsProfile($file);
+        $alps = new Profile($file);
         /** @var  ArrayObject<string, string> $semanticDictionary */
         $semanticDictionary = new ArrayObject();
         foreach ($alps->descriptors as $descriptor) {
