@@ -16,7 +16,7 @@
         "phpdocumentor/reflection-docblock": "^4.3 || 5.2",
         "bear/resource": "^1.14",
         "bear/sunday": "^1.4",
-        "bear/app-meta": "^1.1",
+        "bear/app-meta": "^1.7",
         "doctrine/annotations": "^1.12",
         "ray/di": "^2.10",
         "rize/uri-template": "^0.3.3",
