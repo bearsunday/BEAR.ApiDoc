@@ -14,7 +14,7 @@
         "ext-filter": "*",
         "ext-simplexml": "*",
         "phpdocumentor/reflection-docblock": "^4.3 || 5.2",
-        "bear/resource": "^1.14",
+        "bear/resource": "^1.15.5",
         "bear/sunday": "^1.4",
         "bear/app-meta": "^1.7",
         "doctrine/annotations": "^1.12",
