@@ -4,9 +4,11 @@
 
 
 **Request**
+
 (No parameters required)
 
 **Response**
+
 [Object: Array](schema/array.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |

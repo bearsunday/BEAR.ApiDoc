@@ -4,9 +4,11 @@
 
 
 **Request**
+
 (No parameters required)
 
 **Response**
+
 [Array: Numbers](schema/numbers.json)
 
 | Item Type |  Constraint |

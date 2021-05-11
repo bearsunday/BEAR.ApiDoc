@@ -4,17 +4,20 @@
 
 
 **Request**
+
 | Name  | Type  | Description | Default | Required | Constraints | Example |
 |-------|-------|-------------|---------|----------|-------------|---------| 
 | id | string | The unique identifier for a ticket. |  | Required |  |  
 
 
 **Response**
-(No response body)
+
+(n/a)
 ## POST
 
 
 **Request**
+
 | Name  | Type  | Description | Default | Required | Constraints | Example |
 |-------|-------|-------------|---------|----------|-------------|---------| 
 | title | string |  |  | Required |  |  
@@ -23,4 +26,5 @@
 
 
 **Response**
-(No response body)
+
+(n/a)

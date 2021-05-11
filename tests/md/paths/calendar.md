@@ -4,9 +4,11 @@
 
 
 **Request**
+
 (No parameters required)
 
 **Response**
+
 [Object: Calendar](schema/calendar.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |

@@ -4,9 +4,11 @@
 
 
 **Request**
+
 (No parameters required)
 
 **Response**
+
 [Object: Card](schema/card.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |

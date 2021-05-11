@@ -94,7 +94,7 @@ final class DocMethod
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $hasTagParam = $tagParams && isset($tagParams[$name]);
-            $tagParam = $hasTagParam ? $tagParams[$name] : new TagParam('', ''); // @phpstan-ignore-line
+            $tagParam = $hasTagParam ? $tagParams[$name] : new TagParam('', '');
             $prop = $request->props[$name] ?? null; // @phpstan-ignore-line
             $docParams[] = new DocParam($parameter, $tagParam, $prop, $semanticDictionary);
         }
@@ -126,10 +126,12 @@ final class DocMethod
 ## %s
 {$this->lineString($title)}{$this->lineString($description)}
 
-### Request
+**Request**
+
 %s
 
-### Response
+**Response**
+
 %s
 EOT;
 
@@ -167,7 +169,7 @@ EOT;
     private function toStringResponse(): string
     {
         if ($this->response === null) {
-            return '(No response body)';
+            return '(n/a)';
         }
 
         if ($this->response->type === 'array') {

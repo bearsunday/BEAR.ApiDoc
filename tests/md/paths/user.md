@@ -4,6 +4,7 @@
 
 
 **Request**
+
 | Name  | Type  | Description | Default | Required | Constraints | Example |
 |-------|-------|-------------|---------|----------|-------------|---------| 
 | id | string | User ID |  | Required |  |  
@@ -11,6 +12,7 @@
 
 
 **Response**
+
 [Object: User](schema/user.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |
@@ -44,6 +46,7 @@ Create user with given name and age
 
 
 **Request**
+
 | Name  | Type  | Description | Default | Required | Constraints | Example |
 |-------|-------|-------------|---------|----------|-------------|---------| 
 | name | string | The name of the user |  | Required |  |  
@@ -51,4 +54,5 @@ Create user with given name and age
 
 
 **Response**
-(No response body)
+
+(n/a)

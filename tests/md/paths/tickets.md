@@ -4,9 +4,11 @@
 
 
 **Request**
+
 (No parameters required)
 
 **Response**
+
 [Array: Collection of Tickets](schema/tickets.json)
 
 | Item Type |  Constraint |

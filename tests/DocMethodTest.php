@@ -41,8 +41,8 @@ class DocMethodTest extends TestCase
      */
     public function testToString(DocMethod $method): void
     {
-        $this->assertStringContainsString('## Request', (string) $method);
-        $this->assertStringContainsString('## Response', (string) $method);
+        $this->assertStringContainsString('**Request**', (string) $method);
+        $this->assertStringContainsString('**Response**', (string) $method);
     }
 
     public function testArrayData(): void
@@ -55,13 +55,15 @@ class DocMethodTest extends TestCase
 ## GET
 
 
-### Request
+**Request**
+
 | Name  | Type  | Description | Default | Required | Constraints | Example |
 |-------|-------|-------------|---------|----------|-------------|---------| 
 | id | string | This is fake id |  | Required |  |  
 
 
-### Response
+**Response**
+
 [Object: Array](schema/array.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |
