@@ -65,7 +65,8 @@ final class DocClass
     public function __invoke(string $path, ReflectionClass $class, ArrayObject $semanticDictionary, string $ext): string
     {
         $this->semanticDictionary = $semanticDictionary;
-        [$summary, $description, $links] = $this->classTag($class);
+        $docComment = (string) (new ReflectionClass($class))->getDocComment();
+        [$summary, $description, $links] = (new PhpDoc())($docComment);
         $methods = $class->getMethods();
         $views = [];
         foreach ($methods as $method) {
@@ -83,29 +84,6 @@ final class DocClass
 {$summary}{$description}{$links}
 {$methodsView}
 EOT;
-    }
-
-    /**
-     * @param ReflectionClass<object> $class
-     *
-     * @return array{0: string, 1:string, 2:string}
-     */
-    private function classTag(ReflectionClass $class): array
-    {
-        $factory = DocBlockFactory::createInstance();
-        $docComment = $class->getDocComment();
-        if (! $docComment) {
-            return ['', '', ''];
-        }
-
-        $docblock = $factory->create($docComment);
-        $summary = $docblock->getSummary() . PHP_EOL . PHP_EOL;
-        $description = (string) $docblock->getDescription() . PHP_EOL . PHP_EOL;
-        /** @var list<Link> $tagLinks */
-        $tagLinks = $docblock->getTagsByName('link');
-        $links = (string) new TagLinks($tagLinks) . PHP_EOL . PHP_EOL;
-
-        return [$summary, $description, $links];
     }
 
     private function getMethodView(ReflectionMethod $method, string $ext): string
