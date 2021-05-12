@@ -36,6 +36,7 @@ class Config
 
     /**
      * @psalm-suppress
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function __construct(SimpleXMLElement $xml)
     {

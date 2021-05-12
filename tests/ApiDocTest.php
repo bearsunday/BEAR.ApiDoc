@@ -7,8 +7,6 @@ namespace FakeVendor\FakeProject;
 use BEAR\ApiDoc\ApiDoc;
 use PHPUnit\Framework\TestCase;
 
-use function dirname;
-
 class ApiDocTest extends TestCase
 {
     public function testDumpHtml(): void

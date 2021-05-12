@@ -27,6 +27,7 @@ use SplFileInfo;
 
 use function array_unique;
 use function assert;
+use function chmod;
 use function class_exists;
 use function copy;
 use function dirname;
