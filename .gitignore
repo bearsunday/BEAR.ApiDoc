@@ -5,3 +5,6 @@
 /phpunit.xml
 /.phpunit.result.cache
 /.phpcs-cache
+/docs/
+/tests/docs/
+/.phpunit.cache

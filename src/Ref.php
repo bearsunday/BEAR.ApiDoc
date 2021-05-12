@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
-use LogicException;
+use RuntimeException;
 use SplFileInfo;
 
 use function assert;
@@ -81,7 +81,9 @@ final class Ref
 
         $refFile = sprintf('%s/%s', $file->getPath(), $ref);
         if (! file_exists($refFile)) {
-            throw new LogicException('Invalid $ref' . $ref);
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException('Invalid $ref' . $ref);
+            // @codeCoverageIgnoreEnd
         }
 
         return $refFile;

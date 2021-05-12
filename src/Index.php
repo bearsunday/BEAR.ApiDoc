@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+use phpDocumentor\Reflection\DocBlock\Description;
+use phpDocumentor\Reflection\DocBlock\Tags\Link;
+use SimpleXMLElement;
+
+use function assert;
 use function sprintf;
 
 use const PHP_EOL;
@@ -15,6 +20,9 @@ final class Index
 
     /** @var string */
     private $description;
+
+    /** @var TagLinks */
+    private $links;
 
     /** @var array<string, string> */
     private $paths;
@@ -29,13 +37,22 @@ final class Index
      * @param array<string, string> $paths
      * @param list<string>          $objects
      */
-    public function __construct(string $title, string $description, array $paths, array $objects, string $ext)
+    public function __construct(Config $config, array $paths, array $objects, string $ext)
     {
-        $this->title = $title;
-        $this->description = $description;
+        $this->title = $config->title;
+        $this->description = $config->description ? $config->description . PHP_EOL . PHP_EOL : '';
         $this->paths = $paths;
         $this->objects = $objects;
         $this->ext = $ext;
+        $links = [];
+        /** @psalm-suppress all */
+        $configLink = $config->links->link ?? []; // @phpstan-ignore-line
+        foreach ($configLink as $link) { // @phpstan-ignore-line
+            assert($link instanceof SimpleXMLElement); // @phpstan-ignore-line
+            $links[] = new Link((string) $link['href'], new Description((string) $link['rel']));
+        }
+
+        $this->links = new TagLinks($links);
     }
 
     public function __toString(): string
@@ -51,8 +68,7 @@ final class Index
 
         return <<<EOT
 # {$this->title}
-
-{$this->description}
+{$this->description}{$this->links}
 
 ## Paths
 {$paths}

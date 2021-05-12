@@ -12,10 +12,11 @@
         "php": "^7.2 || ^8.0",
         "ext-json": "*",
         "ext-filter": "*",
+        "ext-simplexml": "*",
         "phpdocumentor/reflection-docblock": "^4.3 || 5.2",
-        "bear/resource": "^1.14",
+        "bear/resource": "^1.15.5",
         "bear/sunday": "^1.4",
-        "bear/app-meta": "^1.1",
+        "bear/app-meta": "^1.7",
         "doctrine/annotations": "^1.12",
         "ray/di": "^2.10",
         "rize/uri-template": "^0.3.3",
@@ -45,6 +46,7 @@
         }
     },
     "scripts": {
+        "bin": "bin/apidoc.php",
         "setup": "php bin/setup.php",
         "test": "./vendor/bin/phpunit",
         "coverage": "php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage",
@@ -72,7 +74,6 @@
             "@pcov",
             "@metrics"
         ],
-        "min-check": "~/.composer/vendor/bin/composer-require-checker check --config-file=./.composer-require-checker.config.json",
         "post-install-cmd": "@composer bin all install --ansi",
         "post-update-cmd": "@composer bin all update --ansi"
     },

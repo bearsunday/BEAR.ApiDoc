@@ -9,7 +9,7 @@ class ArrayData extends ResourceObject
     /**
      * @JsonSchema(key="array", schema="array.json")
      */
-    public function onGet()
+    public function onGet(array $a = [1, 2])
     {
     }
 }

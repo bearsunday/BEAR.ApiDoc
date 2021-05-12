@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="./apidoc.xsd">
+    <appName>MyVendor/Package</appName>
+    <scheme>app</scheme>
+    <docDir>docs/api</docDir>
+    <format>html</format>
+    <title>MyVendor/Package</title>
+    <description>API Document</description>
+    <links>
+        <link rel="BEAR.Sunday" href="https://bearsunday.github.io/"/>
+    </links>
+</apidoc>

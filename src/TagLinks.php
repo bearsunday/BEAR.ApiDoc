@@ -28,7 +28,7 @@ final class TagLinks
     {
         $view = [];
         foreach ($this->links as $link) {
-            $view[] = sprintf(' * @link [%s](%s) %s', $link->getLink(), $link->getLink(), (string) $link->getDescription());
+            $view[] = sprintf(' * %s [%s](%s)', (string) $link->getDescription(), $link->getLink(), $link->getLink());
         }
 
         return implode(PHP_EOL, $view);
