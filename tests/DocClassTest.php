@@ -19,7 +19,7 @@ class DocClassTest extends TestCase
             new AnnotationReader(),
             __DIR__ . '/Fake/var/schema/request',
             __DIR__ . '/Fake/var/schema/response',
-            new ArrayObject(),
+            new ModelRepository(),
         ))('/path', $class, new ArrayObject(), 'md');
         $this->assertStringContainsString('/path', $view);
         $this->assertStringContainsString('## GET', $view);
