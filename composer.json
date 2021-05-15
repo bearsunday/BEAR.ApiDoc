@@ -79,7 +79,7 @@
         "post-install-cmd": "@composer bin all install --ansi",
         "post-update-cmd": "@composer bin all update --ansi"
     },
-    "bin": "bin/apidoc.php",
+    "bin": "bin/apidoc",
     "scripts-descriptions": {
         "test": "Run unit tests",
         "coverage": "Generate test coverage report",
