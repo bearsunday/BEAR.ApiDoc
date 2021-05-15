@@ -85,9 +85,9 @@ class Config
         assert(property_exists($xml, 'docDir'));
         assert(property_exists($xml, 'format'));
         assert(property_exists($xml, 'scheme'));
-        $dir = dirname($configFile);
+        $dir = realpath(dirname($configFile));
         $this->appName = (string) $xml->appName;
-        $this->docDir = (string) realpath(sprintf('%s/%s', $dir, (string) $xml->docDir));
+        $this->docDir = (string) (sprintf('%s/%s', $dir, (string) $xml->docDir));
         $this->format = (string) $xml->format;
         $this->scheme = (string) $xml->scheme;
 

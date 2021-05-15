@@ -6,6 +6,7 @@ namespace BEAR\ApiDoc;
 
 use ArrayObject;
 use BEAR\ApiDoc\Exception\AlpsFileNotFoundException;
+use BEAR\ApiDoc\Exception\NotWritableException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use FilesystemIterator;
 use Generator;
@@ -16,7 +17,6 @@ use Koriym\Attributes\AttributeReader;
 use Koriym\Attributes\DualReader;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
-use RuntimeException;
 use SplFileInfo;
 
 use function array_unique;
@@ -27,11 +27,9 @@ use function dirname;
 use function file_exists;
 use function file_put_contents;
 use function is_dir;
-use function is_writable;
 use function mkdir;
 use function sprintf;
 use function substr;
-use function touch;
 
 final class ApiDoc
 {
@@ -83,14 +81,9 @@ final class ApiDoc
 
     private function filePutContents(string $file, string $contents): void
     {
-        touch($file);
-        if (! is_writable($file)) {
-            // @codeCoverageIgnoreStart
-            throw new RuntimeException($file);
-            // @codeCoverageIgnoreEnd
+        if (file_put_contents($file, $contents) === false) {
+            throw new NotWritableException($file);
         }
-
-        file_put_contents($file, $contents);
     }
 
     private function mkDir(string $docDir): void
