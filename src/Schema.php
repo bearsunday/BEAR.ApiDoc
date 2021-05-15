@@ -18,15 +18,15 @@ use function property_exists;
 use function sprintf;
 use function ucfirst;
 
+/**
+ * @psalm-pure
+ */
 final class Schema
 {
     /** @var string */
     public $title;
 
-    /**
-     * @var array<string, SchemaProp>
-     * @readonly
-     */
+    /** @var array<string, SchemaProp> */
     public $props = [];
 
     /** @var string */

@@ -9,6 +9,9 @@ use phpDocumentor\Reflection\DocBlockFactory;
 
 use const PHP_EOL;
 
+/**
+ * @psalm-pure
+ */
 class PhpDoc
 {
     /**

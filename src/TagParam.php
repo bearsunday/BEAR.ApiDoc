@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+/**
+ * @psalm-pure
+ */
 final class TagParam
 {
-    /**
-     * @var string
-     * @readonly
-     */
+    /** @var string */
     public $type = '';
 
-    /**
-     * @var string
-     * @readonly
-     */
+    /** @var string */
     public $description = '';
 
     public function __construct(string $type, string $description)

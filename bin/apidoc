@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+use BEAR\ApiDoc\ApiDoc;
+use BEAR\ApiDoc\Exception\ConfigException;
+
+/**
+ * @param array<int,string> $argv
+ */
+(function (array $argv): void {
+    foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $file) {
+        if (file_exists($file)) {
+            require $file;
+
+            break;
+        }
+    }
+    $options = getopt('c::');
+    $apidocXml = isset($options['c']) && is_string($options['c']) ? $options['c'] : '';
+
+    try {
+        echo (new ApiDoc())($apidocXml);
+    } catch (RuntimeException $e) {
+        printf('%s: %s', (new ReflectionClass($e))->getShortName(), $e->getMessage());
+        exit(1);
+    }
+})($argv);

@@ -22,11 +22,11 @@ use function sprintf;
 
 use const PHP_EOL;
 
-/**
- * @psalm-pure
- */
 final class DocClass
 {
+    /** @var ModelRepository */
+    public $modelRepository;
+
     /** @var Reader */
     private $reader;
 
@@ -37,16 +37,14 @@ final class DocClass
     private $responseSchemaDir;
 
     /** @var ArrayObject<string, string> */
-    private $modelRepository;
-
-    /** @var ArrayObject<string, string> */
     private $semanticDictionary;
 
-    /**
-     * @param ArrayObject<string, string> $modelRepository
-     */
-    public function __construct(Reader $reader, string $requestSchemaDir, string $responseSchemaDir, ArrayObject $modelRepository)
-    {
+    public function __construct(
+        Reader $reader,
+        string $requestSchemaDir,
+        string $responseSchemaDir,
+        ModelRepository $modelRepository
+    ) {
         $this->reader = $reader;
         $this->requestSchemaDir = $requestSchemaDir;
         $this->responseSchemaDir = $responseSchemaDir;

@@ -27,7 +27,7 @@ final class Index
     /** @var array<string, string> */
     private $paths;
 
-    /** @var list<string> */
+    /** @var ModelRepository */
     private $objects;
 
     /** @var string */
@@ -35,14 +35,13 @@ final class Index
 
     /**
      * @param array<string, string> $paths
-     * @param list<string>          $objects
      */
-    public function __construct(Config $config, array $paths, array $objects, string $ext)
+    public function __construct(Config $config, array $paths, ModelRepository $modelRepository, string $ext)
     {
         $this->title = $config->title;
         $this->description = $config->description ? $config->description . PHP_EOL . PHP_EOL : '';
         $this->paths = $paths;
-        $this->objects = $objects;
+        $this->objects = $modelRepository;
         $this->ext = $ext;
         $links = [];
         /** @psalm-suppress all */

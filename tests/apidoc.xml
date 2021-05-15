@@ -4,7 +4,7 @@
         xsi:noNamespaceSchemaLocation="">
     <appName>FakeVendor\FakeProject</appName>
     <scheme>app</scheme>
-    <docDir>docs</docDir>
+    <docDir>docs/base</docDir>
     <format>html</format>
     <title>API Doc Title</title>
     <description>This is description of API Doc</description>

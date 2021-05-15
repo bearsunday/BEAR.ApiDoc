@@ -6,18 +6,15 @@ namespace BEAR\ApiDoc;
 
 use function sprintf;
 
+/**
+ * @psalm-pure
+ */
 final class SchemaProp
 {
-    /**
-     * @var SchemaConstraints
-     * @readonly
-     */
+    /** @var SchemaConstraints */
     public $constraints;
 
-    /**
-     * @var string
-     * @readonly
-     */
+    /** @var string */
     public $description;
 
     /** @var string */
