@@ -21,7 +21,7 @@ use BEAR\ApiDoc\Exception\ConfigException;
     try {
         echo (new ApiDoc())($apidocXml);
     } catch (RuntimeException $e) {
-        printf('%s: %s', (new ReflectionClass($e))->getShortName(), $e->getMessage());
+        printf("%s: %s\n", (new ReflectionClass($e))->getShortName(), $e->getMessage());
         exit(1);
     }
 })($argv);
