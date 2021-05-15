@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use BEAR\ApiDoc\Exception\ConfigException;
+use BEAR\ApiDoc\Exception\ConfigNotFoundException;
 use DOMDocument;
-use Psalm\Exception\ConfigNotFoundException;
 use SimpleXMLElement;
 
 use function assert;
@@ -47,6 +47,7 @@ final class XmlLoader
 
         $maybePath = sprintf('%s/%s', getcwd(), $path);
         if (file_exists($maybePath) && ! is_dir($maybePath)) {
+            // @codeCoverageIgnoreStart
             return $maybePath;
         }
 
@@ -57,6 +58,7 @@ final class XmlLoader
 
         if (! is_dir($dirPath)) { // @phpstan-ignore-line
             $dirPath = dirname($dirPath); // @phpstan-ignore-line
+            // @codeCoverageIgnoreEnd
         }
 
         do {
@@ -70,7 +72,7 @@ final class XmlLoader
 
         config_not_found:
 
-        throw new ConfigNotFoundException('Config not found for path ' . $path);
+        throw new ConfigNotFoundException($path);
     }
 
     private function validate(string $xmlFullPath, string $xsdPath): void
@@ -81,16 +83,23 @@ final class XmlLoader
         if ($dom->schemaValidate($xsdPath)) {
             return;
         }
+        $this->error();
+    // @codeCoverageIgnoreStart
+    }
+    // @codeCoverageIgnoreEnd
 
+    private function error(): void
+    {
         $errors = libxml_get_errors();
         foreach ($errors as $error) {
             if ($error->level === LIBXML_ERR_FATAL || $error->level === LIBXML_ERR_ERROR) {
-                throw new ConfigException(
-                    sprintf('%s in %s:%s', substr($error->message, 0, -2), $error->file, $error->line)
-                );
+                libxml_clear_errors();
+
+                $msg = sprintf('%s in %s:%s', substr($error->message, 0, -2), $error->file, $error->line);
+                throw new ConfigException($msg);
+                // @codeCoverageIgnoreStart
             }
         }
-
-        libxml_clear_errors();
     }
+    // @codeCoverageIgnoreEnd
 }
