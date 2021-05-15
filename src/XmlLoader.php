@@ -83,9 +83,11 @@ final class XmlLoader
         if ($dom->schemaValidate($xsdPath)) {
             return;
         }
+
         $this->error();
     // @codeCoverageIgnoreStart
     }
+
     // @codeCoverageIgnoreEnd
 
     private function error(): void
@@ -96,10 +98,12 @@ final class XmlLoader
                 libxml_clear_errors();
 
                 $msg = sprintf('%s in %s:%s', substr($error->message, 0, -2), $error->file, $error->line);
+
                 throw new ConfigException($msg);
                 // @codeCoverageIgnoreStart
             }
         }
     }
+
     // @codeCoverageIgnoreEnd
 }

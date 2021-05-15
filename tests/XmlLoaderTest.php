@@ -9,6 +9,7 @@ use BEAR\ApiDoc\Exception\ConfigNotFoundException;
 use PHPUnit\Framework\TestCase;
 use SimpleXMLElement;
 
+use function chdir;
 use function dirname;
 
 class XmlLoaderTest extends TestCase
