@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FakeVendor\FakeProject;
 
 use BEAR\ApiDoc\ApiDoc;
+use BEAR\ApiDoc\Exception\InvalidAppNamespaceException;
 use PHPUnit\Framework\TestCase;
 
 use function chdir;
@@ -35,5 +36,11 @@ class ApiDocTest extends TestCase
         chdir(__DIR__); // /tests
         $msg = (new ApiDoc())('');
         $this->assertStringContainsString('/base/index.html', $msg);
+    }
+
+    public function testInvalidAppName(): void
+    {
+        $this->expectException(InvalidAppNamespaceException::class);
+        (new ApiDoc())(__DIR__ . '/apidoc.invalid.xml');
     }
 }
