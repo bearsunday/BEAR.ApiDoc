@@ -115,6 +115,9 @@ final class DocParam
         }
     }
 
+    /**
+     * @psalm-external-mutation-free
+     */
     public function __toString(): string
     {
         $required = $this->isOptional ? 'Optional' : 'Required';

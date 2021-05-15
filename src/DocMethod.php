@@ -21,31 +21,19 @@ use const PHP_EOL;
 
 final class DocMethod
 {
-    /**
-     * @var string
-     * @readonly
-     */
+    /** @var string */
     private $title = '';
 
-    /**
-     * @var string
-     * @readonly
-     */
+    /** @var string */
     private $description = '';
 
     /** @var string */
     private $httpMethod;
 
-    /**
-     * @var array<int, DocParam>
-     * @readonly
-     */
+    /** @var array<int, DocParam> */
     private $params;
 
-    /**
-     * @var ?Schema
-     * @readonly
-     */
+    /** @var ?Schema */
     private $response;
 
     /** @var Reader */

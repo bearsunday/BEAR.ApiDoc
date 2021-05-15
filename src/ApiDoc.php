@@ -159,6 +159,9 @@ final class ApiDoc
         return $semanticDictionary;
     }
 
+    /**
+     * @psalm-external-mutation-free
+     */
     private function getSemanticTitle(SemanticDescriptor $descriptor): string
     {
         if ($descriptor->title) {

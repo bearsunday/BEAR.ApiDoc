@@ -55,6 +55,9 @@ final class Index
         $this->links = new TagLinks($links);
     }
 
+    /**
+     * @psalm-external-mutation-free
+     */
     public function __toString(): string
     {
         $paths = $objects = '';

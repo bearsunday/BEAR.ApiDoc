@@ -11,6 +11,9 @@ use function sprintf;
 
 use const PHP_EOL;
 
+/**
+ * @psalm-pure
+ */
 final class TagLinks
 {
     /** @var list<Link> */

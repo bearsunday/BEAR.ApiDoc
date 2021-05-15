@@ -33,43 +33,82 @@ use function sprintf;
 
 class Config
 {
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     public $appName;
 
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     public $scheme;
 
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     public $docDir;
 
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     public $format;
 
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     public $title;
 
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     public $description;
 
-    /** @var array<SimpleXMLElement> */
+    /**
+     * @var array<SimpleXMLElement>
+     * @readonly
+     */
     public $links;
 
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     public $alps = '';
 
-    /** @var Generator<ResMeta> */
+    /**
+     * @var Generator<ResMeta>
+     * @readonly
+     */
     public $resourceFiles;
 
-    /** @var ArrayObject<string, string> */
+    /**
+     * @var ArrayObject<string, string>
+     * @readonly
+     */
     public $modelRepository;
 
-    /** @var array<string, string> */
+    /**
+     * @var array<string, string>
+     * @readonly
+     */
     public $routes = [];
 
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     public $requestSchemaDir = '';
 
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     public $responseSchemaDir = '';
 
     /**

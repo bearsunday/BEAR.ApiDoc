@@ -17,6 +17,9 @@ use function sprintf;
 use const FILTER_VALIDATE_URL;
 use const JSON_UNESCAPED_SLASHES;
 
+/**
+ * @psalm-pure
+ */
 final class SchemaConstraints
 {
     /**
