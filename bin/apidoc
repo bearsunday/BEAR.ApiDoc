@@ -2,7 +2,7 @@
 <?php
 
 use BEAR\ApiDoc\ApiDoc;
-use BEAR\ApiDoc\Exception\RuntimeException;
+use BEAR\ApiDoc\Exception\ConfigException;
 
 /**
  * @param array<int,string> $argv
@@ -21,7 +21,7 @@ use BEAR\ApiDoc\Exception\RuntimeException;
     try {
         echo (new ApiDoc())($apidocXml);
     } catch (RuntimeException $e) {
-        printf('%s: %s', get_class($e), $e->getMessage());
+        printf('%s: %s', (new ReflectionClass($e))->getShortName(), $e->getMessage());
         exit(1);
     }
 })($argv);

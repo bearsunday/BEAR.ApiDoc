@@ -17,7 +17,6 @@ use RecursiveDirectoryIterator;
 use ReflectionClass;
 use SplFileInfo;
 
-use function array_unique;
 use function assert;
 use function chmod;
 use function copy;
@@ -80,7 +79,9 @@ final class ApiDoc
     private function filePutContents(string $file, string $contents): void
     {
         if (file_put_contents($file, $contents) === false) {
+            // @codeCoverageIgnoreStart
             throw new NotWritableException($file);
+            // @codeCoverageIgnoreEnd
         }
     }
 
@@ -121,10 +122,7 @@ final class ApiDoc
             $this->copySchemas($config);
         }
 
-        /** @var list<string> $objects */
-        $objects = array_unique((array) $config->modelRepository);
-
-        $index = (string) new Index($config, $paths, $objects, $ext);
+        $index = (string) new Index($config, $paths, $docClass->modelRepository, $ext);
 
         yield sprintf('%s/index', $config->docDir) => [$index, ''];
     }
@@ -133,6 +131,7 @@ final class ApiDoc
     {
         $outputDir = sprintf('%s/schema', $config->docDir);
         ! is_dir($outputDir) && ! mkdir($outputDir) && ! is_dir($outputDir);
+
         $this->copySchema($config->responseSchemaDir, $outputDir);
     }
 
@@ -183,7 +182,9 @@ final class ApiDoc
     {
         foreach (new RecursiveDirectoryIterator($inputDir, FilesystemIterator::SKIP_DOTS) as $file) {
             assert($file instanceof SplFileInfo);
-            copy((string) $file, sprintf('%s/%s', $outputDir, $file->getFilename()));
+            $fileName = $file->getFilename();
+            $destination = sprintf('%s/%s', $outputDir, $fileName);
+            copy((string) $file, $destination);
         }
     }
 }
