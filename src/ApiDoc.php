@@ -15,6 +15,7 @@ use Koriym\AppStateDiagram\Profile;
 use Koriym\AppStateDiagram\SemanticDescriptor;
 use Koriym\Attributes\AttributeReader;
 use Koriym\Attributes\DualReader;
+use Ray\ServiceLocator\ServiceLocator;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
 use SplFileInfo;
@@ -37,7 +38,7 @@ final class ApiDoc
     {
         $config = new Config($configFile);
         $docClass = new DocClass(
-            new DualReader(new AttributeReader(), new AnnotationReader()),
+            ServiceLocator::getReader(),
             $config->requestSchemaDir,
             $config->responseSchemaDir,
             new ModelRepository()
