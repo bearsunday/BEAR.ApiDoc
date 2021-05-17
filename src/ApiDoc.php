@@ -111,7 +111,7 @@ final class ApiDoc
         $paths = [];
         foreach ($config->resourceFiles as $meta) {
             $path = $config->routes[$meta->uriPath] ?? $meta->uriPath;
-            $markdown = $docClass($path, new ReflectionClass($meta->class), $semanticDictionary, $ext);
+            $markdown = $docClass($config->title, $path, new ReflectionClass($meta->class), $semanticDictionary, $ext);
             $file = sprintf('%s/paths/%s', $config->docDir, substr($meta->uriPath, 1));
             $paths[$path] = substr($meta->uriPath, 1);
 

@@ -58,7 +58,7 @@ final class DocClass
      * @param ReflectionClass<object>     $class
      * @param ArrayObject<string, string> $semanticDictionary
      */
-    public function __invoke(string $path, ReflectionClass $class, ArrayObject $semanticDictionary, string $ext): string
+    public function __invoke(string $title, string $path, ReflectionClass $class, ArrayObject $semanticDictionary, string $ext): string
     {
         $this->semanticDictionary = $semanticDictionary;
         $docComment = (string) $class->getDocComment();
@@ -76,6 +76,8 @@ final class DocClass
         $methodsView = implode(PHP_EOL, $views);
 
         return <<<EOT
+<a href="../index.{$ext}" style="color: black; text-decoration: none;">{$title}</a>
+
 # {$path}
 {$summary}{$description}{$links}
 {$methodsView}
