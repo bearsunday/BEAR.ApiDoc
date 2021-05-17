@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="./apidoc.xsd">
+    <appName>FakeVendor\FakeProject</appName>
+    <scheme>app</scheme>
+    <docDir>./</docDir>
+    <format>html</format>
+    <title>Sample API Doc</title>
+    <description>This is an example API doc. See [ApiDoc manual](http://bearsunday.github.io/manuals/1.0/en/apidoc.html).</description>
+    <links>
+        <link rel="home page" href="https://github.com/bearsunday/BEAR.ApiDoc" />
+        <link rel="issue" href="https://github.com/bearsunday/BEAR.ApiDoc/issues" />
+    </links>
+</apidoc>

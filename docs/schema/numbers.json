@@ -1,0 +1,12 @@
+{
+  "$id": "numbers.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Numbers",
+  "type": "array",
+  "items": {
+    "type": "integer",
+    "title": "Today's lucky numbers",
+    "examples": [7, 777],
+    "uniqueItems": true
+  }
+}

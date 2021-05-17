@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:annotation>
+        <xs:documentation> BEAR.Sunday API document tool config</xs:documentation>
+        <xs:appinfo source="https://github.com/bearsunday/BEAR.ApiDoc"/>
+    </xs:annotation>
+    <xs:element name="apidoc">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appName"/>
+                <xs:element ref="scheme"/>
+                <xs:element ref="docDir"/>
+                <xs:element ref="format"/>
+                <xs:element ref="title" minOccurs="0"/>
+                <xs:element ref="description" minOccurs="0"/>
+                <xs:element ref="links" minOccurs="0"/>
+                <xs:element ref="alps" minOccurs="0"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="appName" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>Application namespace ex) MyVendor\MyProject.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="scheme">
+        <xs:annotation>
+            <xs:documentation>Resource scheme: app or page</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="app"/>
+                <xs:enumeration value="page"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="docDir" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>API Doc output directory</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="format">
+        <xs:annotation>
+            <xs:documentation>Output document format</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="html"/>
+                <xs:enumeration value="md"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="title" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>API doc title</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="description" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>API doc description</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="links" type="linksType" >
+        <xs:annotation>
+            <xs:documentation>Link list</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="linksType">
+        <xs:sequence>
+            <xs:element name="link" type="linkType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="linkType">
+        <xs:attribute name="href" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>Link URL</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="rel" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>Link Description</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:element name="alps" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>ALPS link</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+</xs:schema>

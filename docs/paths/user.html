@@ -1,0 +1,234 @@
+<html lang="en">
+<head>
+    <title>FakeVendor\FakeProject /users/{id}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css">
+    <style>
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+    
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="markdown-body">
+        <p><a href="../index.html" style="color: black; text-decoration: none;">Sample API Doc</a></p>
+
+<h1>/users/{id}</h1>
+
+<h2>GET</h2>
+
+<p><strong>Request</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+  <th>Default</th>
+  <th>Required</th>
+  <th>Constraints</th>
+  <th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td>string</td>
+  <td>User ID</td>
+  <td></td>
+  <td>Required</td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>options</td>
+  <td>string</td>
+  <td>User Options</td>
+  <td>guest</td>
+  <td>Optional</td>
+  <td></td>
+  <td></td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Response</strong></p>
+
+<p><a href="schema/user.json">Object: User</a></p>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+  <th>Required</th>
+  <th>Constraint</th>
+  <th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td>string</td>
+  <td>The unique ID of the user</td>
+  <td>Optional</td>
+  <td>{"maxLength":30}</td>
+  <td></td>
+</tr>
+<tr>
+  <td>firstName</td>
+  <td>string</td>
+  <td>The first name of the user</td>
+  <td>Optional</td>
+  <td>{"maxLength":30,"pattern":"[a-z&#92;d~+-]+"}</td>
+  <td></td>
+</tr>
+<tr>
+  <td>lastName</td>
+  <td>string</td>
+  <td>The last name of the user</td>
+  <td>Optional</td>
+  <td>{"maxLength":30,"pattern":"[a-z&#92;d~+-]+"}</td>
+  <td></td>
+</tr>
+<tr>
+  <td>created</td>
+  <td>string</td>
+  <td>When the user record was created</td>
+  <td>Optional</td>
+  <td>{"format":"date-time"}</td>
+  <td>2018-01-01T12:00:00Z</td>
+</tr>
+<tr>
+  <td>modified</td>
+  <td>string</td>
+  <td>When the user record was last modified</td>
+  <td>Optional</td>
+  <td>{"format":"date-time"}</td>
+  <td>2018-01-01T12:00:00Z</td>
+</tr>
+<tr>
+  <td>email</td>
+  <td>string</td>
+  <td>The email address of the user</td>
+  <td>Optional</td>
+  <td>{"format":"email"}</td>
+  <td></td>
+</tr>
+<tr>
+  <td>enabled</td>
+  <td>boolean</td>
+  <td>Whether the user is enabled or not</td>
+  <td>Optional</td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>age</td>
+  <td>int</td>
+  <td>The age of the user</td>
+  <td>Optional</td>
+  <td>{"$ref":"<a href="schema/age.json">age.json</a>"}</td>
+  <td>29</td>
+</tr>
+</tbody>
+</table>
+
+<h4>Embedded</h4>
+
+<table>
+<thead>
+<tr>
+  <th>rel</th>
+  <th>src</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>ticket</td>
+  <td><a href="ticket/.html"><code>/ticket/{id}</code></a></td>
+</tr>
+</tbody>
+</table>
+
+<h4>Links</h4>
+
+<table>
+<thead>
+<tr>
+  <th>rel</th>
+  <th>href</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>person</td>
+  <td><a href="person.html"><code>/person</code></a></td>
+</tr>
+<tr>
+  <td>calendar</td>
+  <td><a href="calendar.html"><code>/calendar</code></a></td>
+</tr>
+</tbody>
+</table>
+
+<h2>POST</h2>
+
+<p>Create user</p>
+
+<p>Create user with given name and age</p>
+
+<p><strong>Request</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+  <th>Default</th>
+  <th>Required</th>
+  <th>Constraints</th>
+  <th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>name</td>
+  <td>string</td>
+  <td>The name of the user</td>
+  <td></td>
+  <td>Required</td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>age</td>
+  <td>int</td>
+  <td>The age of the user</td>
+  <td></td>
+  <td>Required</td>
+  <td></td>
+  <td></td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Response</strong></p>
+
+<p>(n/a)</p>
+
+    </div>
+</body>
+</html>
