@@ -10,3 +10,7 @@ This not only saves you the trouble of writing IDL, but also allows you to gener
 ## Installation
 
     composer require bear/api-doc ^1.0
+
+## Usage
+
+See the [API doc documentatiom](http://bearsunday.github.io/manuals/1.0/en/apidoc.html).
