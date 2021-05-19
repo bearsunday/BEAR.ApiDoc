@@ -185,7 +185,7 @@ final class ApiDoc
         }
     }
 
-    private function doCopy(SplFileInfo|string|RecursiveDirectoryIterator $file, string $outputDir): void
+    private function doCopy(SplFileInfo $file, string $outputDir): void
     {
         assert($file instanceof SplFileInfo);
         $fileName = $file->getFilename();
