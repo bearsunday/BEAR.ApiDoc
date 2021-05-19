@@ -81,7 +81,7 @@ final class Schema
     {
         $title = $this->title ? sprintf('%s: %s', ucfirst($this->type), $this->title) : ucfirst($this->type);
 
-        return sprintf('[%s](schema/%s)', $title, $this->file->getFilename());
+        return sprintf('[%s](../schema/%s)', $title, $this->file->getFilename());
     }
 
     public function toStringTypeArray(): string
