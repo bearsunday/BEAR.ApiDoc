@@ -14,9 +14,12 @@ use function implode;
 use function is_array;
 use function is_object;
 use function is_string;
+use function json_encode;
 use function property_exists;
 use function sprintf;
 use function ucfirst;
+
+use const JSON_PRETTY_PRINT;
 
 /**
  * @psalm-pure
@@ -34,6 +37,9 @@ final class Schema
 
     /** @var SplFileInfo */
     public $file;
+
+    /** @var array<string> */
+    public $examples = [];
 
     /** @var array<Ref> */
     private $refs = [];
@@ -62,13 +68,20 @@ final class Schema
         if ($schema->type === 'object') {
             $this->setObject($schema, $required);
         }
+
+        if (property_exists($schema, 'examples') && is_array($schema->examples)) {
+            foreach ($schema->examples as $example) {
+                assert(is_object($example));
+                $this->examples[] = (string) json_encode($example, JSON_PRETTY_PRINT);
+            }
+        }
     }
 
     public function title(): string
     {
         $title = $this->title ? sprintf('%s: %s', ucfirst($this->type), $this->title) : ucfirst($this->type);
 
-        return sprintf('[%s](schema/%s)', $title, $this->file->getFilename());
+        return sprintf('[%s](../schema/%s)', $title, $this->file->getFilename());
     }
 
     public function toStringTypeArray(): string

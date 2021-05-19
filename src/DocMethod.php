@@ -12,6 +12,7 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
 
+use function assert;
 use function implode;
 use function sprintf;
 use function strtoupper;
@@ -166,12 +167,17 @@ EOT;
 
         $rows = '';
         foreach ($this->response->props as $prop) {
-            $rows .= (string) $prop . PHP_EOL;
+            $row = (string) $prop;
+            if ($row === '') {
+                continue;
+            }
+
+            $rows .= $row . PHP_EOL;
         }
 
         $object =  $this->getObjectTable($this->response->title(), $rows);
 
-        return $object . $this->getEmbeds() . $this->getLinks();
+        return $object . $this->getEmbeds() . $this->getLinks() . $this->getExample();
     }
 
     private function getObjectTable(string $responseTitle, string $rows): string
@@ -240,6 +246,28 @@ EOT;
 | rel | href |
 |-----|-----|
 {$rows}
+EOT;
+    }
+
+    private function getExample(): string
+    {
+        assert($this->response instanceof Schema);
+        if ($this->response->examples === []) {
+            return '';
+        }
+
+        $examples = '';
+        foreach ($this->response->examples as $example) {
+            $examples .= sprintf('<code>%s</code>' . PHP_EOL, $example);
+        }
+
+        return <<<EOT
+
+#### Example
+
+<pre>
+{$examples}
+</pre>
 EOT;
     }
 }

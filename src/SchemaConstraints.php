@@ -57,7 +57,7 @@ final class SchemaConstraints
 
         $refFile = sprintf('%s/%s', $file->getPath(), $value);
         if (file_exists($refFile)) {
-            return sprintf('[%s](schema/%s)', $value, $value);
+            return sprintf('[%s](../schema/%s)', $value, $value);
         }
 
         return $value;

@@ -64,7 +64,7 @@ class DocMethodTest extends TestCase
 
 **Response**
 
-[Object: Array](schema/array.json)
+[Object: Array](../schema/array.json)
 
 | Name  | Type  | Description | Required | Constraint | Example |
 |-------|-------|-------------|----------|------------|---------| 
