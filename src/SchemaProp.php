@@ -41,6 +41,10 @@ final class SchemaProp
 
     public function __toString(): string
     {
+        if ($this->name === '_links' || $this->name === '_embedded') {
+            return '';
+        }
+
         $required = $this->isOptional ? 'Optional' : 'Required';
 
         return sprintf('| %s | %s | %s | %s | %s | %s |', $this->name, $this->type, $this->description, $required, (string) $this->constraints, $this->example);
