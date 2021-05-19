@@ -181,10 +181,20 @@ final class ApiDoc
     private function copySchema(string $inputDir, string $outputDir): void
     {
         foreach (new RecursiveDirectoryIterator($inputDir, FilesystemIterator::SKIP_DOTS) as $file) {
-            assert($file instanceof SplFileInfo);
-            $fileName = $file->getFilename();
-            $destination = sprintf('%s/%s', $outputDir, $fileName);
-            copy((string) $file, $destination);
+            $this->doCopy($file, $outputDir);
         }
+    }
+
+    private function doCopy(SplFileInfo|string|RecursiveDirectoryIterator $file, string $outputDir): void
+    {
+        assert($file instanceof SplFileInfo);
+        $fileName = $file->getFilename();
+        $destination = sprintf('%s/%s', $outputDir, $fileName);
+        $path = (string) $file;
+        if (is_dir($path)) {
+            return;
+        }
+
+        copy($path, $destination);
     }
 }
