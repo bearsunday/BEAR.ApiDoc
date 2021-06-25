@@ -23,7 +23,7 @@
         "ray/di": "^2.10",
         "rize/uri-template": "^0.3.3",
         "bear/package": "^1.9",
-        "koriym/app-state-diagram": "^0.5.0",
+        "koriym/app-state-diagram": "^0.8",
         "michelf/php-markdown": "^1.9",
         "koriym/psr4list": "^1.0.1",
         "ray/aop": "^2.10"

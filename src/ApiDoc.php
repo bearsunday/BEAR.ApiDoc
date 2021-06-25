@@ -9,6 +9,7 @@ use BEAR\ApiDoc\Exception\AlpsFileNotFoundException;
 use BEAR\ApiDoc\Exception\NotWritableException;
 use FilesystemIterator;
 use Generator;
+use Koriym\AppStateDiagram\LabelName;
 use Koriym\AppStateDiagram\MdToHtml;
 use Koriym\AppStateDiagram\Profile;
 use Koriym\AppStateDiagram\SemanticDescriptor;
@@ -146,7 +147,7 @@ final class ApiDoc
             // @codeCoverageIgnoreEnd
         }
 
-        $alps = new Profile($file);
+        $alps = new Profile($file, new LabelName());
         /** @var  ArrayObject<string, string> $semanticDictionary */
         $semanticDictionary = new ArrayObject();
         foreach ($alps->descriptors as $descriptor) {
