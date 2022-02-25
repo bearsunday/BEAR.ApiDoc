@@ -11,6 +11,7 @@ use SplFileInfo;
 use function array_map;
 use function assert;
 use function implode;
+use function in_array;
 use function is_array;
 use function is_object;
 use function is_string;
@@ -130,7 +131,7 @@ EOT;
             $titleDescription = $title && $description ? sprintf('%s - %s', $title, $description) : $title . $description;
             $type = $this->getType($property, $schema);
             $constraint = new SchemaConstraints($property, $this->file);
-            $isOptional = ! isset($required[$name]);
+            $isOptional = ! in_array($name, $required);
             $example = property_exists($property, 'example') ? (string) $property->example : '';
             /** @psalm-suppress InaccessibleProperty */
             $this->props[$name] = new SchemaProp($name, $type, $isOptional, $this->getDescription($titleDescription, $name), $constraint, $example);
