@@ -22,6 +22,7 @@ use function assert;
 use function class_exists;
 use function dirname;
 use function is_iterable;
+use function is_string;
 use function property_exists;
 use function realpath;
 use function sprintf;
@@ -149,13 +150,17 @@ class Config
         $this->resourceFiles = $meta->getGenerator($this->scheme);
 
         try {
-            $this->responseSchemaDir = (string) $injector->getInstance('', 'json_schema_dir');
+            $jsonSchemaDir = $injector->getInstance('', 'json_schema_dir');
+            assert(is_string($jsonSchemaDir));
+            $this->responseSchemaDir = $jsonSchemaDir;
             // @codeCoverageIgnoreStart
         } catch (Unbound $e) {
         }
 
         try {
-            $this->requestSchemaDir = (string) $injector->getInstance('', 'json_validate_dir');
+            $jsonValidateDir = $injector->getInstance('', 'json_validate_dir');
+            assert(is_string($jsonValidateDir));
+            $this->requestSchemaDir = $jsonValidateDir;
             // @codeCoverageIgnoreStart
         } catch (Unbound $e) {
         }
@@ -181,7 +186,6 @@ class Config
     private function getRouterMap(InjectorInterface $injector): ?Map // @phpstan-ignore-line
     {
         try {
-            /** @var RouterContainer */
             $routerContainer = $injector->getInstance(RouterContainer::class);
 
             return $routerContainer->getMap();

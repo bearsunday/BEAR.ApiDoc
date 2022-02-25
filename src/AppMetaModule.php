@@ -9,6 +9,9 @@ use BEAR\Resource\Annotation\AppName;
 use BEAR\Sunday\Extension\Application\AppInterface;
 use Ray\Di\AbstractModule;
 
+use function assert;
+use function class_exists;
+
 class AppMetaModule extends AbstractModule
 {
     /** @var AbstractAppMeta */
@@ -26,7 +29,9 @@ class AppMetaModule extends AbstractModule
     protected function configure()
     {
         $this->bind(AbstractAppMeta::class)->toInstance($this->appMeta);
-        $this->bind(AppInterface::class)->to($this->appMeta->name . '\Module\App');
+        $app = $this->appMeta->name . '\Module\App';
+        assert(class_exists($app));
+        $this->bind(AppInterface::class)->to($app);
         $this->bind()->annotatedWith(AppName::class)->toInstance($this->appMeta->name);
     }
 }
