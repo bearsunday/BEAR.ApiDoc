@@ -72,6 +72,8 @@ final class DocParam
         $this->semanticDictionary = $semanticDictionary;
         if ($prop) {
             $this->setByProp($prop);
+
+            return;
         }
 
         if ($tagParam->description) {
