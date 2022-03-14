@@ -68,9 +68,9 @@ class DocMethodTest extends TestCase
 
 | Name  | Type  | Description | Required | Constraint | Example |
 |-------|-------|-------------|----------|------------|---------| 
-| fruits | array |  | Optional | {"items":{"type":"string"}} |  |
-| vegetables | array |  | Optional | {"items":{"\$ref":"#/definitions/veggie"}} |  |
-| juice | object |  | Optional | {"\$ref":"#/definitions/juice"} |  |
+| fruits | array |  | Optional | {<br>&nbsp;&nbsp;&nbsp;&nbsp;"items":&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type":&nbsp;"string"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>} |  |
+| vegetables | array |  | Optional | {<br>&nbsp;&nbsp;&nbsp;&nbsp;"items":&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"\$ref":&nbsp;"#/definitions/veggie"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>} |  |
+| juice | object |  | Optional | {<br>&nbsp;&nbsp;&nbsp;&nbsp;"\$ref":&nbsp;"#/definitions/juice"<br>} |  |
 EOT;
 
         $result = (string) $docMethod;

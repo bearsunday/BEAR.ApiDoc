@@ -13,8 +13,10 @@ use function in_array;
 use function is_string;
 use function json_encode;
 use function sprintf;
+use function str_replace;
 
 use const FILTER_VALIDATE_URL;
+use const JSON_PRETTY_PRINT;
 use const JSON_UNESCAPED_SLASHES;
 
 /**
@@ -65,6 +67,12 @@ final class SchemaConstraints
 
     public function __toString(): string
     {
-        return $this->constrains === [] ? '' : (string) json_encode($this->constrains, JSON_UNESCAPED_SLASHES);
+        return $this->constrains === []
+            ? ''
+            : str_replace(
+                ["\n", ' '],
+                ['<br>', '&nbsp;'],
+                (string) json_encode($this->constrains, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
+            );
     }
 }
