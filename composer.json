@@ -15,7 +15,7 @@
         "ext-simplexml": "*",
         "ext-libxml": "*",
         "ext-dom": "*",
-        "phpdocumentor/reflection-docblock": "^4.3 || 5.2",
+        "phpdocumentor/reflection-docblock": "^4.3 || ^5.2",
         "bear/resource": "^1.15.5",
         "bear/sunday": "^1.4",
         "bear/app-meta": "^1.7",
