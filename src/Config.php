@@ -145,9 +145,9 @@ class Config
         $meta = new Meta($this->appName);
 
         /** @psalm-suppress UnsafeInstantiation */
-        $appModule = new $appModuleClass();
+        $appModule = new $appModuleClass($meta, new AppMetaModule($meta));
         /** @psalm-suppress all */
-        $injector = new Injector(new $appModule($meta, new AppMetaModule($meta)));
+        $injector = new Injector($appModule);
         assert($injector instanceof InjectorInterface);
         $reader = $injector->getInstance(Reader::class);
         assert($reader instanceof Reader);

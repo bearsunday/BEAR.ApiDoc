@@ -7,8 +7,10 @@ namespace BEAR\ApiDoc;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
+use function assert;
 use function file_get_contents;
 use function json_decode;
+use function property_exists;
 
 class SchemaPropTest extends TestCase
 {
@@ -18,7 +20,9 @@ class SchemaPropTest extends TestCase
     protected function setUp(): void
     {
         $file = __DIR__ . '/Fake/app/src/var/json_schema/person.json';
-        $age = (object) json_decode((string) file_get_contents($file))->properties->age;
+        $person = (object) json_decode((string) file_get_contents($file));
+        assert(property_exists($person, 'properties'));
+        $age = $person->properties->age;
 
         $this->prop = new SchemaProp('name', 'type', true, 'desc', new SchemaConstraints($age, new SplFileInfo($file)), '');
     }
