@@ -46,8 +46,8 @@ final class Index
         $links = [];
         /** @psalm-suppress all */
         $configLink = $config->links->link ?? []; // @phpstan-ignore-line
-        foreach ($configLink as $link) { // @phpstan-ignore-line
-            assert($link instanceof SimpleXMLElement); // @phpstan-ignore-line
+        foreach ($configLink as $link) {
+            assert($link instanceof SimpleXMLElement);
             $links[] = new Link((string) $link['href'], new Description((string) $link['rel']));
         }
 

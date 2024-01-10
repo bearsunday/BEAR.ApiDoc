@@ -28,8 +28,8 @@ class DocMethodTest extends TestCase
     {
         $requestSchemaFile = __DIR__ . '/Fake/var/schema/request/ticket.request.json';
         $responseSchemaFile = __DIR__ . '/Fake/var/schema/response/ticket.json';
-        $requestSchema = new Schema(new SplFileInfo($requestSchemaFile), json_decode((string) file_get_contents($requestSchemaFile)), new ArrayObject());
-        $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
+        $requestSchema = new Schema(new SplFileInfo($requestSchemaFile), (object) json_decode((string) file_get_contents($requestSchemaFile)), new ArrayObject());
+        $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), (object) json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
         $docMethod = new DocMethod(new AnnotationReader(), new ReflectionMethod(FakeParamDoc::class, 'onGet'), $requestSchema, $responseSchema, new ArrayObject(), 'md');
         $this->assertInstanceOf(DocMethod::class, $docMethod);
 
@@ -48,7 +48,7 @@ class DocMethodTest extends TestCase
     public function testArrayData(): void
     {
         $responseSchemaFile = __DIR__ . '/Fake/app/src/var/json_schema/array.json';
-        $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
+        $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), (object) json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
         $docMethod = new DocMethod(new AnnotationReader(), new ReflectionMethod(FakeParamDoc::class, 'onGet'), null, $responseSchema, new ArrayObject(), 'md');
         $this->assertInstanceOf(DocMethod::class, $docMethod);
         $expected = <<<EOT
@@ -80,7 +80,7 @@ EOT;
     public function testEmbed(): void
     {
         $responseSchemaFile = __DIR__ . '/Fake/app/src/var/json_schema/person.json';
-        $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
+        $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), (object) json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
         $docMethod = (string) new DocMethod(new AnnotationReader(), new ReflectionMethod(Person::class, 'onGet'), null, $responseSchema, new ArrayObject(), 'md');
         $expected = <<<EOT
 | rel | src |

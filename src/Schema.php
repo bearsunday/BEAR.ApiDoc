@@ -42,9 +42,6 @@ final class Schema
     /** @var array<string> */
     public $examples = [];
 
-    /** @var array<Ref> */
-    private $refs = [];
-
     /** @var object */
     private $schema;
 
@@ -57,14 +54,14 @@ final class Schema
     public function __construct(SplFileInfo $file, object $schema, ArrayObject $semanticDictionary)
     {
         /** @psalm-suppress MixedAssignment */
-        $this->title = $schema->title ?? ''; // @phpstan-ignore-line
+        $this->title = $schema->title ?? '';
         $this->file = $file;
         $this->schema = $schema;
         assert(isset($schema->type));
         assert(is_string($schema->type));
         $this->type = $schema->type;
         /** @var array<string, string> $required */
-        $required = $schema->required ?? []; // @phpstan-ignore-line
+        $required = $schema->required ?? [];
         $this->semanticDictionary = $semanticDictionary;
         if ($schema->type === 'object') {
             $this->setObject($schema, $required);
@@ -149,11 +146,10 @@ EOT;
 
     private function getType(object $property, object $schema): string
     {
-        $propertyRef = $property->{'$ref'} ?? ''; // @phpstan-ignore-line
+        $propertyRef = $property->{'$ref'} ?? '';
         assert(is_string($propertyRef));
         if ($propertyRef) {
             $ref = new Ref($propertyRef, $this->file, $schema);
-            $this->refs[] = $ref;
 
             return $this->returnType($ref->type);
         }

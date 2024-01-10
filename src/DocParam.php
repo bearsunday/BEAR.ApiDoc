@@ -51,9 +51,6 @@ final class DocParam
     /** @var ?SchemaConstraints */
     private $constraints = null;
 
-    /** @var ArrayObject<string, string> */
-    private $semanticDictionary;
-
     /**
      * @param ArrayObject<string, string> $semanticDictionary
      */
@@ -69,7 +66,6 @@ final class DocParam
         $this->default = $parameter->isDefaultValueAvailable() ? $this->getDefaultString($parameter) : '';
         $this->description = $tagParam->description;
         $this->example = $prop->example ?? '';
-        $this->semanticDictionary = $semanticDictionary;
         if ($prop) {
             $this->setByProp($prop);
 

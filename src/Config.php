@@ -13,6 +13,7 @@ use BEAR\AppMeta\Meta;
 use BEAR\AppMeta\ResMeta;
 use Doctrine\Common\Annotations\Reader;
 use Generator;
+use Ray\Di\AbstractModule;
 use Ray\Di\Exception\Unbound;
 use Ray\Di\Injector;
 use Ray\Di\InjectorInterface;
@@ -135,13 +136,16 @@ class Config
         $links = property_exists($xml, 'links') ? $xml->links : [];
         $this->links = $links;
 
-        $appModule = sprintf('%s\\Module\\AppModule', $this->appName);
-        if (! class_exists($appModule)) {
+        /** @var class-string<AbstractModule> $appModuleClass */
+        $appModuleClass = sprintf('%s\\Module\\AppModule', $this->appName);
+        if (! class_exists($appModuleClass)) {
             throw new InvalidAppNamespaceException($this->appName);
         }
 
         $meta = new Meta($this->appName);
 
+        /** @psalm-suppress UnsafeInstantiation */
+        $appModule = new $appModuleClass();
         /** @psalm-suppress all */
         $injector = new Injector(new $appModule($meta, new AppMetaModule($meta)));
         assert($injector instanceof InjectorInterface);
@@ -183,7 +187,7 @@ class Config
      * @psalm-return Map
      * @phpstan-return Map<string, Route>
      */
-    private function getRouterMap(InjectorInterface $injector): ?Map // @phpstan-ignore-line
+    private function getRouterMap(InjectorInterface $injector): ?Map
     {
         try {
             $routerContainer = $injector->getInstance(RouterContainer::class);
