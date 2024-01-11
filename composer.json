@@ -20,7 +20,7 @@
         "bear/sunday": "^1.4",
         "bear/app-meta": "^1.7",
         "doctrine/annotations": "^1.12 || ^2.0",
-        "ray/di": "^2.10",
+        "ray/di": "^2.16",
         "rize/uri-template": "^0.3.3",
         "bear/package": "^1.9",
         "koriym/app-state-diagram": "^0.11",
@@ -29,10 +29,10 @@
         "ray/aop": "^2.10"
     },
     "require-dev": {
-        "bear/aura-router-module": "^2.0",
-        "bamarni/composer-bin-plugin": "^1.4",
-        "koriym/attributes": "^1.0",
-        "phpunit/phpunit": "^9.5"
+        "bear/aura-router-module": "^2.0.3",
+        "bamarni/composer-bin-plugin": "^1.8.2",
+        "koriym/attributes": "^1.0.5",
+        "phpunit/phpunit": "^9.6.15"
     },
     "autoload": {
         "psr-4": {
