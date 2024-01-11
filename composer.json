@@ -19,7 +19,7 @@
         "bear/resource": "^1.16.2",
         "bear/sunday": "^1.4",
         "bear/app-meta": "^1.7",
-        "doctrine/annotations": "^1.12",
+        "doctrine/annotations": "^1.12 || ^2.0",
         "ray/di": "^2.10",
         "rize/uri-template": "^0.3.3",
         "bear/package": "^1.9",
