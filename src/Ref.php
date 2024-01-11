@@ -64,7 +64,7 @@ final class Ref
         $this->json = $target;
         /** @psalm-suppress InaccessibleProperty */
         $this->type = $target->type;
-        $title = $target->title ?? $path; // @phpstan-ignore-line
+        $title = $target->title ?? $path;
         assert(is_string($title));
         $this->title = $title;
     }

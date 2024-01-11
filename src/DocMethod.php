@@ -84,7 +84,7 @@ final class DocMethod
             $name = $parameter->getName();
             $hasTagParam = $tagParams && isset($tagParams[$name]);
             $tagParam = $hasTagParam ? $tagParams[$name] : new TagParam('', '');
-            $prop = $request->props[$name] ?? null; // @phpstan-ignore-line
+            $prop = $request->props[$name] ?? null;
             $docParams[] = new DocParam($parameter, $tagParam, $prop, $semanticDictionary);
         }
 
