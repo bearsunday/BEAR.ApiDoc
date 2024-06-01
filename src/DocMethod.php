@@ -39,8 +39,14 @@ final class DocMethod implements Stringable
     /**
      * @param ArrayObject<string, string> $semanticDictionary
      */
-    public function __construct(private readonly Reader $reader, private readonly ReflectionMethod $method, ?Schema $request, private readonly ?Schema $response, ArrayObject $semanticDictionary, private readonly string $ext)
-    {
+    public function __construct(
+        private readonly Reader $reader,
+        private readonly ReflectionMethod $method,
+        ?Schema $request,
+        private readonly ?Schema $response,
+        ArrayObject $semanticDictionary,
+        private readonly string $ext
+    ) {
         $this->httpMethod = substr($this->method->name, 2);
         $factory = DocBlockFactory::createInstance();
         $docComment = $this->method->getDocComment();
