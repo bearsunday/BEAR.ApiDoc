@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^8.1",
         "ext-json": "*",
         "ext-filter": "*",
         "ext-simplexml": "*",
@@ -32,7 +32,8 @@
         "bear/aura-router-module": "^2.0.3",
         "bamarni/composer-bin-plugin": "^1.8.2",
         "koriym/attributes": "^1.0.5",
-        "phpunit/phpunit": "^9.6.15"
+        "phpunit/phpunit": "^9.6.15",
+        "rector/rector": "*"
     },
     "autoload": {
         "psr-4": {
