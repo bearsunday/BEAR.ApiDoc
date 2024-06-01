@@ -14,6 +14,7 @@ use ReflectionMethod;
 
 use function assert;
 use function implode;
+use function is_string;
 use function sprintf;
 use function strtoupper;
 use function substr;
@@ -55,7 +56,7 @@ final class DocMethod
         $this->httpMethod = substr($method->name, 2);
         $factory = DocBlockFactory::createInstance();
         $docComment = $method->getDocComment();
-        if ($docComment) {
+        if (is_string($docComment)) {
             $docblock = $factory->create($docComment);
             $this->title = $docblock->getSummary();
             $this->description = (string) $docblock->getDescription();
@@ -82,7 +83,7 @@ final class DocMethod
         $docParams = [];
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
-            $hasTagParam = $tagParams && isset($tagParams[$name]);
+            $hasTagParam = (bool) $tagParams && isset($tagParams[$name]);
             $tagParam = $hasTagParam ? $tagParams[$name] : new TagParam('', '');
             $prop = $request->props[$name] ?? null;
             $docParams[] = new DocParam($parameter, $tagParam, $prop, $semanticDictionary);
@@ -193,7 +194,7 @@ EOT;
 
     private function lineString(?string $string): string
     {
-        return ! $string ? '' : $string . PHP_EOL . PHP_EOL;
+        return ! (bool) $string ? '' : $string . PHP_EOL . PHP_EOL;
     }
 
     private function getEmbeds(): string
