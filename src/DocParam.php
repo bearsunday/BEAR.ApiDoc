@@ -7,6 +7,7 @@ namespace BEAR\ApiDoc;
 use ArrayObject;
 use ReflectionNamedType;
 use ReflectionParameter;
+use Stringable;
 
 use function is_array;
 use function sprintf;
@@ -16,7 +17,7 @@ use function var_export;
 
 use const PHP_EOL;
 
-final class DocParam
+final class DocParam implements Stringable
 {
     /**
      * @var string

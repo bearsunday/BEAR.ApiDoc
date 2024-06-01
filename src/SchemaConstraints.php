@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use SplFileInfo;
+use Stringable;
 
 use function assert;
 use function file_exists;
@@ -20,7 +21,7 @@ use const JSON_UNESCAPED_SLASHES;
 /**
  * @psalm-pure
  */
-final class SchemaConstraints
+final class SchemaConstraints implements Stringable
 {
     /**
      * @var array<string, mixed>

@@ -9,15 +9,9 @@ namespace BEAR\ApiDoc;
  */
 final class TagParam
 {
-    /** @var string */
-    public $type = '';
-
-    /** @var string */
-    public $description = '';
-
-    public function __construct(string $type, string $description)
-    {
-        $this->type = $type;
-        $this->description = $description;
+    public function __construct(
+        public string $type,
+        public string $description
+    ) {
     }
 }

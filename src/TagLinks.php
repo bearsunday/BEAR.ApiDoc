@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Link;
+use Stringable;
 
 use function implode;
 use function sprintf;
@@ -14,17 +15,14 @@ use const PHP_EOL;
 /**
  * @psalm-pure
  */
-final class TagLinks
+final class TagLinks implements Stringable
 {
-    /** @var list<Link> */
-    private $links;
-
     /**
-     * @param list<Link> $links
+     * @param array<Link> $links
      */
-    public function __construct(array $links)
-    {
-        $this->links = $links;
+    public function __construct(
+        private readonly array $links
+    ) {
     }
 
     public function __toString(): string

@@ -36,33 +36,28 @@ final class Schema
     /** @var string */
     public $type;
 
-    /** @var SplFileInfo */
-    public $file;
-
     /** @var array<string> */
     public $examples = [];
 
     /** @var object */
     private $schema;
 
-    /** @var ArrayObject<string, string> */
-    private $semanticDictionary;
-
     /**
      * @param ArrayObject<string, string> $semanticDictionary
      */
-    public function __construct(SplFileInfo $file, object $schema, ArrayObject $semanticDictionary)
-    {
+    public function __construct(
+        public SplFileInfo $file,
+        object $schema,
+        private ArrayObject $semanticDictionary
+    ) {
         /** @psalm-suppress MixedAssignment */
         $this->title = $schema->title ?? '';
-        $this->file = $file;
         $this->schema = $schema;
         assert(isset($schema->type));
         assert(is_string($schema->type));
         $this->type = $schema->type;
         /** @var array<string, string> $required */
         $required = $schema->required ?? [];
-        $this->semanticDictionary = $semanticDictionary;
         if ($schema->type === 'object') {
             $this->setObject($schema, $required);
         }
@@ -167,9 +162,7 @@ EOT;
     private function returnType($type): string
     {
         if (is_array($type)) {
-            $type = array_map(static function (string $item): string {
-                return $item === 'integer' ? 'int' : $item;
-            }, $type);
+            $type = array_map(static fn (string $item): string => $item === 'integer' ? 'int' : $item, $type);
             $type = implode('&#124;', $type);
         }
 

@@ -7,13 +7,14 @@ namespace BEAR\ApiDoc;
 use phpDocumentor\Reflection\DocBlock\Description;
 use phpDocumentor\Reflection\DocBlock\Tags\Link;
 use SimpleXMLElement;
+use Stringable;
 
 use function assert;
 use function sprintf;
 
 use const PHP_EOL;
 
-final class Index
+final class Index implements Stringable
 {
     /** @var string  */
     private $title;
@@ -24,25 +25,17 @@ final class Index
     /** @var TagLinks */
     private $links;
 
-    /** @var array<string, string> */
-    private $paths;
-
-    /** @var ModelRepository */
-    private $objects;
-
-    /** @var string */
-    private $ext;
-
     /**
      * @param array<string, string> $paths
      */
-    public function __construct(Config $config, array $paths, ModelRepository $modelRepository, string $ext)
-    {
+    public function __construct(
+        Config $config,
+        private readonly array $paths,
+        private readonly ModelRepository $objects,
+        private readonly string $ext
+    ) {
         $this->title = $config->title;
         $this->description = $config->description ? $config->description . PHP_EOL . PHP_EOL : '';
-        $this->paths = $paths;
-        $this->objects = $modelRepository;
-        $this->ext = $ext;
         $links = [];
         /** @psalm-suppress all */
         $configLink = $config->links->link ?? []; // @phpstan-ignore-line

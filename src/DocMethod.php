@@ -11,6 +11,7 @@ use Doctrine\Common\Annotations\Reader;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
+use Stringable;
 
 use function assert;
 use function implode;
@@ -21,7 +22,7 @@ use function substr;
 
 use const PHP_EOL;
 
-final class DocMethod
+final class DocMethod implements Stringable
 {
     /** @var string */
     private $title = '';
@@ -35,27 +36,14 @@ final class DocMethod
     /** @var array<int, DocParam> */
     private $params;
 
-    /** @var ?Schema */
-    private $response;
-
-    /** @var Reader */
-    private $reader;
-
-    /** @var ReflectionMethod  */
-    private $method;
-
-    /** @var string */
-    private $ext;
-
     /**
      * @param ArrayObject<string, string> $semanticDictionary
      */
-    public function __construct(Reader $reader, ReflectionMethod $method, ?Schema $request, ?Schema $response, ArrayObject $semanticDictionary, string $ext)
+    public function __construct(private readonly Reader $reader, private readonly ReflectionMethod $method, ?Schema $request, private readonly ?Schema $response, ArrayObject $semanticDictionary, private readonly string $ext)
     {
-        $this->method = $method;
-        $this->httpMethod = substr($method->name, 2);
+        $this->httpMethod = substr($this->method->name, 2);
         $factory = DocBlockFactory::createInstance();
-        $docComment = $method->getDocComment();
+        $docComment = $this->method->getDocComment();
         if (is_string($docComment)) {
             $docblock = $factory->create($docComment);
             $this->title = $docblock->getSummary();
@@ -63,12 +51,8 @@ final class DocMethod
             $tagParams = $this->getTagParams($docblock);
         }
 
-        /** @var  ?array<string, TagParam> $tagParams */
-        $tagParams = $tagParams ?? null;
-        $this->params = $this->getDocParams($method, $tagParams, $request, $semanticDictionary);
-        $this->response = $response;
-        $this->reader = $reader;
-        $this->ext = $ext;
+        $tagParams ??= null;
+        $this->params = $this->getDocParams($this->method, $tagParams, $request, $semanticDictionary);
     }
 
     /**
