@@ -51,6 +51,7 @@ final class DocMethod implements Stringable
             $tagParams = $this->getTagParams($docblock);
         }
 
+        /** @var ?array<string, TagParam> $tagParams */   // phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.NoAssignment
         $tagParams ??= null;
         $this->params = $this->getDocParams($this->method, $tagParams, $request, $semanticDictionary);
     }
