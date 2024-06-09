@@ -7,6 +7,6 @@ on:
 
 jobs:
   sa:
-    uses: ray-di/.github/.github/workflows/static-analysis.yml@v2
+    uses: ray-di/.github/.github/workflows/static-analysis.yml@v1
     with:
-      has_crc_config: true
+      php_version: 8.3

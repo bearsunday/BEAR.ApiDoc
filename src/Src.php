@@ -7,6 +7,7 @@ namespace BEAR\ApiDoc;
 use Rize\UriTemplate;
 use Rize\UriTemplate\Node\Literal;
 use Rize\UriTemplate\Parser;
+use Stringable;
 
 use function assert;
 use function is_array;
@@ -20,18 +21,12 @@ use function substr;
 /**
  * @psalm-pure
  */
-final class Src
+final class Src implements Stringable
 {
-    /** @var string */
-    private $src;
-
-    /** @var string */
-    private $ext;
-
-    public function __construct(string $src, string $ext)
-    {
-        $this->src = $src;
-        $this->ext = $ext;
+    public function __construct(
+        private readonly string $src,
+        private readonly string $ext
+    ) {
     }
 
     public function __toString(): string

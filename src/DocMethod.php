@@ -11,16 +11,18 @@ use Doctrine\Common\Annotations\Reader;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
+use Stringable;
 
 use function assert;
 use function implode;
+use function is_string;
 use function sprintf;
 use function strtoupper;
 use function substr;
 
 use const PHP_EOL;
 
-final class DocMethod
+final class DocMethod implements Stringable
 {
     /** @var string */
     private $title = '';
@@ -34,40 +36,30 @@ final class DocMethod
     /** @var array<int, DocParam> */
     private $params;
 
-    /** @var ?Schema */
-    private $response;
-
-    /** @var Reader */
-    private $reader;
-
-    /** @var ReflectionMethod  */
-    private $method;
-
-    /** @var string */
-    private $ext;
-
     /**
      * @param ArrayObject<string, string> $semanticDictionary
      */
-    public function __construct(Reader $reader, ReflectionMethod $method, ?Schema $request, ?Schema $response, ArrayObject $semanticDictionary, string $ext)
-    {
-        $this->method = $method;
-        $this->httpMethod = substr($method->name, 2);
+    public function __construct(
+        private readonly Reader $reader,
+        private readonly ReflectionMethod $method,
+        ?Schema $request,
+        private readonly ?Schema $response,
+        ArrayObject $semanticDictionary,
+        private readonly string $ext
+    ) {
+        $this->httpMethod = substr($this->method->name, 2);
         $factory = DocBlockFactory::createInstance();
-        $docComment = $method->getDocComment();
-        if ($docComment) {
+        $docComment = $this->method->getDocComment();
+        if (is_string($docComment)) {
             $docblock = $factory->create($docComment);
             $this->title = $docblock->getSummary();
             $this->description = (string) $docblock->getDescription();
             $tagParams = $this->getTagParams($docblock);
         }
 
-        /** @var  ?array<string, TagParam> $tagParams */
-        $tagParams = $tagParams ?? null;
-        $this->params = $this->getDocParams($method, $tagParams, $request, $semanticDictionary);
-        $this->response = $response;
-        $this->reader = $reader;
-        $this->ext = $ext;
+        /** @var ?array<string, TagParam> $tagParams */   // phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.NoAssignment
+        $tagParams ??= null;
+        $this->params = $this->getDocParams($this->method, $tagParams, $request, $semanticDictionary);
     }
 
     /**
@@ -82,7 +74,7 @@ final class DocMethod
         $docParams = [];
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
-            $hasTagParam = $tagParams && isset($tagParams[$name]);
+            $hasTagParam = (bool) $tagParams && isset($tagParams[$name]);
             $tagParam = $hasTagParam ? $tagParams[$name] : new TagParam('', '');
             $prop = $request->props[$name] ?? null;
             $docParams[] = new DocParam($parameter, $tagParam, $prop, $semanticDictionary);
@@ -193,7 +185,7 @@ EOT;
 
     private function lineString(?string $string): string
     {
-        return ! $string ? '' : $string . PHP_EOL . PHP_EOL;
+        return ! (bool) $string ? '' : $string . PHP_EOL . PHP_EOL;
     }
 
     private function getEmbeds(): string

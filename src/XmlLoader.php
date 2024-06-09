@@ -51,7 +51,7 @@ final class XmlLoader
             return $maybePath;
         }
 
-        $dirPath = realpath($path) ?: getcwd();
+        $dirPath = (string) realpath($path) ?: getcwd();
         if ($dirPath === false) {
             goto config_not_found;
         }

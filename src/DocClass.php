@@ -24,31 +24,15 @@ use const PHP_EOL;
 
 final class DocClass
 {
-    /** @var ModelRepository */
-    public $modelRepository;
-
-    /** @var Reader */
-    private $reader;
-
-    /** @var string */
-    private $requestSchemaDir;
-
-    /** @var string */
-    private $responseSchemaDir;
-
     /** @var ArrayObject<string, string> */
     private $semanticDictionary;
 
     public function __construct(
-        Reader $reader,
-        string $requestSchemaDir,
-        string $responseSchemaDir,
-        ModelRepository $modelRepository
+        private readonly Reader $reader,
+        private readonly string $requestSchemaDir,
+        private readonly string $responseSchemaDir,
+        public ModelRepository $modelRepository
     ) {
-        $this->reader = $reader;
-        $this->requestSchemaDir = $requestSchemaDir;
-        $this->responseSchemaDir = $responseSchemaDir;
-        $this->modelRepository = $modelRepository;
         /** @var ArrayObject<string, string> $nullDictinary */
         $nullDictinary = new ArrayObject();
         $this->semanticDictionary = $nullDictinary;

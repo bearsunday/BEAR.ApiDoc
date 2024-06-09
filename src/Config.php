@@ -166,7 +166,7 @@ class Config
             assert(is_string($jsonValidateDir));
             $this->requestSchemaDir = $jsonValidateDir;
             // @codeCoverageIgnoreStart
-        } catch (Unbound $e) {
+        } catch (Unbound) {
         }
 
         $this->modelRepository = new ModelRepository();
@@ -194,7 +194,7 @@ class Config
 
             return $routerContainer->getMap();
             // @codeCoverageIgnoreStart
-        } catch (Unbound $e) {
+        } catch (Unbound) {
             return null;
         }
     }
