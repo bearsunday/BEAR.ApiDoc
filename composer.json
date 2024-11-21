@@ -23,7 +23,7 @@
         "ray/di": "^2.16",
         "rize/uri-template": "^0.3.3",
         "bear/package": "^1.9",
-        "koriym/app-state-diagram": "^0.11",
+        "koriym/app-state-diagram": "^0.11 ",
         "michelf/php-markdown": "^1.9.1 || ^2.0",
         "koriym/psr4list": "^1.0.1",
         "ray/aop": "^2.10"
@@ -51,6 +51,7 @@
     },
     "bin": ["bin/apidoc"],
     "scripts": {
+        "bin": "echo 'bin not installed'",
         "setup": "php bin/setup.php",
         "test": "./vendor/bin/phpunit",
         "coverage": "php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage",
@@ -97,5 +98,12 @@
         "allow-plugins": {
             "bamarni/composer-bin-plugin": true
         }
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": true,
+            "forward-command": true
+        }
     }
+
 }
