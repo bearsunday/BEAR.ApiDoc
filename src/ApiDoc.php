@@ -25,6 +25,7 @@ use function dirname;
 use function file_exists;
 use function file_put_contents;
 use function is_dir;
+use function is_object;
 use function mkdir;
 use function sprintf;
 use function substr;
@@ -168,7 +169,7 @@ final class ApiDoc
             return $descriptor->title;
         }
 
-        if (isset($descriptor->doc->value)) {
+        if (is_object($descriptor->doc) && isset($descriptor->doc->value)) {
             return (string) $descriptor->doc->value;
         }
 
