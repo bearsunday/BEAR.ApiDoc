@@ -6,7 +6,6 @@ namespace BEAR\ApiDoc;
 
 use Rize\UriTemplate;
 use Rize\UriTemplate\Node\Literal;
-use Rize\UriTemplate\Parser;
 use Stringable;
 
 use function assert;
@@ -33,7 +32,6 @@ final class Src implements Stringable
     {
         $uriTemplate = new UriTemplate($this->src);
         $parser = $uriTemplate->getParser();
-        assert($parser instanceof Parser);
         $urls = $parser->parse($this->src);
         $literal = $urls[0];
         assert($literal instanceof Literal);
