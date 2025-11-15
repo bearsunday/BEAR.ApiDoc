@@ -51,21 +51,21 @@ final class Index implements Stringable
     {
         $paths = $objects = '';
         foreach ($this->paths as $route => $path) {
-            $paths .= sprintf(' * [%s](paths/%s.%s) ', $route, $path, $this->ext) . PHP_EOL;
+            $paths .= sprintf('- [%s](paths/%s.%s)', $route, $path, $this->ext) . PHP_EOL;
         }
 
         foreach ($this->objects as $objectName => $objectFile) {
-            $objects .= sprintf(' * [%s](schema/%s) ', $objectName, $objectFile) . PHP_EOL;
+            $objects .= sprintf('- [%s](schema/%s)', $objectName, $objectFile) . PHP_EOL;
         }
 
         return <<<EOT
 # {$this->title}
-{$this->description}{$this->links}
 
-## Paths
+{$this->description}{$this->links}
+## API Endpoints
 {$paths}
 
-## Objects
+## Data Models
 {$objects}
 EOT;
     }
