@@ -18,10 +18,9 @@ use BEAR\Resource\ResourceObject;
 class Address extends ResourceObject
 {
     /**
-     * @JsonSchema(key="address", schema="address.json")
-     *
      * @param string $id Address ID
      */
+    #[JsonSchema(key: 'address', schema: 'address.json')]
     public function onGet(string $id)
     {
     }

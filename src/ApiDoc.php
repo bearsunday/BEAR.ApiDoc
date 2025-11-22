@@ -13,7 +13,6 @@ use Koriym\AppStateDiagram\LabelName;
 use Koriym\AppStateDiagram\MdToHtml;
 use Koriym\AppStateDiagram\Profile;
 use Koriym\AppStateDiagram\SemanticDescriptor;
-use Ray\ServiceLocator\ServiceLocator;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
 use SplFileInfo;
@@ -36,7 +35,6 @@ final class ApiDoc
     {
         $config = new Config($configFile);
         $docClass = new DocClass(
-            ServiceLocator::getReader(),
             $config->requestSchemaDir,
             $config->responseSchemaDir,
             new ModelRepository()

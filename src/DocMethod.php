@@ -7,7 +7,6 @@ namespace BEAR\ApiDoc;
 use ArrayObject;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\Link;
-use Doctrine\Common\Annotations\Reader;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
@@ -40,7 +39,6 @@ final class DocMethod implements Stringable
      * @param ArrayObject<string, string> $semanticDictionary
      */
     public function __construct(
-        private readonly Reader $reader,
         private readonly ReflectionMethod $method,
         ?Schema $request,
         private readonly ?Schema $response,
@@ -190,12 +188,11 @@ EOT;
 
     private function getEmbeds(): string
     {
-        $annotations = $this->reader->getMethodAnnotations($this->method);
+        $attributes = $this->method->getAttributes(Embed::class);
         $items = [];
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Embed) {
-                $items[] = sprintf('| %s | %s |', $annotation->rel, (string) new Src($annotation->src, $this->ext));
-            }
+        foreach ($attributes as $attribute) {
+            $embed = $attribute->newInstance();
+            $items[] = sprintf('| %s | %s |', $embed->rel, (string) new Src($embed->src, $this->ext));
         }
 
         $rows = implode(PHP_EOL, $items);
@@ -216,12 +213,11 @@ EOT;
 
     private function getLinks(): string
     {
-        $annotations = $this->reader->getMethodAnnotations($this->method);
+        $attributes = $this->method->getAttributes(Link::class);
         $items = [];
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Link) {
-                $items[] = sprintf('| %s | %s |', $annotation->rel, (string) new Src($annotation->href, $this->ext));
-            }
+        foreach ($attributes as $attribute) {
+            $link = $attribute->newInstance();
+            $items[] = sprintf('| %s | %s |', $link->rel, (string) new Src($link->href, $this->ext));
         }
 
         $rows = implode(PHP_EOL, $items);

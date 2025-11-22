@@ -6,9 +6,7 @@ use BEAR\Resource\ResourceObject;
 
 class Calendar extends ResourceObject
 {
-    /**
-     * @JsonSchema(key="calendar", schema="calendar.json")
-     */
+    #[JsonSchema(key: 'calendar', schema: 'calendar.json')]
     public function onGet()
     {
     }
