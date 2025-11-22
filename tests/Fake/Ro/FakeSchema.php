@@ -9,9 +9,8 @@ class FakeSchema extends ResourceObject
 {
     /**
      * @param string $id This is fake id
-     *
-     * @JsonSchema(schema="ticket.json", params="todo.request.json")
      */
+    #[JsonSchema(schema: 'ticket.json', params: 'todo.request.json')]
     public function onGet(string $id): ResourceObject
     {
         unset($id);

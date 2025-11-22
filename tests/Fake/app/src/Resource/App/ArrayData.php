@@ -6,9 +6,7 @@ use BEAR\Resource\ResourceObject;
 
 class ArrayData extends ResourceObject
 {
-    /**
-     * @JsonSchema(key="array", schema="array.json")
-     */
+    #[JsonSchema(key: 'array', schema: 'array.json')]
     public function onGet(array $a = [1, 2])
     {
     }

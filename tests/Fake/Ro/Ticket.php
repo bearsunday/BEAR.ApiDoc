@@ -8,9 +8,7 @@ use BEAR\Resource\ResourceObject;
 
 class Ticket extends ResourceObject
 {
-    /**
-     * @JsonSchema(key="ticket", schema="ticket.schema.json", params="ticket.param.json")
-     */
+    #[JsonSchema(key: 'ticket', schema: 'ticket.schema.json', params: 'ticket.param.json')]
     public function onGet(string $id) : ResourceObject
     {
         unset($id);

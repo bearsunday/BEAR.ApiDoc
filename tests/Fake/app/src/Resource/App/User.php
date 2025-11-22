@@ -9,15 +9,13 @@ use BEAR\Resource\ResourceObject;
 class User extends ResourceObject
 {
     /**
-     * @JsonSchema(schema="user.json")
-     *
      * @param string $id      User ID
      * @param string $options User Options
-     *
-     * @Link(rel="person", href="/person", method="get")
-     * @Link(rel="calendar", href="/calendar", method="get")
-     * @Embed(rel="ticket", src="/ticket/{id}")
      */
+    #[JsonSchema(schema: 'user.json')]
+    #[Link(rel: 'person', href: '/person', method: 'get')]
+    #[Link(rel: 'calendar', href: '/calendar', method: 'get')]
+    #[Embed(rel: 'ticket', src: '/ticket/{id}')]
     public function onGet(string $id, string $options = 'guest')
     {
     }

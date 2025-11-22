@@ -6,7 +6,6 @@ namespace BEAR\ApiDoc;
 
 use ArrayObject;
 use BEAR\Resource\Annotation\JsonSchema;
-use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
 use ReflectionMethod;
 use SplFileInfo;
@@ -28,7 +27,6 @@ final class DocClass
     private $semanticDictionary;
 
     public function __construct(
-        private readonly Reader $reader,
         private readonly string $requestSchemaDir,
         private readonly string $responseSchemaDir,
         public ModelRepository $modelRepository
@@ -70,10 +68,11 @@ EOT;
 
     private function getMethodView(ReflectionMethod $method, string $ext): string
     {
-        $schema = $this->reader->getMethodAnnotation($method, JsonSchema::class);
+        $attributes = $method->getAttributes(JsonSchema::class);
+        $schema = isset($attributes[0]) ? $attributes[0]->newInstance() : null;
         [$request, $response] = $schema instanceof JsonSchema ? [$this->getSchema($this->requestSchemaDir, $schema->params), $this->getResponseSchema($this->responseSchemaDir, $schema->schema)] : [null, null];
 
-        return (string) new DocMethod($this->reader, $method, $request, $response, $this->semanticDictionary, $ext);
+        return (string) new DocMethod($method, $request, $response, $this->semanticDictionary, $ext);
     }
 
     private function getResponseSchema(string $dir, string $file): ?Schema
