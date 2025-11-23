@@ -7,8 +7,10 @@ namespace FakeVendor\FakeProject;
 use BEAR\ApiDoc\ApiDoc;
 use PHPUnit\Framework\TestCase;
 
+use function assert;
 use function file_exists;
 use function file_get_contents;
+use function is_array;
 use function json_decode;
 
 class OpenApiGeneratorTest extends TestCase
@@ -42,6 +44,7 @@ class OpenApiGeneratorTest extends TestCase
     {
         $this->assertArrayHasKey('info', $this->openApi);
         $info = $this->openApi['info'];
+        assert(is_array($info));
 
         $this->assertArrayHasKey('title', $info);
         $this->assertArrayHasKey('description', $info);
@@ -52,11 +55,12 @@ class OpenApiGeneratorTest extends TestCase
     public function testPathsSection(): void
     {
         $this->assertArrayHasKey('paths', $this->openApi);
-        $this->assertIsArray($this->openApi['paths']);
-        $this->assertNotEmpty($this->openApi['paths']);
+        $paths = $this->openApi['paths'];
+        $this->assertIsArray($paths);
+        $this->assertNotEmpty($paths);
 
         // Check that paths have HTTP methods
-        foreach ($this->openApi['paths'] as $path => $operations) {
+        foreach ($paths as $path => $operations) {
             $this->assertIsString($path);
             $this->assertIsArray($operations);
         }
@@ -65,22 +69,28 @@ class OpenApiGeneratorTest extends TestCase
     public function testComponentsSchemasSection(): void
     {
         $this->assertArrayHasKey('components', $this->openApi);
-        $this->assertArrayHasKey('schemas', $this->openApi['components']);
-        $this->assertIsArray($this->openApi['components']['schemas']);
+        $components = $this->openApi['components'];
+        assert(is_array($components));
+        $this->assertArrayHasKey('schemas', $components);
+        $this->assertIsArray($components['schemas']);
     }
 
     public function testOperationStructure(): void
     {
         // Get first path with operations
         $firstPath = null;
-        foreach ($this->openApi['paths'] as $path => $operations) {
-            if (! empty($operations)) {
+        $paths = $this->openApi['paths'];
+        assert(is_array($paths));
+
+        foreach ($paths as $path => $operations) {
+            if (! empty($operations) && is_array($operations)) {
                 $firstPath = $operations;
                 break;
             }
         }
 
         $this->assertNotNull($firstPath);
+        assert(is_array($firstPath));
 
         // Get first operation
         $firstOperation = null;

@@ -120,10 +120,14 @@ class Config
         assert(property_exists($xml, 'format'));
         assert(property_exists($xml, 'scheme'));
         $dir = realpath(dirname($configFile));
-        $this->appName = (string) $xml->appName;
+        $appName = (string) $xml->appName;
+        assert($appName !== '');
+        $this->appName = $appName;
         $this->docDir = sprintf('%s/%s', $dir, (string) $xml->docDir);
         $this->format = (string) $xml->format;
-        $this->scheme = (string) $xml->scheme;
+        $scheme = (string) $xml->scheme;
+        assert($scheme === 'app' || $scheme === 'page');
+        $this->scheme = $scheme;
 
         $this->description = property_exists($xml, 'description') ? (string) $xml->description : '';
         $this->title = property_exists($xml, 'title') ? (string) $xml->title : '';

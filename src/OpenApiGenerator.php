@@ -9,11 +9,14 @@ use BEAR\Resource\Annotation\JsonSchema;
 use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
 use SplFileInfo;
 
 use function array_key_exists;
+use function assert;
 use function file_get_contents;
 use function in_array;
+use function is_array;
 use function is_file;
 use function is_object;
 use function json_decode;
@@ -61,6 +64,7 @@ final class OpenApiGenerator
         }
 
         // Add collected schemas to components
+        assert(is_array($this->openApiSpec['components']));
         $this->openApiSpec['components']['schemas'] = $this->schemas;
 
         return (string) json_encode($this->openApiSpec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
@@ -87,6 +91,7 @@ final class OpenApiGenerator
         }
 
         if ($pathItem !== []) {
+            assert(is_array($this->openApiSpec['paths']));
             $this->openApiSpec['paths'][$path] = $pathItem;
         }
     }
@@ -163,13 +168,19 @@ final class OpenApiGenerator
                 continue;
             }
 
+            $paramType = $param->getType();
+            $typeName = 'string';
+            if ($paramType instanceof ReflectionNamedType) {
+                $typeName = $paramType->getName();
+            }
+
             $parameter = [
                 'name' => $paramName,
                 'in' => 'query',
                 'description' => $paramSchema->description,
                 'required' => ! $param->isOptional(),
                 'schema' => [
-                    'type' => $this->convertPhpTypeToOpenApi($param->getType()?->getName() ?? 'string'),
+                    'type' => $this->convertPhpTypeToOpenApi($typeName),
                 ],
             ];
 
