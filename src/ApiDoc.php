@@ -43,7 +43,9 @@ final class ApiDoc
         );
         $this->dump($config, $docClass);
 
-        return sprintf('ApiDoc generated. %s/index.html', $config->docDir);
+        $outputFile = $config->format === 'openapi' ? 'openapi.json' : 'index.html';
+
+        return sprintf('ApiDoc generated. %s/%s', $config->docDir, $outputFile);
     }
 
     private function dump(Config $config, DocClass $docClass): void
@@ -52,6 +54,12 @@ final class ApiDoc
 
         if ($config->format === 'md') {
             $this->dumpMd($config, $docClass);
+
+            return;
+        }
+
+        if ($config->format === 'openapi') {
+            $this->dumpOpenApi($config);
 
             return;
         }
@@ -198,5 +206,18 @@ final class ApiDoc
         }
 
         copy($path, $destination);
+    }
+
+    private function dumpOpenApi(Config $config): void
+    {
+        $generator = new OpenApiGenerator(
+            ServiceLocator::getReader(),
+            $config,
+            $config->requestSchemaDir,
+            $config->responseSchemaDir
+        );
+        $openApiJson = $generator->generate();
+        $outputFile = sprintf('%s/openapi.json', $config->docDir);
+        $this->filePutContents($outputFile, $openApiJson);
     }
 }
