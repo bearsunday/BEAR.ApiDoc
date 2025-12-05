@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FakeVendor\FakeProject;
 
 use BEAR\ApiDoc\ApiDoc;
+use JsonSchema\Validator;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
@@ -105,6 +106,107 @@ class OpenApiGeneratorTest extends TestCase
             $this->assertArrayHasKey('summary', $firstOperation);
             $this->assertArrayHasKey('description', $firstOperation);
             $this->assertArrayHasKey('responses', $firstOperation);
+        }
+    }
+
+    public function testValidOpenApiSpec(): void
+    {
+        // Validate against OpenAPI 3.0 specification
+        $validator = new Validator();
+        $openApiJson = json_encode($this->openApi);
+        assert($openApiJson !== false);
+        $openApiObj = json_decode($openApiJson);
+        assert($openApiObj instanceof \stdClass);
+
+        // Basic OpenAPI 3.0 schema validation
+        // Required fields at root level
+        $this->assertObjectHasProperty('openapi', $openApiObj);
+        $this->assertObjectHasProperty('info', $openApiObj);
+        $this->assertObjectHasProperty('paths', $openApiObj);
+
+        // Info object required fields
+        assert(isset($openApiObj->info) && $openApiObj->info instanceof \stdClass);
+        $this->assertObjectHasProperty('title', $openApiObj->info);
+        $this->assertObjectHasProperty('version', $openApiObj->info);
+
+        // Validate paths structure
+        assert(isset($openApiObj->paths) && $openApiObj->paths instanceof \stdClass);
+        $this->assertIsObject($openApiObj->paths);
+
+        foreach ((array) $openApiObj->paths as $pathItem) {
+            $this->assertIsObject($pathItem);
+
+            // Each operation should have responses
+            foreach ((array) $pathItem as $method => $operation) {
+                if (in_array($method, ['get', 'post', 'put', 'patch', 'delete'])) {
+                    $this->assertIsObject($operation);
+                    $this->assertObjectHasProperty('responses', $operation);
+                }
+            }
+        }
+    }
+
+    public function testParametersAreValid(): void
+    {
+        $paths = $this->openApi['paths'];
+        assert(is_array($paths));
+
+        foreach ($paths as $path => $operations) {
+            assert(is_array($operations));
+            foreach ($operations as $method => $operation) {
+                if (! is_array($operation)) {
+                    continue;
+                }
+
+                // If parameters exist, validate them
+                if (isset($operation['parameters'])) {
+                    $this->assertIsArray($operation['parameters']);
+
+                    foreach ($operation['parameters'] as $param) {
+                        // Required parameter fields
+                        $this->assertArrayHasKey('name', $param);
+                        $this->assertArrayHasKey('in', $param);
+
+                        // 'in' must be one of: query, header, path, cookie
+                        $this->assertContains($param['in'], ['query', 'header', 'path', 'cookie']);
+
+                        // If required is present, it must be boolean
+                        if (isset($param['required'])) {
+                            $this->assertIsBool($param['required']);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public function testResponsesAreValid(): void
+    {
+        $paths = $this->openApi['paths'];
+        assert(is_array($paths));
+
+        foreach ($paths as $path => $operations) {
+            assert(is_array($operations));
+            foreach ($operations as $method => $operation) {
+                if (! is_array($operation)) {
+                    continue;
+                }
+
+                // Every operation must have responses
+                $this->assertArrayHasKey('responses', $operation);
+                $this->assertIsArray($operation['responses']);
+                $this->assertNotEmpty($operation['responses']);
+
+                // Validate each response
+                foreach ($operation['responses'] as $statusCode => $response) {
+                    // Status code should be a string (can be "200", "default", etc.)
+                    $this->assertIsString($statusCode);
+                    $this->assertIsArray($response);
+
+                    // Each response should have a description
+                    $this->assertArrayHasKey('description', $response);
+                }
+            }
         }
     }
 }
