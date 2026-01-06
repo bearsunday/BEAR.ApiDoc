@@ -6,6 +6,8 @@ namespace BEAR\ApiDoc\Annotation;
 
 use Attribute;
 
+use function assert;
+
 /**
  * Maps REST resource/method to ALPS semantic descriptor
  *
@@ -21,5 +23,6 @@ final class Alps
         /** ALPS descriptor ID */
         public readonly string $id,
     ) {
+        assert($id !== '', 'ALPS descriptor ID must not be empty');
     }
 }
