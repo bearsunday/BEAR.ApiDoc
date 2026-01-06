@@ -14,7 +14,7 @@ use Attribute;
  *
  * @see https://alps-io.github.io/spec/
  */
-#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 final class Alps
 {
     public function __construct(
