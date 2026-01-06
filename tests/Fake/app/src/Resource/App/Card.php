@@ -6,9 +6,7 @@ use BEAR\Resource\ResourceObject;
 
 class Card extends ResourceObject
 {
-    /**
-     * @JsonSchema(schema="card.json")
-     */
+    #[JsonSchema(schema: 'card.json')]
     public function onGet()
     {
         return $this;

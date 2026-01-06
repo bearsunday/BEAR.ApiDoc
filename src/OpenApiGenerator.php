@@ -6,7 +6,6 @@ namespace BEAR\ApiDoc;
 
 use ArrayObject;
 use BEAR\Resource\Annotation\JsonSchema;
-use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
@@ -37,7 +36,6 @@ final class OpenApiGenerator
     private array $schemas = [];
 
     public function __construct(
-        private readonly Reader $reader,
         private readonly Config $config,
         private readonly string $requestSchemaDir,
         private readonly string $responseSchemaDir
@@ -109,18 +107,19 @@ final class OpenApiGenerator
             'description' => $methodDescription ?: $classDescription,
         ];
 
-        // Get JSON Schema annotation
-        $schemaAnnotation = $this->reader->getMethodAnnotation($method, JsonSchema::class);
+        // Get JSON Schema attribute
+        $attributes = $method->getAttributes(JsonSchema::class);
+        $schemaAttribute = $attributes !== [] ? $attributes[0]->newInstance() : null;
 
-        if ($schemaAnnotation instanceof JsonSchema) {
+        if ($schemaAttribute instanceof JsonSchema) {
             // Process request parameters
-            $parameters = $this->processParameters($method, $schemaAnnotation->params);
+            $parameters = $this->processParameters($method, $schemaAttribute->params);
             if ($parameters !== []) {
                 $operation['parameters'] = $parameters;
             }
 
             // Process response
-            $response = $this->processResponse($schemaAnnotation->schema);
+            $response = $this->processResponse($schemaAttribute->schema);
             if ($response !== null) {
                 $operation['responses'] = [
                     '200' => [

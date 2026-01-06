@@ -19,7 +19,6 @@
         "bear/resource": "^1.16.2",
         "bear/sunday": "^1.4",
         "bear/app-meta": "^1.7",
-        "doctrine/annotations": "^1.12 || ^2.0",
         "ray/di": "^2.16",
         "rize/uri-template": "^0.3.3 || ^0.4",
         "bear/package": "^1.9",
@@ -52,7 +51,6 @@
     },
     "bin": ["bin/apidoc"],
     "scripts": {
-        "bin": "echo 'bin not installed'",
         "setup": "php bin/setup.php",
         "test": "./vendor/bin/phpunit",
         "coverage": "php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage",

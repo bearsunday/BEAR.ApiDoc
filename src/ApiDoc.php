@@ -13,7 +13,6 @@ use Koriym\AppStateDiagram\LabelName;
 use Koriym\AppStateDiagram\MdToHtml;
 use Koriym\AppStateDiagram\Profile;
 use Koriym\AppStateDiagram\SemanticDescriptor;
-use Ray\ServiceLocator\ServiceLocator;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
 use SplFileInfo;
@@ -32,12 +31,10 @@ use function substr;
 
 final class ApiDoc
 {
-    /** @psalm-suppress DeprecatedClass */
     public function __invoke(string $configFile): string
     {
         $config = new Config($configFile);
         $docClass = new DocClass(
-            ServiceLocator::getReader(),
             $config->requestSchemaDir,
             $config->responseSchemaDir,
             new ModelRepository()
@@ -209,11 +206,9 @@ final class ApiDoc
         copy($path, $destination);
     }
 
-    /** @psalm-suppress DeprecatedClass */
     private function dumpOpenApi(Config $config): void
     {
         $generator = new OpenApiGenerator(
-            ServiceLocator::getReader(),
             $config,
             $config->requestSchemaDir,
             $config->responseSchemaDir

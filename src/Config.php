@@ -11,7 +11,6 @@ use Aura\Router\RouterContainer;
 use BEAR\ApiDoc\Exception\InvalidAppNamespaceException;
 use BEAR\AppMeta\Meta;
 use BEAR\AppMeta\ResMeta;
-use Doctrine\Common\Annotations\Reader;
 use Generator;
 use Ray\Di\AbstractModule;
 use Ray\Di\Exception\Unbound;
@@ -22,6 +21,7 @@ use SimpleXMLElement;
 use function assert;
 use function class_exists;
 use function dirname;
+use function in_array;
 use function is_iterable;
 use function is_string;
 use function property_exists;
@@ -127,7 +127,7 @@ final class Config
         $this->docDir = sprintf('%s/%s', $dir, (string) $xml->docDir);
         $this->format = (string) $xml->format;
         $scheme = (string) $xml->scheme;
-        assert($scheme === 'app' || $scheme === 'page');
+        assert(in_array($scheme, ['*', 'app', 'page'], true));
         $this->scheme = $scheme;
 
         $this->description = property_exists($xml, 'description') ? (string) $xml->description : '';
@@ -154,8 +154,6 @@ final class Config
         /** @psalm-suppress all */
         $injector = new Injector($appModule);
         assert($injector instanceof InjectorInterface);
-        $reader = $injector->getInstance(Reader::class);
-        assert($reader instanceof Reader);
         $this->resourceFiles = $meta->getGenerator($this->scheme);
 
         try {
