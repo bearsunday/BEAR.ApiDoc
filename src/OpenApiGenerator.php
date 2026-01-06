@@ -76,7 +76,7 @@ final class OpenApiGenerator
     private function processResource(string $path, ReflectionClass $class): void
     {
         $docComment = (string) $class->getDocComment();
-        [$summary, $description, ] = (new PhpDoc())($docComment);
+        [$summary, $description] = (new PhpDoc())($docComment);
 
         $methods = $class->getMethods();
         $pathItem = [];
@@ -102,7 +102,7 @@ final class OpenApiGenerator
     private function processMethod(ReflectionMethod $method, string $classSummary, string $classDescription): array
     {
         $docComment = (string) $method->getDocComment();
-        [$methodSummary, $methodDescription, ] = (new PhpDoc())($docComment);
+        [$methodSummary, $methodDescription] = (new PhpDoc())($docComment);
 
         $operation = [
             'summary' => $methodSummary ?: $classSummary,
@@ -126,9 +126,7 @@ final class OpenApiGenerator
                     '200' => [
                         'description' => 'Successful response',
                         'content' => [
-                            'application/json' => [
-                                'schema' => $response,
-                            ],
+                            'application/json' => ['schema' => $response],
                         ],
                     ],
                 ];
@@ -138,9 +136,7 @@ final class OpenApiGenerator
         // Add default response if no response defined
         if (! array_key_exists('responses', $operation)) {
             $operation['responses'] = [
-                '200' => [
-                    'description' => 'Successful response',
-                ],
+                '200' => ['description' => 'Successful response'],
             ];
         }
 
@@ -260,6 +256,6 @@ final class OpenApiGenerator
             'bool', 'boolean' => 'boolean',
             'array' => 'array',
             default => 'string',
-        };
+        }; // phpcs:ignore SlevomatCodingStandard.PHP.UselessSemicolon.UselessSemicolon
     }
 }

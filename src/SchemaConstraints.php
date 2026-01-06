@@ -64,6 +64,7 @@ final class SchemaConstraints implements Stringable
         return $value;
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->constrains === [] ? '' : (string) json_encode($this->constrains, JSON_UNESCAPED_SLASHES);

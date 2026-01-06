@@ -6,6 +6,6 @@ namespace BEAR\ApiDoc\Exception;
 
 use RuntimeException;
 
-class AlpsFileNotFoundException extends RuntimeException
+final class AlpsFileNotFoundException extends RuntimeException
 {
 }

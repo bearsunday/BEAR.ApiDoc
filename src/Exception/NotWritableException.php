@@ -6,6 +6,6 @@ namespace BEAR\ApiDoc\Exception;
 
 use RuntimeException;
 
-class NotWritableException extends RuntimeException
+final class NotWritableException extends RuntimeException
 {
 }

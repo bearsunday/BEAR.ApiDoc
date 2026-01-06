@@ -11,6 +11,7 @@ use function sprintf;
 /**
  * @psalm-pure
  */
+
 final class SchemaProp implements Stringable
 {
     public function __construct(
@@ -23,6 +24,7 @@ final class SchemaProp implements Stringable
     ) {
     }
 
+    #[\Override]
     public function __toString(): string
     {
         if ($this->name === '_links' || $this->name === '_embedded') {

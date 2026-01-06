@@ -12,7 +12,7 @@ use Ray\Di\AbstractModule;
 use function assert;
 use function class_exists;
 
-class AppMetaModule extends AbstractModule
+final class AppMetaModule extends AbstractModule
 {
     public function __construct(private readonly AbstractAppMeta $appMeta, ?AbstractModule $module = null)
     {
@@ -22,6 +22,7 @@ class AppMetaModule extends AbstractModule
     /**
      * {@inheritdoc}
      */
+    #[\Override]
     protected function configure()
     {
         $this->bind(AbstractAppMeta::class)->toInstance($this->appMeta);

@@ -117,6 +117,7 @@ final class DocParam implements Stringable
     /**
      * @psalm-external-mutation-free
      */
+    #[\Override]
     public function __toString(): string
     {
         $required = $this->isOptional ? 'Optional' : 'Required';

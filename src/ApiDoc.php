@@ -32,6 +32,7 @@ use function substr;
 
 final class ApiDoc
 {
+    /** @psalm-suppress DeprecatedClass */
     public function __invoke(string $configFile): string
     {
         $config = new Config($configFile);
@@ -208,6 +209,7 @@ final class ApiDoc
         copy($path, $destination);
     }
 
+    /** @psalm-suppress DeprecatedClass */
     private function dumpOpenApi(Config $config): void
     {
         $generator = new OpenApiGenerator(

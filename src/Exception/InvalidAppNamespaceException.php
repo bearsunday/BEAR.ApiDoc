@@ -6,6 +6,6 @@ namespace BEAR\ApiDoc\Exception;
 
 use RuntimeException;
 
-class InvalidAppNamespaceException extends RuntimeException
+final class InvalidAppNamespaceException extends RuntimeException
 {
 }

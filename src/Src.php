@@ -20,6 +20,7 @@ use function substr;
 /**
  * @psalm-pure
  */
+
 final class Src implements Stringable
 {
     public function __construct(
@@ -28,6 +29,7 @@ final class Src implements Stringable
     ) {
     }
 
+    #[\Override]
     public function __toString(): string
     {
         $uriTemplate = new UriTemplate($this->src);

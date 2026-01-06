@@ -45,19 +45,23 @@ final class XmlLoader
             return $path;
         }
 
-        $maybePath = sprintf('%s/%s', getcwd(), $path);
+        $cwd = getcwd();
+        if ($cwd === false) {
+            goto config_not_found;
+        }
+
+        assert($cwd !== false);
+        $maybePath = sprintf('%s/%s', $cwd, $path);
         if (file_exists($maybePath) && ! is_dir($maybePath)) {
             // @codeCoverageIgnoreStart
             return $maybePath;
         }
 
-        $dirPath = (string) realpath($path) ?: getcwd();
-        if ($dirPath === false) {
-            goto config_not_found;
-        }
+        $realPath = realpath($path);
+        $dirPath = $realPath !== false ? $realPath : $cwd;
 
-        if (! is_dir($dirPath)) { // @phpstan-ignore-line
-            $dirPath = dirname($dirPath); // @phpstan-ignore-line
+        if (! is_dir($dirPath)) {
+            $dirPath = dirname($dirPath);
             // @codeCoverageIgnoreEnd
         }
 
@@ -67,8 +71,13 @@ final class XmlLoader
                 return $maybePath;
             }
 
-            $dirPath = dirname($dirPath); // @phpstan-ignore-line
-        } while (dirname($dirPath) !== $dirPath);
+            $parentDir = dirname($dirPath);
+            if ($parentDir === $dirPath) {
+                break;
+            }
+
+            $dirPath = $parentDir;
+        } while (true);
 
         config_not_found:
 

@@ -6,8 +6,10 @@ use BEAR\Package\PackageModule;
 use BEAR\Package\Provide\Router\AuraRouterModule;
 use BEAR\Resource\Module\JsonSchemaLinkHeaderModule;
 use BEAR\Resource\Module\JsonSchemaModule;
-use function dirname;
-use function var_dump;
+use Doctrine\Common\Annotations\Reader;
+use Koriym\Attributes\DualReader;
+use Koriym\Attributes\AttributeReader;
+use Doctrine\Common\Annotations\AnnotationReader;
 
 class AppModule extends AbstractAppModule
 {
@@ -21,5 +23,6 @@ class AppModule extends AbstractAppModule
         );
         $this->install(new JsonSchemaLinkHeaderModule('http://example.com/schema/'));
         $this->install(new PackageModule);
+        $this->bind(Reader::class)->toInstance(new DualReader(new AnnotationReader(), new AttributeReader()));
     }
 }

@@ -99,6 +99,7 @@ final class DocMethod implements Stringable
         return $tagParams;
     }
 
+    #[\Override]
     public function __toString(): string
     {
         $title = $this->title;

@@ -6,6 +6,6 @@ namespace BEAR\ApiDoc\Exception;
 
 use RuntimeException;
 
-class ConfigNotFoundException extends RuntimeException
+final class ConfigNotFoundException extends RuntimeException
 {
 }
