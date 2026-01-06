@@ -47,41 +47,61 @@ final class XmlLoader
 
         $cwd = getcwd();
         if ($cwd === false) {
-            goto config_not_found;
+            throw new ConfigNotFoundException($path);
         }
 
-        assert($cwd !== false);
         $maybePath = sprintf('%s/%s', $cwd, $path);
         if (file_exists($maybePath) && ! is_dir($maybePath)) {
             // @codeCoverageIgnoreStart
             return $maybePath;
+            // @codeCoverageIgnoreEnd
         }
 
+        $found = $this->searchInParentDirectories($path, $cwd);
+        if ($found !== null) {
+            return $found;
+        }
+
+        throw new ConfigNotFoundException($path);
+    }
+
+    private function searchInParentDirectories(string $path, string $cwd): ?string
+    {
         $realPath = realpath($path);
         $dirPath = $realPath !== false ? $realPath : $cwd;
 
         if (! is_dir($dirPath)) {
             $dirPath = dirname($dirPath);
-            // @codeCoverageIgnoreEnd
         }
 
-        do {
-            $maybePath = sprintf('%s/%s', $dirPath, 'apidoc.xml');
-            if (file_exists($maybePath) || file_exists($maybePath .= '.dist')) {
-                return $maybePath;
+        while (true) {
+            $configPath = $this->findConfigInDirectory($dirPath);
+            if ($configPath !== null) {
+                return $configPath;
             }
 
             $parentDir = dirname($dirPath);
             if ($parentDir === $dirPath) {
-                break;
+                return null;
             }
 
             $dirPath = $parentDir;
-        } while (true);
+        }
+    }
 
-        config_not_found:
+    private function findConfigInDirectory(string $dirPath): ?string
+    {
+        $configPath = sprintf('%s/%s', $dirPath, 'apidoc.xml');
+        if (file_exists($configPath)) {
+            return $configPath;
+        }
 
-        throw new ConfigNotFoundException($path);
+        $distPath = $configPath . '.dist';
+        if (file_exists($distPath)) {
+            return $distPath;
+        }
+
+        return null;
     }
 
     /**
