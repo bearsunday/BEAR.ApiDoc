@@ -11,6 +11,7 @@ namespace BEAR\ApiDoc;
  * Types are ordered so dependencies are defined before use.
  *
  * Primitive Types
+ *
  * @psalm-type ParameterLocation = 'path'|'query'|'header'|'cookie'
  * @psalm-type PathParams = list<string>
  * @psalm-type OperationBase = array{operationId?: string, summary?: string, description?: string}

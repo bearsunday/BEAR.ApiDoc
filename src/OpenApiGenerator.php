@@ -166,7 +166,7 @@ final class OpenApiGenerator
 
     /**
      * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
-     * @param PathParams                                                                                                                              $pathParams
+     * @param PathParams                                                                                                                             $pathParams
      *
      * @return array{0: array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses}, 1: bool}
      */
@@ -204,7 +204,7 @@ final class OpenApiGenerator
 
     /**
      * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses: OpenApiResponses} $operation
-     * @param PathParams                                                                                                                             $pathParams
+     * @param PathParams                                                                                                                            $pathParams
      *
      * @return OpenApiOperation
      */
@@ -233,7 +233,7 @@ final class OpenApiGenerator
 
     /**
      * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
-     * @param PathParams                                                                                                                              $pathParams
+     * @param PathParams                                                                                                                             $pathParams
      *
      * @return array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses}
      */
