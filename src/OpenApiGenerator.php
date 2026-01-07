@@ -35,6 +35,7 @@ use function trim;
 use function ucfirst;
 
 use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const PATHINFO_FILENAME;
 
@@ -86,7 +87,7 @@ final class OpenApiGenerator
         // Add collected schemas to components
         $this->openApiSpec['components']['schemas'] = $this->schemas;
 
-        return (string) json_encode($this->openApiSpec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        return json_encode($this->openApiSpec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
     }
 
     /**
