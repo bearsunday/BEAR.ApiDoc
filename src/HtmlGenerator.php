@@ -97,12 +97,14 @@ final class HtmlGenerator
     {
         // Get PHPDoc
         $summary = '';
+        $methodDescription = '';
         $paramDescriptions = [];
         $docComment = $method->getDocComment();
         if (is_string($docComment)) {
             $factory = DocBlockFactory::createInstance();
             $docBlock = $factory->create($docComment);
             $summary = $docBlock->getSummary();
+            $methodDescription = (string) $docBlock->getDescription();
             foreach ($docBlock->getTagsByName('param') as $param) {
                 /** @var \phpDocumentor\Reflection\DocBlock\Tags\Param $param */
                 $paramDescriptions[(string) $param->getVariableName()] = (string) $param->getDescription();
@@ -153,19 +155,20 @@ final class HtmlGenerator
             $paramType = $param->getType();
             $typeName = $paramType instanceof ReflectionNamedType ? $paramType->getName() : 'string';
 
-            // Get description from PHPDoc or request schema
-            $description = $paramDescriptions[$paramName] ?? '';
+            // Get description from request schema (priority) or PHPDoc (fallback)
+            $description = '';
             $example = '';
             $constraints = [];
 
             if ($requestSchema !== null && isset($requestSchema->props[$paramName])) {
                 $prop = $requestSchema->props[$paramName];
-                if ($description === '') {
-                    $description = $prop->description;
-                }
-
+                $description = $prop->description;
                 $example = $prop->example;
                 $constraints = $prop->constraints->constrains;
+            }
+
+            if ($description === '') {
+                $description = $paramDescriptions[$paramName] ?? '';
             }
 
             $params[] = [
@@ -184,6 +187,7 @@ final class HtmlGenerator
 
         $this->endpoints[$path][$httpMethod] = [
             'summary' => $summary,
+            'description' => $methodDescription,
             'params' => $params,
             'response' => $responseSchemaName,
             'embeds' => $embeds,
@@ -342,7 +346,6 @@ HTML;
   <th>Params</th>
   <th>Description</th>
   <th>Meta</th>
-  <th>Example</th>
   <th>Response</th>
 </tr>
 </thead>
@@ -371,6 +374,7 @@ HTML;
                 $pathCell = $isFirstPath ? sprintf('<td rowspan="%d" class="path-cell">%s</td>', $totalRows, htmlspecialchars($path)) : '';
                 $methodHtml = $this->renderMethodBadge($httpMethod);
                 $responseHtml = $this->renderResponseLink($data['response']);
+                $summaryHtml = $this->renderSummaryMeta($data['summary'], $data['description']);
 
                 $rows .= <<<HTML
 <tr>
@@ -378,8 +382,7 @@ HTML;
   <td>{$methodHtml}</td>
   <td></td>
   <td></td>
-  <td></td>
-  <td></td>
+  <td>{$summaryHtml}</td>
   <td>{$responseHtml}</td>
 </tr>
 
@@ -393,6 +396,8 @@ HTML;
                 $pathCell = '';
                 $methodCell = '';
                 $responseCell = '';
+                $summary = '';
+                $description = '';
 
                 if ($isFirstPath && $isFirstParam) {
                     $pathCell = sprintf('<td rowspan="%d" class="path-cell">%s</td>', $totalRows, htmlspecialchars($path));
@@ -402,9 +407,11 @@ HTML;
                     $methodHtml = $this->renderMethodBadge($httpMethod);
                     $methodCell = sprintf('<td rowspan="%d">%s</td>', $methodRowspan, $methodHtml);
                     $responseCell = sprintf('<td rowspan="%d">%s</td>', $methodRowspan, $this->renderResponseLink($data['response']));
+                    $summary = $data['summary'];
+                    $description = $data['description'];
                 }
 
-                $rows .= $this->renderParamRow($pathCell, $methodCell, $param, $responseCell);
+                $rows .= $this->renderParamRow($pathCell, $methodCell, $param, $responseCell, $summary, $description);
                 $isFirstParam = false;
                 $isFirstPath = false;
             }
@@ -447,18 +454,42 @@ HTML;
         return sprintf('<a href="#%s" class="schema-link">%s</a>', htmlspecialchars($schemaName), htmlspecialchars($schemaName));
     }
 
+    private function renderSummaryMeta(string $summary, string $description): string
+    {
+        if ($summary === '' && $description === '') {
+            return '';
+        }
+
+        $badges = [];
+
+        if ($summary !== '') {
+            $badges[] = sprintf('<span class="badge constraint">title: %s</span>', htmlspecialchars($summary));
+        }
+
+        if ($description !== '') {
+            $badges[] = sprintf('<span class="badge constraint">description: %s</span>', htmlspecialchars($description));
+        }
+
+        $badgesHtml = implode("\n      ", $badges);
+
+        return <<<HTML
+<div class="extra-info">
+      {$badgesHtml}
+    </div>
+HTML;
+    }
+
     /**
      * @param HtmlParamArray $param
      */
-    private function renderParamRow(string $pathCell, string $methodCell, array $param, string $responseCell): string
+    private function renderParamRow(string $pathCell, string $methodCell, array $param, string $responseCell, string $summary = '', string $methodDescription = ''): string
     {
         $nameHtml = sprintf('<span class="param">%s</span>', htmlspecialchars($param['name']));
         if ($param['required']) {
             $nameHtml .= '<span class="req">*</span>';
         }
 
-        $metaHtml = $this->renderMetaBadges($param['type'], $param['constraints']);
-        $exampleHtml = $param['example'] !== '' ? htmlspecialchars($param['example']) : '';
+        $metaHtml = $this->renderMetaBadges($param['type'], $param['constraints'], $summary, $methodDescription, $param['example']);
         $descriptionHtml = htmlspecialchars($param['description']);
 
         return <<<HTML
@@ -468,7 +499,6 @@ HTML;
   <td>{$nameHtml}</td>
   <td>{$descriptionHtml}</td>
   <td>{$metaHtml}</td>
-  <td class="example">{$exampleHtml}</td>
   {$responseCell}
 </tr>
 
@@ -478,9 +508,18 @@ HTML;
     /**
      * @param array<string, mixed> $constraints
      */
-    private function renderMetaBadges(string $type, array $constraints): string
+    private function renderMetaBadges(string $type, array $constraints, string $summary = '', string $description = '', string $example = ''): string
     {
         $badges = [];
+
+        // Summary badges (title/description) - shown first
+        if ($summary !== '') {
+            $badges[] = sprintf('<span class="badge constraint">title: %s</span>', htmlspecialchars($summary));
+        }
+
+        if ($description !== '') {
+            $badges[] = sprintf('<span class="badge constraint">description: %s</span>', htmlspecialchars($description));
+        }
 
         // Type badge
         $typeClass = 'type-' . $type;
@@ -493,8 +532,8 @@ HTML;
             unset($constraints['format']);
         }
 
-        // Keys to skip in constraint badges (complex types not suitable for display)
-        $skipKeys = ['items', 'properties', '$ref', 'definitions', 'allOf', 'anyOf', 'oneOf', 'not', 'if', 'then', 'else'];
+        // Keys to skip in constraint badges (complex types or already displayed elsewhere)
+        $skipKeys = ['items', 'properties', '$ref', 'definitions', 'allOf', 'anyOf', 'oneOf', 'not', 'if', 'then', 'else', 'description'];
 
         // Other constraint badges
         /** @psalm-suppress MixedAssignment */
@@ -511,6 +550,11 @@ HTML;
             }
 
             $badges[] = sprintf('<span class="badge constraint">%s: %s</span>', htmlspecialchars($key), htmlspecialchars($value));
+        }
+
+        // Example badge (shown last)
+        if ($example !== '') {
+            $badges[] = sprintf('<span class="badge example">example: %s</span>', htmlspecialchars($example));
         }
 
         $badgesHtml = implode("\n      ", $badges);
@@ -566,7 +610,7 @@ HTML;
 <h3 class="object-name">{$escapedName}</h3>
 <table>
 <thead>
-<tr><th>Name</th><th>Description</th><th>Meta</th><th>Example</th></tr>
+<tr><th>Name</th><th>Description</th><th>Meta</th></tr>
 </thead>
 <tbody>
 {$rows}
@@ -584,7 +628,6 @@ HTML;
     {
         $nameHtml = sprintf('<span class="prop-name">%s</span>', htmlspecialchars($prop['name']));
         $metaHtml = $this->renderPropertyMeta($prop);
-        $exampleHtml = $prop['example'] !== '' && $prop['example'] !== null ? htmlspecialchars($prop['example']) : '';
         $descriptionHtml = htmlspecialchars($prop['description']);
 
         return <<<HTML
@@ -592,7 +635,6 @@ HTML;
   <td>{$nameHtml}</td>
   <td>{$descriptionHtml}</td>
   <td>{$metaHtml}</td>
-  <td class="example">{$exampleHtml}</td>
 </tr>
 
 HTML;
@@ -616,8 +658,8 @@ HTML;
             $badges[] = sprintf('<span class="badge format">format: %s</span>', htmlspecialchars($prop['format']));
         }
 
-        // Keys to skip in constraint badges (complex types not suitable for display)
-        $skipKeys = ['items', 'properties', '$ref', 'definitions', 'allOf', 'anyOf', 'oneOf', 'not', 'if', 'then', 'else'];
+        // Keys to skip in constraint badges (complex types or already displayed elsewhere)
+        $skipKeys = ['items', 'properties', '$ref', 'definitions', 'allOf', 'anyOf', 'oneOf', 'not', 'if', 'then', 'else', 'description'];
 
         // Constraint badges
         /** @psalm-suppress MixedAssignment */
@@ -634,6 +676,11 @@ HTML;
             }
 
             $badges[] = sprintf('<span class="badge constraint">%s: %s</span>', htmlspecialchars($key), htmlspecialchars($value));
+        }
+
+        // Example badge (shown last)
+        if ($prop['example'] !== '' && $prop['example'] !== null) {
+            $badges[] = sprintf('<span class="badge example">example: %s</span>', htmlspecialchars($prop['example']));
         }
 
         $badgesHtml = implode("\n      ", $badges);
@@ -664,7 +711,6 @@ HTML;
       <span class="badge {$type}">{$type}</span>
     </div>
   </td>
-  <td class="example"></td>
 </tr>
 
 HTML;
@@ -724,11 +770,10 @@ tr:hover{background-color:#f5f5f5;}
 .badge.format{background:#DAFBE1;border-color:#A7F3D0;color:#116329;}
 .badge.embed{background:#F5F0FF;border-color:#D8B9FF;color:#8957e5;}
 .badge.link{background:#EAF5FF;border-color:#B8DFFF;color:#0366d6;}
+.badge.example{background:#FFFBEB;border-color:#FDE68A;color:#92400E;font-family:'SFMono-Regular',Consolas,monospace;}
 /* Sticky rows */
 .embed-row{background:linear-gradient(135deg,#FFFBEB 0%,#FEF3C7 100%);box-shadow:3px 3px 6px rgba(0,0,0,0.15);border-left:3px solid #F59E0B;}
 .link-row{background:linear-gradient(135deg,#EFF6FF 0%,#DBEAFE 100%);box-shadow:3px 3px 6px rgba(0,0,0,0.15);border-left:3px solid #3B82F6;}
-/* Example */
-.example{font-family:'SFMono-Regular',Consolas,monospace;font-size:0.85em;color:#57606a;}
 /* Response */
 .schema-link{font-family:'SFMono-Regular',Consolas,monospace;font-weight:500;}
 /* Object table */
