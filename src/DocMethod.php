@@ -108,7 +108,7 @@ final class DocMethod implements Stringable
 ## %s
 {$this->lineString($title)}{$this->lineString($description)}{$alpsSection}
 
-**Request**
+### Request
 
 %s
 
