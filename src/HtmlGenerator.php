@@ -46,6 +46,8 @@ use const PATHINFO_FILENAME;
  * @psalm-import-type HtmlPropertyArray from Types
  * @psalm-import-type HtmlObjectArray from Types
  * @psalm-import-type HtmlRelationArray from Types
+ *
+ * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 final class HtmlGenerator
 {
