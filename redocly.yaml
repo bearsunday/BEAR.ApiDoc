@@ -1,0 +1,9 @@
+extends:
+  - minimal
+
+rules:
+  no-empty-servers: off
+  operation-summary: warn
+  security-defined: off
+  operation-operationId: warn
+  operation-4xx-response: warn

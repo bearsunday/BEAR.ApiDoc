@@ -155,6 +155,11 @@ final class OpenApiGenerator
             }
         }
 
+        // Add path parameters if not already defined
+        if ($pathParams !== [] && ! array_key_exists('parameters', $operation)) {
+            $operation['parameters'] = $this->createPathParameters($pathParams);
+        }
+
         // Add default response if no response defined
         if (! array_key_exists('responses', $operation)) {
             $operation['responses'] = [
@@ -210,6 +215,26 @@ final class OpenApiGenerator
             }
 
             $parameters[] = $parameter;
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * @param array<string> $pathParams
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function createPathParameters(array $pathParams): array
+    {
+        $parameters = [];
+        foreach ($pathParams as $paramName) {
+            $parameters[] = [
+                'name' => $paramName,
+                'in' => 'path',
+                'required' => true,
+                'schema' => ['type' => 'string'],
+            ];
         }
 
         return $parameters;
