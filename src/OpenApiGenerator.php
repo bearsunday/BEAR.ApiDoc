@@ -116,10 +116,11 @@ final class OpenApiGenerator
     private function processMethod(ReflectionMethod $method, string $classSummary, string $classDescription, array $pathParams): array
     {
         $operation = $this->buildOperationBase($method, $classSummary, $classDescription);
-        $operation = $this->applyJsonSchemaAttribute($method, $operation, $pathParams);
+        [$operation, $hasRequestSchema] = $this->applyJsonSchemaAttribute($method, $operation, $pathParams);
         $operation = $this->ensurePathParameters($operation, $pathParams);
+        $operation = $this->ensureDefaultResponse($operation);
 
-        return $this->ensureDefaultResponse($operation);
+        return $this->addErrorResponses($operation, $hasRequestSchema, $pathParams);
     }
 
     /**
@@ -149,16 +150,17 @@ final class OpenApiGenerator
      * @param array<string, mixed> $operation
      * @param array<string>        $pathParams
      *
-     * @return array<string, mixed>
+     * @return array{0: array<string, mixed>, 1: bool}
      */
     private function applyJsonSchemaAttribute(ReflectionMethod $method, array $operation, array $pathParams): array
     {
         $attributes = $method->getAttributes(JsonSchema::class);
         if ($attributes === []) {
-            return $operation;
+            return [$operation, false];
         }
 
         $schemaAttribute = $attributes[0]->newInstance();
+        $hasRequestSchema = $schemaAttribute->params !== '';
 
         $parameters = $this->processParameters($method, $schemaAttribute->params, $pathParams);
         if ($parameters !== []) {
@@ -176,6 +178,34 @@ final class OpenApiGenerator
                 ],
             ];
         }
+
+        return [$operation, $hasRequestSchema];
+    }
+
+    /**
+     * @param array<string, mixed> $operation
+     * @param array<string>        $pathParams
+     *
+     * @return array<string, mixed>
+     */
+    private function addErrorResponses(array $operation, bool $hasRequestSchema, array $pathParams): array
+    {
+        if (! isset($operation['responses'])) {
+            return $operation;
+        }
+
+        /** @var array<string, array<string, mixed>> $responses */
+        $responses = $operation['responses'];
+
+        if ($hasRequestSchema) {
+            $responses['400'] = ['description' => 'Bad Request'];
+        }
+
+        if ($pathParams !== []) {
+            $responses['404'] = ['description' => 'Not Found'];
+        }
+
+        $operation['responses'] = $responses;
 
         return $operation;
     }
