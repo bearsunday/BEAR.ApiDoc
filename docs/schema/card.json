@@ -2,97 +2,145 @@
   "$id": "card.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Card",
-  "description": "A representation of a person, company, organization, or place",
+  "description": "Contact card following vCard/h-card format for people, organizations, or places",
   "type": "object",
-  "required": [ "familyName", "givenName" ],
+  "required": ["familyName", "givenName"],
   "properties": {
     "fn": {
-      "description": "Formatted Name",
-      "type": "string"
+      "type": "string",
+      "description": "Full formatted name as it should be displayed",
+      "example": "Dr. Jane M. Smith, PhD"
     },
     "familyName": {
-      "type": "string"
+      "type": "string",
+      "description": "Family name (surname/last name)",
+      "example": "Smith"
     },
     "givenName": {
-      "type": "string"
+      "type": "string",
+      "description": "Given name (first name)",
+      "example": "Jane"
     },
     "additionalName": {
       "type": "array",
+      "description": "Middle names or other additional names",
       "items": {
         "type": "string"
-      }
+      },
+      "example": ["Marie"]
     },
     "honorificPrefix": {
       "type": "array",
+      "description": "Name prefixes and titles (e.g., Dr., Mr., Ms.)",
       "items": {
         "type": "string"
-      }
+      },
+      "example": ["Dr."]
     },
     "honorificSuffix": {
       "type": "array",
+      "description": "Name suffixes and post-nominals (e.g., PhD, Jr., III)",
       "items": {
         "type": "string"
-      }
+      },
+      "example": ["PhD", "MBA"]
     },
     "nickname": {
-      "type": "string"
+      "type": "string",
+      "description": "Preferred informal name or alias",
+      "example": "Jenny"
     },
     "url": {
-      "type": "string"
+      "type": "string",
+      "format": "uri",
+      "description": "Personal or professional website URL",
+      "example": "https://janesmith.example.com"
     },
     "email": {
       "type": "object",
+      "description": "Email address with type classification",
       "properties": {
         "type": {
-          "type": "string"
+          "type": "string",
+          "description": "Category of email (work, home, other)",
+          "example": "work"
         },
         "value": {
-          "type": "string"
+          "type": "string",
+          "format": "email",
+          "description": "The email address",
+          "example": "jane.smith@company.com"
         }
       }
     },
     "tel": {
       "type": "object",
+      "description": "Telephone number with type classification",
       "properties": {
         "type": {
-          "type": "string"
+          "type": "string",
+          "description": "Category of phone (work, home, mobile, fax)",
+          "example": "mobile"
         },
         "value": {
-          "type": "string"
+          "type": "string",
+          "description": "The phone number",
+          "example": "+1-555-123-4567"
         }
       }
     },
-    "adr": { "$ref": "https://json-schema.org/learn/examples/address.schema.json" },
-    "geo": { "$ref": "https://json-schema.org/learn/examples/geographical-location.schema.json" },
     "tz": {
-      "type": "string"
+      "type": "string",
+      "description": "Timezone in IANA format or UTC offset",
+      "example": "America/New_York"
     },
     "photo": {
-      "type": "string"
+      "type": "string",
+      "format": "uri",
+      "description": "URL to profile photo image",
+      "example": "https://example.com/photos/jsmith.jpg"
     },
     "logo": {
-      "type": "string"
+      "type": "string",
+      "format": "uri",
+      "description": "URL to company or organization logo",
+      "example": "https://company.com/logo.png"
     },
     "sound": {
-      "type": "string"
+      "type": "string",
+      "format": "uri",
+      "description": "URL to audio file with name pronunciation",
+      "example": "https://example.com/pronunciation/jsmith.mp3"
     },
     "bday": {
-      "type": "string"
+      "type": "string",
+      "format": "date",
+      "description": "Birthday in ISO 8601 date format",
+      "example": "1985-06-15"
     },
     "title": {
-      "type": "string"
+      "type": "string",
+      "description": "Job title or position",
+      "example": "Senior Software Engineer"
     },
     "role": {
-      "type": "string"
+      "type": "string",
+      "description": "Function or role within organization",
+      "example": "Technical Lead"
     },
     "org": {
       "type": "object",
+      "description": "Organization or company affiliation",
       "properties": {
         "organizationName": {
-          "type": "string"
+          "type": "string",
+          "description": "Name of the organization",
+          "example": "Acme Corporation"
         },
         "organizationUnit": {
-          "type": "string"
+          "type": "string",
+          "description": "Department or division within organization",
+          "example": "Engineering"
         }
       }
     }

@@ -1,44 +1,57 @@
 {
-  "id": "ticket.json",
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "ticket.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Ticket",
-  "description": "Description of ",
+  "description": "Support ticket for tracking customer issues and requests",
   "type": "object",
   "properties": {
     "id": {
       "type": "string",
-      "description": "The unique identifier for a ticket."
+      "description": "Unique identifier for the ticket",
+      "example": "TKT-2024-001"
     },
     "title": {
       "type": "string",
-      "description": "The title of the ticket",
+      "description": "Brief summary of the issue or request",
+      "example": "Cannot login to dashboard",
       "minLength": 3,
       "maxLength": 255
     },
     "description": {
       "type": "string",
-      "description": "The description of the ticket",
-      "maxLength": 255
+      "description": "Detailed explanation of the issue including steps to reproduce",
+      "example": "When I click the login button, the page shows a 500 error.",
+      "maxLength": 2000
     },
     "assignee": {
       "type": "string",
-      "description": "The assignee of the ticket",
-      "maxLength": 255
+      "description": "Username of the support agent handling this ticket",
+      "example": "john.smith",
+      "maxLength": 50
     },
     "status": {
-      "description": "The name of the status",
+      "description": "Current status of the ticket in the workflow",
       "type": "string",
-      "maxLength": 255
+      "enum": ["open", "in_progress", "waiting", "resolved", "closed"],
+      "example": "in_progress"
+    },
+    "priority": {
+      "description": "Urgency level of the ticket",
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "example": "high"
     },
     "created": {
-      "description": "The date and time that the ticket was created",
+      "description": "Timestamp when the ticket was created",
       "type": "string",
-      "format": "datetime"
+      "format": "date-time",
+      "example": "2024-01-15T09:30:00Z"
     },
     "updated": {
-      "description": "The date and time that the ticket was last modified",
+      "description": "Timestamp when the ticket was last modified",
       "type": "string",
-      "format": "datetime"
+      "format": "date-time",
+      "example": "2024-01-16T14:22:00Z"
     }
   },
   "required": ["title", "description", "status", "created", "updated"],

@@ -8,7 +8,7 @@ This not only saves you the trouble of writing IDL, but also allows you to gener
 
 ## Demo
 
-[Live Demo](https://bearsunday.github.io/BEAR.ApiDoc/demo/)
+[Live Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
 
 ## Installation
 
