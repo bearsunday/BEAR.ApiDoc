@@ -316,6 +316,16 @@ final class OpenApiGenerator
             $schema['type'] = count($types) === 1 ? $types[0] : 'object';
         }
 
+        // Handle $ref with sibling properties (not allowed in OpenAPI 3.0)
+        // Convert to allOf format to preserve sibling properties
+        if (isset($schema['$ref']) && count($schema) > 1) {
+            $ref = $schema['$ref'];
+            unset($schema['$ref']);
+            $schema = [
+                'allOf' => [['$ref' => $ref]],
+            ] + $schema;
+        }
+
         // Recursively clean nested schemas
         foreach (['properties', 'items', 'allOf', 'oneOf', 'anyOf', 'additionalProperties'] as $nested) {
             if (! isset($schema[$nested])) {
