@@ -35,6 +35,13 @@ namespace BEAR\ApiDoc;
  * @psalm-type OpenApiInfo = array{title: string, description: string, version: string}
  * @psalm-type OpenApiComponents = array{schemas: array<string, OpenApiSchema>}
  * @psalm-type OpenApiSpec = array{openapi: string, info: OpenApiInfo, paths: array<string, OpenApiPathItem>, components: OpenApiComponents}
+ *
+ * HTML Generator Types
+ * @psalm-type HtmlParamArray = array{name: string, type: string, description: string, required: bool, example: string, constraints: array<string, mixed>}
+ * @psalm-type HtmlMethodArray = array{params: array<HtmlParamArray>, response: string|null, summary: string, embeds: array<mixed>, links: array<mixed>}
+ * @psalm-type HtmlPropertyArray = array{name: string, type: string, description: string, example: string|null, format: string|null, constraints: array<string, mixed>}
+ * @psalm-type HtmlObjectArray = array{name: string, properties: array<HtmlPropertyArray>}
+ * @psalm-type HtmlRelationArray = array{rel: string, target: string}
  */
 final class Types
 {

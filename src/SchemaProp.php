@@ -16,11 +16,11 @@ final class SchemaProp implements Stringable
 {
     public function __construct(
         private readonly string $name,
-        private readonly string $type,
+        public readonly string $type,
         private readonly bool $isOptional,
         public string $description,
         public SchemaConstraints $constraints,
-        public string $example
+        public string $example,
     ) {
     }
 

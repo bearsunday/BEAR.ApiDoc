@@ -34,7 +34,7 @@ class SchemaPropTest extends TestCase
 
     public function testToString(): void
     {
-        $expected = '| name | type | desc | Optional | {"minimum":0} |  |';
+        $expected = '| name | type | desc | Optional | {"minimum":0,"maximum":150} |  |';
         $this->assertSame($expected, (string) $this->prop);
     }
 }

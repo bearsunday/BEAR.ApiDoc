@@ -45,6 +45,7 @@
         <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingTraversableTypeHintSpecification"/>
         <exclude name="SlevomatCodingStandard.PHP.RequireExplicitAssertion.RequiredExplicitAssertion"/>
         <exclude name="SlevomatCodingStandard.Classes.PropertySpacing"/>
+        <exclude name="SlevomatCodingStandard.PHP.UselessSemicolon.UselessSemicolon"/>
     </rule>
 
     <!-- Additional Rules -->
