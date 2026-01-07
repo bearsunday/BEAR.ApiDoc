@@ -372,17 +372,16 @@ HTML;
 
             if ($paramCount === 0) {
                 $pathCell = $isFirstPath ? sprintf('<td rowspan="%d" class="path-cell">%s</td>', $totalRows, htmlspecialchars($path)) : '';
-                $methodHtml = $this->renderMethodBadge($httpMethod);
+                $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description']);
                 $responseHtml = $this->renderResponseLink($data['response']);
-                $summaryHtml = $this->renderSummaryMeta($data['summary'], $data['description']);
 
                 $rows .= <<<HTML
 <tr>
   {$pathCell}
-  <td>{$methodHtml}</td>
+  <td class="method-cell">{$methodHtml}</td>
   <td></td>
   <td></td>
-  <td>{$summaryHtml}</td>
+  <td></td>
   <td>{$responseHtml}</td>
 </tr>
 
@@ -396,22 +395,18 @@ HTML;
                 $pathCell = '';
                 $methodCell = '';
                 $responseCell = '';
-                $summary = '';
-                $description = '';
 
                 if ($isFirstPath && $isFirstParam) {
                     $pathCell = sprintf('<td rowspan="%d" class="path-cell">%s</td>', $totalRows, htmlspecialchars($path));
                 }
 
                 if ($isFirstParam) {
-                    $methodHtml = $this->renderMethodBadge($httpMethod);
-                    $methodCell = sprintf('<td rowspan="%d">%s</td>', $methodRowspan, $methodHtml);
+                    $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description']);
+                    $methodCell = sprintf('<td rowspan="%d" class="method-cell">%s</td>', $methodRowspan, $methodHtml);
                     $responseCell = sprintf('<td rowspan="%d">%s</td>', $methodRowspan, $this->renderResponseLink($data['response']));
-                    $summary = $data['summary'];
-                    $description = $data['description'];
                 }
 
-                $rows .= $this->renderParamRow($pathCell, $methodCell, $param, $responseCell, $summary, $description);
+                $rows .= $this->renderParamRow($pathCell, $methodCell, $param, $responseCell);
                 $isFirstParam = false;
                 $isFirstPath = false;
             }
@@ -434,7 +429,7 @@ HTML;
         return $total;
     }
 
-    private function renderMethodBadge(string $method): string
+    private function renderMethodBadge(string $method, string $title = '', string $description = ''): string
     {
         $typeClass = match ($method) {
             'GET' => 'safe',
@@ -442,7 +437,16 @@ HTML;
             default => 'unsafe',
         };
 
-        return sprintf('<span class="ti %s"></span>%s', $typeClass, $method);
+        $html = sprintf('<span class="ti %s"></span>%s', $typeClass, $method);
+        if ($title !== '') {
+            $html .= sprintf('<div class="method-title">%s</div>', htmlspecialchars($title));
+        }
+
+        if ($description !== '') {
+            $html .= sprintf('<div class="method-desc">%s</div>', htmlspecialchars($description));
+        }
+
+        return $html;
     }
 
     private function renderResponseLink(?string $schemaName): string
@@ -454,42 +458,17 @@ HTML;
         return sprintf('<a href="#%s" class="schema-link">%s</a>', htmlspecialchars($schemaName), htmlspecialchars($schemaName));
     }
 
-    private function renderSummaryMeta(string $summary, string $description): string
-    {
-        if ($summary === '' && $description === '') {
-            return '';
-        }
-
-        $badges = [];
-
-        if ($summary !== '') {
-            $badges[] = sprintf('<span class="badge constraint">title: %s</span>', htmlspecialchars($summary));
-        }
-
-        if ($description !== '') {
-            $badges[] = sprintf('<span class="badge constraint">description: %s</span>', htmlspecialchars($description));
-        }
-
-        $badgesHtml = implode("\n      ", $badges);
-
-        return <<<HTML
-<div class="extra-info">
-      {$badgesHtml}
-    </div>
-HTML;
-    }
-
     /**
      * @param HtmlParamArray $param
      */
-    private function renderParamRow(string $pathCell, string $methodCell, array $param, string $responseCell, string $summary = '', string $methodDescription = ''): string
+    private function renderParamRow(string $pathCell, string $methodCell, array $param, string $responseCell): string
     {
         $nameHtml = sprintf('<span class="param">%s</span>', htmlspecialchars($param['name']));
         if ($param['required']) {
             $nameHtml .= '<span class="req">*</span>';
         }
 
-        $metaHtml = $this->renderMetaBadges($param['type'], $param['constraints'], $summary, $methodDescription, $param['example']);
+        $metaHtml = $this->renderMetaBadges($param['type'], $param['constraints'], $param['example']);
         $descriptionHtml = htmlspecialchars($param['description']);
 
         return <<<HTML
@@ -508,18 +487,9 @@ HTML;
     /**
      * @param array<string, mixed> $constraints
      */
-    private function renderMetaBadges(string $type, array $constraints, string $summary = '', string $description = '', string $example = ''): string
+    private function renderMetaBadges(string $type, array $constraints, string $example = ''): string
     {
         $badges = [];
-
-        // Summary badges (title/description) - shown first
-        if ($summary !== '') {
-            $badges[] = sprintf('<span class="badge constraint">title: %s</span>', htmlspecialchars($summary));
-        }
-
-        if ($description !== '') {
-            $badges[] = sprintf('<span class="badge constraint">description: %s</span>', htmlspecialchars($description));
-        }
 
         // Type badge
         $typeClass = 'type-' . $type;
@@ -743,6 +713,10 @@ h1,h2,h3{margin-top:0;}
     background-size:6px 6px;
     background-position:0 0,3px 3px;
 }
+/* Method cell */
+.method-cell{min-width:200px;}
+.method-title{font-size:0.85em;color:#24292f;font-weight:500;margin-top:4px;}
+.method-desc{font-size:0.8em;color:#57606a;margin-top:2px;}
 /* Table */
 table{width:100%;border-collapse:collapse;margin:20px 0;}
 th,td{padding:6px 10px;border:1px solid #ddd;text-align:left;vertical-align:top;}
