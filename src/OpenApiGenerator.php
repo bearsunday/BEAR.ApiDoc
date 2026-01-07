@@ -18,14 +18,19 @@ use function in_array;
 use function is_array;
 use function is_file;
 use function is_object;
+use function is_string;
 use function json_decode;
 use function json_encode;
+use function pathinfo;
 use function sprintf;
+use function str_starts_with;
 use function strtolower;
 use function substr;
+use function ucfirst;
 
 use const JSON_PRETTY_PRINT;
 use const JSON_UNESCAPED_SLASHES;
+use const PATHINFO_FILENAME;
 
 final class OpenApiGenerator
 {
@@ -244,7 +249,55 @@ final class OpenApiGenerator
         }
 
         // Convert to array for OpenAPI
-        $this->schemas[$schemaName] = json_decode((string) json_encode($schemaJson), true);
+        /** @var array<string, mixed> $schemaArray */
+        $schemaArray = json_decode((string) json_encode($schemaJson), true);
+
+        // Convert file $refs to OpenAPI internal refs
+        $this->schemas[$schemaName] = $this->convertRefs($schemaArray);
+    }
+
+    /**
+     * @param array<string, mixed> $schema
+     *
+     * @return array<string, mixed>
+     *
+     * @psalm-suppress MixedAssignment
+     */
+    private function convertRefs(array $schema): array
+    {
+        foreach ($schema as $key => $value) {
+            if ($key === '$ref' && is_string($value) && ! str_starts_with($value, '#')) {
+                // Convert file reference to OpenAPI internal reference
+                $refSchemaName = $this->resolveRefSchemaName($value);
+                $schema[$key] = sprintf('#/components/schemas/%s', $refSchemaName);
+
+                // Also add the referenced schema to components
+                $this->addSchemaToComponents($refSchemaName, $value);
+            } elseif (is_array($value)) {
+                /** @psalm-var array<string, mixed> $value */   // phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.NoAssignment
+                $schema[$key] = $this->convertRefs($value);
+            }
+        }
+
+        return $schema;
+    }
+
+    private function resolveRefSchemaName(string $refFile): string
+    {
+        // Load the referenced schema to get its title
+        $schemaPath = sprintf('%s/%s', $this->responseSchemaDir, $refFile);
+        if (is_file($schemaPath)) {
+            $schemaJson = json_decode((string) file_get_contents($schemaPath));
+            assert(is_object($schemaJson) || $schemaJson === null);
+            if (is_object($schemaJson) && isset($schemaJson->title)) {
+                return (string) $schemaJson->title;
+            }
+        }
+
+        // Fallback: convert filename to schema name (age.json -> Age)
+        $baseName = pathinfo($refFile, PATHINFO_FILENAME);
+
+        return ucfirst($baseName);
     }
 
     private function convertPhpTypeToOpenApi(string $phpType): string
