@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\Link;
 use phpDocumentor\Reflection\DocBlock;
@@ -42,8 +43,8 @@ final class DocMethod implements Stringable
         private readonly ReflectionMethod $method,
         ?Schema $request,
         private readonly ?Schema $response,
-        ArrayObject $semanticDictionary,
-        private readonly string $ext
+        private readonly ArrayObject $semanticDictionary,
+        private readonly string $ext,
     ) {
         $this->httpMethod = substr($this->method->name, 2);
         $factory = DocBlockFactory::createInstance();
@@ -101,9 +102,10 @@ final class DocMethod implements Stringable
     {
         $title = $this->title;
         $description = $this->description;
+        $alpsSection = $this->getAlpsSection();
         $format = <<<EOT
 ## %s
-{$this->lineString($title)}{$this->lineString($description)}
+{$this->lineString($title)}{$this->lineString($description)}{$alpsSection}
 
 **Request**
 
@@ -257,5 +259,39 @@ EOT;
 {$examples}
 </pre>
 EOT;
+    }
+
+    private function getAlpsSection(): string
+    {
+        $attributes = $this->method->getAttributes(Alps::class);
+        if ($attributes === []) {
+            return '';
+        }
+
+        $ids = [];
+        foreach ($attributes as $attribute) {
+            $alps = $attribute->newInstance();
+            $ids[] = $alps->id;
+        }
+
+        $alpsIds = implode(', ', $ids);
+        $semanticInfo = $this->getAlpsSemanticInfo($ids);
+
+        return sprintf("**ALPS**: `%s`%s\n\n", $alpsIds, $semanticInfo);
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    private function getAlpsSemanticInfo(array $ids): string
+    {
+        $info = [];
+        foreach ($ids as $id) {
+            if (isset($this->semanticDictionary[$id])) {
+                $info[] = $this->semanticDictionary[$id];
+            }
+        }
+
+        return $info !== [] ? ' - ' . implode(', ', $info) : '';
     }
 }

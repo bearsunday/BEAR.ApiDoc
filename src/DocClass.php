@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use ReflectionClass;
 use ReflectionMethod;
@@ -45,6 +46,7 @@ final class DocClass
         $this->semanticDictionary = $semanticDictionary;
         $docComment = (string) $class->getDocComment();
         [$summary, $description, $links] = (new PhpDoc())($docComment);
+        $alpsSection = $this->getAlpsSection($class);
         $methods = $class->getMethods();
         $views = [];
         foreach ($methods as $method) {
@@ -61,9 +63,46 @@ final class DocClass
 <a href="../index.{$ext}" style="color: black; text-decoration: none;">{$title}</a>
 
 # {$path}
-{$summary}{$description}{$links}
+{$alpsSection}{$summary}{$description}{$links}
 {$methodsView}
 EOT;
+    }
+
+    /**
+     * @param ReflectionClass<object> $class
+     */
+    private function getAlpsSection(ReflectionClass $class): string
+    {
+        $attributes = $class->getAttributes(Alps::class);
+        if ($attributes === []) {
+            return '';
+        }
+
+        $ids = [];
+        foreach ($attributes as $attribute) {
+            $alps = $attribute->newInstance();
+            $ids[] = $alps->id;
+        }
+
+        $alpsIds = implode(', ', $ids);
+        $semanticInfo = $this->getSemanticInfo($ids);
+
+        return sprintf("**ALPS**: `%s`%s\n\n", $alpsIds, $semanticInfo);
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    private function getSemanticInfo(array $ids): string
+    {
+        $info = [];
+        foreach ($ids as $id) {
+            if (isset($this->semanticDictionary[$id])) {
+                $info[] = $this->semanticDictionary[$id];
+            }
+        }
+
+        return $info !== [] ? ' - ' . implode(', ', $info) : '';
     }
 
     private function getMethodView(ReflectionMethod $method, string $ext): string
