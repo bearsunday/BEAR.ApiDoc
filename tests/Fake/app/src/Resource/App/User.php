@@ -1,6 +1,7 @@
 <?php
 namespace FakeVendor\FakeProject\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
@@ -12,6 +13,7 @@ class User extends ResourceObject
      * @param string $id      User ID
      * @param string $options User Options
      */
+    #[Alps('getUser')]
     #[JsonSchema(schema: 'user.json')]
     #[Link(rel: 'person', href: '/person', method: 'get')]
     #[Link(rel: 'calendar', href: '/calendar', method: 'get')]
@@ -28,6 +30,7 @@ class User extends ResourceObject
      * @param string   $name The name of the user
      * @param int      $age  The age of the user
      */
+    #[Alps('createUser')]
     public function onPost(string $name, int $age)
     {
     }

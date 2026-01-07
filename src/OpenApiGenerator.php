@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use ReflectionClass;
 use ReflectionMethod;
@@ -144,6 +145,14 @@ final class OpenApiGenerator
         $description = trim($methodDescription ?: $classDescription);
 
         $operation = [];
+
+        // Use Alps attribute id as operationId if present
+        $alpsAttributes = $method->getAttributes(Alps::class);
+        if ($alpsAttributes !== []) {
+            $alps = $alpsAttributes[0]->newInstance();
+            $operation['operationId'] = $alps->id;
+        }
+
         if ($summary !== '') {
             $operation['summary'] = $summary;
         }
@@ -156,10 +165,10 @@ final class OpenApiGenerator
     }
 
     /**
-     * @param array{summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
-     * @param PathParams                                                                                                        $pathParams
+     * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
+     * @param PathParams                                                                                                                              $pathParams
      *
-     * @return array{0: array{summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses}, 1: bool}
+     * @return array{0: array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses}, 1: bool}
      */
     private function applyJsonSchemaAttribute(ReflectionMethod $method, array $operation, array $pathParams): array
     {
@@ -194,8 +203,8 @@ final class OpenApiGenerator
     }
 
     /**
-     * @param array{summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses: OpenApiResponses} $operation
-     * @param PathParams                                                                                                       $pathParams
+     * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses: OpenApiResponses} $operation
+     * @param PathParams                                                                                                                             $pathParams
      *
      * @return OpenApiOperation
      */
@@ -223,10 +232,10 @@ final class OpenApiGenerator
     }
 
     /**
-     * @param array{summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
-     * @param PathParams                                                                                                        $pathParams
+     * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
+     * @param PathParams                                                                                                                              $pathParams
      *
-     * @return array{summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses}
+     * @return array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses}
      */
     private function ensurePathParameters(array $operation, array $pathParams): array
     {
@@ -238,9 +247,9 @@ final class OpenApiGenerator
     }
 
     /**
-     * @param array{summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
+     * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
      *
-     * @return array{summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses: OpenApiResponses}
+     * @return array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses: OpenApiResponses}
      */
     private function ensureDefaultResponse(array $operation): array
     {

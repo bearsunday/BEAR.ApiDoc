@@ -13,7 +13,7 @@ namespace BEAR\ApiDoc;
  * Primitive Types
  * @psalm-type ParameterLocation = 'path'|'query'|'header'|'cookie'
  * @psalm-type PathParams = list<string>
- * @psalm-type OperationBase = array{summary?: string, description?: string}
+ * @psalm-type OperationBase = array{operationId?: string, summary?: string, description?: string}
  *
  * Schema Types
  * @psalm-type SchemaRef = array{'$ref': string}
