@@ -13,10 +13,7 @@ use SplFileInfo;
 
 use function array_key_exists;
 use function array_map;
-use function array_search;
-use function array_values;
 use function assert;
-use function count;
 use function explode;
 use function file_get_contents;
 use function implode;
@@ -52,8 +49,8 @@ final class OpenApiGenerator
         private readonly string $responseSchemaDir
     ) {
         $this->openApiSpec = [
-            '$schema' => 'https://spec.openapis.org/oas/3.0/schema/2024-10-18',
-            'openapi' => '3.0.3',
+            '$schema' => 'https://spec.openapis.org/oas/3.1/schema/2024-11-14',
+            'openapi' => '3.1.0',
             'info' => [
                 'title' => $this->config->title ?: 'API Documentation',
                 'description' => $this->config->description ?: '',
@@ -260,13 +257,13 @@ final class OpenApiGenerator
         /** @var array<string, mixed> $schemaArray */
         $schemaArray = json_decode((string) json_encode($schemaJson), true);
 
-        // Clean up and convert for OpenAPI 3.0 compatibility
+        // Clean up and convert for OpenAPI compatibility
         $cleanedSchema = $this->cleanSchemaForOpenApi($schemaArray);
         $this->schemas[$schemaName] = $this->convertRefs($cleanedSchema);
     }
 
     /**
-     * Remove JSON Schema properties not allowed in OpenAPI 3.0
+     * Remove JSON Schema properties not allowed in OpenAPI Schema Object
      *
      * @param array<string, mixed> $schema
      *
@@ -290,40 +287,11 @@ final class OpenApiGenerator
             }
         }
 
-        // Properties not allowed in OpenAPI 3.0 Schema Object
+        // Properties not allowed in OpenAPI Schema Object
         $disallowedProperties = ['$id', 'id', '$schema', 'definitions', 'dependencies'];
 
         foreach ($disallowedProperties as $prop) {
             unset($schema[$prop]);
-        }
-
-        // Convert 'examples' to 'example' (OpenAPI 3.0 uses singular)
-        if (isset($schema['examples']) && is_array($schema['examples']) && $schema['examples'] !== []) {
-            $schema['example'] = $schema['examples'][0];
-            unset($schema['examples']);
-        }
-
-        // Handle type arrays (JSON Schema) -> nullable (OpenAPI 3.0)
-        if (isset($schema['type']) && is_array($schema['type'])) {
-            $types = $schema['type'];
-            $nullIndex = array_search('null', $types, true);
-            if ($nullIndex !== false) {
-                unset($types[$nullIndex]);
-                $schema['nullable'] = true;
-            }
-
-            $types = array_values($types);
-            $schema['type'] = count($types) === 1 ? $types[0] : 'object';
-        }
-
-        // Handle $ref with sibling properties (not allowed in OpenAPI 3.0)
-        // Convert to allOf format to preserve sibling properties
-        if (isset($schema['$ref']) && count($schema) > 1) {
-            $ref = $schema['$ref'];
-            unset($schema['$ref']);
-            $schema = [
-                'allOf' => [['$ref' => $ref]],
-            ] + $schema;
         }
 
         // Recursively clean nested schemas

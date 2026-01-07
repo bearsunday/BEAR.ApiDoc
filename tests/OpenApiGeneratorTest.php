@@ -27,8 +27,8 @@ class OpenApiGeneratorTest extends TestCase
         $openApiData = json_decode($openApiJson);
         $this->assertIsObject($openApiData);
 
-        // Load OpenAPI 3.0 schema
-        $schemaJson = file_get_contents(__DIR__ . '/schema/openapi-3.0.json');
+        // Load OpenAPI 3.1 schema
+        $schemaJson = file_get_contents(__DIR__ . '/schema/openapi-3.1.json');
         $this->assertIsString($schemaJson);
 
         $schema = json_decode($schemaJson);
