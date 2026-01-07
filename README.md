@@ -1,5 +1,7 @@
 # BEAR.ApiDoc
 
+[日本語](README.ja.md)
+
 BEAR.ApiDoc generates API documentation from the application.
 
 The documentation generated from the application's method signatures, phpdoc, and JSON Schema will match the API documentation and the actual application.
