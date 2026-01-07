@@ -46,7 +46,8 @@ final class OpenApiGenerator
         private readonly string $responseSchemaDir
     ) {
         $this->openApiSpec = [
-            'openapi' => '3.0.0',
+            '$schema' => 'https://spec.openapis.org/oas/3.0/schema/2024-10-18',
+            'openapi' => '3.0.3',
             'info' => [
                 'title' => $this->config->title ?: 'API Documentation',
                 'description' => $this->config->description ?: '',
