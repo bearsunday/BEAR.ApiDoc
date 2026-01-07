@@ -115,6 +115,18 @@ final class OpenApiGenerator
      */
     private function processMethod(ReflectionMethod $method, string $classSummary, string $classDescription, array $pathParams): array
     {
+        $operation = $this->buildOperationBase($method, $classSummary, $classDescription);
+        $operation = $this->applyJsonSchemaAttribute($method, $operation, $pathParams);
+        $operation = $this->ensurePathParameters($operation, $pathParams);
+
+        return $this->ensureDefaultResponse($operation);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildOperationBase(ReflectionMethod $method, string $classSummary, string $classDescription): array
+    {
         $docComment = (string) $method->getDocComment();
         [$methodSummary, $methodDescription] = (new PhpDoc())($docComment);
 
@@ -130,37 +142,66 @@ final class OpenApiGenerator
             $operation['description'] = $description;
         }
 
-        // Get JSON Schema attribute
+        return $operation;
+    }
+
+    /**
+     * @param array<string, mixed> $operation
+     * @param array<string>        $pathParams
+     *
+     * @return array<string, mixed>
+     */
+    private function applyJsonSchemaAttribute(ReflectionMethod $method, array $operation, array $pathParams): array
+    {
         $attributes = $method->getAttributes(JsonSchema::class);
-        $schemaAttribute = $attributes !== [] ? $attributes[0]->newInstance() : null;
-
-        if ($schemaAttribute instanceof JsonSchema) {
-            // Process request parameters
-            $parameters = $this->processParameters($method, $schemaAttribute->params, $pathParams);
-            if ($parameters !== []) {
-                $operation['parameters'] = $parameters;
-            }
-
-            // Process response
-            $response = $this->processResponse($schemaAttribute->schema);
-            if ($response !== null) {
-                $operation['responses'] = [
-                    '200' => [
-                        'description' => 'Successful response',
-                        'content' => [
-                            'application/json' => ['schema' => $response],
-                        ],
-                    ],
-                ];
-            }
+        if ($attributes === []) {
+            return $operation;
         }
 
-        // Add path parameters if not already defined
+        $schemaAttribute = $attributes[0]->newInstance();
+
+        $parameters = $this->processParameters($method, $schemaAttribute->params, $pathParams);
+        if ($parameters !== []) {
+            $operation['parameters'] = $parameters;
+        }
+
+        $response = $this->processResponse($schemaAttribute->schema);
+        if ($response !== null) {
+            $operation['responses'] = [
+                '200' => [
+                    'description' => 'Successful response',
+                    'content' => [
+                        'application/json' => ['schema' => $response],
+                    ],
+                ],
+            ];
+        }
+
+        return $operation;
+    }
+
+    /**
+     * @param array<string, mixed> $operation
+     * @param array<string>        $pathParams
+     *
+     * @return array<string, mixed>
+     */
+    private function ensurePathParameters(array $operation, array $pathParams): array
+    {
         if ($pathParams !== [] && ! array_key_exists('parameters', $operation)) {
             $operation['parameters'] = $this->createPathParameters($pathParams);
         }
 
-        // Add default response if no response defined
+        return $operation;
+    }
+
+    /**
+     * @param array<string, mixed> $operation
+     *
+     * @return array<string, mixed>
+     */
+    private function ensureDefaultResponse(array $operation): array
+    {
         if (! array_key_exists('responses', $operation)) {
             $operation['responses'] = [
                 '200' => ['description' => 'Successful response'],
@@ -318,48 +359,97 @@ final class OpenApiGenerator
      */
     private function cleanSchemaForOpenApi(array $schema): array
     {
-        // Extract definitions and add them to components/schemas
-        if (isset($schema['definitions']) && is_array($schema['definitions'])) {
-            foreach ($schema['definitions'] as $defName => $definition) {
-                $schemaName = ucfirst((string) $defName);
-                /** @var array<string, mixed> $definition */
-                if (! isset($this->schemas[$schemaName])) {
-                    $this->schemas[$schemaName] = $this->cleanSchemaForOpenApi($definition);
-                }
-            }
+        $this->extractDefinitions($schema);
+        $schema = $this->removeDisallowedProperties($schema);
+
+        return $this->cleanNestedSchemas($schema);
+    }
+
+    /**
+     * @param array<string, mixed> $schema
+     *
+     * @psalm-suppress MixedAssignment
+     */
+    private function extractDefinitions(array $schema): void
+    {
+        if (! isset($schema['definitions']) || ! is_array($schema['definitions'])) {
+            return;
         }
 
-        // Properties not allowed in OpenAPI Schema Object
+        foreach ($schema['definitions'] as $defName => $definition) {
+            $schemaName = ucfirst((string) $defName);
+            /** @var array<string, mixed> $definition */
+            if (! isset($this->schemas[$schemaName])) {
+                $this->schemas[$schemaName] = $this->cleanSchemaForOpenApi($definition);
+            }
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $schema
+     *
+     * @return array<string, mixed>
+     */
+    private function removeDisallowedProperties(array $schema): array
+    {
         $disallowedProperties = ['$id', 'id', '$schema', 'definitions', 'dependencies'];
 
         foreach ($disallowedProperties as $prop) {
             unset($schema[$prop]);
         }
 
-        // Recursively clean nested schemas
-        foreach (['properties', 'items', 'allOf', 'oneOf', 'anyOf', 'additionalProperties'] as $nested) {
-            if (! isset($schema[$nested])) {
+        return $schema;
+    }
+
+    /**
+     * @param array<string, mixed> $schema
+     *
+     * @return array<string, mixed>
+     *
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedArrayAssignment
+     * @psalm-suppress MixedArgumentTypeCoercion
+     */
+    private function cleanNestedSchemas(array $schema): array
+    {
+        $nestedKeys = ['properties', 'items', 'allOf', 'oneOf', 'anyOf', 'additionalProperties'];
+        $arrayKeys = ['allOf', 'oneOf', 'anyOf'];
+
+        foreach ($nestedKeys as $key) {
+            if (! isset($schema[$key]) || ! is_array($schema[$key])) {
                 continue;
             }
 
-            if ($nested === 'properties' && is_array($schema[$nested])) {
-                foreach ($schema[$nested] as $propName => $propSchema) {
-                    if (is_array($propSchema)) {
-                        $schema[$nested][$propName] = $this->cleanSchemaForOpenApi($propSchema);
-                    }
-                }
-            } elseif (in_array($nested, ['allOf', 'oneOf', 'anyOf'], true) && is_array($schema[$nested])) {
-                foreach ($schema[$nested] as $i => $subSchema) {
-                    if (is_array($subSchema)) {
-                        $schema[$nested][$i] = $this->cleanSchemaForOpenApi($subSchema);
-                    }
-                }
-            } elseif (is_array($schema[$nested])) {
-                $schema[$nested] = $this->cleanSchemaForOpenApi($schema[$nested]);
-            }
+            $schema[$key] = $this->cleanNestedSchema($key, $schema[$key], $arrayKeys);
         }
 
         return $schema;
+    }
+
+    /**
+     * @param array<string|int, mixed> $nested
+     * @param array<string>            $arrayKeys
+     *
+     * @return array<string|int, mixed>
+     *
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedArrayAssignment
+     * @psalm-suppress MixedArgumentTypeCoercion
+     */
+    private function cleanNestedSchema(string $key, array $nested, array $arrayKeys): array
+    {
+        if ($key === 'properties' || in_array($key, $arrayKeys, true)) {
+            foreach ($nested as $subKey => $subSchema) {
+                if (is_array($subSchema)) {
+                    $nested[$subKey] = $this->cleanSchemaForOpenApi($subSchema);
+                }
+            }
+
+            return $nested;
+        }
+
+        /** @var array<string, mixed> $nested */
+        return $this->cleanSchemaForOpenApi($nested);
     }
 
     /**
