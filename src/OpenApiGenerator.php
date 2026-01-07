@@ -25,10 +25,12 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 use function pathinfo;
+use function preg_match_all;
 use function sprintf;
 use function str_starts_with;
 use function strtolower;
 use function substr;
+use function trim;
 use function ucfirst;
 
 use const JSON_PRETTY_PRINT;
@@ -49,7 +51,6 @@ final class OpenApiGenerator
         private readonly string $responseSchemaDir
     ) {
         $this->openApiSpec = [
-            '$schema' => 'https://spec.openapis.org/oas/3.1/schema/2024-11-14',
             'openapi' => '3.1.0',
             'info' => [
                 'title' => $this->config->title ?: 'API Documentation',
@@ -88,12 +89,16 @@ final class OpenApiGenerator
         $methods = $class->getMethods();
         $pathItem = [];
 
+        // Extract path parameters from path (e.g., /users/{id} -> ['id'])
+        preg_match_all('/\{([^}]+)\}/', $path, $matches);
+        $pathParams = $matches[1];
+
         foreach ($methods as $method) {
             $name = $method->getName();
             $isRequestMethod = in_array($name, ['onGet', 'onPut', 'onPost', 'onPatch', 'onDelete']);
             if ($isRequestMethod) {
                 $httpMethod = strtolower(substr($name, 2));
-                $pathItem[$httpMethod] = $this->processMethod($method, $summary, $description);
+                $pathItem[$httpMethod] = $this->processMethod($method, $summary, $description, $pathParams);
             }
         }
 
@@ -104,17 +109,26 @@ final class OpenApiGenerator
     }
 
     /**
+     * @param array<string> $pathParams
+     *
      * @return array<string, mixed>
      */
-    private function processMethod(ReflectionMethod $method, string $classSummary, string $classDescription): array
+    private function processMethod(ReflectionMethod $method, string $classSummary, string $classDescription, array $pathParams): array
     {
         $docComment = (string) $method->getDocComment();
         [$methodSummary, $methodDescription] = (new PhpDoc())($docComment);
 
-        $operation = [
-            'summary' => $methodSummary ?: $classSummary,
-            'description' => $methodDescription ?: $classDescription,
-        ];
+        $summary = trim($methodSummary ?: $classSummary);
+        $description = trim($methodDescription ?: $classDescription);
+
+        $operation = [];
+        if ($summary !== '') {
+            $operation['summary'] = $summary;
+        }
+
+        if ($description !== '') {
+            $operation['description'] = $description;
+        }
 
         // Get JSON Schema attribute
         $attributes = $method->getAttributes(JsonSchema::class);
@@ -122,7 +136,7 @@ final class OpenApiGenerator
 
         if ($schemaAttribute instanceof JsonSchema) {
             // Process request parameters
-            $parameters = $this->processParameters($method, $schemaAttribute->params);
+            $parameters = $this->processParameters($method, $schemaAttribute->params, $pathParams);
             if ($parameters !== []) {
                 $operation['parameters'] = $parameters;
             }
@@ -152,9 +166,11 @@ final class OpenApiGenerator
     }
 
     /**
+     * @param array<string> $pathParams
+     *
      * @return array<int, array<string, mixed>>
      */
-    private function processParameters(ReflectionMethod $method, string $schemaFile): array
+    private function processParameters(ReflectionMethod $method, string $schemaFile, array $pathParams): array
     {
         $parameters = [];
         $schema = $this->loadSchema($this->requestSchemaDir, $schemaFile);
@@ -178,11 +194,12 @@ final class OpenApiGenerator
                 $typeName = $paramType->getName();
             }
 
+            $isPathParam = in_array($paramName, $pathParams, true);
             $parameter = [
                 'name' => $paramName,
-                'in' => 'query',
+                'in' => $isPathParam ? 'path' : 'query',
                 'description' => $paramSchema->description,
-                'required' => ! $param->isOptional(),
+                'required' => $isPathParam || ! $param->isOptional(),
                 'schema' => [
                     'type' => $this->convertPhpTypeToOpenApi($typeName),
                 ],
