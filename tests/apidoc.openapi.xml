@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc>
+    <appName>FakeVendor\FakeProject</appName>
+    <scheme>app</scheme>
+    <docDir>docs/openapi</docDir>
+    <format>openapi</format>
+    <title>API Documentation</title>
+    <description>This is a sample API documentation in OpenAPI 3.0 format</description>
+</apidoc>

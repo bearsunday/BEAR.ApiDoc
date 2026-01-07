@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\Link;
 use phpDocumentor\Reflection\DocBlock;
@@ -42,8 +43,8 @@ final class DocMethod implements Stringable
         private readonly ReflectionMethod $method,
         ?Schema $request,
         private readonly ?Schema $response,
-        ArrayObject $semanticDictionary,
-        private readonly string $ext
+        private readonly ArrayObject $semanticDictionary,
+        private readonly string $ext,
     ) {
         $this->httpMethod = substr($this->method->name, 2);
         $factory = DocBlockFactory::createInstance();
@@ -97,19 +98,21 @@ final class DocMethod implements Stringable
         return $tagParams;
     }
 
+    #[\Override]
     public function __toString(): string
     {
         $title = $this->title;
         $description = $this->description;
+        $alpsSection = $this->getAlpsSection();
         $format = <<<EOT
 ## %s
-{$this->lineString($title)}{$this->lineString($description)}
+{$this->lineString($title)}{$this->lineString($description)}{$alpsSection}
 
-**Request**
+### Request
 
 %s
 
-**Response**
+### Response
 
 %s
 EOT;
@@ -135,12 +138,12 @@ EOT;
     private function getRequestBody(string $table): string
     {
         if ($table === '') {
-            return '(No parameters required)';
+            return '_No parameters required_';
         }
 
         return <<<EOT
-| Name  | Type  | Description | Default | Required | Constraints | Example |
-|-------|-------|-------------|---------|----------|-------------|---------| 
+| Name | Type | Description | Default | Required | Constraints | Example |
+|------|------|-------------|---------|----------|-------------|---------|
 {$table}
 EOT;
     }
@@ -148,7 +151,7 @@ EOT;
     private function toStringResponse(): string
     {
         if ($this->response === null) {
-            return '(n/a)';
+            return '_Not available_';
         }
 
         if ($this->response->type === 'array') {
@@ -175,8 +178,8 @@ EOT;
         return <<<EOT
 {$responseTitle}
 
-| Name  | Type  | Description | Required | Constraint | Example |
-|-------|-------|-------------|----------|------------|---------| 
+| Name | Type | Description | Required | Constraints | Example |
+|------|------|-------------|----------|-------------|---------|
 {$rows}
 EOT;
     }
@@ -203,10 +206,10 @@ EOT;
 
         return <<<EOT
 
-#### Embedded
+#### Embedded Resources
 
-| rel | src |
-|-----|-----|
+| Relation | Source |
+|----------|--------|
 {$rows}
 EOT;
     }
@@ -228,11 +231,10 @@ EOT;
 
         return <<<EOT
 
-
 #### Links
 
-| rel | href |
-|-----|-----|
+| Relation | URL |
+|----------|-----|
 {$rows}
 EOT;
     }
@@ -246,16 +248,49 @@ EOT;
 
         $examples = '';
         foreach ($this->response->examples as $example) {
-            $examples .= sprintf('<code>%s</code>' . PHP_EOL, $example);
+            $examples .= $example . PHP_EOL;
         }
 
         return <<<EOT
 
 #### Example
 
-<pre>
-{$examples}
-</pre>
+```json
+{$examples}```
 EOT;
+    }
+
+    private function getAlpsSection(): string
+    {
+        $attributes = $this->method->getAttributes(Alps::class);
+        if ($attributes === []) {
+            return '';
+        }
+
+        $ids = [];
+        foreach ($attributes as $attribute) {
+            $alps = $attribute->newInstance();
+            $ids[] = $alps->id;
+        }
+
+        $alpsIds = implode(', ', $ids);
+        $semanticInfo = $this->getAlpsSemanticInfo($ids);
+
+        return sprintf("**ALPS**: `%s`%s\n\n", $alpsIds, $semanticInfo);
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    private function getAlpsSemanticInfo(array $ids): string
+    {
+        $info = [];
+        foreach ($ids as $id) {
+            if (isset($this->semanticDictionary[$id])) {
+                $info[] = $this->semanticDictionary[$id];
+            }
+        }
+
+        return $info !== [] ? ' - ' . implode(', ', $info) : '';
     }
 }

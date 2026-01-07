@@ -28,7 +28,7 @@ use function property_exists;
 use function realpath;
 use function sprintf;
 
-class Config
+final class Config
 {
     /**
      * @var string
@@ -120,6 +120,7 @@ class Config
         assert(property_exists($xml, 'format'));
         assert(property_exists($xml, 'scheme'));
         $dir = realpath(dirname($configFile));
+        assert($dir !== false);
         $appName = (string) $xml->appName;
         assert($appName !== '');
         $this->appName = $appName;

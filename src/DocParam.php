@@ -117,10 +117,11 @@ final class DocParam implements Stringable
     /**
      * @psalm-external-mutation-free
      */
+    #[\Override]
     public function __toString(): string
     {
         $required = $this->isOptional ? 'Optional' : 'Required';
 
-        return sprintf('| %s | %s | %s | %s | %s | %s | %s ', $this->name, $this->type, $this->description, $this->default, $required, (string) $this->constraints, $this->example);
+        return sprintf('| %s | %s | %s | %s | %s | %s | %s |', $this->name, $this->type, $this->description, $this->default, $required, (string) $this->constraints, $this->example);
     }
 }

@@ -12,7 +12,7 @@ use const PHP_EOL;
 /**
  * @psalm-pure
  */
-class PhpDoc
+final class PhpDoc
 {
     /**
      * @return array{0: string, 1:string, 2:string}

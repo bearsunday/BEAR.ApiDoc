@@ -19,7 +19,7 @@ use BEAR\ApiDoc\Exception\ConfigException;
     $apidocXml = isset($options['c']) && is_string($options['c']) ? $options['c'] : '';
 
     try {
-        echo (new ApiDoc())($apidocXml);
+        echo (new ApiDoc())($apidocXml) . PHP_EOL;
     } catch (RuntimeException $e) {
         printf("%s: %s\n", (new ReflectionClass($e))->getShortName(), $e->getMessage());
         exit(1);

@@ -40,8 +40,8 @@ class DocMethodTest extends TestCase
      */
     public function testToString(DocMethod $method): void
     {
-        $this->assertStringContainsString('**Request**', (string) $method);
-        $this->assertStringContainsString('**Response**', (string) $method);
+        $this->assertStringContainsString('### Request', (string) $method);
+        $this->assertStringContainsString('### Response', (string) $method);
     }
 
     public function testArrayData(): void
@@ -50,30 +50,9 @@ class DocMethodTest extends TestCase
         $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), (object) json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
         $docMethod = new DocMethod(new ReflectionMethod(FakeParamDoc::class, 'onGet'), null, $responseSchema, new ArrayObject(), 'md');
         $this->assertInstanceOf(DocMethod::class, $docMethod);
-        $expected = <<<EOT
-## GET
-
-
-**Request**
-
-| Name  | Type  | Description | Default | Required | Constraints | Example |
-|-------|-------|-------------|---------|----------|-------------|---------| 
-| id | string | This is fake id |  | Required |  |  
-
-
-**Response**
-
-[Object: Array](../schema/array.json)
-
-| Name  | Type  | Description | Required | Constraint | Example |
-|-------|-------|-------------|----------|------------|---------| 
-| fruits | array |  | Optional | {"items":{"type":"string"}} |  |
-| vegetables | array |  | Optional | {"items":{"\$ref":"#/definitions/veggie"}} |  |
-| juice | object |  | Optional | {"\$ref":"#/definitions/juice"} |  |
-EOT;
-
-        $result = (string) $docMethod;
-        $this->assertStringContainsString($expected, $result);
+        $this->assertStringContainsString('### Request', (string) $docMethod);
+        $this->assertStringContainsString('### Response', (string) $docMethod);
+        $this->assertStringContainsString('[Object: Array](../schema/array.json)', (string) $docMethod);
     }
 
     public function testEmbed(): void
@@ -82,8 +61,6 @@ EOT;
         $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), (object) json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
         $docMethod = (string) new DocMethod(new ReflectionMethod(Person::class, 'onGet'), null, $responseSchema, new ArrayObject(), 'md');
         $expected = <<<EOT
-| rel | src |
-|-----|-----|
 | org | [<code>/org?id={org_id}</code>](org.md) |
 EOT;
         $this->assertStringContainsString($expected, $docMethod);

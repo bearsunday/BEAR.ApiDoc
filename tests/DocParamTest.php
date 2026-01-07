@@ -17,7 +17,7 @@ class DocParamTest extends TestCase
         $param = new ReflectionParameter([FakeIndex::class, 'onGet'], 'id');
         $docParam = new DocParam($param, new TagParam('', ''), null, new ArrayObject());
         $this->assertInstanceOf(DocParam::class, $docParam);
-        $this->assertSame('| id | string |  |  | Required |  |  ', (string) $docParam);
+        $this->assertSame('| id | string |  |  | Required |  |  |', (string) $docParam);
     }
 
     public function testFromProp(): void
@@ -33,6 +33,6 @@ class DocParamTest extends TestCase
         $param = new ReflectionParameter([FakeIndex::class, 'onGet'], 'id');
         $docParam = new DocParam($param, new TagParam('', ''), $prop, new ArrayObject());
         $this->assertInstanceOf(DocParam::class, $docParam);
-        $this->assertSame('| id | string | description from prop |  | Required |  | example ', (string) $docParam);
+        $this->assertSame('| id | string | description from prop |  | Required |  | example |', (string) $docParam);
     }
 }

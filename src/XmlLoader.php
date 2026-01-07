@@ -45,34 +45,63 @@ final class XmlLoader
             return $path;
         }
 
-        $maybePath = sprintf('%s/%s', getcwd(), $path);
+        $cwd = getcwd();
+        if ($cwd === false) {
+            throw new ConfigNotFoundException($path);
+        }
+
+        $maybePath = sprintf('%s/%s', $cwd, $path);
         if (file_exists($maybePath) && ! is_dir($maybePath)) {
             // @codeCoverageIgnoreStart
             return $maybePath;
-        }
-
-        $dirPath = (string) realpath($path) ?: getcwd();
-        if ($dirPath === false) {
-            goto config_not_found;
-        }
-
-        if (! is_dir($dirPath)) { // @phpstan-ignore-line
-            $dirPath = dirname($dirPath); // @phpstan-ignore-line
             // @codeCoverageIgnoreEnd
         }
 
-        do {
-            $maybePath = sprintf('%s/%s', $dirPath, 'apidoc.xml');
-            if (file_exists($maybePath) || file_exists($maybePath .= '.dist')) {
-                return $maybePath;
-            }
-
-            $dirPath = dirname($dirPath); // @phpstan-ignore-line
-        } while (dirname($dirPath) !== $dirPath);
-
-        config_not_found:
+        $found = $this->searchInParentDirectories($path, $cwd);
+        if ($found !== null) {
+            return $found;
+        }
 
         throw new ConfigNotFoundException($path);
+    }
+
+    private function searchInParentDirectories(string $path, string $cwd): ?string
+    {
+        $realPath = realpath($path);
+        $dirPath = $realPath !== false ? $realPath : $cwd;
+
+        if (! is_dir($dirPath)) {
+            $dirPath = dirname($dirPath);
+        }
+
+        while (true) {
+            $configPath = $this->findConfigInDirectory($dirPath);
+            if ($configPath !== null) {
+                return $configPath;
+            }
+
+            $parentDir = dirname($dirPath);
+            if ($parentDir === $dirPath) {
+                return null;
+            }
+
+            $dirPath = $parentDir;
+        }
+    }
+
+    private function findConfigInDirectory(string $dirPath): ?string
+    {
+        $configPath = sprintf('%s/%s', $dirPath, 'apidoc.xml');
+        if (file_exists($configPath)) {
+            return $configPath;
+        }
+
+        $distPath = $configPath . '.dist';
+        if (file_exists($distPath)) {
+            return $distPath;
+        }
+
+        return null;
     }
 
     /**

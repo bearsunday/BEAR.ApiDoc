@@ -9,7 +9,6 @@ use phpDocumentor\Reflection\DocBlock\Tags\Link;
 use SimpleXMLElement;
 use Stringable;
 
-use function assert;
 use function sprintf;
 
 use const PHP_EOL;
@@ -37,35 +36,35 @@ final class Index implements Stringable
         $this->title = $config->title;
         $this->description = $config->description ? $config->description . PHP_EOL . PHP_EOL : '';
         $links = [];
-        /** @psalm-suppress all */
-        $configLink = $config->links->link ?? []; // @phpstan-ignore-line
+        /** @var iterable<SimpleXMLElement> $configLink */
+        $configLink = $config->links[0]->link ?? [];
         foreach ($configLink as $link) {
-            assert($link instanceof SimpleXMLElement);
             $links[] = new Link((string) $link['href'], new Description((string) $link['rel']));
         }
 
         $this->links = new TagLinks($links);
     }
 
+    #[\Override]
     public function __toString(): string
     {
         $paths = $objects = '';
         foreach ($this->paths as $route => $path) {
-            $paths .= sprintf(' * [%s](paths/%s.%s) ', $route, $path, $this->ext) . PHP_EOL;
+            $paths .= sprintf('- [%s](paths/%s.%s)', $route, $path, $this->ext) . PHP_EOL;
         }
 
         foreach ($this->objects as $objectName => $objectFile) {
-            $objects .= sprintf(' * [%s](schema/%s) ', $objectName, $objectFile) . PHP_EOL;
+            $objects .= sprintf('- [%s](schema/%s)', $objectName, $objectFile) . PHP_EOL;
         }
 
         return <<<EOT
 # {$this->title}
-{$this->description}{$this->links}
 
-## Paths
+{$this->description}{$this->links}
+## API Endpoints
 {$paths}
 
-## Objects
+## Data Models
 {$objects}
 EOT;
     }

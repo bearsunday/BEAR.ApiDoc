@@ -86,9 +86,9 @@ final class Schema
         return <<<EOT
 {$this->title()}
 
-| Item Type |  Constraint |
-|-----------|------------|
-| {$type} | {$constraint} |         
+| Item Type | Constraints |
+|-----------|-------------|
+| {$type} | {$constraint} |
 EOT;
     }
 
