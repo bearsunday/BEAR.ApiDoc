@@ -32,7 +32,7 @@ class Ticket extends ResourceObject
     /**
      * Create a new ticket
      *
-     * Create a new support ticket with title and description.
+     * Create a new support ticket in the system. This endpoint allows you to submit customer inquiries, bug reports, feature requests, and other issues that need to be tracked and resolved by the support team. The ticket will be automatically assigned a unique identifier and timestamps for creation and last update.
      *
      * @param string $title       The title summarizing the issue
      * @param string $description Detailed description of the problem
