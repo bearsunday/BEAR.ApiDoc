@@ -82,6 +82,9 @@
             "php bin/apidoc -ctests/apidoc.html.xml",
             "php bin/apidoc -ctests/apidoc.openapi.xml"
         ],
+        "openapi-install": "npm install -g @redocly/cli",
+        "openapi-lint": "npx @redocly/cli lint tests/docs/openapi/openapi.json",
+        "openapi-html": "npx @redocly/cli build-docs tests/docs/openapi/openapi.json -o tests/docs/openapi/index.html",
         "post-install-cmd": "@composer bin all install --ansi",
         "post-update-cmd": "@composer bin all update --ansi"
     },
@@ -96,7 +99,10 @@
         "metrics": "Build metrics report",
         "tests": "Run tests and quality checks",
         "build": "Build project",
-        "docs": "Generate API documentation (HTML and OpenAPI)"
+        "docs": "Generate API documentation (HTML and OpenAPI)",
+        "openapi-install": "Install Redocly CLI globally",
+        "openapi-lint": "Validate OpenAPI spec with Redocly CLI",
+        "openapi-html": "Generate HTML documentation from OpenAPI spec"
     },
     "config": {
         "allow-plugins": {
