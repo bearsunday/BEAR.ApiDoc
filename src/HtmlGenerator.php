@@ -95,11 +95,40 @@ final class HtmlGenerator
 
     private function processMethod(string $path, string $httpMethod, ReflectionMethod $method): void
     {
-        // Get PHPDoc
+        [$summary, $methodDescription, $paramDescriptions] = $this->extractPhpDoc($method);
+        [$requestSchema, $responseSchemaName] = $this->extractJsonSchema($method);
+        [$embeds, $links] = $this->extractEmbedsAndLinks($method);
+
+        if ($responseSchemaName !== null && ($embeds !== [] || $links !== [])) {
+            $this->addObjectRelations($responseSchemaName, $embeds, $links);
+        }
+
+        $params = $this->buildParams($method, $requestSchema, $paramDescriptions);
+
+        if (! isset($this->endpoints[$path])) {
+            $this->endpoints[$path] = [];
+        }
+
+        $this->endpoints[$path][$httpMethod] = [
+            'summary' => $summary,
+            'description' => $methodDescription,
+            'params' => $params,
+            'response' => $responseSchemaName,
+            'embeds' => $embeds,
+            'links' => $links,
+        ];
+    }
+
+    /**
+     * @return array{string, string, array<string, string>}
+     */
+    private function extractPhpDoc(ReflectionMethod $method): array
+    {
         $summary = '';
         $methodDescription = '';
         $paramDescriptions = [];
         $docComment = $method->getDocComment();
+
         if (is_string($docComment)) {
             $factory = DocBlockFactory::createInstance();
             $docBlock = $factory->create($docComment);
@@ -111,28 +140,46 @@ final class HtmlGenerator
             }
         }
 
-        // Get JsonSchema attribute for request/response
+        return [$summary, $methodDescription, $paramDescriptions];
+    }
+
+    /**
+     * @return array{Schema|null, string|null}
+     */
+    private function extractJsonSchema(ReflectionMethod $method): array
+    {
         $requestSchema = null;
         $responseSchemaName = null;
         $attributes = $method->getAttributes(JsonSchema::class);
-        if ($attributes !== []) {
-            $schemaAttr = $attributes[0]->newInstance();
-            if ($schemaAttr->params !== '') {
-                $requestSchema = $this->loadSchema($this->requestSchemaDir, $schemaAttr->params);
-            }
 
-            if ($schemaAttr->schema !== '') {
-                $responseSchema = $this->loadSchema($this->responseSchemaDir, $schemaAttr->schema);
-                if ($responseSchema !== null) {
-                    $responseSchemaName = $responseSchema->title ?: ucfirst(pathinfo($schemaAttr->schema, PATHINFO_FILENAME));
-                    $this->addObject($responseSchemaName, $responseSchema);
-                }
+        if ($attributes === []) {
+            return [$requestSchema, $responseSchemaName];
+        }
+
+        $schemaAttr = $attributes[0]->newInstance();
+        if ($schemaAttr->params !== '') {
+            $requestSchema = $this->loadSchema($this->requestSchemaDir, $schemaAttr->params);
+        }
+
+        if ($schemaAttr->schema !== '') {
+            $responseSchema = $this->loadSchema($this->responseSchemaDir, $schemaAttr->schema);
+            if ($responseSchema !== null) {
+                $responseSchemaName = $responseSchema->title ?: ucfirst(pathinfo($schemaAttr->schema, PATHINFO_FILENAME));
+                $this->addObject($responseSchemaName, $responseSchema);
             }
         }
 
-        // Get embeds and links
+        return [$requestSchema, $responseSchemaName];
+    }
+
+    /**
+     * @return array{array<array{rel: string, src: string}>, array<array{rel: string, href: string}>}
+     */
+    private function extractEmbedsAndLinks(ReflectionMethod $method): array
+    {
         $embeds = [];
         $links = [];
+
         foreach ($method->getAttributes(Embed::class) as $attr) {
             $embed = $attr->newInstance();
             $embeds[] = ['rel' => $embed->rel, 'src' => $embed->src];
@@ -143,19 +190,23 @@ final class HtmlGenerator
             $links[] = ['rel' => $link->rel, 'href' => $link->href];
         }
 
-        // Store relations for the response object
-        if ($responseSchemaName !== null && ($embeds !== [] || $links !== [])) {
-            $this->addObjectRelations($responseSchemaName, $embeds, $links);
-        }
+        return [$embeds, $links];
+    }
 
-        // Get parameters
+    /**
+     * @param array<string, string> $paramDescriptions
+     *
+     * @return array<HtmlParamArray>
+     */
+    private function buildParams(ReflectionMethod $method, ?Schema $requestSchema, array $paramDescriptions): array
+    {
         $params = [];
+
         foreach ($method->getParameters() as $param) {
             $paramName = $param->getName();
             $paramType = $param->getType();
             $typeName = $paramType instanceof ReflectionNamedType ? $paramType->getName() : 'string';
 
-            // Get description from request schema (priority) or PHPDoc (fallback)
             $description = '';
             $example = '';
             $constraints = [];
@@ -181,18 +232,7 @@ final class HtmlGenerator
             ];
         }
 
-        if (! isset($this->endpoints[$path])) {
-            $this->endpoints[$path] = [];
-        }
-
-        $this->endpoints[$path][$httpMethod] = [
-            'summary' => $summary,
-            'description' => $methodDescription,
-            'params' => $params,
-            'response' => $responseSchemaName,
-            'embeds' => $embeds,
-            'links' => $links,
-        ];
+        return $params;
     }
 
     private function loadSchema(string $dir, string $file): ?Schema
