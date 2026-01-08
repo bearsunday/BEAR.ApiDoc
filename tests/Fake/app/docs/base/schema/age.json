@@ -1,0 +1,10 @@
+{
+  "$id": "age.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "integer",
+  "title": "Age",
+  "description": "Age in years, must be a non-negative integer",
+  "minimum": 0,
+  "maximum": 150,
+  "example": 35
+}

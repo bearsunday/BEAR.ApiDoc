@@ -16,7 +16,6 @@ use function is_array;
 use function is_bool;
 use function is_float;
 use function is_int;
-use function is_iterable;
 use function is_object;
 use function is_string;
 use function json_encode;
@@ -109,11 +108,11 @@ EOT;
     /** @param array<string, string> $required */
     private function setObject(object $schema, array $required): void
     {
-        if (! isset($schema->properties) || ! is_iterable($schema->properties)) {
+        if (! isset($schema->properties) || (! is_array($schema->properties) && ! is_object($schema->properties))) {
             return;
         }
 
-        foreach ($schema->properties as $name => $property) {
+        foreach ((array) $schema->properties as $name => $property) {
             assert(is_string($name));
             assert(is_object($property));
             $this->addProperty($name, $property, $schema, $required);

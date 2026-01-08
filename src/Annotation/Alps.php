@@ -17,11 +17,11 @@ use function assert;
  * @see https://alps-io.github.io/spec/
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
-final class Alps
+final readonly class Alps
 {
     public function __construct(
         /** ALPS descriptor ID */
-        public readonly string $id,
+        public string $id,
     ) {
         assert($id !== '', 'ALPS descriptor ID must not be empty');
     }

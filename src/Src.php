@@ -19,11 +19,11 @@ use function substr;
 
 /** @psalm-pure */
 
-final class Src implements Stringable
+final readonly class Src implements Stringable
 {
     public function __construct(
-        private readonly string $src,
-        private readonly string $ext
+        private string $src,
+        private string $ext
     ) {
     }
 

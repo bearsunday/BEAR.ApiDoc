@@ -1,0 +1,39 @@
+{
+  "$id": "ticket.param.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ticket request parameters",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for a ticket",
+      "example": "TKT-2024-001"
+    },
+    "title": {
+      "type": "string",
+      "description": "Brief summary of the issue or request",
+      "example": "Cannot login to dashboard",
+      "minLength": 3,
+      "maxLength": 255
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed explanation of the issue",
+      "example": "When I click login, I get a 500 error",
+      "maxLength": 2000
+    },
+    "assignee": {
+      "type": "string",
+      "description": "Username of the support agent",
+      "example": "john.smith"
+    },
+    "status": {
+      "type": "string",
+      "description": "Current status of the ticket",
+      "example": "in_progress",
+      "enum": ["open", "in_progress", "waiting", "resolved", "closed"]
+    }
+  },
+  "required": ["id"],
+  "additionalProperties": false
+}

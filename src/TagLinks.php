@@ -13,11 +13,11 @@ use function sprintf;
 use const PHP_EOL;
 
 /** @psalm-pure */
-final class TagLinks implements Stringable
+final readonly class TagLinks implements Stringable
 {
     /** @param array<Link> $links */
     public function __construct(
-        private readonly array $links
+        private array $links
     ) {
     }
 

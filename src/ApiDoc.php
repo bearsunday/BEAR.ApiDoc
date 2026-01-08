@@ -29,11 +29,11 @@ use function mkdir;
 use function sprintf;
 use function substr;
 
-final class ApiDoc
+final readonly class ApiDoc
 {
     /** @SuppressWarnings("PHPMD.BooleanArgumentFlag") */
     public function __construct(
-        private readonly bool $inlineCss = false,
+        private bool $inlineCss = false,
     ) {
     }
 
