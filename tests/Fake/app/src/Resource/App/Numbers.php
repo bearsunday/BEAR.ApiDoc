@@ -6,6 +6,9 @@ use BEAR\Resource\ResourceObject;
 
 class Numbers extends ResourceObject
 {
+    /**
+     * Get numbers
+     */
     #[JsonSchema(schema: 'numbers.json')]
     public function onGet()
     {

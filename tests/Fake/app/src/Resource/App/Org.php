@@ -6,6 +6,9 @@ use BEAR\Resource\ResourceObject;
 
 class Org extends ResourceObject
 {
+    /**
+     * Get organization
+     */
     public function onGet(): ResourceObject
     {
         return $this;

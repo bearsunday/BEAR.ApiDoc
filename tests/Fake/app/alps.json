@@ -1,0 +1,36 @@
+{
+  "$schema": "https://alps-io.github.io/schemas/alps.json",
+  "alps": {
+    "title": "Person API",
+    "doc": {"value": "ALPS profile for person management API"},
+    "descriptor": [
+      {"id": "firstName", "title": "First Name by ALPS"},
+      {"id": "familyName", "def": "https://schema.org/familyName"},
+      {"id": "age", "title": "Age in years which must be equal to or greater than zero."},
+      {"id": "id", "title": "Person identifier"},
+
+      {"id": "Index", "title": "API Entry Point", "descriptor": [
+        {"href": "#goPerson"},
+        {"href": "#doCreatePerson"}
+      ]},
+
+      {"id": "Person", "title": "Person Details", "descriptor": [
+        {"href": "#id"},
+        {"href": "#firstName"},
+        {"href": "#familyName"},
+        {"href": "#age"},
+        {"href": "#goIndex"}
+      ]},
+
+      {"id": "goIndex", "type": "safe", "rt": "#Index", "title": "Return to index"},
+      {"id": "goPerson", "type": "safe", "rt": "#Person", "title": "Get person details", "descriptor": [
+        {"href": "#id"}
+      ]},
+      {"id": "doCreatePerson", "type": "unsafe", "rt": "#Person", "title": "Create a new person", "descriptor": [
+        {"href": "#firstName"},
+        {"href": "#familyName"},
+        {"href": "#age"}
+      ]}
+    ]
+  }
+}

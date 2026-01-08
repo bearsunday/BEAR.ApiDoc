@@ -76,10 +76,15 @@ final class ApiDoc
     {
         unset($docClass);
 
+        /** @var ArrayObject<string, string> $nullDictionary */
+        $nullDictionary = new ArrayObject();
+        $semanticDictionary = $config->alps ? $this->registerAlpsProfile($config->alps) : $nullDictionary;
+
         $generator = new HtmlGenerator(
             $config,
             $config->requestSchemaDir,
-            $config->responseSchemaDir
+            $config->responseSchemaDir,
+            $semanticDictionary
         );
         $html = $generator->generate();
         $outputFile = sprintf('%s/index.html', $config->docDir);

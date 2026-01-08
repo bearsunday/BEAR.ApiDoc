@@ -43,10 +43,13 @@ final class HtmlRenderer
         array $objectRelations,
     ): string {
         $escapedTitle = htmlspecialchars($title ?: 'API Documentation');
-        $escapedDescription = htmlspecialchars($description ?: '');
+        $escapedDescription = $this->convertMarkdownLinks($description ?: '');
         $css = $this->getCss();
         $endpointsHtml = $this->renderEndpoints($endpoints);
-        $objectsHtml = $this->renderObjects($objects, $objectRelations);
+        [$objectsHtml, $arraysHtml] = $this->renderObjectsAndArrays($objects, $objectRelations);
+
+        $objectsSection = $objectsHtml !== '' ? "<h2>Objects</h2>\n{$objectsHtml}" : '';
+        $arraysSection = $arraysHtml !== '' ? "<h2>Arrays</h2>\n{$arraysHtml}" : '';
 
         return <<<HTML
 <!DOCTYPE html>
@@ -67,8 +70,9 @@ final class HtmlRenderer
 <h2>Endpoints</h2>
 {$endpointsHtml}
 
-<h2>Objects</h2>
-{$objectsHtml}
+{$objectsSection}
+
+{$arraysSection}
 
 </div>
 </body>
@@ -225,7 +229,7 @@ HTML;
      */
     private function renderParamRow(string $pathCell, string $methodCell, array $param, string $responseCell): string
     {
-        $nameHtml = sprintf('<span class="param">%s</span>', htmlspecialchars($param['name']));
+        $nameHtml = $this->renderParamName($param['name'], $param['alps']);
         if ($param['required']) {
             $nameHtml .= '<span class="req">*</span>';
         }
@@ -238,12 +242,28 @@ HTML;
   {$pathCell}
   {$methodCell}
   <td>{$nameHtml}</td>
-  <td>{$descriptionHtml}</td>
+  <td class="param-desc">{$descriptionHtml}</td>
   <td>{$metaHtml}</td>
   {$responseCell}
 </tr>
 
 HTML;
+    }
+
+    private function renderParamName(string $name, ?string $alpsTitle): string
+    {
+        $escapedName = htmlspecialchars($name);
+
+        if ($alpsTitle === null) {
+            return sprintf('<span class="param">%s</span>', $escapedName);
+        }
+
+        return sprintf(
+            '<a href="alps.html#%s" class="param alps-param" title="%s">%s</a>',
+            $escapedName,
+            htmlspecialchars($alpsTitle),
+            $escapedName,
+        );
     }
 
     /**
@@ -300,16 +320,38 @@ HTML;
     /**
      * @param array<string, HtmlObjectArray>                                                                                            $objects
      * @param array<string, array{embeds: array<array{rel: string, target: string}>, links: array<array{rel: string, target: string}>}> $objectRelations
+     *
+     * @return array{string, string}
      */
-    private function renderObjects(array $objects, array $objectRelations): string
+    private function renderObjectsAndArrays(array $objects, array $objectRelations): array
     {
-        $html = '';
+        $objectsHtml = '';
+        $arraysHtml = '';
 
         foreach ($objects as $name => $object) {
-            $html .= $this->renderObject($name, $object, $objectRelations);
+            if ($object['arrayItemType'] !== null) {
+                $arraysHtml .= $this->renderArrayType($name, $object['arrayItemType']);
+            } else {
+                $objectsHtml .= $this->renderObject($name, $object, $objectRelations);
+            }
         }
 
-        return $html;
+        return [$objectsHtml, $arraysHtml];
+    }
+
+    private function renderArrayType(string $name, string $itemType): string
+    {
+        $escapedName = htmlspecialchars($name);
+        $itemTypeCapitalized = ucfirst($itemType);
+        $itemLink = sprintf('<a href="#%s">%s</a>', htmlspecialchars($itemTypeCapitalized), htmlspecialchars($itemTypeCapitalized));
+
+        return <<<HTML
+<div class="object-section" id="{$escapedName}">
+<h3 class="object-name">{$escapedName}</h3>
+<p class="array-type">array of {$itemLink}</p>
+</div>
+
+HTML;
     }
 
     /**
@@ -318,6 +360,7 @@ HTML;
      */
     private function renderObject(string $name, array $object, array $objectRelations): string
     {
+        $escapedName = htmlspecialchars($name);
         $rows = '';
 
         // Render properties
@@ -338,8 +381,6 @@ HTML;
                 $rows .= $this->renderRelationRow($link, 'link');
             }
         }
-
-        $escapedName = htmlspecialchars($name);
 
         return <<<HTML
 <div class="object-section" id="{$escapedName}">
@@ -459,6 +500,18 @@ HTML;
         };
     }
 
+    private function convertMarkdownLinks(string $text): string
+    {
+        $escaped = htmlspecialchars($text);
+
+        // Convert markdown links [text](url) to HTML links
+        return (string) preg_replace(
+            '/\[([^\]]+)\]\(([^)]+)\)/',
+            '<a href="$2">$1</a>',
+            $escaped,
+        );
+    }
+
     private function getCss(): string
     {
         return <<<'CSS'
@@ -502,7 +555,10 @@ tr:hover{background-color:#f5f5f5;}
 .path-cell{font-family:'SFMono-Regular',Consolas,monospace;font-weight:600;}
 /* Param */
 .param{font-family:'SFMono-Regular',Consolas,monospace;}
+.alps-param{color:#8957e5;text-decoration:none;}
+.alps-param:hover{text-decoration:underline;}
 .req{color:#cf222e;}
+.param-desc{font-size:0.85em;color:#57606a;}
 /* Extra Info */
 .extra-info{display:flex;flex-direction:column;gap:2px;align-items:flex-start;}
 .extra-item{display:flex;align-items:center;line-height:normal;}

@@ -16,9 +16,7 @@ use BEAR\Resource\ResourceObject;
 class Person extends ResourceObject
 {
     /**
-     * Get person details
-     *
-     * Retrieve personal information including name and associated organization.
+     * Get person
      *
      * @param string $id The unique identifier of the person
      */
@@ -33,9 +31,7 @@ class Person extends ResourceObject
     }
 
     /**
-     * Register a new person
-     *
-     * Create a new person record in the system.
+     * Register member
      *
      * @param string $firstName The person's first name
      * @param string $familyName The person's family/last name
@@ -49,9 +45,7 @@ class Person extends ResourceObject
     }
 
     /**
-     * Update person information
-     *
-     * Modify an existing person's details.
+     * Update profile
      *
      * @param string      $id         The unique identifier of the person
      * @param string|null $firstName  Updated first name

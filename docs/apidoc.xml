@@ -12,4 +12,5 @@
         <link rel="home page" href="https://github.com/bearsunday/BEAR.ApiDoc" />
         <link rel="issue" href="https://github.com/bearsunday/BEAR.ApiDoc/issues" />
     </links>
+    <alps>alps.json</alps>
 </apidoc>

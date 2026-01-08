@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>API Doc Title</title>
+<title>Sample API Doc</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css">
 <style>
 html{scroll-behavior:smooth;}
@@ -45,7 +45,10 @@ tr:hover{background-color:#f5f5f5;}
 .path-cell{font-family:'SFMono-Regular',Consolas,monospace;font-weight:600;}
 /* Param */
 .param{font-family:'SFMono-Regular',Consolas,monospace;}
+.alps-param{color:#8957e5;text-decoration:none;}
+.alps-param:hover{text-decoration:underline;}
 .req{color:#cf222e;}
+.param-desc{font-size:0.85em;color:#57606a;}
 /* Extra Info */
 .extra-info{display:flex;flex-direction:column;gap:2px;align-items:flex-start;}
 .extra-item{display:flex;align-items:center;line-height:normal;}
@@ -78,8 +81,8 @@ tr:hover{background-color:#f5f5f5;}
 </head>
 <body>
 <div class="markdown-body">
-<h1>API Doc Title</h1>
-<p>This is the description of API Doc</p>
+<h1>Sample API Doc</h1>
+<p>This is an example API doc. See <a href="http://bearsunday.github.io/manuals/1.0/en/apidoc.html">ApiDoc manual</a>.</p>
 
 <h2>Endpoints</h2>
 <table>
@@ -96,9 +99,9 @@ tr:hover{background-color:#f5f5f5;}
 <tbody>
 <tr>
   <td rowspan="1" class="path-cell">/address</td>
-  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
-  <td><span class="param">id</span><span class="req">*</span></td>
-  <td>Address ID</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get address</div></td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">Address ID</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
     </div></td>
@@ -106,17 +109,17 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/array-data</td>
-  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
-  <td><span class="param">a</span></td>
-  <td></td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get array data</div></td>
+  <td><span class="param">items</span></td>
+  <td class="param-desc">List of item IDs to retrieve</td>
   <td><div class="extra-info">
       <span class="badge type-array">array</span>
     </div></td>
-  <td rowspan="1"><a href="#Array" class="schema-link">Array</a></td>
+  <td rowspan="1"><a href="#Groceries" class="schema-link">Groceries</a></td>
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/calendar</td>
-  <td class="method-cell"><span class="ti safe"></span>GET</td>
+  <td class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get schedule</div></td>
   <td></td>
   <td></td>
   <td></td>
@@ -124,7 +127,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/card</td>
-  <td class="method-cell"><span class="ti safe"></span>GET</td>
+  <td class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get card</div></td>
   <td></td>
   <td></td>
   <td></td>
@@ -132,7 +135,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/index</td>
-  <td class="method-cell"><span class="ti safe"></span>GET</td>
+  <td class="method-cell"><span class="ti safe"></span>GET<div class="method-title">API entry point</div></td>
   <td></td>
   <td></td>
   <td></td>
@@ -140,7 +143,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/numbers</td>
-  <td class="method-cell"><span class="ti safe"></span>GET</td>
+  <td class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get numbers</div></td>
   <td></td>
   <td></td>
   <td></td>
@@ -148,7 +151,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/org</td>
-  <td class="method-cell"><span class="ti safe"></span>GET</td>
+  <td class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get organization</div></td>
   <td></td>
   <td></td>
   <td></td>
@@ -156,9 +159,9 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td rowspan="8" class="path-cell">/person</td>
-  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get person details</div><div class="method-desc">Retrieve personal information including name and associated organization.</div><div class="method-alps"><a href="alps.html#goPerson" class="alps-link">goPerson</a></div></td>
-  <td><span class="param">id</span></td>
-  <td>Unique identifier of the person</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get person</div><div class="method-alps"><a href="alps.html#goPerson" class="alps-link">goPerson</a></div></td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a></td>
+  <td class="param-desc">Unique identifier of the person</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: person_12345</span>
@@ -167,9 +170,9 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   
-  <td rowspan="3" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Register a new person</div><div class="method-desc">Create a new person record in the system.</div><div class="method-alps"><a href="alps.html#doCreatePerson" class="alps-link">doCreatePerson</a></div></td>
-  <td><span class="param">firstName</span><span class="req">*</span></td>
-  <td>The person&#039;s first/given name</td>
+  <td rowspan="3" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Register member</div><div class="method-alps"><a href="alps.html#doCreatePerson" class="alps-link">doCreatePerson</a></div></td>
+  <td><a href="alps.html#firstName" class="param alps-param" title="First Name by ALPS">firstName</a><span class="req">*</span></td>
+  <td class="param-desc">The person&#039;s first/given name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">minLength: 1</span>
@@ -181,8 +184,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><span class="param">familyName</span></td>
-  <td>The person&#039;s family/last name</td>
+  <td><a href="alps.html#familyName" class="param alps-param" title="[https://schema.org/familyName](https://schema.org/familyName)">familyName</a></td>
+  <td class="param-desc">The person&#039;s family/last name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 50</span>
@@ -193,8 +196,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><span class="param">age</span></td>
-  <td>Age in years</td>
+  <td><a href="alps.html#age" class="param alps-param" title="Age in years which must be equal to or greater than zero.">age</a></td>
+  <td class="param-desc">Age in years</td>
   <td><div class="extra-info">
       <span class="badge type-int">int</span>
       <span class="badge constraint">minimum: 0</span>
@@ -205,9 +208,9 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   
-  <td rowspan="4" class="method-cell"><span class="ti unsafe"></span>PATCH<div class="method-title">Update person information</div><div class="method-desc">Modify an existing person&#039;s details.</div></td>
-  <td><span class="param">id</span><span class="req">*</span></td>
-  <td>Unique identifier of the person</td>
+  <td rowspan="4" class="method-cell"><span class="ti unsafe"></span>PATCH<div class="method-title">Update profile</div></td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">Unique identifier of the person</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: person_12345</span>
@@ -217,8 +220,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><span class="param">firstName</span></td>
-  <td>The person&#039;s first/given name</td>
+  <td><a href="alps.html#firstName" class="param alps-param" title="First Name by ALPS">firstName</a></td>
+  <td class="param-desc">The person&#039;s first/given name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">minLength: 1</span>
@@ -230,8 +233,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><span class="param">familyName</span></td>
-  <td>The person&#039;s family/last name</td>
+  <td><a href="alps.html#familyName" class="param alps-param" title="[https://schema.org/familyName](https://schema.org/familyName)">familyName</a></td>
+  <td class="param-desc">The person&#039;s family/last name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 50</span>
@@ -242,8 +245,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><span class="param">age</span></td>
-  <td>Age in years</td>
+  <td><a href="alps.html#age" class="param alps-param" title="Age in years which must be equal to or greater than zero.">age</a></td>
+  <td class="param-desc">Age in years</td>
   <td><div class="extra-info">
       <span class="badge type-int">int</span>
       <span class="badge constraint">minimum: 0</span>
@@ -255,8 +258,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   <td rowspan="10" class="path-cell">/ticket/{id}</td>
   <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get a ticket</div><div class="method-desc">Retrieve detailed information about a specific support ticket.</div></td>
-  <td><span class="param">id</span><span class="req">*</span></td>
-  <td>The unique identifier for a ticket</td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">The unique identifier for a ticket</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: TKT-2024-001</span>
@@ -267,7 +270,7 @@ tr:hover{background-color:#f5f5f5;}
   
   <td rowspan="3" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Create a new ticket</div><div class="method-desc">Create a new support ticket in the system. This endpoint allows you to submit customer inquiries, bug reports, feature requests, and other issues that need to be tracked and resolved by the support team. The ticket will be automatically assigned a unique identifier and timestamps for creation and last update.</div></td>
   <td><span class="param">title</span><span class="req">*</span></td>
-  <td>Brief summary of the issue or request</td>
+  <td class="param-desc">Brief summary of the issue or request</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">minLength: 3</span>
@@ -280,7 +283,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">description</span></td>
-  <td>Detailed explanation of the issue</td>
+  <td class="param-desc">Detailed explanation of the issue</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 2000</span>
@@ -292,7 +295,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">assignee</span></td>
-  <td>Username of the support agent</td>
+  <td class="param-desc">Username of the support agent</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: john.smith</span>
@@ -302,8 +305,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   <td rowspan="5" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Update a ticket</div><div class="method-desc">Modify an existing ticket&#039;s information.</div></td>
-  <td><span class="param">id</span><span class="req">*</span></td>
-  <td>The unique identifier for a ticket</td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">The unique identifier for a ticket</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: TKT-2024-001</span>
@@ -314,7 +317,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">title</span></td>
-  <td>Brief summary of the issue or request</td>
+  <td class="param-desc">Brief summary of the issue or request</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">minLength: 3</span>
@@ -327,7 +330,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">status</span></td>
-  <td>Current status of the ticket</td>
+  <td class="param-desc">Current status of the ticket</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">enum: [&quot;open&quot;,&quot;in_progress&quot;,&quot;waiting&quot;,&quot;resolved&quot;,&quot;closed&quot;]</span>
@@ -339,7 +342,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">assignee</span></td>
-  <td>Username of the support agent</td>
+  <td class="param-desc">Username of the support agent</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: john.smith</span>
@@ -350,7 +353,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">description</span></td>
-  <td>Detailed explanation of the issue</td>
+  <td class="param-desc">Detailed explanation of the issue</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 2000</span>
@@ -361,8 +364,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   <td rowspan="1" class="method-cell"><span class="ti unsafe"></span>DELETE<div class="method-title">Delete a ticket</div><div class="method-desc">Permanently remove a ticket from the system.</div></td>
-  <td><span class="param">id</span><span class="req">*</span></td>
-  <td>The unique identifier for a ticket</td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">The unique identifier for a ticket</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: TKT-2024-001</span>
@@ -380,8 +383,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   <td rowspan="11" class="path-cell">/users/{id}</td>
   <td rowspan="2" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get user profile</div><div class="method-desc">Retrieve detailed profile information for a specific user.</div><div class="method-alps"><a href="alps.html#getUser" class="alps-link">getUser</a></div></td>
-  <td><span class="param">id</span><span class="req">*</span></td>
-  <td>Unique identifier for the user</td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">Unique identifier for the user</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: usr_abc123</span>
@@ -392,7 +395,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">options</span></td>
-  <td>Display options</td>
+  <td class="param-desc">Display options</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">enum: [&quot;guest&quot;,&quot;full&quot;,&quot;minimal&quot;]</span>
@@ -404,7 +407,7 @@ tr:hover{background-color:#f5f5f5;}
   
   <td rowspan="3" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Create a new user</div><div class="method-desc">Register a new user account in the system.</div><div class="method-alps"><a href="alps.html#createUser" class="alps-link">createUser</a></div></td>
   <td><span class="param">name</span><span class="req">*</span></td>
-  <td>Display name of the user</td>
+  <td class="param-desc">Display name of the user</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Jane Smith</span>
@@ -414,8 +417,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><span class="param">age</span><span class="req">*</span></td>
-  <td>Age of the user in years</td>
+  <td><a href="alps.html#age" class="param alps-param" title="Age in years which must be equal to or greater than zero.">age</a><span class="req">*</span></td>
+  <td class="param-desc">Age of the user in years</td>
   <td><div class="extra-info">
       <span class="badge type-int">int</span>
       <span class="badge constraint">minimum: 0</span>
@@ -428,7 +431,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">email</span></td>
-  <td>Email address for the account</td>
+  <td class="param-desc">Email address for the account</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: email</span>
@@ -439,8 +442,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   <td rowspan="5" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Update user profile</div><div class="method-desc">Modify existing user account information.</div><div class="method-alps"><a href="alps.html#updateUser" class="alps-link">updateUser</a></div></td>
-  <td><span class="param">id</span><span class="req">*</span></td>
-  <td>Unique identifier for the user</td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">Unique identifier for the user</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: usr_abc123</span>
@@ -451,7 +454,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">name</span></td>
-  <td>Display name of the user</td>
+  <td class="param-desc">Display name of the user</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Jane Smith</span>
@@ -461,8 +464,8 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><span class="param">age</span></td>
-  <td>Age of the user in years</td>
+  <td><a href="alps.html#age" class="param alps-param" title="Age in years which must be equal to or greater than zero.">age</a></td>
+  <td class="param-desc">Age of the user in years</td>
   <td><div class="extra-info">
       <span class="badge type-int">int</span>
       <span class="badge constraint">minimum: 0</span>
@@ -475,7 +478,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">email</span></td>
-  <td>Email address for the account</td>
+  <td class="param-desc">Email address for the account</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: email</span>
@@ -487,7 +490,7 @@ tr:hover{background-color:#f5f5f5;}
   
   
   <td><span class="param">enabled</span></td>
-  <td>Whether the account is active</td>
+  <td class="param-desc">Whether the account is active</td>
   <td><div class="extra-info">
       <span class="badge type-bool">bool</span>
       <span class="badge example">example: true</span>
@@ -497,13 +500,33 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   <td rowspan="1" class="method-cell"><span class="ti unsafe"></span>DELETE<div class="method-title">Delete user account</div><div class="method-desc">Permanently delete a user account and associated data.</div><div class="method-alps"><a href="alps.html#deleteUser" class="alps-link">deleteUser</a></div></td>
-  <td><span class="param">id</span><span class="req">*</span></td>
-  <td>Unique identifier for the user</td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">Unique identifier for the user</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: usr_abc123</span>
     </div></td>
   <td rowspan="1"></td>
+</tr>
+<tr>
+  <td rowspan="2" class="path-cell">/ticket/assign</td>
+  <td rowspan="2" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Assign ticket</div><div class="method-desc">CQRS domain command. Compare with CRUD operations at /ticket.</div></td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">Ticket ID</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+    </div></td>
+  <td rowspan="2"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">assignee</span><span class="req">*</span></td>
+  <td class="param-desc">Username of the assignee</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+    </div></td>
+  
 </tr>
 
 </tbody>
@@ -578,8 +601,8 @@ tr:hover{background-color:#f5f5f5;}
 </tbody>
 </table>
 </div>
-<div class="object-section" id="Array">
-<h3 class="object-name">Array</h3>
+<div class="object-section" id="Groceries">
+<h3 class="object-name">Groceries</h3>
 <table>
 <thead>
 <tr><th>Name</th><th>Description</th><th>Meta</th></tr>
@@ -864,17 +887,6 @@ tr:hover{background-color:#f5f5f5;}
 </tbody>
 </table>
 </div>
-<div class="object-section" id="Numbers">
-<h3 class="object-name">Numbers</h3>
-<table>
-<thead>
-<tr><th>Name</th><th>Description</th><th>Meta</th></tr>
-</thead>
-<tbody>
-
-</tbody>
-</table>
-</div>
 <div class="object-section" id="Person">
 <h3 class="object-name">Person</h3>
 <table>
@@ -1034,17 +1046,6 @@ tr:hover{background-color:#f5f5f5;}
 </tbody>
 </table>
 </div>
-<div class="object-section" id="Collection of Tickets">
-<h3 class="object-name">Collection of Tickets</h3>
-<table>
-<thead>
-<tr><th>Name</th><th>Description</th><th>Meta</th></tr>
-</thead>
-<tbody>
-
-</tbody>
-</table>
-</div>
 <div class="object-section" id="User">
 <h3 class="object-name">User</h3>
 <table>
@@ -1154,6 +1155,17 @@ tr:hover{background-color:#f5f5f5;}
 
 </tbody>
 </table>
+</div>
+
+
+<h2>Arrays</h2>
+<div class="object-section" id="Numbers">
+<h3 class="object-name">Numbers</h3>
+<p class="array-type">array of <a href="#Integer">Integer</a></p>
+</div>
+<div class="object-section" id="Collection of Tickets">
+<h3 class="object-name">Collection of Tickets</h3>
+<p class="array-type">array of <a href="#Ticket">Ticket</a></p>
 </div>
 
 

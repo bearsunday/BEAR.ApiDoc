@@ -51,12 +51,22 @@ final class HtmlGenerator
 
     private readonly HtmlRenderer $renderer;
 
+    /** @var ArrayObject<string, string> */
+    private readonly ArrayObject $semanticDictionary;
+
+    /**
+     * @param ArrayObject<string, string>|null $semanticDictionary
+     */
     public function __construct(
         private readonly Config $config,
         private readonly string $requestSchemaDir,
         private readonly string $responseSchemaDir,
+        ?ArrayObject $semanticDictionary = null,
     ) {
         $this->renderer = new HtmlRenderer();
+        /** @var ArrayObject<string, string> $emptyDictionary */
+        $emptyDictionary = new ArrayObject();
+        $this->semanticDictionary = $semanticDictionary ?? $emptyDictionary;
     }
 
     public function generate(): string
@@ -238,6 +248,8 @@ final class HtmlGenerator
                 $description = $paramDescriptions[$paramName] ?? '';
             }
 
+            $alpsTitle = $this->semanticDictionary[$paramName] ?? null;
+
             $params[] = [
                 'name' => $paramName,
                 'type' => $this->normalizeType($typeName),
@@ -245,6 +257,7 @@ final class HtmlGenerator
                 'required' => ! $param->isOptional(),
                 'example' => $example,
                 'constraints' => $constraints,
+                'alps' => $alpsTitle,
             ];
         }
 
@@ -277,6 +290,12 @@ final class HtmlGenerator
         }
 
         $properties = [];
+        $arrayItemType = null;
+
+        if ($schema->type === 'array') {
+            $arrayItemType = $this->getArrayItemType($schema);
+        }
+
         foreach ($schema->props as $propName => $prop) {
             if ($propName === '_links' || $propName === '_embedded') {
                 continue;
@@ -301,7 +320,32 @@ final class HtmlGenerator
         $this->objects[$name] = [
             'name' => $name,
             'properties' => $properties,
+            'arrayItemType' => $arrayItemType,
         ];
+    }
+
+    private function getArrayItemType(Schema $schema): ?string
+    {
+        $schemaFile = $schema->file->getPathname();
+        $schemaJson = json_decode((string) file_get_contents($schemaFile));
+
+        if (! is_object($schemaJson) || ! isset($schemaJson->items) || ! is_object($schemaJson->items)) {
+            return null;
+        }
+
+        $items = $schemaJson->items;
+
+        /** @psalm-suppress MixedPropertyFetch */
+        if (isset($items->{'$ref'}) && is_string($items->{'$ref'})) {
+            return pathinfo($items->{'$ref'}, PATHINFO_FILENAME);
+        }
+
+        /** @psalm-suppress MixedPropertyFetch */
+        if (isset($items->type) && is_string($items->type)) {
+            return $items->type;
+        }
+
+        return null;
     }
 
     /**

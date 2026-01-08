@@ -6,8 +6,13 @@ use BEAR\Resource\ResourceObject;
 
 class ArrayData extends ResourceObject
 {
+    /**
+     * Get array data
+     *
+     * @param array $items List of item IDs to retrieve
+     */
     #[JsonSchema(key: 'array', schema: 'array.json')]
-    public function onGet(array $a = [1, 2])
+    public function onGet(array $items = [1, 2])
     {
     }
 }
