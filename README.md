@@ -12,6 +12,8 @@ This not only saves you the trouble of writing IDL, but also allows you to gener
 
 ## Installation
 
+    requires PHP 8.2 or later
+
     composer require bear/api-doc ^1.0
 
 ## Usage

@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Raise minimum PHP version from 8.1 to 8.2 (#57)
+- Update doctrine/coding-standard to ^13.0
+- Update phpstan to ^2.0
+- Modernize codebase with PHP 8.2 typed and readonly properties
+- Refactor Schema::setObject() to reduce NPath complexity
+- Add new documentation formats: Markdown and OpenAPI 3.1
+
+### Added
+- New composer scripts: docs-md, docs-openapi, docs-all
+- CLAUDE.md with AI assistant guidance
+
+### Removed
+- rector/rector dependency
+
+### Breaking Changes
+- ApiDoc::__construct() now requires bool $inlineCss parameter
+- ApiDoc::__invoke() signature changed: removed $inlineCss parameter
+- Multiple classes now declared as readonly (Alps, ApiDoc, Index, Src, TagLinks)
+- Several method signatures updated with explicit return types
+
 ## [1.4.0] - 2025-11-23
 
 ### Changed
