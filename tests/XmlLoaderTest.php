@@ -32,4 +32,22 @@ class XmlLoaderTest extends TestCase
         $this->expectException(ConfigNotFoundException::class);
         (new XmlLoader())('/__INVALID__', dirname(__DIR__) . '/apidoc.xsd');
     }
+
+    public function testFindApidocXmlInParentDirectory(): void
+    {
+        // Change to a subdirectory that doesn't have apidoc.xml
+        // The search will find tests/apidoc.xml (not .dist)
+        chdir(__DIR__ . '/Fake');
+        $xml = (new XmlLoader())('', dirname(__DIR__) . '/apidoc.xsd');
+        $this->assertInstanceOf(SimpleXMLElement::class, $xml);
+    }
+
+    public function testFindConfigInCurrentWorkingDirectory(): void
+    {
+        // Change to tests directory
+        chdir(__DIR__);
+        // Load using relative path from cwd
+        $xml = (new XmlLoader())('apidoc.xml', dirname(__DIR__) . '/apidoc.xsd');
+        $this->assertInstanceOf(SimpleXMLElement::class, $xml);
+    }
 }
