@@ -6,4 +6,8 @@
     <scheme>app</scheme>
     <docDir>docs/md</docDir>
     <format>md</format>
+    <title>Markdown API Docs</title>
+    <links>
+        <link rel="home" href="https://example.com" />
+    </links>
 </apidoc>

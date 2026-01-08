@@ -35,7 +35,7 @@ jobs:
   docs:
     uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
     with:
-      format: 'apidoc,openapi,alps'
+      format: 'html,openapi,alps'
       alps-profile: 'alps.json'
 ```
 
@@ -44,7 +44,7 @@ jobs:
 | Input | Default | Description |
 |-------|---------|-------------|
 | `php-version` | `'8.2'` | PHP version |
-| `format` | `'apidoc'` | Comma-separated: apidoc, md, openapi, alps |
+| `format` | `'html'` | Comma-separated: html (apidoc), md, openapi, alps |
 | `alps-profile` | `''` | ALPS profile path (required for alps format) |
 | `docs-path` | `'docs/api'` | Output directory |
 | `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |

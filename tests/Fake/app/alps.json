@@ -6,6 +6,8 @@
     "descriptor": [
       {"id": "firstName", "title": "First Name by ALPS"},
       {"id": "familyName", "def": "https://schema.org/familyName"},
+      {"id": "email", "doc": {"value": "Email address from doc.value"}},
+      {"id": "phone"},
       {"id": "age", "title": "Age in years which must be equal to or greater than zero."},
       {"id": "id", "title": "Person identifier"},
 

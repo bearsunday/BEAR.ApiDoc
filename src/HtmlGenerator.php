@@ -495,7 +495,11 @@ final class HtmlGenerator
 
     private function normalizeType(string $type): string
     {
-        return $type === 'boolean' ? 'bool' : $type;
+        return match ($type) {
+            'integer' => 'int',
+            'boolean' => 'bool',
+            default => $type,
+        };
     }
 
     /** @return array<DocLink> */

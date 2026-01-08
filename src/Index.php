@@ -6,7 +6,6 @@ namespace BEAR\ApiDoc;
 
 use phpDocumentor\Reflection\DocBlock\Description;
 use phpDocumentor\Reflection\DocBlock\Tags\Link;
-use SimpleXMLElement;
 use Stringable;
 
 use function sprintf;
@@ -31,9 +30,7 @@ final readonly class Index implements Stringable
         $this->title = $config->title;
         $this->description = $config->description !== '' && $config->description !== '0' ? $config->description . PHP_EOL . PHP_EOL : '';
         $links = [];
-        /** @var iterable<SimpleXMLElement> $configLink */
-        $configLink = $config->links[0]->link ?? [];
-        foreach ($configLink as $link) {
+        foreach ($config->links as $link) {
             $links[] = new Link((string) $link['href'], new Description((string) $link['rel']));
         }
 

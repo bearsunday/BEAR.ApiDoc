@@ -154,7 +154,7 @@ EOT;
             return (string) $exampleValue;
         }
 
-        return '';
+        return ''; // @codeCoverageIgnore
     }
 
     private function getDescription(string $titleDescription, string $id): string
