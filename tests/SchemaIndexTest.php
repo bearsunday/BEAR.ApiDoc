@@ -14,8 +14,7 @@ class SchemaIndexTest extends TestCase
         $html = (string) $schemaIndex;
 
         $this->assertStringContainsString('<title>JSON Schemas</title>', $html);
-        $this->assertStringContainsString('<ul class="schema">', $html);
-        $this->assertStringContainsString('<a href="person.json" class="goSchema">person.json</a>', $html);
+        $this->assertStringContainsString('<a href="person.json" rel="schema">person.json</a>', $html);
         $this->assertStringContainsString('rel="profile"', $html);
     }
 
@@ -25,6 +24,6 @@ class SchemaIndexTest extends TestCase
         $html = (string) $schemaIndex;
 
         $this->assertStringContainsString('<title>JSON Schemas</title>', $html);
-        $this->assertStringContainsString('<ul class="schema">', $html);
+        $this->assertStringContainsString('<ul>', $html);
     }
 }

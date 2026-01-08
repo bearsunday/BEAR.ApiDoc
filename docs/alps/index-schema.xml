@@ -9,6 +9,4 @@
     <link rel="describedby" href="https://json-schema.org/draft/2020-12/schema"/>
   </descriptor>
 
-  <descriptor id="goSchema" type="safe" rt="#schema" title="View Schema"/>
-
 </alps>

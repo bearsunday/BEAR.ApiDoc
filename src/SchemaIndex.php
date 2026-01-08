@@ -32,7 +32,7 @@ final readonly class SchemaIndex implements Stringable
     {
         $list = '';
         foreach ($this->schemas as $schema) {
-            $list .= sprintf('<li><a href="%s" class="goSchema">%s</a></li>', htmlspecialchars($schema), htmlspecialchars($schema)) . "\n";
+            $list .= sprintf('<li><a href="%s" rel="schema">%s</a></li>', htmlspecialchars($schema), htmlspecialchars($schema)) . "\n";
         }
 
         return <<<HTML
@@ -46,7 +46,7 @@ final readonly class SchemaIndex implements Stringable
 </head>
 <body>
 <h1>JSON Schemas</h1>
-<ul class="schema">
+<ul>
 {$list}</ul>
 </body>
 </html>
