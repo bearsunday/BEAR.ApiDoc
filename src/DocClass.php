@@ -37,8 +37,13 @@ final class DocClass
         $this->semanticDictionary = $nullDictinary;
     }
 
-    /** @param ArrayObject<string, string> $semanticDictionary */
-    public function __invoke(string $title, string $path, ReflectionClass $class, ArrayObject $semanticDictionary, string $ext): string // @phpstan-ignore missingType.generics
+    /**
+     * @param ReflectionClass<T>          $class
+     * @param ArrayObject<string, string> $semanticDictionary
+     *
+     * @template T of object
+     */
+    public function __invoke(string $title, string $path, ReflectionClass $class, ArrayObject $semanticDictionary, string $ext): string
     {
         $this->semanticDictionary = $semanticDictionary;
         $docComment = (string) $class->getDocComment();
@@ -65,7 +70,12 @@ final class DocClass
 EOT;
     }
 
-    private function getAlpsSection(ReflectionClass $class): string // @phpstan-ignore missingType.generics
+    /**
+     * @param ReflectionClass<T> $class
+     *
+     * @template T of object
+     */
+    private function getAlpsSection(ReflectionClass $class): string
     {
         $attributes = $class->getAttributes(Alps::class);
         if ($attributes === []) {

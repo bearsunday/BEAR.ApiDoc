@@ -90,7 +90,12 @@ final class OpenApiGenerator
         return json_encode($this->openApiSpec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
     }
 
-    private function processResource(string $path, ReflectionClass $class): void // @phpstan-ignore missingType.generics
+    /**
+     * @param ReflectionClass<T> $class
+     *
+     * @template T of object
+     */
+    private function processResource(string $path, ReflectionClass $class): void
     {
         $docComment = (string) $class->getDocComment();
         [$summary, $description] = (new PhpDoc())($docComment);

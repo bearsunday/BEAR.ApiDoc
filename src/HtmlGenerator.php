@@ -117,7 +117,12 @@ final class HtmlGenerator
         return 'alps.html';
     }
 
-    private function processResource(string $path, ReflectionClass $class): void // @phpstan-ignore missingType.generics
+    /**
+     * @param ReflectionClass<T> $class
+     *
+     * @template T of object
+     */
+    private function processResource(string $path, ReflectionClass $class): void
     {
         $methods = $class->getMethods();
 
