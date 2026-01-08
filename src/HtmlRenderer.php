@@ -23,21 +23,21 @@ use const JSON_UNESCAPED_UNICODE;
 /**
  * Renders HTML for API documentation
  *
- * @psalm-import-type HtmlParamArray from Types
- * @psalm-import-type HtmlMethodArray from Types
- * @psalm-import-type HtmlPropertyArray from Types
- * @psalm-import-type HtmlObjectArray from Types
- * @psalm-import-type HtmlRelationArray from Types
+ * @psalm-import-type HtmlParam from Types
+ * @psalm-import-type HtmlMethod from Types
+ * @psalm-import-type HtmlProperty from Types
+ * @psalm-import-type HtmlObject from Types
+ * @psalm-import-type HtmlRelation from Types
  * @psalm-import-type HtmlObjectRelations from Types
  * @psalm-import-type DocLink from Types
  */
 final class HtmlRenderer
 {
     /**
-     * @param array<string, array<string, HtmlMethodArray>> $endpoints
-     * @param array<string, HtmlObjectArray>                $objects
-     * @param HtmlObjectRelations                           $objectRelations
-     * @param array<DocLink>                                $links
+     * @param array<string, array<string, HtmlMethod>> $endpoints
+     * @param array<string, HtmlObject>                $objects
+     * @param HtmlObjectRelations                      $objectRelations
+     * @param array<DocLink>                           $links
      */
     public function render(
         string $title,
@@ -90,7 +90,7 @@ HTML;
     }
 
     /**
-     * @param array<string, array<string, HtmlMethodArray>> $endpoints
+     * @param array<string, array<string, HtmlMethod>> $endpoints
      */
     private function renderEndpoints(array $endpoints): string
     {
@@ -120,7 +120,7 @@ HTML;
     }
 
     /**
-     * @param array<string, HtmlMethodArray> $methods
+     * @param array<string, HtmlMethod> $methods
      */
     private function renderEndpointRows(string $path, array $methods): string
     {
@@ -179,7 +179,7 @@ HTML;
     }
 
     /**
-     * @param array<string, HtmlMethodArray> $methods
+     * @param array<string, HtmlMethod> $methods
      */
     private function countTotalRows(array $methods): int
     {
@@ -234,7 +234,7 @@ HTML;
     }
 
     /**
-     * @param HtmlParamArray $param
+     * @param HtmlParam $param
      */
     private function renderParamRow(string $pathCell, string $methodCell, array $param, string $responseCell): string
     {
@@ -327,8 +327,8 @@ HTML;
     }
 
     /**
-     * @param array<string, HtmlObjectArray> $objects
-     * @param HtmlObjectRelations            $objectRelations
+     * @param array<string, HtmlObject> $objects
+     * @param HtmlObjectRelations       $objectRelations
      *
      * @return array{string, string}
      */
@@ -364,7 +364,7 @@ HTML;
     }
 
     /**
-     * @param HtmlObjectArray     $object
+     * @param HtmlObject          $object
      * @param HtmlObjectRelations $objectRelations
      */
     private function renderObject(string $name, array $object, array $objectRelations): string
@@ -408,7 +408,7 @@ HTML;
     }
 
     /**
-     * @param HtmlPropertyArray $prop
+     * @param HtmlProperty $prop
      */
     private function renderPropertyRow(array $prop): string
     {
@@ -427,7 +427,7 @@ HTML;
     }
 
     /**
-     * @param HtmlPropertyArray $prop
+     * @param HtmlProperty $prop
      */
     private function renderPropertyMeta(array $prop): string
     {
@@ -481,7 +481,7 @@ HTML;
     }
 
     /**
-     * @param HtmlRelationArray $relation
+     * @param HtmlRelation $relation
      */
     private function renderRelationRow(array $relation, string $type): string
     {

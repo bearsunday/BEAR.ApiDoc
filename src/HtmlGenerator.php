@@ -33,19 +33,19 @@ use const PATHINFO_FILENAME;
 /**
  * Generates single-page HTML API documentation
  *
- * @psalm-import-type HtmlParamArray from Types
- * @psalm-import-type HtmlMethodArray from Types
- * @psalm-import-type HtmlObjectArray from Types
- * @psalm-import-type HtmlRelationArray from Types
+ * @psalm-import-type HtmlParam from Types
+ * @psalm-import-type HtmlMethod from Types
+ * @psalm-import-type HtmlObject from Types
+ * @psalm-import-type HtmlRelation from Types
  * @psalm-import-type HtmlObjectRelations from Types
  * @psalm-import-type DocLink from Types
  */
 final class HtmlGenerator
 {
-    /** @var array<string, array<string, HtmlMethodArray>> */
+    /** @var array<string, array<string, HtmlMethod>> */
     private array $endpoints = [];
 
-    /** @var array<string, HtmlObjectArray> */
+    /** @var array<string, HtmlObject> */
     private array $objects = [];
 
     /** @var HtmlObjectRelations */
@@ -225,7 +225,7 @@ final class HtmlGenerator
     /**
      * @param array<string, string> $paramDescriptions
      *
-     * @return array<HtmlParamArray>
+     * @return array<HtmlParam>
      */
     private function buildParams(ReflectionMethod $method, ?Schema $requestSchema, array $paramDescriptions): array
     {
