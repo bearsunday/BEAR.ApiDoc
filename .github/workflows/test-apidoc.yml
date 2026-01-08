@@ -1,0 +1,65 @@
+name: Test API Documentation Workflow
+
+on:
+  push:
+    branches: [deploy]
+
+jobs:
+  test-all-formats:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - run: composer install --prefer-dist --no-progress
+
+      - run: mkdir -p vendor/bin && ln -s $(pwd)/bin/apidoc vendor/bin/apidoc
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # apidoc (output: docs/)
+      - run: ./vendor/bin/apidoc -c=tests/apidoc.html.xml
+
+      # OpenAPI (output: docs/openapi/)
+      - run: ./vendor/bin/apidoc -c=tests/apidoc.openapi.xml
+      - run: npm install -g @redocly/cli
+      - run: |
+          mkdir -p docs/openapi
+          cp tests/docs/openapi/openapi.json docs/openapi/
+          redocly build-docs docs/openapi/openapi.json -o docs/openapi/index.html
+
+      # ALPS (output: docs/alps/)
+      - run: npm install -g @alps-asd/app-state-diagram
+      - run: |
+          mkdir -p docs/alps
+          cp tests/Fake/app/alps.json docs/alps/
+          asd --echo docs/alps/alps.json > docs/alps/index.html
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api-docs-all
+          path: docs
+
+      - uses: actions/configure-pages@v4
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: test-all-formats
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
