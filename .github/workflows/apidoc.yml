@@ -1,0 +1,92 @@
+name: API Documentation
+
+on:
+  workflow_call:
+    inputs:
+      php-version:
+        type: string
+        default: '8.2'
+      format:
+        type: string
+        default: 'html'  # Comma-separated: html, md, openapi, alps
+      alps-profile:
+        type: string
+        default: ''  # ALPS profile path (required when format: alps)
+      docs-path:
+        type: string
+        default: 'docs/api'
+      publish-to:
+        type: string
+        default: 'github-pages'  # github-pages or artifact-only
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # PHP steps (for html, md, openapi formats)
+      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php-version }}
+
+      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+        run: composer install --prefer-dist --no-progress
+
+      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+        run: composer require --dev bear/api-doc
+
+      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+        run: ./vendor/bin/apidoc
+
+      # Node.js steps (for openapi and alps formats)
+      - if: contains(inputs.format, 'openapi') || contains(inputs.format, 'alps')
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # OpenAPI to HTML conversion
+      - if: contains(inputs.format, 'openapi')
+        run: npm install -g @redocly/cli
+
+      - if: contains(inputs.format, 'openapi')
+        run: redocly build-docs ${{ inputs.docs-path }}/openapi.json -o ${{ inputs.docs-path }}/index.html
+
+      # ALPS to HTML conversion
+      - if: contains(inputs.format, 'alps')
+        run: npm install -g @alps-asd/app-state-diagram
+
+      - if: contains(inputs.format, 'alps')
+        run: |
+          mkdir -p ${{ inputs.docs-path }}
+          asd --echo ${{ inputs.alps-profile }} > ${{ inputs.docs-path }}/index.html
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api-docs
+          path: ${{ inputs.docs-path }}
+
+      - if: inputs.publish-to == 'github-pages'
+        uses: actions/configure-pages@v4
+
+      - if: inputs.publish-to == 'github-pages'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ inputs.docs-path }}
+
+  deploy:
+    if: inputs.publish-to == 'github-pages'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

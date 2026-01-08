@@ -1,0 +1,22 @@
+name: Test API Documentation Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      format:
+        description: 'Output format (comma-separated: html, md, openapi, alps)'
+        required: true
+        default: 'html'
+      alps-profile:
+        description: 'ALPS profile path (required for alps format)'
+        required: false
+        default: 'docs/alps.json'
+
+jobs:
+  test:
+    uses: ./.github/workflows/apidoc.yml
+    with:
+      format: ${{ inputs.format }}
+      alps-profile: ${{ inputs.alps-profile }}
+      docs-path: 'docs/api'
+      publish-to: 'artifact-only'
