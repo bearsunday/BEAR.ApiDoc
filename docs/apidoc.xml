@@ -11,6 +11,8 @@
     <links>
         <link rel="home page" href="https://github.com/bearsunday/BEAR.ApiDoc" />
         <link rel="issue" href="https://github.com/bearsunday/BEAR.ApiDoc/issues" />
+        <link rel="openapi" href="openapi.json" />
+        <link rel="schemas" href="schemas/" />
     </links>
     <alps>alps.json</alps>
 </apidoc>

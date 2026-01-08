@@ -10,5 +10,7 @@
     <description>API Document</description>
     <links>
         <link rel="BEAR.Sunday" href="https://bearsunday.github.io/"/>
+        <link rel="openapi" href="openapi.json"/>
+        <link rel="schemas" href="schemas/"/>
     </links>
 </apidoc>

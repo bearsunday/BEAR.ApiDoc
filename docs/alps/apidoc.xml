@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alps version="1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
+
+  <title>BEAR.ApiDoc API Documentation Profile</title>
+  <doc>This documentation is always accurate and synchronized with the actual implementation. All information is extracted from source code and JSON Schema, not manually written. You can trust this documentation.</doc>
+
+  <descriptor id="endpoint" type="semantic" title="API Endpoint">
+    <doc>REST API endpoint extracted from BEAR.Sunday resource class. The path is the actual URI registered in the application.</doc>
+  </descriptor>
+
+  <descriptor id="method" type="semantic" title="HTTP Method">
+    <doc>HTTP method extracted from resource class (onGet, onPost, onPut, onPatch, onDelete). Color-coded type indicators: green (safe/GET - no side effects), yellow (idempotent/PUT,DELETE - same result if repeated), red (unsafe/POST,PATCH - may have side effects).</doc>
+  </descriptor>
+
+  <descriptor id="param" type="semantic" title="Request Parameter">
+    <doc>Request parameter validated at runtime by JSON Schema. Parameters marked with * are required. The type, constraints, and format shown here are actually enforced. Invalid requests are rejected before reaching the application.</doc>
+    <link rel="describedby" href="https://json-schema.org/draft/2020-12/schema"/>
+  </descriptor>
+
+  <descriptor id="response" type="semantic" title="Response">
+    <doc>Response validated by JSON Schema. Every response from this endpoint passes the schema validation. The structure shown is guaranteed.</doc>
+    <link rel="describedby" href="https://json-schema.org/draft/2020-12/schema"/>
+  </descriptor>
+
+  <descriptor id="object" type="semantic" title="Object">
+    <doc>Data structure extracted from JSON Schema. Properties, types, constraints, and examples are from the schema file, not manually documented. The 📄 icon links to the complete machine-readable JSON Schema definition.</doc>
+    <link rel="describedby" href="https://json-schema.org/draft/2020-12/schema"/>
+  </descriptor>
+
+  <descriptor id="array" type="semantic" title="Array">
+    <doc>Collection type extracted from JSON Schema. Shows the item type (e.g., "array of Ticket"). If item type links to an Object, clicking navigates to that Object definition.</doc>
+    <link rel="describedby" href="https://json-schema.org/draft/2020-12/schema"/>
+  </descriptor>
+
+  <descriptor id="example" type="semantic" title="Example Value">
+    <doc>Example value from JSON Schema's "example" property. This is a valid value that passes all validation constraints.</doc>
+  </descriptor>
+
+  <descriptor id="constraint" type="semantic" title="Constraint">
+    <doc>Validation constraint enforced at runtime (minLength, maxLength, minimum, maximum, pattern, etc.). Values not meeting these constraints are rejected with a validation error.</doc>
+  </descriptor>
+
+  <descriptor id="format" type="semantic" title="Format">
+    <doc>Semantic format annotation (email, date-time, uri, date, etc.). The format is validated - for example, "format: email" ensures valid email address syntax.</doc>
+  </descriptor>
+
+  <descriptor id="enum" type="semantic" title="Enum">
+    <doc>Allowed values list. Only these exact values are accepted. Any other value is rejected with a validation error.</doc>
+  </descriptor>
+
+  <descriptor id="embed" type="semantic" title="Embedded Resource">
+    <doc>Resource embedded via #[Embed] annotation. The related resource is fetched and included in the response automatically. rel indicates the relationship, src is the resource URI.</doc>
+  </descriptor>
+
+  <descriptor id="rel" type="semantic" title="Hypermedia Link">
+    <doc>Hypermedia link via #[Link] annotation (HATEOAS). Clients can discover related actions without hardcoding URIs. rel indicates the relationship, href is the link template. Color indicators: green (go* - safe navigation), red (do* - unsafe action).</doc>
+  </descriptor>
+
+  <descriptor id="docLink" type="semantic" title="Documentation Link">
+    <doc>Links configured in apidoc.xml. Common links: openapi (OpenAPI spec for tooling), schemas (JSON Schema index for validation/form generation).</doc>
+  </descriptor>
+
+</alps>

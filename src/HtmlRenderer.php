@@ -77,12 +77,15 @@ final class HtmlRenderer
             ? sprintf('<style>%s</style>', $localCss)
             : '<link rel="stylesheet" href="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.css">';
 
+        $profileLink = '<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/apidoc.xml">';
+
         return <<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <title>{$escapedTitle}</title>
+{$profileLink}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css">
 {$cssHtml}
 </head>

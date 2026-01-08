@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.5.0] - 2026-01-09
 
 ### Added
+- Add ALPS semantic profiles for machine-readable documentation (#67)
+  - `docs/alps/apidoc.xml` - Semantic definitions for all HTML elements
+  - `docs/alps/index-schema.xml` - JSON Schema index semantics
+  - `<link rel="profile">` in generated HTML for ALPS discovery
+- Add `schemas/index.html` with `rel="schema"` links
 - Add 📄 icon links to JSON Schema files in Objects section headings (#58)
 - Nested objects (Card.Email, Card.Tel, etc.) link to parent schema file
 - New documentation formats: Markdown and OpenAPI 3.1
