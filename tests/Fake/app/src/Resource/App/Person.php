@@ -24,6 +24,7 @@ class Person extends ResourceObject
     #[Embed(rel: 'org', src: '/org?id={org_id}')]
     #[Link(rel: 'goCard', href: '/card?id={card_id}')]
     #[Link(rel: 'goTickets', href: '/tickets')]
+    #[Link(rel: 'doDelete', href: '/person?id={id}')]
     #[JsonSchema(schema: 'person.json', params: 'person.param.json')]
     public function onGet(string $id = 'koriym'): static
     {
