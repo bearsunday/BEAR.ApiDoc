@@ -9,7 +9,7 @@
     <title>API Doc Title</title>
     <description>This is the description of API Doc</description>
     <links>
-        <link rel="Google" href="https://www.google.com/" />
-        <link rel="Twitter" href="https://www.twitter.com/" />
+        <link rel="home" href="https://github.com/bearsunday/BEAR.ApiDoc" />
+        <link rel="issues" href="https://github.com/bearsunday/BEAR.ApiDoc/issues" />
     </links>
 </apidoc>
