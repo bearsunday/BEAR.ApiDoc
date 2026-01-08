@@ -55,19 +55,24 @@ jobs:
 
       # OpenAPI to HTML conversion
       - if: contains(inputs.format, 'openapi')
-        run: npm install -g @redocly/cli
-
-      - if: contains(inputs.format, 'openapi')
-        run: redocly build-docs ${{ inputs.docs-path }}/openapi.json -o ${{ inputs.docs-path }}/index.html
+        run: |
+          if [ -f "${{ inputs.docs-path }}/openapi.json" ]; then
+            npm install -g @redocly/cli
+            redocly build-docs ${{ inputs.docs-path }}/openapi.json -o ${{ inputs.docs-path }}/index.html
+          else
+            echo "::warning::${{ inputs.docs-path }}/openapi.json not found. Skipping Redocly conversion."
+          fi
 
       # ALPS to HTML conversion
       - if: contains(inputs.format, 'alps')
-        run: npm install -g @alps-asd/app-state-diagram
-
-      - if: contains(inputs.format, 'alps')
         run: |
-          mkdir -p ${{ inputs.docs-path }}
-          asd --echo ${{ inputs.alps-profile }} > ${{ inputs.docs-path }}/index.html
+          if [ -f "${{ inputs.alps-profile }}" ]; then
+            npm install -g @alps-asd/app-state-diagram
+            mkdir -p ${{ inputs.docs-path }}
+            asd --echo ${{ inputs.alps-profile }} > ${{ inputs.docs-path }}/index.html
+          else
+            echo "::warning::${{ inputs.alps-profile }} not found. Skipping ALPS conversion."
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
