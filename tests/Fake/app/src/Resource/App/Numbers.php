@@ -8,9 +8,11 @@ class Numbers extends ResourceObject
 {
     /**
      * Get numbers
+     *
+     * @param int $count Number of items to return
      */
     #[JsonSchema(schema: 'numbers.json')]
-    public function onGet()
+    public function onGet(int $count = 10)
     {
         return $this;
     }

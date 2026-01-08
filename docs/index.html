@@ -119,19 +119,23 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/calendar</td>
-  <td class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get schedule</div></td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td><a href="#Calendar Event" class="schema-link">Calendar Event</a></td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get schedule</div></td>
+  <td><span class="param">date</span></td>
+  <td class="param-desc">Target date (YYYY-MM-DD format)</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+    </div></td>
+  <td rowspan="1"><a href="#Calendar Event" class="schema-link">Calendar Event</a></td>
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/card</td>
-  <td class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get card</div></td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td><a href="#Card" class="schema-link">Card</a></td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get card</div></td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">Card ID</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+    </div></td>
+  <td rowspan="1"><a href="#Card" class="schema-link">Card</a></td>
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/index</td>
@@ -143,19 +147,23 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/numbers</td>
-  <td class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get numbers</div></td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td><a href="#Numbers" class="schema-link">Numbers</a></td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get numbers</div></td>
+  <td><span class="param">count</span></td>
+  <td class="param-desc">Number of items to return</td>
+  <td><div class="extra-info">
+      <span class="badge type-int">int</span>
+    </div></td>
+  <td rowspan="1"><a href="#Numbers" class="schema-link">Numbers</a></td>
 </tr>
 <tr>
   <td rowspan="1" class="path-cell">/org</td>
-  <td class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get organization</div></td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get organization</div></td>
+  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td class="param-desc">Organization ID</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+    </div></td>
+  <td rowspan="1"></td>
 </tr>
 <tr>
   <td rowspan="8" class="path-cell">/person</td>
