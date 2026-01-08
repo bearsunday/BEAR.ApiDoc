@@ -1,51 +1,56 @@
 {
-  "id": "user.json",
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "user.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "User",
-  "description": "Schema for one user",
+  "description": "User account and profile information",
   "type": "object",
   "properties": {
     "id": {
       "type": "string",
-      "description": "The unique ID of the user",
+      "description": "Unique identifier for the user account",
+      "example": "usr_abc123",
       "maxLength": 30
     },
     "firstName": {
       "type": "string",
-      "description": "The first name of the user",
+      "description": "User's first/given name",
+      "example": "Jane",
       "maxLength": 30,
-      "pattern": "[a-z\\d~+-]+"
+      "pattern": "[a-zA-Z\\-']+"
     },
     "lastName": {
       "type": "string",
-      "description": "The last name of the user",
+      "description": "User's last/family name",
+      "example": "Smith",
       "maxLength": 30,
-      "pattern": "[a-z\\d~+-]+"
+      "pattern": "[a-zA-Z\\-']+"
     },
     "created": {
       "type": "string",
       "format": "date-time",
-      "description": "When the user record was created",
-      "example": "2018-01-01T12:00:00Z"
+      "description": "Timestamp when the account was created",
+      "example": "2024-01-10T08:00:00Z"
     },
     "modified": {
       "type": "string",
       "format": "date-time",
-      "description": "When the user record was last modified",
-      "example": "2018-01-01T12:00:00Z"
+      "description": "Timestamp of the last profile update",
+      "example": "2024-02-15T14:30:00Z"
     },
     "email": {
       "type": "string",
       "format": "email",
-      "description": "The email address of the user"
+      "description": "Primary email address for the account",
+      "example": "jane.smith@example.com"
     },
     "enabled": {
       "type": "boolean",
-      "description": "Whether the user is enabled or not"
+      "description": "Whether the account is active and can login",
+      "example": true
     },
     "age": {
       "$ref": "age.json",
-      "description": "The age of the user",
+      "description": "User's age in years",
       "example": 29
     }
   },

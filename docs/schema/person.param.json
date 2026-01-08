@@ -1,10 +1,14 @@
 {
-  "$id": "person.json",
+  "$id": "person.param.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Person",
-  "description": "Personal identity and profile information",
+  "title": "Person request parameters",
   "type": "object",
   "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier of the person",
+      "example": "person_12345"
+    },
     "firstName": {
       "type": "string",
       "description": "The person's first/given name",
@@ -19,13 +23,12 @@
       "maxLength": 50
     },
     "age": {
-      "description": "Age in years (must be 0 or greater)",
       "type": "integer",
+      "description": "Age in years",
+      "example": 30,
       "minimum": 0,
-      "maximum": 150,
-      "example": 30
+      "maximum": 150
     }
   },
-  "required": ["firstName"],
   "additionalProperties": false
 }

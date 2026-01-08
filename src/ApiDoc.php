@@ -10,7 +10,6 @@ use BEAR\ApiDoc\Exception\NotWritableException;
 use FilesystemIterator;
 use Generator;
 use Koriym\AppStateDiagram\LabelName;
-use Koriym\AppStateDiagram\MdToHtml;
 use Koriym\AppStateDiagram\Profile;
 use Koriym\AppStateDiagram\SemanticDescriptor;
 use RecursiveDirectoryIterator;
@@ -75,12 +74,19 @@ final class ApiDoc
 
     public function dumpHtml(Config $config, DocClass $docClass): void
     {
-        $genMarkDown = $this->getGenMarkdown($config, 'html', $docClass);
-        $mdToHtml = new MdToHtml();
-        foreach ($genMarkDown as $file => [$markdown, $path]) {
-            $title = sprintf('%s %s', $config->appName, $path);
-            $html = $mdToHtml($title, $markdown);
-            $this->filePutContents($file . '.html', $html);
+        unset($docClass);
+
+        $generator = new HtmlGenerator(
+            $config,
+            $config->requestSchemaDir,
+            $config->responseSchemaDir
+        );
+        $html = $generator->generate();
+        $outputFile = sprintf('%s/index.html', $config->docDir);
+        $this->filePutContents($outputFile, $html);
+
+        if ($config->responseSchemaDir) {
+            $this->copySchemas($config);
         }
     }
 

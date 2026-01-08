@@ -2,20 +2,30 @@
   "$id": "person.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Person",
+  "description": "Personal identity and profile information",
   "type": "object",
   "properties": {
     "firstName": {
       "type": "string",
-      "description": "名前"
+      "description": "The person's first/given name",
+      "example": "John",
+      "minLength": 1,
+      "maxLength": 50
     },
     "familyName": {
-      "type": "string"
+      "type": "string",
+      "description": "The person's family/last name",
+      "example": "Doe",
+      "maxLength": 50
     },
     "age": {
-      "description": "Age in years which must be equal to or greater than zero.",
+      "description": "Age in years (must be 0 or greater)",
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "maximum": 150,
+      "example": 30
     }
   },
+  "required": ["firstName"],
   "additionalProperties": false
 }

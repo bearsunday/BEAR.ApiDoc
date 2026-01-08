@@ -13,6 +13,7 @@ use function assert;
 use function implode;
 use function in_array;
 use function is_array;
+use function is_bool;
 use function is_object;
 use function is_string;
 use function json_encode;
@@ -21,6 +22,7 @@ use function sprintf;
 use function ucfirst;
 
 use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
 
 /**
  * @psalm-pure
@@ -124,7 +126,16 @@ EOT;
             $type = $this->getType($property, $schema);
             $constraint = new SchemaConstraints($property, $this->file);
             $isOptional = ! in_array($name, $required);
-            $example = property_exists($property, 'example') ? (string) $property->example : '';
+            /** @psalm-suppress MixedAssignment */
+            $exampleValue = property_exists($property, 'example') ? $property->example : '';
+            if (is_array($exampleValue) || is_object($exampleValue)) {
+                $example = json_encode($exampleValue, JSON_THROW_ON_ERROR);
+            } elseif (is_bool($exampleValue)) {
+                $example = $exampleValue ? 'true' : 'false';
+            } else {
+                $example = (string) $exampleValue;
+            }
+
             /** @psalm-suppress InaccessibleProperty */
             $this->props[$name] = new SchemaProp($name, $type, $isOptional, $this->getDescription($titleDescription, $name), $constraint, $example);
         }
@@ -163,7 +174,7 @@ EOT;
     {
         if (is_array($type)) {
             $type = array_map(static fn (string $item): string => $item === 'integer' ? 'int' : $item, $type);
-            $type = implode('&#124;', $type);
+            $type = implode('|', $type);
         }
 
         return $type === 'integer' ? 'int' : $type;
