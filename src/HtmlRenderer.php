@@ -360,7 +360,7 @@ HTML;
 
         foreach ($objects as $name => $object) {
             if ($object['arrayItemType'] !== null) {
-                $arraysHtml .= $this->renderArrayType($name, $object['arrayItemType']);
+                $arraysHtml .= $this->renderArrayType($name, $object['arrayItemType'], $object['schemaFile']);
             } else {
                 $objectsHtml .= $this->renderObject($name, $object, $objectRelations);
             }
@@ -369,7 +369,7 @@ HTML;
         return [$objectsHtml, $arraysHtml];
     }
 
-    private function renderArrayType(string $name, string $itemType): string
+    private function renderArrayType(string $name, string $itemType, ?string $schemaFile): string
     {
         $sanitizedId = $this->sanitizeId($name);
         $escapedName = htmlspecialchars($name);
@@ -377,9 +377,15 @@ HTML;
         $itemTypeSanitized = $this->sanitizeId($itemTypeCapitalized);
         $itemLink = sprintf('<a href="#%s">%s</a>', htmlspecialchars($itemTypeSanitized), htmlspecialchars($itemTypeCapitalized));
 
+        // Schema file link
+        $schemaLink = '';
+        if ($schemaFile !== null) {
+            $schemaLink = sprintf('<a href="schema/%s" class="schema-file-link" title="JSON Schema">📄</a> ', htmlspecialchars($schemaFile));
+        }
+
         return <<<HTML
 <div class="object-section" id="{$sanitizedId}">
-<h3 class="object-name">{$escapedName}</h3>
+<h3 class="object-name">{$schemaLink}{$escapedName}</h3>
 <p class="array-type">array of {$itemLink}</p>
 </div>
 
@@ -415,9 +421,15 @@ HTML;
             }
         }
 
+        // Schema file link
+        $schemaLink = '';
+        if ($object['schemaFile'] !== null) {
+            $schemaLink = sprintf('<a href="schema/%s" class="schema-file-link" title="JSON Schema">📄</a> ', htmlspecialchars($object['schemaFile']));
+        }
+
         return <<<HTML
 <div class="object-section" id="{$sanitizedId}">
-<h3 class="object-name">{$escapedName}</h3>
+<h3 class="object-name">{$schemaLink}{$escapedName}</h3>
 <table>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
