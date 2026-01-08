@@ -15,6 +15,7 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use SplFileInfo;
 
+use function dirname;
 use function file_get_contents;
 use function in_array;
 use function is_file;
@@ -88,7 +89,15 @@ final class HtmlGenerator
             $this->objectRelations,
             $links,
             $this->extractAlpsHtmlPath($links),
+            $this->loadLocalCss(),
         );
+    }
+
+    private function loadLocalCss(): ?string
+    {
+        $cssFile = dirname(__DIR__) . '/docs/apidoc.css';
+
+        return is_file($cssFile) ? (string) file_get_contents($cssFile) : null;
     }
 
     /**

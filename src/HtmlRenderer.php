@@ -49,11 +49,11 @@ final class HtmlRenderer
         array $objectRelations,
         array $links = [],
         string $alpsHtmlPath = 'alps.html',
+        ?string $localCss = null,
     ): string {
         $this->alpsHtmlPath = $alpsHtmlPath;
         $escapedTitle = htmlspecialchars($title ?: 'API Documentation');
         $escapedDescription = $this->convertMarkdownLinks($description ?: '');
-        $css = $this->getCss();
         $endpointsHtml = $this->renderEndpoints($endpoints);
         [$objectsHtml, $arraysHtml] = $this->renderObjectsAndArrays($objects, $objectRelations);
         $linksHtml = $this->renderLinks($links);
@@ -62,6 +62,10 @@ final class HtmlRenderer
         $arraysSection = $arraysHtml !== '' ? "<h2>Arrays</h2>\n{$arraysHtml}" : '';
         $linksSection = $linksHtml !== '' ? "<h2>Links</h2>\n{$linksHtml}" : '';
 
+        $cssHtml = $localCss !== null
+            ? sprintf('<style>%s</style>', $localCss)
+            : '<link rel="stylesheet" href="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.css">';
+
         return <<<HTML
 <!DOCTYPE html>
 <html lang="en">
@@ -69,9 +73,7 @@ final class HtmlRenderer
 <meta charset="utf-8">
 <title>{$escapedTitle}</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css">
-<style>
-{$css}
-</style>
+{$cssHtml}
 </head>
 <body>
 <div class="markdown-body">
@@ -564,71 +566,5 @@ HTML;
         }
 
         return '<ul class="doc-links">' . $items . '</ul>';
-    }
-
-    private function getCss(): string
-    {
-        return <<<'CSS'
-html{scroll-behavior:smooth;}
-body{margin:0;padding:0;background:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
-.markdown-body{background:#fff;padding:45px;max-width:none;margin:0 auto;overflow:visible;}
-a{cursor:pointer;color:#0366d6;text-decoration:none;}
-a:hover{text-decoration:underline;}
-h1,h2,h3{margin-top:0;}
-/* Type indicator */
-.ti{display:inline-block;width:10px;height:10px;margin-right:4px;border:1px solid #000;vertical-align:middle;}
-.ti.safe{background-color:#00A86B;}
-.ti.unsafe{background-color:#FF4136;}
-.ti.idempotent{background-color:#D4A000;}
-.ti.semantic{background-color:#fff;}
-/* Method cell */
-.method-cell{min-width:200px;}
-.method-title{font-size:0.85em;color:#24292f;font-weight:500;margin-top:4px;}
-.method-desc{font-size:0.8em;color:#57606a;margin-top:2px;}
-.method-alps{font-size:0.75em;margin-top:4px;}
-.alps-link{color:#8957e5;text-decoration:none;font-family:'SFMono-Regular',Consolas,monospace;}
-.alps-link:hover{text-decoration:underline;}
-/* Table */
-table{width:100%;border-collapse:collapse;margin:20px 0;}
-th,td{padding:6px 10px;border:1px solid #ddd;text-align:left;vertical-align:top;}
-th{background:#f6f8fa;font-weight:600;}
-tr:hover{background-color:#f5f5f5;}
-/* Path cell */
-.path-cell{font-family:'SFMono-Regular',Consolas,monospace;font-weight:600;}
-/* Param */
-.param{font-family:'SFMono-Regular',Consolas,monospace;}
-.alps-param{color:#8957e5;text-decoration:none;}
-.alps-param:hover{text-decoration:underline;}
-.req{color:#cf222e;}
-.param-desc{font-size:0.85em;color:#57606a;}
-/* Extra Info */
-.extra-info{display:flex;flex-direction:column;gap:2px;align-items:flex-start;}
-.extra-item{display:flex;align-items:center;line-height:normal;}
-/* Badge style - outline */
-.badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:0.75em;margin-right:4px;vertical-align:middle;width:fit-content;border:1px solid;}
-.badge.type-string{background:#EAF5FF;border-color:#5C9EE8;color:#0550ae;}
-.badge.type-int{background:#F5F0FF;border-color:#D8B9FF;color:#8957e5;}
-.badge.type-integer{background:#F5F0FF;border-color:#D8B9FF;color:#8957e5;}
-.badge.type-bool{background:#DAFBE1;border-color:#A7F3D0;color:#116329;}
-.badge.type-boolean{background:#DAFBE1;border-color:#A7F3D0;color:#116329;}
-.badge.type-array{background:#FFFBEB;border-color:#FDE68A;color:#92400E;}
-.badge.type-object{background:#FFF0F5;border-color:#FFB6C1;color:#CF222E;}
-.badge.type-mixed{background:#f6f8fa;border-color:#d0d7de;color:#57606a;}
-.badge.constraint{background:#f6f8fa;border-color:#d0d7de;color:#57606a;}
-.badge.format{background:#DAFBE1;border-color:#A7F3D0;color:#116329;}
-.badge.embed{background:#f6f8fa;border-color:#d0d7de;color:#57606a;}
-.badge.link{background:#f6f8fa;border-color:#d0d7de;color:#57606a;}
-.badge.href{background:#FFF4E6;border-color:#FFB366;color:#CC5500;font-family:'SFMono-Regular',Consolas,monospace;}
-.badge.example{background:#FFFBEB;border-color:#FDE68A;color:#92400E;font-family:'SFMono-Regular',Consolas,monospace;}
-/* Sticky rows */
-.embed-row,.link-row{background:#f6f8fa;}
-/* Response */
-.schema-link{font-family:'SFMono-Regular',Consolas,monospace;font-weight:500;}
-/* Object table */
-.object-section{margin:30px 0;}
-.object-name{font-family:'SFMono-Regular',Consolas,monospace;font-weight:600;font-size:1.1em;}
-.prop-name{font-family:'SFMono-Regular',Consolas,monospace;color:#000;}
-.prop-name a{color:#0366d6;text-decoration:none;}
-CSS;
     }
 }
