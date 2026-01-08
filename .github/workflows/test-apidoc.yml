@@ -5,10 +5,9 @@ on:
     branches: [deploy]
 
 jobs:
-  test-alps:
+  test-html:
     uses: ./.github/workflows/apidoc.yml
     with:
-      format: 'alps'
-      alps-profile: 'docs/alps.json'
+      format: 'html'
       docs-path: 'docs/api'
       publish-to: 'artifact-only'
