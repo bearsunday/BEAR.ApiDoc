@@ -23,10 +23,10 @@ jobs:
           node-version: '20'
 
       # HTML
-      - run: ./vendor/bin/apidoc -c tests/apidoc.html.xml
+      - run: ./vendor/bin/apidoc -c=tests/apidoc.html.xml
 
       # OpenAPI
-      - run: ./vendor/bin/apidoc -c tests/apidoc.openapi.xml
+      - run: ./vendor/bin/apidoc -c=tests/apidoc.openapi.xml
       - run: npm install -g @redocly/cli
       - run: redocly build-docs docs/openapi/openapi.json -o docs/openapi/index.html
 
