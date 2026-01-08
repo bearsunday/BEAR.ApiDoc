@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
@@ -30,7 +31,7 @@ class JsonSchemaTest extends TestCase
         return $jsonSchema;
     }
 
-    /** @depends testNewInstance */
+    #[Depends('testNewInstance')]
     public function testPropRequired(Schema $jsonSchema): void
     {
         $filePath = $jsonSchema->file->getPath() . '/' . $jsonSchema->file->getFilename();
