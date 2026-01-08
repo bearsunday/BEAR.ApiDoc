@@ -37,7 +37,15 @@
     <doc>Validation constraint enforced at runtime. Values not meeting these constraints are rejected with a validation error.</doc>
   </descriptor>
 
-  <descriptor id="link" type="semantic" title="Documentation Link">
+  <descriptor id="embed" type="semantic" title="Embedded Resource">
+    <doc>Resource embedded via #[Embed] annotation. The related resource is fetched and included in the response automatically. rel indicates the relationship, src is the resource URI.</doc>
+  </descriptor>
+
+  <descriptor id="rel" type="safe" title="Hypermedia Link">
+    <doc>Hypermedia link via #[Link] annotation (HATEOAS). Clients can discover related actions without hardcoding URIs. rel indicates the relationship, href is the link template.</doc>
+  </descriptor>
+
+  <descriptor id="docLink" type="semantic" title="Documentation Link">
     <doc>Links configured in apidoc.xml. Common links: openapi (OpenAPI spec for tooling), schemas (JSON Schema index for validation/form generation).</doc>
   </descriptor>
 
