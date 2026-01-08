@@ -67,7 +67,7 @@ final class Config
     public $description;
 
     /**
-     * @var array<SimpleXMLElement>
+     * @var list<SimpleXMLElement>
      * @readonly
      */
     public $links;
