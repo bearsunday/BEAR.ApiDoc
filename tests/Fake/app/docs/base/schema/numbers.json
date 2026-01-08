@@ -6,7 +6,10 @@
   "items": {
     "type": "integer",
     "title": "Today's lucky numbers",
-    "examples": [7, 777],
-    "uniqueItems": true
-  }
+    "examples": [
+      7,
+      777
+    ]
+  },
+  "uniqueItems": true
 }
