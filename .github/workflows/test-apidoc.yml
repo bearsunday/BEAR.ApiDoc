@@ -6,8 +6,19 @@ on:
 
 jobs:
   test-html:
-    uses: ./.github/workflows/apidoc.yml
-    with:
-      format: 'html'
-      docs-path: 'docs/api'
-      publish-to: 'artifact-only'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - run: composer install --prefer-dist --no-progress
+
+      - run: ./bin/apidoc -c tests/apidoc.html.xml
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api-docs-html
+          path: docs
