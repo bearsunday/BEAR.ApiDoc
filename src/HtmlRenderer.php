@@ -375,7 +375,12 @@ HTML;
         $escapedName = htmlspecialchars($name);
         $itemTypeCapitalized = ucfirst($itemType);
         $itemTypeSanitized = $this->sanitizeId($itemTypeCapitalized);
-        $itemLink = sprintf('<a href="#%s">%s</a>', htmlspecialchars($itemTypeSanitized), htmlspecialchars($itemTypeCapitalized));
+
+        // Only link if item type is a known Object
+        $itemDisplay = htmlspecialchars($itemTypeCapitalized);
+        if (isset($this->knownObjects[$itemTypeSanitized])) {
+            $itemDisplay = sprintf('<a href="#%s">%s</a>', htmlspecialchars($itemTypeSanitized), htmlspecialchars($itemTypeCapitalized));
+        }
 
         // Schema file link
         $schemaLink = '';
@@ -386,7 +391,7 @@ HTML;
         return <<<HTML
 <div class="object-section" id="{$sanitizedId}">
 <h3 class="object-name">{$schemaLink}{$escapedName}</h3>
-<p class="array-type">array of {$itemLink}</p>
+<p class="array-type">array of {$itemDisplay}</p>
 </div>
 
 HTML;
