@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alps version="1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
+
+  <title>API Documentation</title>
+
+  <descriptor id="endpoint" type="semantic" title="API endpoint"/>
+  <descriptor id="method" type="semantic" title="HTTP method"/>
+  <descriptor id="param" type="semantic" title="Request parameter"/>
+  <descriptor id="response" type="semantic" title="Response schema"/>
+
+</alps>

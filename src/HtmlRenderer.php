@@ -77,7 +77,7 @@ final class HtmlRenderer
             ? sprintf('<style>%s</style>', $localCss)
             : '<link rel="stylesheet" href="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.css">';
 
-        $profileLink = sprintf('<link rel="profile" href="%s">', htmlspecialchars($this->alpsHtmlPath));
+        $profileLink = '<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/apidoc.xml">';
 
         return <<<HTML
 <!DOCTYPE html>
