@@ -9,8 +9,8 @@
     <title>API Doc Title</title>
     <description>This is the description of API Doc</description>
     <links>
-        <link rel="doc" href="http://www.google.com/" />
-        <link rel="foo" href="http://www.google.com/" />
+        <link rel="docs" href="https://example.com/docs" />
+        <link rel="support" href="https://example.com/support" />
     </links>
     <alps>Fake/app/alps.json</alps>
 </apidoc>
