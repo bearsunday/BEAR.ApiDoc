@@ -5,20 +5,6 @@ on:
     branches: [deploy]
 
 jobs:
-  test-html:
-    uses: ./.github/workflows/apidoc.yml
-    with:
-      format: 'html'
-      docs-path: 'docs/html'
-      publish-to: 'artifact-only'
-
-  test-openapi:
-    uses: ./.github/workflows/apidoc.yml
-    with:
-      format: 'openapi'
-      docs-path: 'docs/openapi'
-      publish-to: 'artifact-only'
-
   test-alps:
     uses: ./.github/workflows/apidoc.yml
     with:

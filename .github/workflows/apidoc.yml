@@ -44,7 +44,8 @@ jobs:
           if [ -f "./vendor/bin/apidoc" ]; then
             ./vendor/bin/apidoc
           else
-            echo "::warning::vendor/bin/apidoc not found. Run 'composer require --dev bear/api-doc' first."
+            echo "::error::vendor/bin/apidoc not found. Run 'composer require --dev bear/api-doc' first."
+            exit 1
           fi
 
       # Node.js steps (for openapi and alps formats)
@@ -60,7 +61,8 @@ jobs:
             npm install -g @redocly/cli
             redocly build-docs ${{ inputs.docs-path }}/openapi.json -o ${{ inputs.docs-path }}/index.html
           else
-            echo "::warning::${{ inputs.docs-path }}/openapi.json not found. Skipping Redocly conversion."
+            echo "::error::${{ inputs.docs-path }}/openapi.json not found."
+            exit 1
           fi
 
       # ALPS to HTML conversion
