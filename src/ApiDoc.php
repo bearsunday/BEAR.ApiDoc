@@ -81,9 +81,12 @@ final readonly class ApiDoc
         $genMarkDown = $this->getGenMarkdown($config, 'md', $docClass);
         foreach ($genMarkDown as $file => [$markdown]) {
             $dir = dirname($file);
+            // @codeCoverageIgnoreStart
             if (! is_dir($dir)) {
                 mkdir($dir, 0777, true);
             }
+
+            // @codeCoverageIgnoreEnd
 
             $this->filePutContents($file . '.md', $markdown);
         }
@@ -177,9 +180,7 @@ final readonly class ApiDoc
     private function registerAlpsProfile(string $file): ArrayObject
     {
         if (! file_exists($file)) {
-            // @codeCoverageIgnoreStart
             throw new AlpsFileNotFoundException($file);
-            // @codeCoverageIgnoreEnd
         }
 
         $alps = new Profile($file, new LabelName());

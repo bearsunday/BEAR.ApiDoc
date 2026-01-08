@@ -13,6 +13,7 @@ use BEAR\Resource\ResourceObject;
  *
  * Manage user accounts and profile information.
  */
+#[Alps('User')]
 class User extends ResourceObject
 {
     /**

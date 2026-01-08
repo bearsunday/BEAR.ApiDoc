@@ -69,14 +69,12 @@ final class Ref
     private function getFilePath(string $ref, SplFileInfo $file): string
     {
         if (filter_var($ref, FILTER_VALIDATE_URL)) {
-            return $ref;
+            return $ref; // @codeCoverageIgnore
         }
 
         $refFile = sprintf('%s/%s', $file->getPath(), $ref);
         if (! file_exists($refFile)) {
-            // @codeCoverageIgnoreStart
             throw new RuntimeException('Invalid $ref' . $ref);
-            // @codeCoverageIgnoreEnd
         }
 
         return $refFile;

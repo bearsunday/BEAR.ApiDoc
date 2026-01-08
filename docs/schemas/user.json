@@ -52,6 +52,25 @@
       "$ref": "age.json",
       "description": "User's age in years",
       "example": 29
+    },
+    "_links": {
+      "type": "object",
+      "properties": {
+        "self": {
+          "type": "object",
+          "properties": {
+            "href": {"type": "string"}
+          }
+        }
+      }
+    },
+    "_embedded": {
+      "type": "object",
+      "properties": {
+        "tickets": {
+          "type": "array"
+        }
+      }
     }
   },
   "required": ["firstName", "lastName", "age"]

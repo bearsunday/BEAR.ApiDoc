@@ -126,16 +126,14 @@ final class Config
             $jsonSchemaDir = $injector->getInstance('', 'json_schema_dir');
             assert(is_string($jsonSchemaDir));
             $this->responseSchemaDir = $jsonSchemaDir;
-            // @codeCoverageIgnoreStart
-        } catch (Unbound) {
+        } catch (Unbound) { // @codeCoverageIgnore
         }
 
         try {
             $jsonValidateDir = $injector->getInstance('', 'json_validate_dir');
             assert(is_string($jsonValidateDir));
             $this->requestSchemaDir = $jsonValidateDir;
-            // @codeCoverageIgnoreStart
-        } catch (Unbound) {
+        } catch (Unbound) { // @codeCoverageIgnore
         }
 
         $this->modelRepository = new ModelRepository();
@@ -162,9 +160,8 @@ final class Config
             $routerContainer = $injector->getInstance(RouterContainer::class);
 
             return $routerContainer->getMap();
-            // @codeCoverageIgnoreStart
-        } catch (Unbound) {
-            return null;
+        } catch (Unbound) { // @codeCoverageIgnore
+            return null; // @codeCoverageIgnore
         }
     }
 }

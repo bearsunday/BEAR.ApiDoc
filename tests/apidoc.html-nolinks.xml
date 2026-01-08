@@ -4,10 +4,7 @@
         xsi:noNamespaceSchemaLocation="../apidoc.xsd">
     <appName>FakeVendor\FakeProject</appName>
     <scheme>app</scheme>
-    <docDir>docs/md</docDir>
-    <format>md</format>
-    <title>Markdown API Docs</title>
-    <links>
-        <link rel="home" href="https://example.com" />
-    </links>
+    <docDir>docs/html-nolinks</docDir>
+    <format>html</format>
+    <title>API Doc Without Links</title>
 </apidoc>

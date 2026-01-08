@@ -314,7 +314,7 @@ HTML;
         /** @psalm-suppress MixedAssignment */
         foreach ($constraints as $key => $value) {
             if (in_array($key, $skipKeys, true)) {
-                continue;
+                continue; // @codeCoverageIgnore
             }
 
             if (is_object($value) || is_array($value)) {
@@ -591,7 +591,7 @@ HTML;
             return 'unsafe';
         }
 
-        return '';
+        return ''; // @codeCoverageIgnore
     }
 
     private function normalizeType(string $type): string

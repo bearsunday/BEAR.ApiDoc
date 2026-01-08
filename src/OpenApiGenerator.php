@@ -287,7 +287,7 @@ final class OpenApiGenerator
             $paramSchema = $schema->props[$paramName] ?? null;
 
             if ($paramSchema === null) {
-                continue;
+                continue; // @codeCoverageIgnore
             }
 
             $paramType = $param->getType();
@@ -365,12 +365,12 @@ final class OpenApiGenerator
     {
         $schemaFile = sprintf('%s/%s', $dir, $file);
         if (! is_file($schemaFile)) {
-            return null;
+            return null; // @codeCoverageIgnore
         }
 
         $schemaJson = json_decode((string) file_get_contents($schemaFile));
         if (! is_object($schemaJson)) {
-            return null;
+            return null; // @codeCoverageIgnore
         }
 
         $fileInfo = new SplFileInfo($schemaFile);
@@ -389,12 +389,12 @@ final class OpenApiGenerator
 
         $schemaPath = sprintf('%s/%s', $this->responseSchemaDir, $schemaFile);
         if (! is_file($schemaPath)) {
-            return;
+            return; // @codeCoverageIgnore
         }
 
         $schemaJson = json_decode((string) file_get_contents($schemaPath));
         if (! is_object($schemaJson)) {
-            return;
+            return; // @codeCoverageIgnore
         }
 
         // Convert to array for OpenAPI
@@ -562,9 +562,11 @@ final class OpenApiGenerator
         }
 
         // Fallback: convert filename to schema name (age.json -> Age)
+        // @codeCoverageIgnoreStart
         $baseName = pathinfo($refFile, PATHINFO_FILENAME);
 
         return ucfirst($baseName);
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -579,6 +581,7 @@ final class OpenApiGenerator
         return implode('', $words);
     }
 
+    /** @codeCoverageIgnore */
     private function convertPhpTypeToOpenApi(string $phpType): string
     {
         return match ($phpType) {

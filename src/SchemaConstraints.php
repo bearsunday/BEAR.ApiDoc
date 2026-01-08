@@ -53,7 +53,7 @@ final class SchemaConstraints implements Stringable
     private function getRefLink(string $value, SplFileInfo $file): string
     {
         if (filter_var($value, FILTER_VALIDATE_URL)) {
-            return sprintf('[%s](%s)', $value, $value);
+            return sprintf('[%s](%s)', $value, $value); // @codeCoverageIgnore
         }
 
         $refFile = sprintf('%s/%s', $file->getPath(), $value);

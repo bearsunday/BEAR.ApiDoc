@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../apidoc.xsd">
+    <appName>NonExistentVendor\NonExistentProject</appName>
+    <scheme>app</scheme>
+    <docDir>docs/invalid-app</docDir>
+    <format>html</format>
+    <title>Invalid App Test</title>
+</apidoc>

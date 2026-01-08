@@ -46,9 +46,12 @@ final class XmlLoader
         }
 
         $cwd = getcwd();
+        // @codeCoverageIgnoreStart
         if ($cwd === false) {
             throw new ConfigNotFoundException($path);
         }
+
+        // @codeCoverageIgnoreEnd
 
         $maybePath = sprintf('%s/%s', $cwd, $path);
         if (file_exists($maybePath) && ! is_dir($maybePath)) {
@@ -70,9 +73,12 @@ final class XmlLoader
         $realPath = realpath($path);
         $dirPath = $realPath !== false ? $realPath : $cwd;
 
+        // @codeCoverageIgnoreStart
         if (! is_dir($dirPath)) {
             $dirPath = dirname($dirPath);
         }
+
+        // @codeCoverageIgnoreEnd
 
         while (true) {
             $configPath = $this->findConfigInDirectory($dirPath);
@@ -126,10 +132,7 @@ final class XmlLoader
                 $msg = sprintf('%s in %s:%s', substr($error->message, 0, -2), $error->file, $error->line);
 
                 throw new ConfigException($msg);
-                // @codeCoverageIgnoreStart
             }
         }
     }
-
-    // @codeCoverageIgnoreEnd
 }

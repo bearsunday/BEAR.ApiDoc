@@ -27,5 +27,8 @@
     }
   },
   "required": ["firstName"],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "examples": [
+    {"firstName": "John", "familyName": "Doe", "age": 30}
+  ]
 }

@@ -66,9 +66,7 @@ final class DocParam implements Stringable
     {
         $namedType = $parameter->getType();
         if (! $namedType instanceof ReflectionNamedType) {
-            // @codeCoverageIgnoreStart
             return '';
-            // @codeCoverageIgnoreEnd
         }
 
         return $namedType->getName();

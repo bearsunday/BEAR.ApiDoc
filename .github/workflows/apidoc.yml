@@ -8,7 +8,7 @@ on:
         default: '8.2'
       format:
         type: string
-        default: 'apidoc'  # Comma-separated: apidoc, md, openapi, alps
+        default: 'html'  # Comma-separated: html (apidoc), md, openapi, alps
       alps-profile:
         type: string
         default: ''  # ALPS profile path (required when format: alps)
@@ -30,16 +30,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # PHP steps (for apidoc, md, openapi formats)
-      - if: contains(inputs.format, 'apidoc') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+      # PHP steps (for html, md, openapi formats)
+      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ inputs.php-version }}
 
-      - if: contains(inputs.format, 'apidoc') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
         run: composer install --prefer-dist --no-progress
 
-      - if: contains(inputs.format, 'apidoc') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
         run: |
           if [ -f "./vendor/bin/apidoc" ]; then
             ./vendor/bin/apidoc
