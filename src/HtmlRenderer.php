@@ -33,10 +33,10 @@ use const JSON_UNESCAPED_UNICODE;
 final class HtmlRenderer
 {
     /**
-     * @param array<string, array<string, HtmlMethodArray>>                                                                             $endpoints
-     * @param array<string, HtmlObjectArray>                                                                                            $objects
-     * @param array<string, array{embeds: array<array{rel: string, target: string}>, links: array<array{rel: string, target: string}>}> $objectRelations
-     * @param array<DocLink>                                                                                                            $links
+     * @param array<string, array<string, HtmlMethodArray>>                                                                                                       $endpoints
+     * @param array<string, HtmlObjectArray>                                                                                                                      $objects
+     * @param array<string, array{embeds: array<array{rel: string, href: string, title: string}>, links: array<array{rel: string, href: string, title: string}>}> $objectRelations
+     * @param array<DocLink>                                                                                                                                      $links
      */
     public function render(
         string $title,
@@ -198,7 +198,7 @@ HTML;
     {
         $typeClass = match ($method) {
             'GET' => 'safe',
-            'PUT' => 'idempotent',
+            'PUT', 'DELETE' => 'idempotent',
             default => 'unsafe',
         };
 
@@ -326,8 +326,8 @@ HTML;
     }
 
     /**
-     * @param array<string, HtmlObjectArray>                                                                                            $objects
-     * @param array<string, array{embeds: array<array{rel: string, target: string}>, links: array<array{rel: string, target: string}>}> $objectRelations
+     * @param array<string, HtmlObjectArray>                                                                                                                      $objects
+     * @param array<string, array{embeds: array<array{rel: string, href: string, title: string}>, links: array<array{rel: string, href: string, title: string}>}> $objectRelations
      *
      * @return array{string, string}
      */
@@ -363,8 +363,8 @@ HTML;
     }
 
     /**
-     * @param HtmlObjectArray                                                                                                           $object
-     * @param array<string, array{embeds: array<array{rel: string, target: string}>, links: array<array{rel: string, target: string}>}> $objectRelations
+     * @param HtmlObjectArray                                                                                                                                     $object
+     * @param array<string, array{embeds: array<array{rel: string, href: string, title: string}>, links: array<array{rel: string, href: string, title: string}>}> $objectRelations
      */
     private function renderObject(string $name, array $object, array $objectRelations): string
     {
@@ -476,24 +476,26 @@ HTML;
     }
 
     /**
-     * @param array{rel: string, target: string} $relation
+     * @param array{rel: string, href: string, title: string} $relation
      */
     private function renderRelationRow(array $relation, string $type): string
     {
         $rowClass = $type === 'embed' ? 'embed-row' : 'link-row';
         $rel = htmlspecialchars($relation['rel']);
-        $target = htmlspecialchars($relation['target']);
-        $description = ucfirst($rel);
+        $href = htmlspecialchars($relation['href']);
+        $title = $relation['title'] !== '' ? htmlspecialchars($relation['title']) : '';
         $transitionType = $type === 'embed' ? 'semantic' : $this->getTransitionType($relation['rel']);
         $indicator = $transitionType !== '' ? sprintf('<span class="ti %s"></span>', $transitionType) : '';
+        $hrefLabel = $type === 'embed' ? 'src' : 'href';
 
         return <<<HTML
 <tr class="{$rowClass}">
-  <td class="prop-name">{$indicator}<a href="#{$target}">{$rel}</a></td>
-  <td>{$description}</td>
+  <td class="prop-name">{$indicator}{$rel}</td>
+  <td class="param-desc">{$title}</td>
   <td>
     <div class="extra-info">
       <span class="badge {$type}">{$type}</span>
+      <span class="badge href">{$hrefLabel}: {$href}</span>
     </div>
   </td>
 </tr>
@@ -566,7 +568,7 @@ h1,h2,h3{margin-top:0;}
 /* Type indicator */
 .ti{display:inline-block;width:10px;height:10px;margin-right:4px;border:1px solid #000;vertical-align:middle;}
 .ti.safe{background-color:#00A86B;}
-.ti.unsafe{background-color:#FF91A4;}
+.ti.unsafe{background-color:#FF4136;}
 .ti.idempotent{background-color:#D4A000;}
 .ti.semantic{background-color:#fff;}
 /* Method cell */
@@ -606,6 +608,7 @@ tr:hover{background-color:#f5f5f5;}
 .badge.format{background:#DAFBE1;border-color:#A7F3D0;color:#116329;}
 .badge.embed{background:#f6f8fa;border-color:#d0d7de;color:#57606a;}
 .badge.link{background:#f6f8fa;border-color:#d0d7de;color:#57606a;}
+.badge.href{background:#FFF4E6;border-color:#FFB366;color:#CC5500;font-family:'SFMono-Regular',Consolas,monospace;}
 .badge.example{background:#FFFBEB;border-color:#FDE68A;color:#92400E;font-family:'SFMono-Regular',Consolas,monospace;}
 /* Sticky rows */
 .embed-row,.link-row{background:#f6f8fa;}

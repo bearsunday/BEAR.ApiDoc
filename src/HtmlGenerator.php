@@ -22,7 +22,6 @@ use function is_object;
 use function is_string;
 use function json_decode;
 use function pathinfo;
-use function preg_match;
 use function sprintf;
 use function strtoupper;
 use function substr;
@@ -201,7 +200,7 @@ final class HtmlGenerator
     }
 
     /**
-     * @return array{array<array{rel: string, src: string}>, array<array{rel: string, href: string}>}
+     * @return array{array<array{rel: string, src: string}>, array<array{rel: string, href: string, title: string}>}
      */
     private function extractEmbedsAndLinks(ReflectionMethod $method): array
     {
@@ -215,7 +214,7 @@ final class HtmlGenerator
 
         foreach ($method->getAttributes(Link::class) as $attr) {
             $link = $attr->newInstance();
-            $links[] = ['rel' => $link->rel, 'href' => $link->href];
+            $links[] = ['rel' => $link->rel, 'href' => $link->href, 'title' => $link->title];
         }
 
         return [$embeds, $links];
@@ -351,8 +350,8 @@ final class HtmlGenerator
     }
 
     /**
-     * @param array<array{rel: string, src: string}>  $embeds
-     * @param array<array{rel: string, href: string}> $links
+     * @param array<array{rel: string, src: string}>                 $embeds
+     * @param array<array{rel: string, href: string, title: string}> $links
      */
     private function addObjectRelations(string $objectName, array $embeds, array $links): void
     {
@@ -361,27 +360,24 @@ final class HtmlGenerator
         }
 
         foreach ($embeds as $embed) {
-            $target = $this->extractTargetFromUri($embed['src']);
+            // Embed has no title attribute, use semantic dictionary only
+            $title = $this->semanticDictionary[$embed['rel']] ?? '';
             $this->objectRelations[$objectName]['embeds'][] = [
                 'rel' => $embed['rel'],
-                'target' => $target,
+                'href' => $embed['src'],
+                'title' => $title,
             ];
         }
 
         foreach ($links as $link) {
-            $target = $this->extractTargetFromUri($link['href']);
+            // Priority: Link annotation title > semantic dictionary
+            $title = $link['title'] !== '' ? $link['title'] : ($this->semanticDictionary[$link['rel']] ?? '');
             $this->objectRelations[$objectName]['links'][] = [
                 'rel' => $link['rel'],
-                'target' => $target,
+                'href' => $link['href'],
+                'title' => $title,
             ];
         }
-    }
-
-    private function extractTargetFromUri(string $uri): string
-    {
-        preg_match('/^\/([a-z_-]+)/i', $uri, $matches);
-
-        return isset($matches[1]) ? ucfirst($matches[1]) : ucfirst($uri);
     }
 
     private function normalizeType(string $type): string
