@@ -7,8 +7,11 @@ namespace BEAR\ApiDoc;
 use JsonSchema\Validator;
 use PHPUnit\Framework\TestCase;
 
+use function assert;
 use function file_get_contents;
 use function implode;
+use function is_array;
+use function is_string;
 use function json_decode;
 use function sprintf;
 
@@ -41,7 +44,10 @@ class OpenApiGeneratorTest extends TestCase
         $errors = $validator->getErrors();
         $errorMessages = [];
         foreach ($errors as $error) {
-            $errorMessages[] = sprintf('[%s] %s', $error['property'], $error['message']);
+            assert(is_array($error) && isset($error['property'], $error['message']));
+            $property = is_string($error['property']) ? $error['property'] : '';
+            $message = is_string($error['message']) ? $error['message'] : '';
+            $errorMessages[] = sprintf('[%s] %s', $property, $message);
         }
 
         $this->assertTrue(

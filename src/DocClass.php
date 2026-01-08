@@ -68,9 +68,7 @@ final class DocClass
 EOT;
     }
 
-    /**
-     * @param ReflectionClass<object> $class
-     */
+    /** @param ReflectionClass<object> $class */
     private function getAlpsSection(ReflectionClass $class): string
     {
         $attributes = $class->getAttributes(Alps::class);
@@ -90,9 +88,7 @@ EOT;
         return sprintf("**ALPS**: `%s`%s\n\n", $alpsIds, $semanticInfo);
     }
 
-    /**
-     * @param array<string> $ids
-     */
+    /** @param array<string> $ids */
     private function getSemanticInfo(array $ids): string
     {
         $info = [];

@@ -31,10 +31,7 @@ final class DocParam implements Stringable
      */
     private $type;
 
-    /**
-     * @var string
-     * @readonly
-     */
+    /** @var string */
     private $description;
 
     /**
@@ -52,9 +49,7 @@ final class DocParam implements Stringable
     /** @var ?SchemaConstraints */
     private $constraints = null;
 
-    /**
-     * @param ArrayObject<string, string> $semanticDictionary
-     */
+    /** @param ArrayObject<string, string> $semanticDictionary */
     public function __construct(
         ReflectionParameter $parameter,
         TagParam $tagParam,
@@ -114,9 +109,7 @@ final class DocParam implements Stringable
         }
     }
 
-    /**
-     * @psalm-external-mutation-free
-     */
+    /** @psalm-external-mutation-free */
     #[\Override]
     public function __toString(): string
     {

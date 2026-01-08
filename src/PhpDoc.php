@@ -9,14 +9,10 @@ use phpDocumentor\Reflection\DocBlockFactory;
 
 use const PHP_EOL;
 
-/**
- * @psalm-pure
- */
+/** @psalm-pure */
 final class PhpDoc
 {
-    /**
-     * @return array{0: string, 1:string, 2:string}
-     */
+    /** @return array{0: string, 1:string, 2:string} */
     public function __invoke(string $docComment): array
     {
         if (! $docComment) {

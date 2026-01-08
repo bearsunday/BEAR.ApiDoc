@@ -9,6 +9,7 @@ use SplFileInfo;
 
 use function assert;
 use function file_get_contents;
+use function is_object;
 use function json_decode;
 use function property_exists;
 
@@ -21,7 +22,8 @@ class SchemaPropTest extends TestCase
     {
         $file = __DIR__ . '/Fake/app/src/var/json_schema/person.json';
         $person = (object) json_decode((string) file_get_contents($file));
-        assert(property_exists($person, 'properties'));
+        assert(property_exists($person, 'properties') && is_object($person->properties));
+        assert(property_exists($person->properties, 'age') && is_object($person->properties->age));
         $age = $person->properties->age;
 
         $this->prop = new SchemaProp('name', 'type', true, 'desc', new SchemaConstraints($age, new SplFileInfo($file)), '');

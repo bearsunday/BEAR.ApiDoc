@@ -13,6 +13,7 @@ use function assert;
 use function explode;
 use function file_get_contents;
 use function in_array;
+use function is_array;
 use function json_decode;
 use function trim;
 
@@ -29,9 +30,7 @@ class JsonSchemaTest extends TestCase
         return $jsonSchema;
     }
 
-    /**
-     * @depends testNewInstance
-     */
+    /** @depends testNewInstance */
     public function testPropRequired(Schema $jsonSchema): void
     {
         $filePath = $jsonSchema->file->getPath() . '/' . $jsonSchema->file->getFilename();
@@ -39,7 +38,7 @@ class JsonSchemaTest extends TestCase
 
         foreach ($jsonSchema->props as $propName => $prop) {
             [, , , , $required] = explode('| ', (string) $prop);
-            assert(array_key_exists('required', $json));
+            assert(array_key_exists('required', $json) && is_array($json['required']));
             $expected = in_array($propName, $json['required'], true) ? 'Required' : 'Optional';
             $this->assertSame($expected, trim($required));
         }

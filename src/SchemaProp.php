@@ -8,9 +8,7 @@ use Stringable;
 
 use function sprintf;
 
-/**
- * @psalm-pure
- */
+/** @psalm-pure */
 
 final class SchemaProp implements Stringable
 {

@@ -20,7 +20,7 @@ final class AppMetaModule extends AbstractModule
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     #[\Override]
     protected function configure()

@@ -5,3 +5,9 @@ parameters:
     - tests
   excludePaths:
     - tests/Fake/*
+  ignoreErrors:
+    # PHPMD annotations are not PHPStan compatible
+    - '#PHPDoc tag @SuppressWarnings has invalid value#'
+    # ReflectionClass<T> is invariant in PHP
+    - '#ReflectionClass<BEAR\\Resource\\ResourceObject> given#'
+    - '#ReflectionClass<BEAR\\ApiDoc\\Fake\\Ro\\FakeParamDoc> given#'

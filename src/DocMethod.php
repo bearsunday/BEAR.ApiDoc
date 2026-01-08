@@ -36,9 +36,7 @@ final class DocMethod implements Stringable
     /** @var array<int, DocParam> */
     private $params;
 
-    /**
-     * @param ArrayObject<string, string> $semanticDictionary
-     */
+    /** @param ArrayObject<string, string> $semanticDictionary */
     public function __construct(
         private readonly ReflectionMethod $method,
         ?Schema $request,
@@ -49,6 +47,8 @@ final class DocMethod implements Stringable
         $this->httpMethod = substr($this->method->name, 2);
         $factory = DocBlockFactory::createInstance();
         $docComment = $this->method->getDocComment();
+        /** @var array<string, TagParam>|null $tagParams */
+        $tagParams = null;
         if (is_string($docComment)) {
             $docblock = $factory->create($docComment);
             $this->title = $docblock->getSummary();
@@ -56,8 +56,6 @@ final class DocMethod implements Stringable
             $tagParams = $this->getTagParams($docblock);
         }
 
-        /** @var ?array<string, TagParam> $tagParams */   // phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.NoAssignment
-        $tagParams ??= null;
         $this->params = $this->getDocParams($this->method, $tagParams, $request, $semanticDictionary);
     }
 
@@ -82,9 +80,7 @@ final class DocMethod implements Stringable
         return $docParams;
     }
 
-    /**
-     * @return array<string, TagParam>
-     */
+    /** @return array<string, TagParam> */
     private function getTagParams(DocBlock $docblock): array
     {
         $tagParams = [];
@@ -279,9 +275,7 @@ EOT;
         return sprintf("**ALPS**: `%s`%s\n\n", $alpsIds, $semanticInfo);
     }
 
-    /**
-     * @param array<string> $ids
-     */
+    /** @param array<string> $ids */
     private function getAlpsSemanticInfo(array $ids): string
     {
         $info = [];

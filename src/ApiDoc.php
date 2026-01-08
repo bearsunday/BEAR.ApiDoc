@@ -24,6 +24,7 @@ use function file_exists;
 use function file_put_contents;
 use function is_dir;
 use function is_object;
+use function is_string;
 use function mkdir;
 use function sprintf;
 use function substr;
@@ -122,9 +123,7 @@ final class ApiDoc
 
         // @codeCoverageIgnoreEnd
 
-    /**
-     * @return Generator<string, array{0: string, 1:string}>
-     */
+    /** @return Generator<string, array{0: string, 1:string}> */
     private function getGenMarkdown(Config $config, string $ext, DocClass $docClass): Generator
     {
         /** @var ArrayObject<string, string> $nullDictionary */
@@ -157,9 +156,7 @@ final class ApiDoc
         $this->copySchema($config->responseSchemaDir, $outputDir);
     }
 
-    /**
-     * @return ArrayObject<string, string>
-     */
+    /** @return ArrayObject<string, string> */
     private function registerAlpsProfile(string $file): ArrayObject
     {
         if (! file_exists($file)) {
@@ -180,17 +177,15 @@ final class ApiDoc
         return $semanticDictionary;
     }
 
-    /**
-     * @psalm-external-mutation-free
-     */
+    /** @psalm-external-mutation-free */
     private function getSemanticTitle(SemanticDescriptor $descriptor): string
     {
         if ($descriptor->title) {
             return $descriptor->title;
         }
 
-        if (is_object($descriptor->doc) && isset($descriptor->doc->value)) {
-            return (string) $descriptor->doc->value;
+        if (is_object($descriptor->doc) && isset($descriptor->doc->value) && is_string($descriptor->doc->value)) {
+            return $descriptor->doc->value;
         }
 
         if (isset($descriptor->def)) {

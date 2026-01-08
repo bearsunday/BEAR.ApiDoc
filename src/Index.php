@@ -24,9 +24,7 @@ final class Index implements Stringable
     /** @var TagLinks */
     private $links;
 
-    /**
-     * @param array<string, string> $paths
-     */
+    /** @param array<string, string> $paths */
     public function __construct(
         Config $config,
         private readonly array $paths,

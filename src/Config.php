@@ -30,83 +30,29 @@ use function sprintf;
 
 final class Config
 {
-    /**
-     * @var string
-     * @readonly
-     */
-    public $appName;
+    public readonly string $appName;
+    public readonly string $scheme;
+    public readonly string $docDir;
+    public readonly string $format;
+    public readonly string $title;
+    public readonly string $description;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $scheme;
+    /** @var list<SimpleXMLElement> */
+    public readonly array $links;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $docDir;
+    public string $alps = '';
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $format;
+    /** @var Generator<ResMeta> */
+    public readonly Generator $resourceFiles;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $title;
+    /** @var ArrayObject<string, string> */
+    public readonly ArrayObject $modelRepository;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $description;
+    /** @var array<string, string> */
+    public array $routes = [];
 
-    /**
-     * @var list<SimpleXMLElement>
-     * @readonly
-     */
-    public $links;
-
-    /**
-     * @var string
-     * @readonly
-     */
-    public $alps = '';
-
-    /**
-     * @var Generator<ResMeta>
-     * @readonly
-     */
-    public $resourceFiles;
-
-    /**
-     * @var ArrayObject<string, string>
-     * @readonly
-     */
-    public $modelRepository;
-
-    /**
-     * @var array<string, string>
-     * @readonly
-     */
-    public $routes = [];
-
-    /**
-     * @var string
-     * @readonly
-     */
-    public $requestSchemaDir = '';
-
-    /**
-     * @var string
-     * @readonly
-     */
-    public $responseSchemaDir = '';
+    public string $requestSchemaDir = '';
+    public string $responseSchemaDir = '';
 
     /**
      * @psalm-suppress
@@ -165,7 +111,6 @@ final class Config
         $appModule = new $appModuleClass($meta, new AppMetaModule($meta));
         /** @psalm-suppress all */
         $injector = new Injector($appModule);
-        assert($injector instanceof InjectorInterface);
         $this->resourceFiles = $meta->getGenerator($this->scheme);
 
         try {
@@ -173,7 +118,7 @@ final class Config
             assert(is_string($jsonSchemaDir));
             $this->responseSchemaDir = $jsonSchemaDir;
             // @codeCoverageIgnoreStart
-        } catch (Unbound $e) {
+        } catch (Unbound) {
         }
 
         try {
@@ -191,9 +136,9 @@ final class Config
             return;
         }
 
+        /** @var Route $route */
         foreach ($map as $route) {
             // @codeCoverageIgnoreEnd
-            assert($route instanceof Route);
             $this->routes[$route->name] = $route->path;
         }
     }
