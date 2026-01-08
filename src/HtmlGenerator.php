@@ -311,6 +311,7 @@ final class HtmlGenerator
         return new Schema($fileInfo, $schemaJson, $emptyDictionary);
     }
 
+    /** @SuppressWarnings("PHPMD.NPathComplexity") */
     private function addObject(string $name, Schema $schema): void
     {
         if (isset($this->objects[$name])) {
@@ -325,6 +326,7 @@ final class HtmlGenerator
         }
 
         // Load raw schema to access definitions
+        /** @psalm-suppress MixedAssignment */
         $schemaJson = json_decode((string) file_get_contents($schema->file->getPathname()));
 
         foreach ($schema->props as $propName => $prop) {
@@ -358,8 +360,11 @@ final class HtmlGenerator
                     $defName = ucfirst(substr($refPath, 14)); // Remove '#/definitions/'
                     $ref = $defName;
                     // Add the definition as an Object if it exists
+                    /** @psalm-suppress MixedPropertyFetch */
                     if (is_object($schemaJson) && isset($schemaJson->definitions->{lcfirst($defName)}) && is_object($schemaJson->definitions->{lcfirst($defName)})) {
+                        /** @psalm-suppress MixedPropertyFetch, MixedAssignment */
                         $definition = $schemaJson->definitions->{lcfirst($defName)};
+                        /** @psalm-suppress MixedPropertyFetch, MixedArgument */
                         if (isset($definition->properties) && is_object($definition->properties)) {
                             $this->addNestedObject($defName, $definition->properties);
                         }
