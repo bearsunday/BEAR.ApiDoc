@@ -483,7 +483,7 @@ HTML;
         $rel = htmlspecialchars($relation['rel']);
         $target = htmlspecialchars($relation['target']);
         $description = ucfirst($rel);
-        $transitionType = $this->getTransitionType($relation['rel']);
+        $transitionType = $type === 'embed' ? 'semantic' : $this->getTransitionType($relation['rel']);
         $indicator = $transitionType !== '' ? sprintf('<span class="ti %s"></span>', $transitionType) : '';
 
         return <<<HTML
@@ -564,22 +564,10 @@ a:hover{text-decoration:underline;}
 h1,h2,h3{margin-top:0;}
 /* Type indicator */
 .ti{display:inline-block;width:10px;height:10px;margin-right:4px;border:1px solid #000;vertical-align:middle;}
-.ti.safe{
-    background-color:#00A86B;
-    background-image:linear-gradient(45deg,#008000 25%,transparent 25%,transparent 75%,#008000 75%,#008000),linear-gradient(45deg,#008000 25%,transparent 25%,transparent 75%,#008000 75%,#008000);
-    background-size:6px 6px;
-    background-position:0 0,3px 3px;
-}
-.ti.unsafe{
-    background-color:#FF91A4;
-    background-image:repeating-linear-gradient(45deg,#FF91A4,#FF91A4 3px,#FFB6C1 3px,#FFB6C1 6px);
-}
-.ti.idempotent{
-    background-color:#D4A000;
-    background-image:radial-gradient(#FFB700 20%,transparent 20%),radial-gradient(#FFB700 20%,transparent 20%);
-    background-size:6px 6px;
-    background-position:0 0,3px 3px;
-}
+.ti.safe{background-color:#00A86B;}
+.ti.unsafe{background-color:#FF91A4;}
+.ti.idempotent{background-color:#D4A000;}
+.ti.semantic{background-color:#fff;}
 /* Method cell */
 .method-cell{min-width:200px;}
 .method-title{font-size:0.85em;color:#24292f;font-weight:500;margin-top:4px;}
