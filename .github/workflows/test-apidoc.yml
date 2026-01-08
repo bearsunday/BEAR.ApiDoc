@@ -12,3 +12,36 @@ jobs:
       alps-profile: 'docs/alps.json'
       docs-path: 'docs/alps'
       publish-to: 'artifact-only'
+
+  test-html:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - run: composer install --prefer-dist --no-progress
+      - run: ./bin/apidoc -c tests/apidoc.html.xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api-docs-html
+          path: docs
+
+  test-openapi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - run: composer install --prefer-dist --no-progress
+      - run: ./bin/apidoc -c tests/apidoc.openapi.xml
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install -g @redocly/cli
+      - run: redocly build-docs docs/openapi/openapi.json -o docs/openapi/index.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api-docs-openapi
+          path: docs/openapi
