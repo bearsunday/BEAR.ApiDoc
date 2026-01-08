@@ -6,7 +6,13 @@ use BEAR\Resource\ResourceObject;
 
 class Org extends ResourceObject
 {
-    public function onGet(): ResourceObject
+    /**
+     * Get organization
+     *
+     * @param string $id Organization ID
+     */
+    #[JsonSchema(schema: 'org.json')]
+    public function onGet(string $id): ResourceObject
     {
         return $this;
     }

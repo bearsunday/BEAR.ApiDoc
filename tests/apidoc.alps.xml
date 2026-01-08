@@ -12,5 +12,5 @@
         <link rel="doc" href="http://www.google.com/" />
         <link rel="foo" href="http://www.google.com/" />
     </links>
-    <alps>profile.json</alps>
+    <alps>alps.json</alps>
 </apidoc>

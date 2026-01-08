@@ -18,6 +18,8 @@ use BEAR\Resource\ResourceObject;
 class Address extends ResourceObject
 {
     /**
+     * Get address
+     *
      * @param string $id Address ID
      */
     #[JsonSchema(key: 'address', schema: 'address.json')]

@@ -52,7 +52,7 @@ class DocMethodTest extends TestCase
         $this->assertInstanceOf(DocMethod::class, $docMethod);
         $this->assertStringContainsString('### Request', (string) $docMethod);
         $this->assertStringContainsString('### Response', (string) $docMethod);
-        $this->assertStringContainsString('[Object: Array](../schema/array.json)', (string) $docMethod);
+        $this->assertStringContainsString('[Object: Groceries](../schema/array.json)', (string) $docMethod);
     }
 
     public function testEmbed(): void

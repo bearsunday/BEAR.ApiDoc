@@ -2,6 +2,7 @@
 
 namespace FakeVendor\FakeProject\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
@@ -15,15 +16,15 @@ use BEAR\Resource\ResourceObject;
 class Person extends ResourceObject
 {
     /**
-     * Get person details
-     *
-     * Retrieve personal information including name and associated organization.
+     * Get person
      *
      * @param string $id The unique identifier of the person
      */
+    #[Alps('goPerson')]
     #[Embed(rel: 'org', src: '/org?id={org_id}')]
     #[Link(rel: 'goCard', href: '/card?id={card_id}')]
     #[Link(rel: 'goTickets', href: '/tickets')]
+    #[Link(rel: 'doDelete', href: '/person?id={id}')]
     #[JsonSchema(schema: 'person.json', params: 'person.param.json')]
     public function onGet(string $id = 'koriym'): static
     {
@@ -31,14 +32,13 @@ class Person extends ResourceObject
     }
 
     /**
-     * Register a new person
-     *
-     * Create a new person record in the system.
+     * Register member
      *
      * @param string $firstName The person's first name
      * @param string $familyName The person's family/last name
      * @param int    $age       The person's age in years
      */
+    #[Alps('doCreatePerson')]
     #[JsonSchema(params: 'person.param.json')]
     public function onPost(string $firstName, string $familyName = '', int $age = 0): static
     {
@@ -46,9 +46,7 @@ class Person extends ResourceObject
     }
 
     /**
-     * Update person information
-     *
-     * Modify an existing person's details.
+     * Update profile
      *
      * @param string      $id         The unique identifier of the person
      * @param string|null $firstName  Updated first name

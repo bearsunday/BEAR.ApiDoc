@@ -15,11 +15,12 @@ use BEAR\ApiDoc\Exception\ConfigException;
             break;
         }
     }
-    $options = getopt('c::');
+    $options = getopt('c::', ['inline-css']);
     $apidocXml = isset($options['c']) && is_string($options['c']) ? $options['c'] : '';
+    $inlineCss = isset($options['inline-css']);
 
     try {
-        echo (new ApiDoc())($apidocXml) . PHP_EOL;
+        echo (new ApiDoc())($apidocXml, $inlineCss) . PHP_EOL;
     } catch (RuntimeException $e) {
         printf("%s: %s\n", (new ReflectionClass($e))->getShortName(), $e->getMessage());
         exit(1);

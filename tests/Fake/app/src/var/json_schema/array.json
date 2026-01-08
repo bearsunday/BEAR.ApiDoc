@@ -3,20 +3,23 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "description": "A representation of a person, company, organization, or place",
   "type": "object",
-  "title": "Array",
+  "title": "Groceries",
   "properties": {
     "fruits": {
       "type": "array",
+      "description": "List of fruit names",
       "items": {
         "type": "string"
       }
     },
     "vegetables": {
       "type": "array",
+      "description": "List of vegetables with preferences",
       "items": { "$ref": "#/definitions/veggie" }
     },
     "juice": {
       "type": "object",
+      "description": "Juice preference details",
       "$ref": "#/definitions/juice"
     }
   },

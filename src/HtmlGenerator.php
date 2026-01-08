@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
@@ -14,14 +15,15 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use SplFileInfo;
 
+use function dirname;
 use function file_get_contents;
 use function in_array;
 use function is_file;
+use function is_numeric;
 use function is_object;
 use function is_string;
 use function json_decode;
 use function pathinfo;
-use function preg_match;
 use function sprintf;
 use function strtoupper;
 use function substr;
@@ -32,30 +34,43 @@ use const PATHINFO_FILENAME;
 /**
  * Generates single-page HTML API documentation
  *
- * @psalm-import-type HtmlParamArray from Types
- * @psalm-import-type HtmlMethodArray from Types
- * @psalm-import-type HtmlObjectArray from Types
- * @psalm-import-type HtmlRelationArray from Types
+ * @psalm-import-type HtmlParam from Types
+ * @psalm-import-type HtmlMethod from Types
+ * @psalm-import-type HtmlObject from Types
+ * @psalm-import-type HtmlRelation from Types
+ * @psalm-import-type HtmlObjectRelations from Types
+ * @psalm-import-type DocLink from Types
  */
 final class HtmlGenerator
 {
-    /** @var array<string, array<string, HtmlMethodArray>> */
+    /** @var array<string, array<string, HtmlMethod>> */
     private array $endpoints = [];
 
-    /** @var array<string, HtmlObjectArray> */
+    /** @var array<string, HtmlObject> */
     private array $objects = [];
 
-    /** @var array<string, array{embeds: array<HtmlRelationArray>, links: array<HtmlRelationArray>}> */
+    /** @var HtmlObjectRelations */
     private array $objectRelations = [];
 
     private readonly HtmlRenderer $renderer;
 
+    /** @var ArrayObject<string, string> */
+    private readonly ArrayObject $semanticDictionary;
+
+    /**
+     * @param ArrayObject<string, string>|null $semanticDictionary
+     */
     public function __construct(
         private readonly Config $config,
         private readonly string $requestSchemaDir,
         private readonly string $responseSchemaDir,
+        ?ArrayObject $semanticDictionary = null,
+        private readonly bool $inlineCss = false,
     ) {
         $this->renderer = new HtmlRenderer();
+        /** @var ArrayObject<string, string> $emptyDictionary */
+        $emptyDictionary = new ArrayObject();
+        $this->semanticDictionary = $semanticDictionary ?? $emptyDictionary;
     }
 
     public function generate(): string
@@ -65,13 +80,41 @@ final class HtmlGenerator
             $this->processResource($path, new ReflectionClass($meta->class));
         }
 
+        $links = $this->extractLinks();
+
         return $this->renderer->render(
             $this->config->title,
             $this->config->description,
             $this->endpoints,
             $this->objects,
             $this->objectRelations,
+            $links,
+            $this->extractAlpsHtmlPath($links),
+            $this->loadLocalCss(),
         );
+    }
+
+    private function loadLocalCss(): ?string
+    {
+        if (! $this->inlineCss) {
+            return null;
+        }
+
+        return (string) file_get_contents(dirname(__DIR__) . '/docs/apidoc.css');
+    }
+
+    /**
+     * @param array<DocLink> $links
+     */
+    private function extractAlpsHtmlPath(array $links): string
+    {
+        foreach ($links as $link) {
+            if ($link['rel'] === 'profile') {
+                return $link['href'];
+            }
+        }
+
+        return 'alps.html';
     }
 
     /**
@@ -97,6 +140,7 @@ final class HtmlGenerator
         [$summary, $methodDescription, $paramDescriptions] = $this->extractPhpDoc($method);
         [$requestSchema, $responseSchemaName] = $this->extractJsonSchema($method);
         [$embeds, $links] = $this->extractEmbedsAndLinks($method);
+        $alpsIds = $this->extractAlpsIds($method);
 
         if ($responseSchemaName !== null && ($embeds !== [] || $links !== [])) {
             $this->addObjectRelations($responseSchemaName, $embeds, $links);
@@ -115,7 +159,22 @@ final class HtmlGenerator
             'response' => $responseSchemaName,
             'embeds' => $embeds,
             'links' => $links,
+            'alps' => $alpsIds,
         ];
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function extractAlpsIds(ReflectionMethod $method): array
+    {
+        $ids = [];
+        foreach ($method->getAttributes(Alps::class) as $attr) {
+            $alps = $attr->newInstance();
+            $ids[] = $alps->id;
+        }
+
+        return $ids;
     }
 
     /**
@@ -172,7 +231,7 @@ final class HtmlGenerator
     }
 
     /**
-     * @return array{array<array{rel: string, src: string}>, array<array{rel: string, href: string}>}
+     * @return array{array<array{rel: string, src: string}>, array<array{rel: string, href: string, title: string}>}
      */
     private function extractEmbedsAndLinks(ReflectionMethod $method): array
     {
@@ -186,7 +245,7 @@ final class HtmlGenerator
 
         foreach ($method->getAttributes(Link::class) as $attr) {
             $link = $attr->newInstance();
-            $links[] = ['rel' => $link->rel, 'href' => $link->href];
+            $links[] = ['rel' => $link->rel, 'href' => $link->href, 'title' => $link->title];
         }
 
         return [$embeds, $links];
@@ -195,7 +254,7 @@ final class HtmlGenerator
     /**
      * @param array<string, string> $paramDescriptions
      *
-     * @return array<HtmlParamArray>
+     * @return array<HtmlParam>
      */
     private function buildParams(ReflectionMethod $method, ?Schema $requestSchema, array $paramDescriptions): array
     {
@@ -221,6 +280,8 @@ final class HtmlGenerator
                 $description = $paramDescriptions[$paramName] ?? '';
             }
 
+            $alpsTitle = $this->semanticDictionary[$paramName] ?? null;
+
             $params[] = [
                 'name' => $paramName,
                 'type' => $this->normalizeType($typeName),
@@ -228,6 +289,7 @@ final class HtmlGenerator
                 'required' => ! $param->isOptional(),
                 'example' => $example,
                 'constraints' => $constraints,
+                'alps' => $alpsTitle,
             ];
         }
 
@@ -260,6 +322,12 @@ final class HtmlGenerator
         }
 
         $properties = [];
+        $arrayItemType = null;
+
+        if ($schema->type === 'array') {
+            $arrayItemType = $this->getArrayItemType($schema);
+        }
+
         foreach ($schema->props as $propName => $prop) {
             if ($propName === '_links' || $propName === '_embedded') {
                 continue;
@@ -271,6 +339,15 @@ final class HtmlGenerator
             $constraints = $prop->constraints->constrains;
             unset($constraints['format']);
 
+            // Check for nested object with properties
+            $ref = null;
+            if ($prop->type === 'object' && isset($constraints['properties']) && is_object($constraints['properties'])) {
+                $nestedName = $name . '.' . ucfirst($propName);
+                $this->addNestedObject($nestedName, $constraints['properties']);
+                $ref = $nestedName;
+                unset($constraints['properties']);
+            }
+
             $properties[] = [
                 'name' => $propName,
                 'type' => $prop->type,
@@ -278,18 +355,85 @@ final class HtmlGenerator
                 'example' => $prop->example,
                 'format' => $format,
                 'constraints' => $constraints,
+                'ref' => $ref,
             ];
         }
 
         $this->objects[$name] = [
             'name' => $name,
             'properties' => $properties,
+            'arrayItemType' => $arrayItemType,
         ];
     }
 
+    private function addNestedObject(string $name, object $nestedProperties): void
+    {
+        if (isset($this->objects[$name])) {
+            return;
+        }
+
+        $properties = [];
+        /** @var array<string, mixed> $propsArray */
+        $propsArray = (array) $nestedProperties;
+        foreach ($propsArray as $propName => $prop) {
+            if (! is_object($prop)) {
+                continue;
+            }
+
+            /** @psalm-suppress MixedAssignment */
+            $type = $prop->type ?? 'mixed';
+            /** @psalm-suppress MixedAssignment */
+            $description = $prop->description ?? '';
+            /** @psalm-suppress MixedAssignment */
+            $example = $prop->example ?? null;
+            /** @psalm-suppress MixedAssignment */
+            $format = $prop->format ?? null;
+
+            $properties[] = [
+                'name' => $propName,
+                'type' => is_string($type) ? $type : 'mixed',
+                'description' => is_string($description) ? $description : '',
+                'example' => is_string($example) || is_numeric($example) ? (string) $example : null,
+                'format' => is_string($format) ? $format : null,
+                'constraints' => [],
+                'ref' => null,
+            ];
+        }
+
+        $this->objects[$name] = [
+            'name' => $name,
+            'properties' => $properties,
+            'arrayItemType' => null,
+        ];
+    }
+
+    private function getArrayItemType(Schema $schema): ?string
+    {
+        $schemaFile = $schema->file->getPathname();
+        $schemaJson = json_decode((string) file_get_contents($schemaFile));
+
+        if (! is_object($schemaJson) || ! isset($schemaJson->items) || ! is_object($schemaJson->items)) {
+            return null;
+        }
+
+        $items = $schemaJson->items;
+
+        /** @psalm-suppress MixedPropertyFetch */
+        if (isset($items->{'$ref'}) && is_string($items->{'$ref'})) {
+            return pathinfo($items->{'$ref'}, PATHINFO_FILENAME);
+        }
+
+        /** @psalm-suppress MixedPropertyFetch */
+        if (isset($items->type) && is_string($items->type)) {
+            return $items->type;
+        }
+
+        return null;
+    }
+
     /**
-     * @param array<array{rel: string, src: string}>  $embeds
-     * @param array<array{rel: string, href: string}> $links
+     * @param array<array{rel: string, src: string}>                 $embeds
+     * @param array<array{rel: string, href: string, title: string}> $links
      */
     private function addObjectRelations(string $objectName, array $embeds, array $links): void
     {
@@ -298,27 +442,24 @@ final class HtmlGenerator
         }
 
         foreach ($embeds as $embed) {
-            $target = $this->extractTargetFromUri($embed['src']);
+            // Embed has no title attribute, use semantic dictionary only
+            $title = $this->semanticDictionary[$embed['rel']] ?? '';
             $this->objectRelations[$objectName]['embeds'][] = [
                 'rel' => $embed['rel'],
-                'target' => $target,
+                'href' => $embed['src'],
+                'title' => $title,
             ];
         }
 
         foreach ($links as $link) {
-            $target = $this->extractTargetFromUri($link['href']);
+            // Priority: Link annotation title > semantic dictionary
+            $title = $link['title'] !== '' ? $link['title'] : ($this->semanticDictionary[$link['rel']] ?? '');
             $this->objectRelations[$objectName]['links'][] = [
                 'rel' => $link['rel'],
-                'target' => $target,
+                'href' => $link['href'],
+                'title' => $title,
             ];
         }
-    }
-
-    private function extractTargetFromUri(string $uri): string
-    {
-        preg_match('/^\/([a-z_-]+)/i', $uri, $matches);
-
-        return isset($matches[1]) ? ucfirst($matches[1]) : ucfirst($uri);
     }
 
     private function normalizeType(string $type): string
@@ -328,5 +469,22 @@ final class HtmlGenerator
             'boolean' => 'bool',
             default => $type,
         };
+    }
+
+    /**
+     * @return array<DocLink>
+     */
+    private function extractLinks(): array
+    {
+        $links = [];
+        foreach ($this->config->links as $link) {
+            $rel = (string) ($link['rel'] ?? '');
+            $href = (string) ($link['href'] ?? '');
+            if ($rel !== '' && $href !== '') {
+                $links[] = ['rel' => $rel, 'href' => $href];
+            }
+        }
+
+        return $links;
     }
 }

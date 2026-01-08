@@ -7,9 +7,10 @@ use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
 
 /**
- * Ticket resource
+ * Ticket resource (CRUD example)
  *
- * Manage support tickets for customer inquiries and issue tracking.
+ * This resource demonstrates CRUD-style operations.
+ * Compare with /ticket/assign for domain command style.
  */
 class Ticket extends ResourceObject
 {
