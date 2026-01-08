@@ -15,7 +15,7 @@
   </descriptor>
 
   <descriptor id="param" type="semantic" title="Request Parameter">
-    <doc>Request parameter validated at runtime by JSON Schema. The type, constraints, and format shown here are actually enforced. Invalid requests are rejected before reaching the application.</doc>
+    <doc>Request parameter validated at runtime by JSON Schema. Parameters marked with * are required. The type, constraints, and format shown here are actually enforced. Invalid requests are rejected before reaching the application.</doc>
     <link rel="describedby" href="https://json-schema.org/draft/2020-12/schema"/>
   </descriptor>
 
