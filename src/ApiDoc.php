@@ -48,7 +48,11 @@ final readonly class ApiDoc
         );
         $this->dump($config, $docClass);
 
-        $outputFile = $config->format === 'openapi' ? 'openapi.json' : 'index.html';
+        $outputFile = match ($config->format) {
+            'openapi' => 'openapi.json',
+            'md' => 'index.md',
+            default => 'index.html',
+        };
 
         return sprintf('ApiDoc generated. %s/%s', (string) realpath($config->docDir), $outputFile);
     }
