@@ -30,6 +30,7 @@ use function substr;
 
 final class ApiDoc
 {
+    /** @SuppressWarnings(PHPMD.BooleanArgumentFlag) */
     public function __invoke(string $configFile, bool $inlineCss = false): string
     {
         $config = new Config($configFile);
@@ -72,6 +73,7 @@ final class ApiDoc
         }
     }
 
+    /** @SuppressWarnings(PHPMD.BooleanArgumentFlag) */
     public function dumpHtml(Config $config, DocClass $docClass, bool $inlineCss = false): void
     {
         unset($docClass);
