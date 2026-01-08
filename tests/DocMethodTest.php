@@ -8,6 +8,7 @@ use ArrayObject;
 use BEAR\ApiDoc\Fake\Ro\FakeNoDoc;
 use BEAR\ApiDoc\Fake\Ro\FakeParamDoc;
 use FakeVendor\FakeProject\Resource\App\Person;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use SplFileInfo;
@@ -35,7 +36,7 @@ class DocMethodTest extends TestCase
         return $docMethod;
     }
 
-    /** @depends testPhpDocParamTag */
+    #[Depends('testPhpDocParamTag')]
     public function testToString(DocMethod $method): void
     {
         $this->assertStringContainsString('### Request', (string) $method);
