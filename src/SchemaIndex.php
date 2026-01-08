@@ -42,7 +42,7 @@ final readonly class SchemaIndex implements Stringable
 <meta charset="utf-8">
 <title>JSON Schemas</title>
 <link rel="profile" href="../alps/index-schema.xml">
-<style>body{font-family:system-ui,sans-serif;max-width:800px;margin:2rem auto;padding:0 1rem}a{color:#0366d6}ul{line-height:1.8}</style>
+<style>body{font-family:system-ui,sans-serif;margin:2rem;padding:0}a{color:#0366d6}ul{line-height:1.8}</style>
 </head>
 <body>
 <h1>JSON Schemas</h1>
