@@ -417,7 +417,7 @@ HTML;
         return <<<HTML
 <tr>
   <td>{$nameHtml}</td>
-  <td>{$descriptionHtml}</td>
+  <td class="param-desc">{$descriptionHtml}</td>
   <td>{$metaHtml}</td>
 </tr>
 

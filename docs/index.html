@@ -537,7 +537,7 @@ tr:hover{background-color:#f5f5f5;}
 <tbody>
 <tr>
   <td><span class="prop-name">post-office-box</span></td>
-  <td>Post Office Box - PO Box number for mail delivery</td>
+  <td class="param-desc">Post Office Box - PO Box number for mail delivery</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: PO Box 1234</span>
@@ -545,7 +545,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">extended-address</span></td>
-  <td>Apartment, suite, or unit number</td>
+  <td class="param-desc">Apartment, suite, or unit number</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Suite 500</span>
@@ -553,7 +553,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">street-address</span></td>
-  <td>Street number and name</td>
+  <td class="param-desc">Street number and name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: 123 Main Street</span>
@@ -561,7 +561,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">locality</span></td>
-  <td>City or town name</td>
+  <td class="param-desc">City or town name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: San Francisco</span>
@@ -569,7 +569,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">region</span></td>
-  <td>State, province, or region</td>
+  <td class="param-desc">State, province, or region</td>
   <td><div class="extra-info">
       <span class="badge type-intstring">int|string</span>
       <span class="badge example">example: CA</span>
@@ -577,7 +577,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">postal-code</span></td>
-  <td>ZIP or postal code</td>
+  <td class="param-desc">ZIP or postal code</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">pattern: ^[0-9A-Za-z\- ]+$</span>
@@ -586,7 +586,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">country-name</span></td>
-  <td>Full country name</td>
+  <td class="param-desc">Full country name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: United States</span>
@@ -605,21 +605,21 @@ tr:hover{background-color:#f5f5f5;}
 <tbody>
 <tr>
   <td><span class="prop-name">fruits</span></td>
-  <td></td>
+  <td class="param-desc"></td>
   <td><div class="extra-info">
       <span class="badge type-array">array</span>
     </div></td>
 </tr>
 <tr>
   <td><span class="prop-name">vegetables</span></td>
-  <td></td>
+  <td class="param-desc"></td>
   <td><div class="extra-info">
       <span class="badge type-array">array</span>
     </div></td>
 </tr>
 <tr>
   <td><span class="prop-name">juice</span></td>
-  <td></td>
+  <td class="param-desc"></td>
   <td><div class="extra-info">
       <span class="badge type-object">object</span>
     </div></td>
@@ -637,7 +637,7 @@ tr:hover{background-color:#f5f5f5;}
 <tbody>
 <tr>
   <td><span class="prop-name">dtstart</span></td>
-  <td>Event start date and time in ISO 8601 format</td>
+  <td class="param-desc">Event start date and time in ISO 8601 format</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: date-time</span>
@@ -646,7 +646,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">dtend</span></td>
-  <td>Event end date and time in ISO 8601 format</td>
+  <td class="param-desc">Event end date and time in ISO 8601 format</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: date-time</span>
@@ -655,7 +655,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">summary</span></td>
-  <td>Brief title or name of the event</td>
+  <td class="param-desc">Brief title or name of the event</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 255</span>
@@ -664,7 +664,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">location</span></td>
-  <td>Physical location or virtual meeting URL</td>
+  <td class="param-desc">Physical location or virtual meeting URL</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Conference Room A / https://meet.example.com/abc</span>
@@ -672,7 +672,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">url</span></td>
-  <td>URL with more information about the event</td>
+  <td class="param-desc">URL with more information about the event</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: uri</span>
@@ -681,7 +681,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">duration</span></td>
-  <td>Event duration in ISO 8601 duration format</td>
+  <td class="param-desc">Event duration in ISO 8601 duration format</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: PT1H30M</span>
@@ -689,7 +689,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">rdate</span></td>
-  <td>Additional recurrence date for the event</td>
+  <td class="param-desc">Additional recurrence date for the event</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: date-time</span>
@@ -698,7 +698,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">rrule</span></td>
-  <td>Recurrence rule in iCalendar RRULE format</td>
+  <td class="param-desc">Recurrence rule in iCalendar RRULE format</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=10</span>
@@ -706,7 +706,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">category</span></td>
-  <td>Event category for organization and filtering</td>
+  <td class="param-desc">Event category for organization and filtering</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: meeting</span>
@@ -714,7 +714,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">description</span></td>
-  <td>Detailed description of the event and agenda</td>
+  <td class="param-desc">Detailed description of the event and agenda</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 2000</span>
@@ -734,7 +734,7 @@ tr:hover{background-color:#f5f5f5;}
 <tbody>
 <tr>
   <td><span class="prop-name">fn</span></td>
-  <td>Full formatted name as it should be displayed</td>
+  <td class="param-desc">Full formatted name as it should be displayed</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Dr. Jane M. Smith, PhD</span>
@@ -742,7 +742,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">familyName</span></td>
-  <td>Family name (surname/last name)</td>
+  <td class="param-desc">Family name (surname/last name)</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Smith</span>
@@ -750,7 +750,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">givenName</span></td>
-  <td>Given name (first name)</td>
+  <td class="param-desc">Given name (first name)</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Jane</span>
@@ -758,7 +758,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">additionalName</span></td>
-  <td>Middle names or other additional names</td>
+  <td class="param-desc">Middle names or other additional names</td>
   <td><div class="extra-info">
       <span class="badge type-array">array</span>
       <span class="badge example">example: [&quot;Marie&quot;]</span>
@@ -766,7 +766,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">honorificPrefix</span></td>
-  <td>Name prefixes and titles (e.g., Dr., Mr., Ms.)</td>
+  <td class="param-desc">Name prefixes and titles (e.g., Dr., Mr., Ms.)</td>
   <td><div class="extra-info">
       <span class="badge type-array">array</span>
       <span class="badge example">example: [&quot;Dr.&quot;]</span>
@@ -774,7 +774,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">honorificSuffix</span></td>
-  <td>Name suffixes and post-nominals (e.g., PhD, Jr., III)</td>
+  <td class="param-desc">Name suffixes and post-nominals (e.g., PhD, Jr., III)</td>
   <td><div class="extra-info">
       <span class="badge type-array">array</span>
       <span class="badge example">example: [&quot;PhD&quot;,&quot;MBA&quot;]</span>
@@ -782,7 +782,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">nickname</span></td>
-  <td>Preferred informal name or alias</td>
+  <td class="param-desc">Preferred informal name or alias</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Jenny</span>
@@ -790,7 +790,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">url</span></td>
-  <td>Personal or professional website URL</td>
+  <td class="param-desc">Personal or professional website URL</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: uri</span>
@@ -799,21 +799,21 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">email</span></td>
-  <td>Email address with type classification</td>
+  <td class="param-desc">Email address with type classification</td>
   <td><div class="extra-info">
       <span class="badge type-object">object</span>
     </div></td>
 </tr>
 <tr>
   <td><span class="prop-name">tel</span></td>
-  <td>Telephone number with type classification</td>
+  <td class="param-desc">Telephone number with type classification</td>
   <td><div class="extra-info">
       <span class="badge type-object">object</span>
     </div></td>
 </tr>
 <tr>
   <td><span class="prop-name">tz</span></td>
-  <td>Timezone in IANA format or UTC offset</td>
+  <td class="param-desc">Timezone in IANA format or UTC offset</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: America/New_York</span>
@@ -821,7 +821,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">photo</span></td>
-  <td>URL to profile photo image</td>
+  <td class="param-desc">URL to profile photo image</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: uri</span>
@@ -830,7 +830,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">logo</span></td>
-  <td>URL to company or organization logo</td>
+  <td class="param-desc">URL to company or organization logo</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: uri</span>
@@ -839,7 +839,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">sound</span></td>
-  <td>URL to audio file with name pronunciation</td>
+  <td class="param-desc">URL to audio file with name pronunciation</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: uri</span>
@@ -848,7 +848,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">bday</span></td>
-  <td>Birthday in ISO 8601 date format</td>
+  <td class="param-desc">Birthday in ISO 8601 date format</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: date</span>
@@ -857,7 +857,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">title</span></td>
-  <td>Job title or position</td>
+  <td class="param-desc">Job title or position</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Senior Software Engineer</span>
@@ -865,7 +865,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">role</span></td>
-  <td>Function or role within organization</td>
+  <td class="param-desc">Function or role within organization</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Technical Lead</span>
@@ -873,7 +873,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">org</span></td>
-  <td>Organization or company affiliation</td>
+  <td class="param-desc">Organization or company affiliation</td>
   <td><div class="extra-info">
       <span class="badge type-object">object</span>
     </div></td>
@@ -891,14 +891,14 @@ tr:hover{background-color:#f5f5f5;}
 <tbody>
 <tr>
   <td><span class="prop-name">id</span></td>
-  <td>Organization ID</td>
+  <td class="param-desc">Organization ID</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
     </div></td>
 </tr>
 <tr>
   <td><span class="prop-name">name</span></td>
-  <td>Organization name</td>
+  <td class="param-desc">Organization name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: Acme Inc.</span>
@@ -917,7 +917,7 @@ tr:hover{background-color:#f5f5f5;}
 <tbody>
 <tr>
   <td><span class="prop-name">firstName</span></td>
-  <td>The person&#039;s first/given name</td>
+  <td class="param-desc">The person&#039;s first/given name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">minLength: 1</span>
@@ -927,7 +927,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">familyName</span></td>
-  <td>The person&#039;s family/last name</td>
+  <td class="param-desc">The person&#039;s family/last name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 50</span>
@@ -936,7 +936,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">age</span></td>
-  <td>Age in years (must be 0 or greater)</td>
+  <td class="param-desc">Age in years (must be 0 or greater)</td>
   <td><div class="extra-info">
       <span class="badge type-int">int</span>
       <span class="badge constraint">minimum: 0</span>
@@ -993,7 +993,7 @@ tr:hover{background-color:#f5f5f5;}
 <tbody>
 <tr>
   <td><span class="prop-name">id</span></td>
-  <td>Unique identifier for the ticket</td>
+  <td class="param-desc">Unique identifier for the ticket</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge example">example: TKT-2024-001</span>
@@ -1001,7 +1001,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">title</span></td>
-  <td>Brief summary of the issue or request</td>
+  <td class="param-desc">Brief summary of the issue or request</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">minLength: 3</span>
@@ -1011,7 +1011,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">description</span></td>
-  <td>Detailed explanation of the issue including steps to reproduce</td>
+  <td class="param-desc">Detailed explanation of the issue including steps to reproduce</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 2000</span>
@@ -1020,7 +1020,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">assignee</span></td>
-  <td>Username of the support agent handling this ticket</td>
+  <td class="param-desc">Username of the support agent handling this ticket</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 50</span>
@@ -1029,7 +1029,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">status</span></td>
-  <td>Current status of the ticket in the workflow</td>
+  <td class="param-desc">Current status of the ticket in the workflow</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">enum: [&quot;open&quot;,&quot;in_progress&quot;,&quot;waiting&quot;,&quot;resolved&quot;,&quot;closed&quot;]</span>
@@ -1038,7 +1038,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">priority</span></td>
-  <td>Urgency level of the ticket</td>
+  <td class="param-desc">Urgency level of the ticket</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">enum: [&quot;low&quot;,&quot;medium&quot;,&quot;high&quot;,&quot;critical&quot;]</span>
@@ -1047,7 +1047,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">created</span></td>
-  <td>Timestamp when the ticket was created</td>
+  <td class="param-desc">Timestamp when the ticket was created</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: date-time</span>
@@ -1056,7 +1056,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">updated</span></td>
-  <td>Timestamp when the ticket was last modified</td>
+  <td class="param-desc">Timestamp when the ticket was last modified</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: date-time</span>
@@ -1085,7 +1085,7 @@ tr:hover{background-color:#f5f5f5;}
 <tbody>
 <tr>
   <td><span class="prop-name">id</span></td>
-  <td>Unique identifier for the user account</td>
+  <td class="param-desc">Unique identifier for the user account</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 30</span>
@@ -1094,7 +1094,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">firstName</span></td>
-  <td>User&#039;s first/given name</td>
+  <td class="param-desc">User&#039;s first/given name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 30</span>
@@ -1104,7 +1104,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">lastName</span></td>
-  <td>User&#039;s last/family name</td>
+  <td class="param-desc">User&#039;s last/family name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge constraint">maxLength: 30</span>
@@ -1114,7 +1114,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">created</span></td>
-  <td>Timestamp when the account was created</td>
+  <td class="param-desc">Timestamp when the account was created</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: date-time</span>
@@ -1123,7 +1123,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">modified</span></td>
-  <td>Timestamp of the last profile update</td>
+  <td class="param-desc">Timestamp of the last profile update</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: date-time</span>
@@ -1132,7 +1132,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">email</span></td>
-  <td>Primary email address for the account</td>
+  <td class="param-desc">Primary email address for the account</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
       <span class="badge format">format: email</span>
@@ -1141,7 +1141,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">enabled</span></td>
-  <td>Whether the account is active and can login</td>
+  <td class="param-desc">Whether the account is active and can login</td>
   <td><div class="extra-info">
       <span class="badge type-bool">bool</span>
       <span class="badge example">example: true</span>
@@ -1149,7 +1149,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td><span class="prop-name">age</span></td>
-  <td>User&#039;s age in years</td>
+  <td class="param-desc">User&#039;s age in years</td>
   <td><div class="extra-info">
       <span class="badge type-int">int</span>
       <span class="badge example">example: 29</span>
