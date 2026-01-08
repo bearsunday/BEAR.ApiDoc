@@ -40,10 +40,12 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
-        run: composer require --dev bear/api-doc
-
-      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
-        run: ./vendor/bin/apidoc
+        run: |
+          if [ -f "./vendor/bin/apidoc" ]; then
+            ./vendor/bin/apidoc
+          else
+            echo "::warning::vendor/bin/apidoc not found. Run 'composer require --dev bear/api-doc' first."
+          fi
 
       # Node.js steps (for openapi and alps formats)
       - if: contains(inputs.format, 'openapi') || contains(inputs.format, 'alps')

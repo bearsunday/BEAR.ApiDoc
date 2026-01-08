@@ -6,19 +6,23 @@ on:
 
 jobs:
   test-html:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    uses: ./.github/workflows/apidoc.yml
+    with:
+      format: 'html'
+      docs-path: 'docs/html'
+      publish-to: 'artifact-only'
 
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
+  test-openapi:
+    uses: ./.github/workflows/apidoc.yml
+    with:
+      format: 'openapi'
+      docs-path: 'docs/openapi'
+      publish-to: 'artifact-only'
 
-      - run: composer install --prefer-dist --no-progress
-
-      - run: ./bin/apidoc -c tests/apidoc.html.xml
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: api-docs-html
-          path: docs
+  test-alps:
+    uses: ./.github/workflows/apidoc.yml
+    with:
+      format: 'alps'
+      alps-profile: 'docs/alps.json'
+      docs-path: 'docs/alps'
+      publish-to: 'artifact-only'
