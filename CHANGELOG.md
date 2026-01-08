@@ -23,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - rector/rector dependency
 
 ### Breaking Changes
-- ApiDoc::__construct() now requires bool $inlineCss parameter
 - ApiDoc::__invoke() signature changed: removed $inlineCss parameter
 - Multiple classes now declared as readonly (Alps, ApiDoc, Index, Src, TagLinks)
 - Several method signatures updated with explicit return types
