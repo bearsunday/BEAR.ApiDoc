@@ -82,6 +82,7 @@ final class HtmlGenerator
             $this->endpoints,
             $this->objects,
             $this->objectRelations,
+            $this->extractLinks(),
         );
     }
 
@@ -389,5 +390,22 @@ final class HtmlGenerator
             'boolean' => 'bool',
             default => $type,
         };
+    }
+
+    /**
+     * @return array<array{rel: string, href: string}>
+     */
+    private function extractLinks(): array
+    {
+        $links = [];
+        foreach ($this->config->links as $link) {
+            $rel = (string) ($link['rel'] ?? '');
+            $href = (string) ($link['href'] ?? '');
+            if ($rel !== '' && $href !== '') {
+                $links[] = ['rel' => $rel, 'href' => $href];
+            }
+        }
+
+        return $links;
     }
 }

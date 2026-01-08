@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Sample API Doc</title>
+<title>API Doc Title</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css">
 <style>
 html{scroll-behavior:smooth;}
@@ -81,8 +81,8 @@ tr:hover{background-color:#f5f5f5;}
 </head>
 <body>
 <div class="markdown-body">
-<h1>Sample API Doc</h1>
-<p>This is an example API doc. See <a href="http://bearsunday.github.io/manuals/1.0/en/apidoc.html">ApiDoc manual</a>.</p>
+<h1>API Doc Title</h1>
+<p>This is the description of API Doc</p>
 
 <h2>Endpoints</h2>
 <table>
@@ -100,7 +100,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   <td rowspan="1" class="path-cell">/address</td>
   <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get address</div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">Address ID</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -130,7 +130,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   <td rowspan="1" class="path-cell">/card</td>
   <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get card</div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">Card ID</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -158,7 +158,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   <td rowspan="1" class="path-cell">/org</td>
   <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get organization</div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">Organization ID</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -168,7 +168,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   <td rowspan="8" class="path-cell">/person</td>
   <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get person</div><div class="method-alps"><a href="alps.html#goPerson" class="alps-link">goPerson</a></div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a></td>
+  <td><span class="param">id</span></td>
   <td class="param-desc">Unique identifier of the person</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -179,7 +179,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   <td rowspan="3" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Register member</div><div class="method-alps"><a href="alps.html#doCreatePerson" class="alps-link">doCreatePerson</a></div></td>
-  <td><a href="alps.html#firstName" class="param alps-param" title="First Name by ALPS">firstName</a><span class="req">*</span></td>
+  <td><span class="param">firstName</span><span class="req">*</span></td>
   <td class="param-desc">The person&#039;s first/given name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -192,7 +192,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><a href="alps.html#familyName" class="param alps-param" title="[https://schema.org/familyName](https://schema.org/familyName)">familyName</a></td>
+  <td><span class="param">familyName</span></td>
   <td class="param-desc">The person&#039;s family/last name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -204,7 +204,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><a href="alps.html#age" class="param alps-param" title="Age in years which must be equal to or greater than zero.">age</a></td>
+  <td><span class="param">age</span></td>
   <td class="param-desc">Age in years</td>
   <td><div class="extra-info">
       <span class="badge type-int">int</span>
@@ -217,7 +217,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   <td rowspan="4" class="method-cell"><span class="ti unsafe"></span>PATCH<div class="method-title">Update profile</div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">Unique identifier of the person</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -228,7 +228,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><a href="alps.html#firstName" class="param alps-param" title="First Name by ALPS">firstName</a></td>
+  <td><span class="param">firstName</span></td>
   <td class="param-desc">The person&#039;s first/given name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -241,7 +241,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><a href="alps.html#familyName" class="param alps-param" title="[https://schema.org/familyName](https://schema.org/familyName)">familyName</a></td>
+  <td><span class="param">familyName</span></td>
   <td class="param-desc">The person&#039;s family/last name</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -253,7 +253,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><a href="alps.html#age" class="param alps-param" title="Age in years which must be equal to or greater than zero.">age</a></td>
+  <td><span class="param">age</span></td>
   <td class="param-desc">Age in years</td>
   <td><div class="extra-info">
       <span class="badge type-int">int</span>
@@ -266,7 +266,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   <td rowspan="10" class="path-cell">/ticket/{id}</td>
   <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get a ticket</div><div class="method-desc">Retrieve detailed information about a specific support ticket.</div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">The unique identifier for a ticket</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -313,7 +313,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   <td rowspan="5" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Update a ticket</div><div class="method-desc">Modify an existing ticket&#039;s information.</div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">The unique identifier for a ticket</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -372,7 +372,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   <td rowspan="1" class="method-cell"><span class="ti unsafe"></span>DELETE<div class="method-title">Delete a ticket</div><div class="method-desc">Permanently remove a ticket from the system.</div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">The unique identifier for a ticket</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -391,7 +391,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   <td rowspan="11" class="path-cell">/users/{id}</td>
   <td rowspan="2" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get user profile</div><div class="method-desc">Retrieve detailed profile information for a specific user.</div><div class="method-alps"><a href="alps.html#getUser" class="alps-link">getUser</a></div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">Unique identifier for the user</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -425,7 +425,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><a href="alps.html#age" class="param alps-param" title="Age in years which must be equal to or greater than zero.">age</a><span class="req">*</span></td>
+  <td><span class="param">age</span><span class="req">*</span></td>
   <td class="param-desc">Age of the user in years</td>
   <td><div class="extra-info">
       <span class="badge type-int">int</span>
@@ -450,7 +450,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   <td rowspan="5" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Update user profile</div><div class="method-desc">Modify existing user account information.</div><div class="method-alps"><a href="alps.html#updateUser" class="alps-link">updateUser</a></div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">Unique identifier for the user</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -472,7 +472,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   
-  <td><a href="alps.html#age" class="param alps-param" title="Age in years which must be equal to or greater than zero.">age</a></td>
+  <td><span class="param">age</span></td>
   <td class="param-desc">Age of the user in years</td>
   <td><div class="extra-info">
       <span class="badge type-int">int</span>
@@ -508,7 +508,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   
   <td rowspan="1" class="method-cell"><span class="ti unsafe"></span>DELETE<div class="method-title">Delete user account</div><div class="method-desc">Permanently delete a user account and associated data.</div><div class="method-alps"><a href="alps.html#deleteUser" class="alps-link">deleteUser</a></div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">Unique identifier for the user</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -519,7 +519,7 @@ tr:hover{background-color:#f5f5f5;}
 <tr>
   <td rowspan="2" class="path-cell">/ticket/assign</td>
   <td rowspan="2" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Assign ticket</div><div class="method-desc">CQRS domain command. Compare with CRUD operations at /ticket.</div></td>
-  <td><a href="alps.html#id" class="param alps-param" title="Person identifier">id</a><span class="req">*</span></td>
+  <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">Ticket ID</td>
   <td><div class="extra-info">
       <span class="badge type-string">string</span>
@@ -1176,6 +1176,24 @@ tr:hover{background-color:#f5f5f5;}
 <p class="array-type">array of <a href="#Ticket">Ticket</a></p>
 </div>
 
+
+<h2>Links</h2>
+<table>
+<thead>
+<tr><th>Relation</th><th>URL</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td class="prop-name">Google</td>
+  <td><a href="https://www.google.com/">https://www.google.com/</a></td>
+</tr>
+<tr>
+  <td class="prop-name">Twitter</td>
+  <td><a href="https://www.twitter.com/">https://www.twitter.com/</a></td>
+</tr>
+
+</tbody>
+</table>
 
 </div>
 </body>

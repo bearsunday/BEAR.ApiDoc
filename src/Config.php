@@ -137,8 +137,13 @@ final class Config
             $this->alps = sprintf('%s/%s', $dir, $alps);
         }
 
-        /** @var array<SimpleXMLElement> $links */
-        $links = property_exists($xml, 'links') ? $xml->links : [];
+        $links = [];
+        if (property_exists($xml, 'links')) {
+            foreach ($xml->links->link as $link) {
+                $links[] = $link;
+            }
+        }
+
         $this->links = $links;
 
         /** @var class-string<AbstractModule> $appModuleClass */
