@@ -58,9 +58,12 @@ final class HtmlRenderer
         [$objectsHtml, $arraysHtml] = $this->renderObjectsAndArrays($objects, $objectRelations);
         $linksHtml = $this->renderLinks($links);
 
-        $objectsSection = $objectsHtml !== '' ? "<h2>Objects</h2>\n{$objectsHtml}" : '';
-        $arraysSection = $arraysHtml !== '' ? "<h2>Arrays</h2>\n{$arraysHtml}" : '';
-        $linksSection = $linksHtml !== '' ? "<h2>Links</h2>\n{$linksHtml}" : '';
+        $objectsSection = $objectsHtml !== '' ? '<h2>Objects</h2>
+' . $objectsHtml : '';
+        $arraysSection = $arraysHtml !== '' ? '<h2>Arrays</h2>
+' . $arraysHtml : '';
+        $linksSection = $linksHtml !== '' ? '<h2>Links</h2>
+' . $linksHtml : '';
 
         $cssHtml = $localCss !== null
             ? sprintf('<style>%s</style>', $localCss)

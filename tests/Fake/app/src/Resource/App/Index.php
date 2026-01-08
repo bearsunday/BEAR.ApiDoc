@@ -53,7 +53,7 @@ You can put "\n" in the text.".',
     /**
      * API entry point
      */
-    public function onGet()
+    public function onGet(): static
     {
         return $this;
     }

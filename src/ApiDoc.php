@@ -90,7 +90,7 @@ final readonly class ApiDoc
 
         /** @var ArrayObject<string, string> $nullDictionary */
         $nullDictionary = new ArrayObject();
-        $semanticDictionary = $config->alps ? $this->registerAlpsProfile($config->alps) : $nullDictionary;
+        $semanticDictionary = $config->alps !== '' && $config->alps !== '0' ? $this->registerAlpsProfile($config->alps) : $nullDictionary;
 
         $generator = new HtmlGenerator(
             $config,
@@ -103,7 +103,7 @@ final readonly class ApiDoc
         $outputFile = sprintf('%s/index.html', $config->docDir);
         $this->filePutContents($outputFile, $html);
 
-        if ($config->responseSchemaDir) {
+        if ($config->responseSchemaDir !== '' && $config->responseSchemaDir !== '0') {
             $this->copySchemas($config);
         }
     }
@@ -130,14 +130,14 @@ final readonly class ApiDoc
         chmod($dir, 0777);
     }
 
-        // @codeCoverageIgnoreEnd
+    // @codeCoverageIgnoreEnd
 
     /** @return Generator<string, array{0: string, 1:string}> */
     private function getGenMarkdown(Config $config, string $ext, DocClass $docClass): Generator
     {
         /** @var ArrayObject<string, string> $nullDictionary */
         $nullDictionary = new ArrayObject();
-        $semanticDictionary = $config->alps  ? $this->registerAlpsProfile($config->alps) : $nullDictionary;
+        $semanticDictionary = $config->alps !== '' && $config->alps !== '0' ? $this->registerAlpsProfile($config->alps) : $nullDictionary;
         $paths = [];
         foreach ($config->resourceFiles as $meta) {
             $path = $config->routes[$meta->uriPath] ?? $meta->uriPath;
@@ -148,7 +148,7 @@ final readonly class ApiDoc
             yield $file => [$markdown, $path];
         }
 
-        if ($config->responseSchemaDir) {
+        if ($config->responseSchemaDir !== '' && $config->responseSchemaDir !== '0') {
             $this->copySchemas($config);
         }
 
@@ -160,7 +160,11 @@ final readonly class ApiDoc
     private function copySchemas(Config $config): void
     {
         $outputDir = sprintf('%s/schema', $config->docDir);
-        ! is_dir($outputDir) && ! mkdir($outputDir) && ! is_dir($outputDir);
+        if (! is_dir($outputDir) && ! mkdir($outputDir)) {
+            // @codeCoverageIgnoreStart
+            throw new NotWritableException($outputDir);
+            // @codeCoverageIgnoreEnd
+        }
 
         $this->copySchema($config->responseSchemaDir, $outputDir);
     }
@@ -189,7 +193,7 @@ final readonly class ApiDoc
     /** @psalm-external-mutation-free */
     private function getSemanticTitle(SemanticDescriptor $descriptor): string
     {
-        if ($descriptor->title) {
+        if ($descriptor->title !== '' && $descriptor->title !== '0') {
             return $descriptor->title;
         }
 

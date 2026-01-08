@@ -68,7 +68,7 @@ final class Schema
 
     public function title(): string
     {
-        $title = $this->title ? sprintf('%s: %s', ucfirst($this->type), $this->title) : ucfirst($this->type);
+        $title = $this->title !== '' && $this->title !== '0' ? sprintf('%s: %s', ucfirst($this->type), $this->title) : ucfirst($this->type);
 
         return sprintf('[%s](../schema/%s)', $title, $this->file->getFilename());
     }
@@ -160,7 +160,7 @@ EOT;
 
     private function getDescription(string $titleDescription, string $id): string
     {
-        if ($titleDescription) {
+        if ($titleDescription !== '' && $titleDescription !== '0') {
             return $titleDescription;
         }
 
@@ -171,7 +171,7 @@ EOT;
     {
         $propertyRef = $property->{'$ref'} ?? '';
         assert(is_string($propertyRef));
-        if ($propertyRef) {
+        if ($propertyRef !== '' && $propertyRef !== '0') {
             $ref = new Ref($propertyRef, $this->file, $schema);
 
             return $this->returnType($ref->type);

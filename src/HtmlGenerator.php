@@ -213,7 +213,7 @@ final class HtmlGenerator
 
         if ($schemaAttr->schema !== '') {
             $responseSchema = $this->loadSchema($this->responseSchemaDir, $schemaAttr->schema);
-            if ($responseSchema !== null) {
+            if ($responseSchema instanceof \BEAR\ApiDoc\Schema) {
                 $responseSchemaName = $responseSchema->title ?: ucfirst(pathinfo($schemaAttr->schema, PATHINFO_FILENAME));
                 $this->addObject($responseSchemaName, $responseSchema);
             }
@@ -259,7 +259,7 @@ final class HtmlGenerator
             $example = '';
             $constraints = [];
 
-            if ($requestSchema !== null && isset($requestSchema->props[$paramName])) {
+            if ($requestSchema instanceof \BEAR\ApiDoc\Schema && isset($requestSchema->props[$paramName])) {
                 $prop = $requestSchema->props[$paramName];
                 $description = $prop->description;
                 $example = $prop->example;
@@ -319,7 +319,11 @@ final class HtmlGenerator
         }
 
         foreach ($schema->props as $propName => $prop) {
-            if ($propName === '_links' || $propName === '_embedded') {
+            if ($propName === '_links') {
+                continue;
+            }
+
+            if ($propName === '_embedded') {
                 continue;
             }
 

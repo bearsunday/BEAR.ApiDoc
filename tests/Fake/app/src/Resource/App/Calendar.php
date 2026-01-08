@@ -11,7 +11,7 @@ class Calendar extends ResourceObject
      *
      * @param string $date Target date (YYYY-MM-DD format)
      */
-    #[JsonSchema(key: 'calendar', schema: 'calendar.json')]
+    #[JsonSchema(schema: 'calendar.json', key: 'calendar')]
     public function onGet(string $date = 'today')
     {
     }

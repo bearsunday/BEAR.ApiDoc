@@ -42,6 +42,7 @@ final class Config
     public readonly string $format;
 
     public readonly string $title;
+
     public readonly string $description;
 
     /** @var list<SimpleXMLElement> */
@@ -59,6 +60,7 @@ final class Config
     public array $routes = [];
 
     public string $requestSchemaDir = '';
+
     public string $responseSchemaDir = '';
 
     /**
@@ -86,7 +88,7 @@ final class Config
         $this->description = property_exists($xml, 'description') ? (string) $xml->description : '';
         $this->title = property_exists($xml, 'title') ? (string) $xml->title : '';
         $alps = property_exists($xml, 'alps') ? (string) $xml->alps : '';
-        if ($alps) {
+        if ($alps !== '' && $alps !== '0') {
             $this->alps = sprintf('%s/%s', $dir, $alps);
         }
 

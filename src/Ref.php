@@ -23,9 +23,13 @@ use const FILTER_VALIDATE_URL;
 final class Ref
 {
     public string $title = '';
+
     public string $type = '';
+
     public ?object $json = null;
+
     public string $href = '';
+
     public ?object $schema = null;
 
     public function __construct(string $ref, SplFileInfo $file, object $schema)
@@ -56,7 +60,8 @@ final class Ref
     private function getExternalRef(string $ref, SplFileInfo $file): void
     {
         $filePath = $this->getFilePath($ref, $file);
-        $this->json = $schema = (object) json_decode((string) file_get_contents($filePath));
+        $this->json = (object) json_decode((string) file_get_contents($filePath));
+        $schema = (object) json_decode((string) file_get_contents($filePath));
         $this->type = isset($schema->type) && is_string($schema->type) ? $schema->type : '';
         $this->title = isset($schema->title) && is_string($schema->title) ? $schema->title : '';
     }

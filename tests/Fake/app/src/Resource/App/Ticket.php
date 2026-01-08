@@ -21,7 +21,7 @@ class Ticket extends ResourceObject
      *
      * @param string $id The unique identifier for a ticket
      */
-    #[JsonSchema(key: 'ticket', schema: 'ticket.json', params: 'ticket.param.json')]
+    #[JsonSchema(schema: 'ticket.json', key: 'ticket', params: 'ticket.param.json')]
     #[Link(rel: 'goAssignee', href: '/user{?id}')]
     public function onGet(string $id): static
     {

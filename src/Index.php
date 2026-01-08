@@ -13,26 +13,23 @@ use function sprintf;
 
 use const PHP_EOL;
 
-final class Index implements Stringable
+final readonly class Index implements Stringable
 {
-    /** @var string  */
-    private $title;
+    private string $title;
 
-    /** @var string */
-    private $description;
+    private string $description;
 
-    /** @var TagLinks */
-    private $links;
+    private \BEAR\ApiDoc\TagLinks $links;
 
     /** @param array<string, string> $paths */
     public function __construct(
         Config $config,
-        private readonly array $paths,
-        private readonly ModelRepository $objects,
-        private readonly string $ext
+        private array $paths,
+        private ModelRepository $objects,
+        private string $ext
     ) {
         $this->title = $config->title;
-        $this->description = $config->description ? $config->description . PHP_EOL . PHP_EOL : '';
+        $this->description = $config->description !== '' && $config->description !== '0' ? $config->description . PHP_EOL . PHP_EOL : '';
         $links = [];
         /** @var iterable<SimpleXMLElement> $configLink */
         $configLink = $config->links[0]->link ?? [];
@@ -46,7 +43,8 @@ final class Index implements Stringable
     #[\Override]
     public function __toString(): string
     {
-        $paths = $objects = '';
+        $paths = '';
+        $objects = '';
         foreach ($this->paths as $route => $path) {
             $paths .= sprintf('- [%s](paths/%s.%s)', $route, $path, $this->ext) . PHP_EOL;
         }

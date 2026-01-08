@@ -15,8 +15,7 @@ use function property_exists;
 
 class SchemaPropTest extends TestCase
 {
-    /** @var SchemaProp */
-    private $prop;
+    private \BEAR\ApiDoc\SchemaProp $prop;
 
     protected function setUp(): void
     {

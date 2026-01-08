@@ -113,7 +113,7 @@ EOT;
     private function getResponseSchema(string $dir, string $file): ?Schema
     {
         $schemaJson = $this->getSchema($dir, $file);
-        if ($schemaJson !== null && $schemaJson->type === 'object') {
+        if ($schemaJson instanceof \BEAR\ApiDoc\Schema && $schemaJson->type === 'object') {
             $this->modelRepository[$schemaJson->title] = $file;
         }
 

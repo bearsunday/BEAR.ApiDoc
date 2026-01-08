@@ -225,7 +225,6 @@ final class OpenApiGenerator
 
         $operation['responses'] = $responses;
 
-        /** @var OpenApiOperation */
         return $operation;
     }
 
@@ -274,7 +273,7 @@ final class OpenApiGenerator
         $parameters = [];
         $schema = $this->loadSchema($this->requestSchemaDir, $schemaFile);
 
-        if ($schema === null) {
+        if (! $schema instanceof \BEAR\ApiDoc\Schema) {
             return [];
         }
 
@@ -346,14 +345,13 @@ final class OpenApiGenerator
     {
         $schema = $this->loadSchema($this->responseSchemaDir, $schemaFile);
 
-        if ($schema === null) {
+        if (! $schema instanceof \BEAR\ApiDoc\Schema) {
             return null;
         }
 
         $schemaName = $this->sanitizeSchemaName($schema->title ?: 'Response');
         $this->addSchemaToComponents($schemaName, $schemaFile);
 
-        /** @var SchemaRef */
         return [
             '$ref' => sprintf('#/components/schemas/%s', $schemaName),
         ];
@@ -475,7 +473,11 @@ final class OpenApiGenerator
         $arrayKeys = ['allOf', 'oneOf', 'anyOf'];
 
         foreach ($nestedKeys as $key) {
-            if (! isset($schema[$key]) || ! is_array($schema[$key])) {
+            if (! isset($schema[$key])) {
+                continue;
+            }
+
+            if (! is_array($schema[$key])) {
                 continue;
             }
 
