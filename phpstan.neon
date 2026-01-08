@@ -3,9 +3,6 @@ parameters:
   paths:
     - src
     - tests
+
   excludePaths:
     - tests/Fake/*
-  ignoreErrors:
-    # ReflectionClass<T> is invariant in PHP
-    - '#ReflectionClass<BEAR\\Resource\\ResourceObject> given#'
-    - '#ReflectionClass<BEAR\\ApiDoc\\Fake\\Ro\\FakeParamDoc> given#'
