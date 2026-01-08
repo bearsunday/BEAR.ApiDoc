@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-BEAR.ApiDoc generates API documentation from BEAR.Sunday applications. It extracts documentation from method signatures, PHPDoc comments, and JSON Schema to produce accurate API documentation in HTML, Markdown, or OpenAPI 3.0 formats.
+BEAR.ApiDoc generates API documentation from BEAR.Sunday applications. It extracts documentation from method signatures, PHPDoc comments, and JSON Schema to produce accurate API documentation in HTML, Markdown, or OpenAPI 3.1 formats.
 
 ## Development Commands
 
@@ -31,7 +31,7 @@ composer tests                             # Run cs, sa, and test together
 - `Config` - Parses `apidoc.xml` configuration, bootstraps the BEAR.Sunday application module to scan resources
 - `DocClass` - Generates documentation for a resource class by examining its HTTP methods (onGet, onPut, etc.)
 - `DocMethod` - Documents a single HTTP method with parameters and response schema
-- `OpenApiGenerator` - Produces OpenAPI 3.0 specification from resource metadata
+- `OpenApiGenerator` - Produces OpenAPI 3.1 specification from resource metadata
 
 ### Configuration
 
