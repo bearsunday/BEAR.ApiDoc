@@ -18,7 +18,8 @@ return static function (RectorConfig $rectorConfig): void {
     // define sets of rules
     $rectorConfig->sets([
         LevelSetList::UP_TO_PHP_82
-    ])->withPreparedSets(
+    ]);
+    $rectorConfig->withPreparedSets(
         deadCode: true,
         codeQuality: true,
         codingStyle: true,
