@@ -75,6 +75,11 @@ final class ApiDoc
     {
         $genMarkDown = $this->getGenMarkdown($config, 'md', $docClass);
         foreach ($genMarkDown as $file => [$markdown]) {
+            $dir = dirname($file);
+            if (! is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+
             $this->filePutContents($file . '.md', $markdown);
         }
     }
