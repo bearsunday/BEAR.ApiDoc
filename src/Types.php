@@ -39,9 +39,10 @@ namespace BEAR\ApiDoc;
  * HTML Generator Types
  * @psalm-type HtmlParamArray = array{name: string, type: string, description: string, required: bool, example: string, constraints: array<string, mixed>, alps: string|null}
  * @psalm-type HtmlMethodArray = array{params: array<HtmlParamArray>, response: string|null, summary: string, description: string, embeds: array<mixed>, links: array<mixed>, alps: array<string>}
- * @psalm-type HtmlPropertyArray = array{name: string, type: string, description: string, example: string|null, format: string|null, constraints: array<string, mixed>}
+ * @psalm-type HtmlPropertyArray = array{name: string, type: string, description: string, example: string|null, format: string|null, constraints: array<string, mixed>, ref: string|null}
  * @psalm-type HtmlObjectArray = array{name: string, properties: array<HtmlPropertyArray>, arrayItemType: string|null}
  * @psalm-type HtmlRelationArray = array{rel: string, href: string, title: string}
+ * @psalm-type HtmlObjectRelations = array<string, array{embeds: array<HtmlRelationArray>, links: array<HtmlRelationArray>}>
  * @psalm-type DocLink = array{rel: string, href: string, type: string}
  */
 final class Types

@@ -28,15 +28,16 @@ use const JSON_UNESCAPED_UNICODE;
  * @psalm-import-type HtmlPropertyArray from Types
  * @psalm-import-type HtmlObjectArray from Types
  * @psalm-import-type HtmlRelationArray from Types
+ * @psalm-import-type HtmlObjectRelations from Types
  * @psalm-import-type DocLink from Types
  */
 final class HtmlRenderer
 {
     /**
-     * @param array<string, array<string, HtmlMethodArray>>                                                                                                       $endpoints
-     * @param array<string, HtmlObjectArray>                                                                                                                      $objects
-     * @param array<string, array{embeds: array<array{rel: string, href: string, title: string}>, links: array<array{rel: string, href: string, title: string}>}> $objectRelations
-     * @param array<DocLink>                                                                                                                                      $links
+     * @param array<string, array<string, HtmlMethodArray>> $endpoints
+     * @param array<string, HtmlObjectArray>                $objects
+     * @param HtmlObjectRelations                           $objectRelations
+     * @param array<DocLink>                                $links
      */
     public function render(
         string $title,
@@ -326,8 +327,8 @@ HTML;
     }
 
     /**
-     * @param array<string, HtmlObjectArray>                                                                                                                      $objects
-     * @param array<string, array{embeds: array<array{rel: string, href: string, title: string}>, links: array<array{rel: string, href: string, title: string}>}> $objectRelations
+     * @param array<string, HtmlObjectArray> $objects
+     * @param HtmlObjectRelations            $objectRelations
      *
      * @return array{string, string}
      */
@@ -363,8 +364,8 @@ HTML;
     }
 
     /**
-     * @param HtmlObjectArray                                                                                                                                     $object
-     * @param array<string, array{embeds: array<array{rel: string, href: string, title: string}>, links: array<array{rel: string, href: string, title: string}>}> $objectRelations
+     * @param HtmlObjectArray     $object
+     * @param HtmlObjectRelations $objectRelations
      */
     private function renderObject(string $name, array $object, array $objectRelations): string
     {
@@ -432,10 +433,14 @@ HTML;
     {
         $badges = [];
 
-        // Type badge
+        // Type badge (link to ref if available)
         $type = $this->normalizeType($prop['type']);
         $typeClass = 'type-' . (preg_replace('/[^a-zA-Z0-9-]/', '', $type) ?? $type);
-        $badges[] = sprintf('<span class="badge %s">%s</span>', $typeClass, htmlspecialchars($type));
+        if ($prop['ref'] !== null) {
+            $badges[] = sprintf('<a href="#%s" class="badge %s">%s</a>', htmlspecialchars($prop['ref']), $typeClass, htmlspecialchars($type));
+        } else {
+            $badges[] = sprintf('<span class="badge %s">%s</span>', $typeClass, htmlspecialchars($type));
+        }
 
         // Format badge
         if ($prop['format'] !== null) {
@@ -476,7 +481,7 @@ HTML;
     }
 
     /**
-     * @param array{rel: string, href: string, title: string} $relation
+     * @param HtmlRelationArray $relation
      */
     private function renderRelationRow(array $relation, string $type): string
     {

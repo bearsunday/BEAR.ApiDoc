@@ -18,6 +18,7 @@ use SplFileInfo;
 use function file_get_contents;
 use function in_array;
 use function is_file;
+use function is_numeric;
 use function is_object;
 use function is_string;
 use function json_decode;
@@ -36,6 +37,7 @@ use const PATHINFO_FILENAME;
  * @psalm-import-type HtmlMethodArray from Types
  * @psalm-import-type HtmlObjectArray from Types
  * @psalm-import-type HtmlRelationArray from Types
+ * @psalm-import-type HtmlObjectRelations from Types
  * @psalm-import-type DocLink from Types
  */
 final class HtmlGenerator
@@ -46,7 +48,7 @@ final class HtmlGenerator
     /** @var array<string, HtmlObjectArray> */
     private array $objects = [];
 
-    /** @var array<string, array{embeds: array<HtmlRelationArray>, links: array<HtmlRelationArray>}> */
+    /** @var HtmlObjectRelations */
     private array $objectRelations = [];
 
     private readonly HtmlRenderer $renderer;
@@ -308,6 +310,15 @@ final class HtmlGenerator
             $constraints = $prop->constraints->constrains;
             unset($constraints['format']);
 
+            // Check for nested object with properties
+            $ref = null;
+            if ($prop->type === 'object' && isset($constraints['properties']) && is_object($constraints['properties'])) {
+                $nestedName = $name . '.' . ucfirst($propName);
+                $this->addNestedObject($nestedName, $constraints['properties']);
+                $ref = $nestedName;
+                unset($constraints['properties']);
+            }
+
             $properties[] = [
                 'name' => $propName,
                 'type' => $prop->type,
@@ -315,6 +326,7 @@ final class HtmlGenerator
                 'example' => $prop->example,
                 'format' => $format,
                 'constraints' => $constraints,
+                'ref' => $ref,
             ];
         }
 
@@ -322,6 +334,47 @@ final class HtmlGenerator
             'name' => $name,
             'properties' => $properties,
             'arrayItemType' => $arrayItemType,
+        ];
+    }
+
+    private function addNestedObject(string $name, object $nestedProperties): void
+    {
+        if (isset($this->objects[$name])) {
+            return;
+        }
+
+        $properties = [];
+        /** @var array<string, mixed> $propsArray */
+        $propsArray = (array) $nestedProperties;
+        foreach ($propsArray as $propName => $prop) {
+            if (! is_object($prop)) {
+                continue;
+            }
+
+            /** @psalm-suppress MixedAssignment */
+            $type = $prop->type ?? 'mixed';
+            /** @psalm-suppress MixedAssignment */
+            $description = $prop->description ?? '';
+            /** @psalm-suppress MixedAssignment */
+            $example = $prop->example ?? null;
+            /** @psalm-suppress MixedAssignment */
+            $format = $prop->format ?? null;
+
+            $properties[] = [
+                'name' => $propName,
+                'type' => is_string($type) ? $type : 'mixed',
+                'description' => is_string($description) ? $description : '',
+                'example' => is_string($example) || is_numeric($example) ? (string) $example : null,
+                'format' => is_string($format) ? $format : null,
+                'constraints' => [],
+                'ref' => null,
+            ];
+        }
+
+        $this->objects[$name] = [
+            'name' => $name,
+            'properties' => $properties,
+            'arrayItemType' => null,
         ];
     }
 
