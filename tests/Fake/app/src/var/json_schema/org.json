@@ -1,0 +1,19 @@
+{
+  "$id": "org.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Org",
+  "description": "Organization information",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Organization ID"
+    },
+    "name": {
+      "type": "string",
+      "description": "Organization name",
+      "example": "Acme Inc."
+    }
+  },
+  "required": ["id", "name"]
+}

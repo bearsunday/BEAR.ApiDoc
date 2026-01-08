@@ -11,6 +11,7 @@ class Org extends ResourceObject
      *
      * @param string $id Organization ID
      */
+    #[JsonSchema(schema: 'org.json')]
     public function onGet(string $id): ResourceObject
     {
         return $this;
