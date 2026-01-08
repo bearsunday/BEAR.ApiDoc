@@ -17,8 +17,6 @@ use function sprintf;
 use function strtolower;
 use function substr;
 
-
-
 final readonly class Src implements Stringable
 {
     public function __construct(
