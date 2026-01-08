@@ -11,7 +11,7 @@
   </descriptor>
 
   <descriptor id="method" type="semantic" title="HTTP Method">
-    <doc>HTTP method extracted from resource class (onGet, onPost, onPut, onPatch, onDelete). Type indicators show: safe (GET), idempotent (PUT/DELETE), or unsafe (POST/PATCH).</doc>
+    <doc>HTTP method extracted from resource class (onGet, onPost, onPut, onPatch, onDelete). Color-coded type indicators: green (safe/GET - no side effects), yellow (idempotent/PUT,DELETE - same result if repeated), red (unsafe/POST,PATCH - may have side effects).</doc>
   </descriptor>
 
   <descriptor id="param" type="semantic" title="Request Parameter">
@@ -25,16 +25,29 @@
   </descriptor>
 
   <descriptor id="object" type="semantic" title="Object">
-    <doc>Data structure extracted from JSON Schema. Properties, types, constraints, and examples are from the schema file, not manually documented. The schema link (📄) provides the complete machine-readable definition.</doc>
+    <doc>Data structure extracted from JSON Schema. Properties, types, constraints, and examples are from the schema file, not manually documented. The 📄 icon links to the complete machine-readable JSON Schema definition.</doc>
+    <link rel="describedby" href="https://json-schema.org/draft/2020-12/schema"/>
+  </descriptor>
+
+  <descriptor id="array" type="semantic" title="Array">
+    <doc>Collection type extracted from JSON Schema. Shows the item type (e.g., "array of Ticket"). If item type links to an Object, clicking navigates to that Object definition.</doc>
     <link rel="describedby" href="https://json-schema.org/draft/2020-12/schema"/>
   </descriptor>
 
   <descriptor id="example" type="semantic" title="Example Value">
-    <doc>Example value from JSON Schema. This is a valid value that passes validation.</doc>
+    <doc>Example value from JSON Schema's "example" property. This is a valid value that passes all validation constraints.</doc>
   </descriptor>
 
   <descriptor id="constraint" type="semantic" title="Constraint">
-    <doc>Validation constraint enforced at runtime. Values not meeting these constraints are rejected with a validation error.</doc>
+    <doc>Validation constraint enforced at runtime (minLength, maxLength, minimum, maximum, pattern, etc.). Values not meeting these constraints are rejected with a validation error.</doc>
+  </descriptor>
+
+  <descriptor id="format" type="semantic" title="Format">
+    <doc>Semantic format annotation (email, date-time, uri, date, etc.). The format is validated - for example, "format: email" ensures valid email address syntax.</doc>
+  </descriptor>
+
+  <descriptor id="enum" type="semantic" title="Enum">
+    <doc>Allowed values list. Only these exact values are accepted. Any other value is rejected with a validation error.</doc>
   </descriptor>
 
   <descriptor id="embed" type="semantic" title="Embedded Resource">
