@@ -26,6 +26,7 @@ use function is_dir;
 use function is_object;
 use function is_string;
 use function mkdir;
+use function realpath;
 use function sprintf;
 use function substr;
 
@@ -49,7 +50,7 @@ final readonly class ApiDoc
 
         $outputFile = $config->format === 'openapi' ? 'openapi.json' : 'index.html';
 
-        return sprintf('ApiDoc generated. %s/%s', $config->docDir, $outputFile);
+        return sprintf('ApiDoc generated. %s/%s', (string) realpath($config->docDir), $outputFile);
     }
 
     private function dump(Config $config, DocClass $docClass): void
