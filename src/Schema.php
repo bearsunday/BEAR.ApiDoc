@@ -26,7 +26,6 @@ use function ucfirst;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 
-/** @psalm-pure */
 final class Schema
 {
     public string $title;
@@ -108,7 +107,7 @@ EOT;
     /** @param array<string, string> $required */
     private function setObject(object $schema, array $required): void
     {
-        if (! isset($schema->properties) || (! is_array($schema->properties) && ! is_object($schema->properties))) {
+        if (!isset($schema->properties) || (!is_array($schema->properties) && !is_object($schema->properties))) {
             return;
         }
 
@@ -127,7 +126,7 @@ EOT;
         $titleDescription = $title && $description ? sprintf('%s - %s', $title, $description) : $title . $description;
         $type = $this->getType($property, $schema);
         $constraint = new SchemaConstraints($property, $this->file);
-        $isOptional = ! in_array($name, $required);
+        $isOptional = !in_array($name, $required);
         $example = $this->extractExample($property);
 
         /** @psalm-suppress InaccessibleProperty */
@@ -136,7 +135,7 @@ EOT;
 
     private function extractExample(object $property): string
     {
-        if (! property_exists($property, 'example')) {
+        if (!property_exists($property, 'example')) {
             return '';
         }
 
@@ -188,7 +187,7 @@ EOT;
     private function returnType($type): string
     {
         if (is_array($type)) {
-            $type = array_map(static fn (string $item): string => $item === 'integer' ? 'int' : $item, $type);
+            $type = array_map(static fn(string $item): string => $item === 'integer' ? 'int' : $item, $type);
             $type = implode('|', $type);
         }
 

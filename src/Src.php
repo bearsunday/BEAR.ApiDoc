@@ -17,7 +17,7 @@ use function sprintf;
 use function strtolower;
 use function substr;
 
-/** @psalm-pure */
+
 
 final readonly class Src implements Stringable
 {

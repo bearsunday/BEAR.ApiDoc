@@ -76,7 +76,7 @@ final readonly class ApiDoc
         $genMarkDown = $this->getGenMarkdown($config, 'md', $docClass);
         foreach ($genMarkDown as $file => [$markdown]) {
             $dir = dirname($file);
-            if (! is_dir($dir)) {
+            if (!is_dir($dir)) {
                 mkdir($dir, 0777, true);
             }
 
@@ -128,9 +128,8 @@ final readonly class ApiDoc
         mkdir($dir, 0777, true);
         chmod(dirname($dir), 0777);
         chmod($dir, 0777);
+        // @codeCoverageIgnoreEnd
     }
-
-    // @codeCoverageIgnoreEnd
 
     /** @return Generator<string, array{0: string, 1:string}> */
     private function getGenMarkdown(Config $config, string $ext, DocClass $docClass): Generator
@@ -160,7 +159,7 @@ final readonly class ApiDoc
     private function copySchemas(Config $config): void
     {
         $outputDir = sprintf('%s/schema', $config->docDir);
-        if (! is_dir($outputDir) && ! mkdir($outputDir)) {
+        if (!is_dir($outputDir) && !mkdir($outputDir)) {
             // @codeCoverageIgnoreStart
             throw new NotWritableException($outputDir);
             // @codeCoverageIgnoreEnd
@@ -172,7 +171,7 @@ final readonly class ApiDoc
     /** @return ArrayObject<string, string> */
     private function registerAlpsProfile(string $file): ArrayObject
     {
-        if (! file_exists($file)) {
+        if (!file_exists($file)) {
             // @codeCoverageIgnoreStart
             throw new AlpsFileNotFoundException($file);
             // @codeCoverageIgnoreEnd
