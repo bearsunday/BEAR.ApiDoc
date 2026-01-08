@@ -12,6 +12,7 @@ namespace BEAR\ApiDoc;
  *
  * Primitive Types
  *
+ * @psalm-type AlpsDescriptorId = non-empty-string
  * @psalm-type ParameterLocation = 'path'|'query'|'header'|'cookie'
  * @psalm-type PathParams = list<string>
  * @psalm-type OperationBase = array{operationId?: string, summary?: string, description?: string}
