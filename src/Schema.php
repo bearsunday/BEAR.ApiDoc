@@ -40,7 +40,7 @@ final class Schema
     /** @var list<string> */
     public array $examples = [];
 
-    private object $schema;
+    private readonly object $schema;
 
     /** @param ArrayObject<string, string> $semanticDictionary */
     public function __construct(
