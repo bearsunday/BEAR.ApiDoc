@@ -28,7 +28,7 @@ jobs:
       # OpenAPI
       - run: ./vendor/bin/apidoc -c=tests/apidoc.openapi.xml
       - run: npm install -g @redocly/cli
-      - run: redocly build-docs docs/openapi/openapi.json -o docs/openapi/index.html
+      - run: redocly build-docs tests/docs/openapi/openapi.json -o tests/docs/openapi/index.html
 
       # ALPS
       - run: npm install -g @alps-asd/app-state-diagram
