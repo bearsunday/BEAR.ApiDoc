@@ -142,7 +142,7 @@ final class HtmlGenerator
     private function processMethod(string $path, string $httpMethod, ReflectionMethod $method): void
     {
         [$summary, $methodDescription, $paramDescriptions] = $this->extractPhpDoc($method);
-        [$requestSchema, $responseSchemaName] = $this->extractJsonSchema($method);
+        [$requestSchema, $responseSchemaName, $responseSchemaFile] = $this->extractJsonSchema($method);
         [$embeds, $links] = $this->extractEmbedsAndLinks($method);
         $alpsIds = $this->extractAlpsIds($method);
 
@@ -161,6 +161,7 @@ final class HtmlGenerator
             'description' => $methodDescription,
             'params' => $params,
             'response' => $responseSchemaName,
+            'responseSchemaFile' => $responseSchemaFile,
             'embeds' => $embeds,
             'links' => $links,
             'alps' => $alpsIds,
@@ -201,15 +202,16 @@ final class HtmlGenerator
         return [$summary, $methodDescription, $paramDescriptions];
     }
 
-    /** @return array{Schema|null, string|null} */
+    /** @return array{Schema|null, string|null, string|null} */
     private function extractJsonSchema(ReflectionMethod $method): array
     {
         $requestSchema = null;
         $responseSchemaName = null;
+        $responseSchemaFile = null;
         $attributes = $method->getAttributes(JsonSchema::class);
 
         if ($attributes === []) {
-            return [$requestSchema, $responseSchemaName];
+            return [$requestSchema, $responseSchemaName, $responseSchemaFile];
         }
 
         $schemaAttr = $attributes[0]->newInstance();
@@ -221,11 +223,12 @@ final class HtmlGenerator
             $responseSchema = $this->loadSchema($this->responseSchemaDir, $schemaAttr->schema);
             if ($responseSchema instanceof \BEAR\ApiDoc\Schema) {
                 $responseSchemaName = $responseSchema->title ?: ucfirst(pathinfo($schemaAttr->schema, PATHINFO_FILENAME));
-                $this->addObject($responseSchemaName, $responseSchema);
+                $responseSchemaFile = $schemaAttr->schema;
+                $this->addObject($responseSchemaName, $responseSchema, $responseSchemaFile);
             }
         }
 
-        return [$requestSchema, $responseSchemaName];
+        return [$requestSchema, $responseSchemaName, $responseSchemaFile];
     }
 
     /** @return array{array<array{rel: string, src: string}>, array<array{rel: string, href: string, title: string}>} */
@@ -312,7 +315,7 @@ final class HtmlGenerator
     }
 
     /** @SuppressWarnings("PHPMD.NPathComplexity") */
-    private function addObject(string $name, Schema $schema): void
+    private function addObject(string $name, Schema $schema, ?string $schemaFile = null): void
     {
         if (isset($this->objects[$name])) {
             return;
@@ -348,7 +351,7 @@ final class HtmlGenerator
             $ref = null;
             if ($prop->type === 'object' && isset($constraints['properties']) && is_object($constraints['properties'])) {
                 $nestedName = $name . '.' . ucfirst($propName);
-                $this->addNestedObject($nestedName, $constraints['properties']);
+                $this->addNestedObject($nestedName, $constraints['properties'], $schemaFile);
                 $ref = $nestedName;
                 unset($constraints['properties']);
             }
@@ -366,7 +369,7 @@ final class HtmlGenerator
                         $definition = $schemaJson->definitions->{lcfirst($defName)};
                         /** @psalm-suppress MixedPropertyFetch, MixedArgument */
                         if (isset($definition->properties) && is_object($definition->properties)) {
-                            $this->addNestedObject($defName, $definition->properties);
+                            $this->addNestedObject($defName, $definition->properties, $schemaFile);
                         }
                     }
                 }
@@ -389,10 +392,11 @@ final class HtmlGenerator
             'name' => $name,
             'properties' => $properties,
             'arrayItemType' => $arrayItemType,
+            'schemaFile' => $schemaFile,
         ];
     }
 
-    private function addNestedObject(string $name, object $nestedProperties): void
+    private function addNestedObject(string $name, object $nestedProperties, ?string $schemaFile = null): void
     {
         if (isset($this->objects[$name])) {
             return;
@@ -430,6 +434,7 @@ final class HtmlGenerator
             'name' => $name,
             'properties' => $properties,
             'arrayItemType' => null,
+            'schemaFile' => $schemaFile,
         ];
     }
 

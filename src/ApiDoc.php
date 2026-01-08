@@ -163,7 +163,7 @@ final readonly class ApiDoc
 
     private function copySchemas(Config $config): void
     {
-        $outputDir = sprintf('%s/schema', $config->docDir);
+        $outputDir = sprintf('%s/schemas', $config->docDir);
         if (! is_dir($outputDir) && ! mkdir($outputDir)) {
             // @codeCoverageIgnoreStart
             throw new NotWritableException($outputDir);

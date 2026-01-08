@@ -58,7 +58,7 @@ final class SchemaConstraints implements Stringable
 
         $refFile = sprintf('%s/%s', $file->getPath(), $value);
         if (file_exists($refFile)) {
-            return sprintf('[%s](../schema/%s)', $value, $value);
+            return sprintf('[%s](../schemas/%s)', $value, $value);
         }
 
         return $value;

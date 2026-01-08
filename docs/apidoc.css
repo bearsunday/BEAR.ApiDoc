@@ -252,6 +252,16 @@ tr:hover {
     font-weight: 500;
 }
 
+.schema-file-link {
+    text-decoration: none;
+    opacity: 0.7;
+}
+
+.schema-file-link:hover {
+    opacity: 1;
+    text-decoration: none;
+}
+
 /* Object section */
 .object-section {
     margin: 30px 0;

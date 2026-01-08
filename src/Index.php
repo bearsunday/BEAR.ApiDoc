@@ -50,7 +50,7 @@ final readonly class Index implements Stringable
         }
 
         foreach ($this->objects as $objectName => $objectFile) {
-            $objects .= sprintf('- [%s](schema/%s)', $objectName, $objectFile) . PHP_EOL;
+            $objects .= sprintf('- [%s](schemas/%s)', $objectName, $objectFile) . PHP_EOL;
         }
 
         return <<<EOT
