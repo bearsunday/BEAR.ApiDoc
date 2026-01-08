@@ -527,29 +527,14 @@ HTML;
             return '';
         }
 
-        $rows = '';
+        $items = [];
         foreach ($links as $link) {
             $rel = htmlspecialchars($link['rel']);
             $href = htmlspecialchars($link['href']);
-            $rows .= <<<HTML
-<tr>
-  <td class="prop-name">{$rel}</td>
-  <td><a href="{$href}">{$href}</a></td>
-</tr>
-
-HTML;
+            $items[] = sprintf('<a href="%s">%s</a>', $href, $rel);
         }
 
-        return <<<HTML
-<table>
-<thead>
-<tr><th>Relation</th><th>URL</th></tr>
-</thead>
-<tbody>
-{$rows}
-</tbody>
-</table>
-HTML;
+        return '<p class="doc-links">' . implode(' | ', $items) . '</p>';
     }
 
     private function getCss(): string
