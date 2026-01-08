@@ -50,7 +50,7 @@ jobs:
 
 ### Output Structure
 
-```
+```text
 docs/
 ├── index.html          # apidoc
 ├── schema/             # JSON Schema
