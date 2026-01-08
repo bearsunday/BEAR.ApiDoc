@@ -20,6 +20,49 @@ This not only saves you the trouble of writing IDL, but also allows you to gener
 
 See the [API doc documentatiom](http://bearsunday.github.io/manuals/1.0/en/apidoc.html).
 
+## GitHub Actions
+
+You can use the reusable workflow to generate and publish API documentation automatically.
+
+```yaml
+name: API Docs
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docs:
+    uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
+    with:
+      format: 'apidoc,openapi,alps'
+      alps-profile: 'alps.json'
+```
+
+### Inputs
+
+| Input | Default | Description |
+|-------|---------|-------------|
+| `php-version` | `'8.2'` | PHP version |
+| `format` | `'apidoc'` | Comma-separated: apidoc, md, openapi, alps |
+| `alps-profile` | `''` | ALPS profile path (required for alps format) |
+| `docs-path` | `'docs/api'` | Output directory |
+| `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
+
+### Output Structure
+
+```
+docs/
+├── index.html          # apidoc
+├── schema/             # JSON Schema
+│   └── *.json
+├── openapi/
+│   ├── openapi.json    # OpenAPI spec
+│   └── index.html      # Redocly HTML
+└── alps/
+    ├── alps.json       # ALPS profile
+    └── index.html      # ASD HTML
+```
+
 ## Development
 
 ```bash

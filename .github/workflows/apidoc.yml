@@ -8,7 +8,7 @@ on:
         default: '8.2'
       format:
         type: string
-        default: 'html'  # Comma-separated: html, md, openapi, alps
+        default: 'apidoc'  # Comma-separated: apidoc, md, openapi, alps
       alps-profile:
         type: string
         default: ''  # ALPS profile path (required when format: alps)
@@ -30,16 +30,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # PHP steps (for html, md, openapi formats)
-      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+      # PHP steps (for apidoc, md, openapi formats)
+      - if: contains(inputs.format, 'apidoc') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ inputs.php-version }}
 
-      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+      - if: contains(inputs.format, 'apidoc') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
         run: composer install --prefer-dist --no-progress
 
-      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+      - if: contains(inputs.format, 'apidoc') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
         run: |
           if [ -f "./vendor/bin/apidoc" ]; then
             ./vendor/bin/apidoc
@@ -57,11 +57,11 @@ jobs:
       # OpenAPI to HTML conversion
       - if: contains(inputs.format, 'openapi')
         run: |
-          if [ -f "${{ inputs.docs-path }}/openapi.json" ]; then
+          if [ -f "${{ inputs.docs-path }}/openapi/openapi.json" ]; then
             npm install -g @redocly/cli
-            redocly build-docs ${{ inputs.docs-path }}/openapi.json -o ${{ inputs.docs-path }}/index.html
+            redocly build-docs ${{ inputs.docs-path }}/openapi/openapi.json -o ${{ inputs.docs-path }}/openapi/index.html
           else
-            echo "::error::${{ inputs.docs-path }}/openapi.json not found."
+            echo "::error::${{ inputs.docs-path }}/openapi/openapi.json not found."
             exit 1
           fi
 
@@ -70,10 +70,12 @@ jobs:
         run: |
           if [ -f "${{ inputs.alps-profile }}" ]; then
             npm install -g @alps-asd/app-state-diagram
-            mkdir -p ${{ inputs.docs-path }}
-            asd --echo ${{ inputs.alps-profile }} > ${{ inputs.docs-path }}/index.html
+            mkdir -p ${{ inputs.docs-path }}/alps
+            cp ${{ inputs.alps-profile }} ${{ inputs.docs-path }}/alps/
+            asd --echo ${{ inputs.alps-profile }} > ${{ inputs.docs-path }}/alps/index.html
           else
-            echo "::warning::${{ inputs.alps-profile }} not found. Skipping ALPS conversion."
+            echo "::error::${{ inputs.alps-profile }} not found."
+            exit 1
           fi
 
       - uses: actions/upload-artifact@v4
