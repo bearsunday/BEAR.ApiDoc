@@ -113,8 +113,7 @@ EOT;
     private function getResponseSchema(string $dir, string $file): ?Schema
     {
         $schemaJson = $this->getSchema($dir, $file);
-        /** @psalm-suppress RedundantConditionGivenDocblockType */
-        if (isset($schemaJson->type) && $schemaJson->type === 'object') {
+        if ($schemaJson !== null && $schemaJson->type === 'object') {
             $this->modelRepository[$schemaJson->title] = $file;
         }
 

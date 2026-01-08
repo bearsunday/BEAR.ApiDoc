@@ -30,10 +30,17 @@ use function sprintf;
 
 final class Config
 {
+    /** @var non-empty-string */
     public readonly string $appName;
+
+    /** @var '*'|'app'|'page' */
     public readonly string $scheme;
+
+    /** @var non-empty-string */
     public readonly string $docDir;
+
     public readonly string $format;
+
     public readonly string $title;
     public readonly string $description;
 

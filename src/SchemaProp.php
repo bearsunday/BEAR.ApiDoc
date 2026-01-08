@@ -9,7 +9,6 @@ use Stringable;
 use function sprintf;
 
 /** @psalm-pure */
-
 final class SchemaProp implements Stringable
 {
     public function __construct(

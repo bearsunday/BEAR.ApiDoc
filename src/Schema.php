@@ -30,20 +30,17 @@ use const JSON_THROW_ON_ERROR;
 /** @psalm-pure */
 final class Schema
 {
-    /** @var string */
-    public $title;
+    public string $title;
 
     /** @var array<string, SchemaProp> */
-    public $props = [];
+    public array $props = [];
 
-    /** @var string */
-    public $type;
+    public string $type;
 
-    /** @var array<string> */
-    public $examples = [];
+    /** @var list<string> */
+    public array $examples = [];
 
-    /** @var object */
-    private $schema;
+    private object $schema;
 
     /** @param ArrayObject<string, string> $semanticDictionary */
     public function __construct(
