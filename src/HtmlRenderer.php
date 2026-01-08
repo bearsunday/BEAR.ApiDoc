@@ -14,6 +14,7 @@ use function is_scalar;
 use function json_encode;
 use function preg_replace;
 use function sprintf;
+use function str_starts_with;
 use function ucfirst;
 
 use const JSON_UNESCAPED_SLASHES;
