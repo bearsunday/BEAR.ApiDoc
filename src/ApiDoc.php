@@ -31,8 +31,13 @@ use function substr;
 
 final class ApiDoc
 {
-    /** @SuppressWarnings(PHPMD.BooleanArgumentFlag) */
-    public function __invoke(string $configFile, bool $inlineCss = false): string
+    /** @SuppressWarnings("PHPMD.BooleanArgumentFlag") */
+    public function __construct(
+        private readonly bool $inlineCss = false,
+    ) {
+    }
+
+    public function __invoke(string $configFile): string
     {
         $config = new Config($configFile);
         $docClass = new DocClass(
@@ -40,14 +45,14 @@ final class ApiDoc
             $config->responseSchemaDir,
             new ModelRepository()
         );
-        $this->dump($config, $docClass, $inlineCss);
+        $this->dump($config, $docClass);
 
         $outputFile = $config->format === 'openapi' ? 'openapi.json' : 'index.html';
 
         return sprintf('ApiDoc generated. %s/%s', $config->docDir, $outputFile);
     }
 
-    private function dump(Config $config, DocClass $docClass, bool $inlineCss): void
+    private function dump(Config $config, DocClass $docClass): void
     {
         $this->mkDir($config->docDir);
 
@@ -63,7 +68,7 @@ final class ApiDoc
             return;
         }
 
-        $this->dumpHtml($config, $docClass, $inlineCss);
+        $this->dumpHtml($config, $docClass);
     }
 
     public function dumpMd(Config $config, DocClass $docClass): void
@@ -74,8 +79,7 @@ final class ApiDoc
         }
     }
 
-    /** @SuppressWarnings(PHPMD.BooleanArgumentFlag) */
-    public function dumpHtml(Config $config, DocClass $docClass, bool $inlineCss = false): void
+    public function dumpHtml(Config $config, DocClass $docClass): void
     {
         unset($docClass);
 
@@ -88,7 +92,7 @@ final class ApiDoc
             $config->requestSchemaDir,
             $config->responseSchemaDir,
             $semanticDictionary,
-            $inlineCss
+            $this->inlineCss
         );
         $html = $generator->generate();
         $outputFile = sprintf('%s/index.html', $config->docDir);

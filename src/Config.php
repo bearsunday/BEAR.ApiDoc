@@ -63,7 +63,7 @@ final class Config
 
     /**
      * @psalm-suppress
-     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings("PHPMD.NPathComplexity")
      */
     public function __construct(string $configFile)
     {

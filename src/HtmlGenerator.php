@@ -60,7 +60,7 @@ final class HtmlGenerator
     /**
      * @param ArrayObject<string, string>|null $semanticDictionary
      *
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings("PHPMD.BooleanArgumentFlag")
      */
     public function __construct(
         private readonly Config $config,
