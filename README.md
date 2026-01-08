@@ -8,7 +8,8 @@ This not only saves you the trouble of writing IDL, but also allows you to gener
 
 ## Demo
 
-[Live Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
+- [ApiDoc](https://bearsunday.github.io/BEAR.ApiDoc/)
+- [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
 
 ## Installation
 

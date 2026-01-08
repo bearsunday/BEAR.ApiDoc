@@ -12,9 +12,14 @@ use function is_array;
 use function is_object;
 use function is_scalar;
 use function json_encode;
+use function ltrim;
+use function preg_match;
 use function preg_replace;
+use function rtrim;
 use function sprintf;
+use function str_ends_with;
 use function str_starts_with;
+use function strlen;
 use function ucfirst;
 
 use const JSON_UNESCAPED_SLASHES;
@@ -34,6 +39,9 @@ use const JSON_UNESCAPED_UNICODE;
 final class HtmlRenderer
 {
     private string $alpsHtmlPath = 'alps.html';
+
+    /** @var array<string, string> Map of sanitized ID -> display name */
+    private array $knownObjects = [];
 
     /**
      * @param array<string, array<string, HtmlMethod>> $endpoints
@@ -114,6 +122,7 @@ HTML;
   <th>Path</th>
   <th>Method</th>
   <th>Params</th>
+  <th>Type</th>
   <th>Description</th>
   <th>Meta</th>
   <th>Response</th>
@@ -139,7 +148,7 @@ HTML;
             $methodRowspan = $paramCount > 0 ? $paramCount : 1;
 
             if ($paramCount === 0) {
-                $pathCell = $isFirstPath ? sprintf('<td rowspan="%d" class="path-cell">%s</td>', $totalRows, htmlspecialchars($path)) : '';
+                $pathCell = $isFirstPath ? sprintf('<td rowspan="%d" class="path-cell" id="path-%s">%s</td>', $totalRows, htmlspecialchars(ltrim($path, '/')), htmlspecialchars($path)) : '';
                 $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description'], $data['alps']);
                 $responseHtml = $this->renderResponseLink($data['response']);
 
@@ -165,7 +174,7 @@ HTML;
                 $responseCell = '';
 
                 if ($isFirstPath && $isFirstParam) {
-                    $pathCell = sprintf('<td rowspan="%d" class="path-cell">%s</td>', $totalRows, htmlspecialchars($path));
+                    $pathCell = sprintf('<td rowspan="%d" class="path-cell" id="path-%s">%s</td>', $totalRows, htmlspecialchars(ltrim($path, '/')), htmlspecialchars($path));
                 }
 
                 if ($isFirstParam) {
@@ -231,7 +240,9 @@ HTML;
             return '';
         }
 
-        return sprintf('<a href="#%s" class="schema-link">%s</a>', htmlspecialchars($schemaName), htmlspecialchars($schemaName));
+        $sanitizedId = $this->sanitizeId($schemaName);
+
+        return sprintf('<a href="#%s" class="schema-link">%s</a>', htmlspecialchars($sanitizedId), htmlspecialchars($schemaName));
     }
 
     /** @param HtmlParam $param */
@@ -242,7 +253,8 @@ HTML;
             $nameHtml .= '<span class="req">*</span>';
         }
 
-        $metaHtml = $this->renderMetaBadges($param['type'], $param['constraints'], $param['example']);
+        $typeHtml = $this->renderTypeBadge($param['type']);
+        $metaHtml = $this->renderConstraintBadges($param['constraints'], $param['example']);
         $descriptionHtml = htmlspecialchars($param['description']);
 
         return <<<HTML
@@ -250,6 +262,7 @@ HTML;
   {$pathCell}
   {$methodCell}
   <td>{$nameHtml}</td>
+  <td>{$typeHtml}</td>
   <td class="param-desc">{$descriptionHtml}</td>
   <td>{$metaHtml}</td>
   {$responseCell}
@@ -275,14 +288,17 @@ HTML;
         );
     }
 
+    private function renderTypeBadge(string $type): string
+    {
+        $typeClass = 'type-' . $type;
+
+        return sprintf('<span class="badge %s">%s</span>', $typeClass, htmlspecialchars($type));
+    }
+
     /** @param array<string, mixed> $constraints */
-    private function renderMetaBadges(string $type, array $constraints, string $example = ''): string
+    private function renderConstraintBadges(array $constraints, string $example = ''): string
     {
         $badges = [];
-
-        // Type badge
-        $typeClass = 'type-' . $type;
-        $badges[] = sprintf('<span class="badge %s">%s</span>', $typeClass, htmlspecialchars($type));
 
         // Format badge (special case)
         if (isset($constraints['format'])) {
@@ -332,6 +348,13 @@ HTML;
      */
     private function renderObjectsAndArrays(array $objects, array $objectRelations): array
     {
+        // Collect known objects first (for relation linking)
+        $this->knownObjects = [];
+        foreach ($objects as $name => $object) {
+            $sanitizedId = $this->sanitizeId($name);
+            $this->knownObjects[$sanitizedId] = $name;
+        }
+
         $objectsHtml = '';
         $arraysHtml = '';
 
@@ -348,12 +371,14 @@ HTML;
 
     private function renderArrayType(string $name, string $itemType): string
     {
+        $sanitizedId = $this->sanitizeId($name);
         $escapedName = htmlspecialchars($name);
         $itemTypeCapitalized = ucfirst($itemType);
-        $itemLink = sprintf('<a href="#%s">%s</a>', htmlspecialchars($itemTypeCapitalized), htmlspecialchars($itemTypeCapitalized));
+        $itemTypeSanitized = $this->sanitizeId($itemTypeCapitalized);
+        $itemLink = sprintf('<a href="#%s">%s</a>', htmlspecialchars($itemTypeSanitized), htmlspecialchars($itemTypeCapitalized));
 
         return <<<HTML
-<div class="object-section" id="{$escapedName}">
+<div class="object-section" id="{$sanitizedId}">
 <h3 class="object-name">{$escapedName}</h3>
 <p class="array-type">array of {$itemLink}</p>
 </div>
@@ -367,6 +392,7 @@ HTML;
      */
     private function renderObject(string $name, array $object, array $objectRelations): string
     {
+        $sanitizedId = $this->sanitizeId($name);
         $escapedName = htmlspecialchars($name);
         $rows = '';
 
@@ -390,11 +416,11 @@ HTML;
         }
 
         return <<<HTML
-<div class="object-section" id="{$escapedName}">
+<div class="object-section" id="{$sanitizedId}">
 <h3 class="object-name">{$escapedName}</h3>
 <table>
 <thead>
-<tr><th>Name</th><th>Description</th><th>Meta</th></tr>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
 </thead>
 <tbody>
 {$rows}
@@ -408,13 +434,23 @@ HTML;
     /** @param HtmlProperty $prop */
     private function renderPropertyRow(array $prop): string
     {
-        $nameHtml = sprintf('<span class="prop-name">%s</span>', htmlspecialchars($prop['name']));
+        $escapedName = htmlspecialchars($prop['name']);
+        // If property has a ref, make the name a link to the object
+        if ($prop['ref'] !== null) {
+            $sanitizedRef = $this->sanitizeId($prop['ref']);
+            $nameHtml = sprintf('<a href="#%s" class="prop-name">%s</a>', htmlspecialchars($sanitizedRef), $escapedName);
+        } else {
+            $nameHtml = sprintf('<span class="prop-name">%s</span>', $escapedName);
+        }
+
+        $typeHtml = $this->renderPropertyTypeBadge($prop);
         $metaHtml = $this->renderPropertyMeta($prop);
         $descriptionHtml = htmlspecialchars($prop['description']);
 
         return <<<HTML
 <tr>
   <td>{$nameHtml}</td>
+  <td>{$typeHtml}</td>
   <td class="param-desc">{$descriptionHtml}</td>
   <td>{$metaHtml}</td>
 </tr>
@@ -423,18 +459,18 @@ HTML;
     }
 
     /** @param HtmlProperty $prop */
+    private function renderPropertyTypeBadge(array $prop): string
+    {
+        $type = $this->normalizeType($prop['type']);
+        $typeClass = 'type-' . (preg_replace('/[^a-zA-Z0-9-]/', '', $type) ?? $type);
+
+        return sprintf('<span class="badge %s">%s</span>', $typeClass, htmlspecialchars($type));
+    }
+
+    /** @param HtmlProperty $prop */
     private function renderPropertyMeta(array $prop): string
     {
         $badges = [];
-
-        // Type badge (link to ref if available)
-        $type = $this->normalizeType($prop['type']);
-        $typeClass = 'type-' . (preg_replace('/[^a-zA-Z0-9-]/', '', $type) ?? $type);
-        if ($prop['ref'] !== null) {
-            $badges[] = sprintf('<a href="#%s" class="badge %s">%s</a>', htmlspecialchars($prop['ref']), $typeClass, htmlspecialchars($type));
-        } else {
-            $badges[] = sprintf('<span class="badge %s">%s</span>', $typeClass, htmlspecialchars($type));
-        }
 
         // Format badge
         if ($prop['format'] !== null) {
@@ -474,7 +510,11 @@ HTML;
 HTML;
     }
 
-    /** @param HtmlRelation $relation */
+    /**
+     * @param HtmlRelation $relation
+     *
+     * @SuppressWarnings("PHPMD.NPathComplexity")
+     */
     private function renderRelationRow(array $relation, string $type): string
     {
         $rowClass = $type === 'embed' ? 'embed-row' : 'link-row';
@@ -485,13 +525,37 @@ HTML;
         $indicator = $transitionType !== '' ? sprintf('<span class="ti %s"></span>', $transitionType) : '';
         $hrefLabel = $type === 'embed' ? 'src' : 'href';
 
+        // Try to link to Object section - derive Object name from rel
+        $relDisplay = $rel;
+        $objectName = $relation['rel'];
+
+        // Remove go/do prefix for links (e.g., goCard -> Card, doDelete -> Delete)
+        if (preg_match('/^(go|do)([A-Z].*)$/', $objectName, $matches)) {
+            $objectName = $matches[2];
+            // Try singular form (e.g., Tickets -> Ticket)
+            if (str_ends_with($objectName, 's') && strlen($objectName) > 1) {
+                $singular = rtrim($objectName, 's');
+                // Check if singular form exists first
+                if (isset($this->knownObjects[$singular])) {
+                    $objectName = $singular;
+                }
+            }
+        } else {
+            $objectName = ucfirst($objectName);
+        }
+
+        // Only create a link if the target object exists
+        if (isset($this->knownObjects[$objectName])) {
+            $relDisplay = sprintf('<a href="#%s">%s</a>', htmlspecialchars($objectName), $rel);
+        }
+
         return <<<HTML
 <tr class="{$rowClass}">
-  <td class="prop-name">{$indicator}{$rel}</td>
+  <td class="prop-name">{$indicator}{$relDisplay}</td>
+  <td><span class="badge {$type}">{$type}</span></td>
   <td class="param-desc">{$title}</td>
   <td>
     <div class="extra-info">
-      <span class="badge {$type}">{$type}</span>
       <span class="badge href">{$hrefLabel}: {$href}</span>
     </div>
   </td>
@@ -520,6 +584,15 @@ HTML;
             'boolean' => 'bool',
             default => $type,
         };
+    }
+
+    /**
+     * Sanitize a name to be a valid HTML ID (remove spaces)
+     */
+    private function sanitizeId(string $name): string
+    {
+        // Remove spaces to create valid HTML ID (e.g., "Calendar Event" -> "CalendarEvent")
+        return (string) preg_replace('/\s+/', '', $name);
     }
 
     private function convertMarkdownLinks(string $text): string

@@ -23,8 +23,10 @@ use function is_numeric;
 use function is_object;
 use function is_string;
 use function json_decode;
+use function lcfirst;
 use function pathinfo;
 use function sprintf;
+use function str_starts_with;
 use function strtoupper;
 use function substr;
 use function ucfirst;
@@ -309,6 +311,7 @@ final class HtmlGenerator
         return new Schema($fileInfo, $schemaJson, $emptyDictionary);
     }
 
+    /** @SuppressWarnings("PHPMD.NPathComplexity") */
     private function addObject(string $name, Schema $schema): void
     {
         if (isset($this->objects[$name])) {
@@ -321,6 +324,10 @@ final class HtmlGenerator
         if ($schema->type === 'array') {
             $arrayItemType = $this->getArrayItemType($schema);
         }
+
+        // Load raw schema to access definitions
+        /** @psalm-suppress MixedAssignment */
+        $schemaJson = json_decode((string) file_get_contents($schema->file->getPathname()));
 
         foreach ($schema->props as $propName => $prop) {
             if ($propName === '_links') {
@@ -344,6 +351,27 @@ final class HtmlGenerator
                 $this->addNestedObject($nestedName, $constraints['properties']);
                 $ref = $nestedName;
                 unset($constraints['properties']);
+            }
+
+            // Check for $ref to #/definitions/
+            if ($prop->type === 'object' && isset($constraints['$ref']) && is_string($constraints['$ref'])) {
+                $refPath = $constraints['$ref'];
+                if (str_starts_with($refPath, '#/definitions/')) {
+                    $defName = ucfirst(substr($refPath, 14)); // Remove '#/definitions/'
+                    $ref = $defName;
+                    // Add the definition as an Object if it exists
+                    /** @psalm-suppress MixedPropertyFetch */
+                    if (is_object($schemaJson) && isset($schemaJson->definitions->{lcfirst($defName)}) && is_object($schemaJson->definitions->{lcfirst($defName)})) {
+                        /** @psalm-suppress MixedPropertyFetch, MixedAssignment */
+                        $definition = $schemaJson->definitions->{lcfirst($defName)};
+                        /** @psalm-suppress MixedPropertyFetch, MixedArgument */
+                        if (isset($definition->properties) && is_object($definition->properties)) {
+                            $this->addNestedObject($defName, $definition->properties);
+                        }
+                    }
+                }
+
+                unset($constraints['$ref']);
             }
 
             $properties[] = [
