@@ -3,5 +3,6 @@ parameters:
   paths:
     - src
     - tests
+
   excludePaths:
     - tests/Fake/*

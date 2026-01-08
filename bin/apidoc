@@ -20,7 +20,7 @@ use BEAR\ApiDoc\Exception\ConfigException;
     $inlineCss = isset($options['inline-css']);
 
     try {
-        echo (new ApiDoc())($apidocXml, $inlineCss) . PHP_EOL;
+        echo (new ApiDoc($inlineCss))($apidocXml) . PHP_EOL;
     } catch (RuntimeException $e) {
         printf("%s: %s\n", (new ReflectionClass($e))->getShortName(), $e->getMessage());
         exit(1);

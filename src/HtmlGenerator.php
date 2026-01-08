@@ -60,7 +60,7 @@ final class HtmlGenerator
     /**
      * @param ArrayObject<string, string>|null $semanticDictionary
      *
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings("PHPMD.BooleanArgumentFlag")
      */
     public function __construct(
         private readonly Config $config,
@@ -105,9 +105,7 @@ final class HtmlGenerator
         return (string) file_get_contents(dirname(__DIR__) . '/docs/apidoc.css');
     }
 
-    /**
-     * @param array<DocLink> $links
-     */
+    /** @param array<DocLink> $links */
     private function extractAlpsHtmlPath(array $links): string
     {
         foreach ($links as $link) {
@@ -120,7 +118,9 @@ final class HtmlGenerator
     }
 
     /**
-     * @param ReflectionClass<object> $class
+     * @param ReflectionClass<T> $class
+     *
+     * @template T of object
      */
     private function processResource(string $path, ReflectionClass $class): void
     {
@@ -165,9 +165,7 @@ final class HtmlGenerator
         ];
     }
 
-    /**
-     * @return array<string>
-     */
+    /** @return array<string> */
     private function extractAlpsIds(ReflectionMethod $method): array
     {
         $ids = [];
@@ -179,9 +177,7 @@ final class HtmlGenerator
         return $ids;
     }
 
-    /**
-     * @return array{string, string, array<string, string>}
-     */
+    /** @return array{string, string, array<string, string>} */
     private function extractPhpDoc(ReflectionMethod $method): array
     {
         $summary = '';
@@ -203,9 +199,7 @@ final class HtmlGenerator
         return [$summary, $methodDescription, $paramDescriptions];
     }
 
-    /**
-     * @return array{Schema|null, string|null}
-     */
+    /** @return array{Schema|null, string|null} */
     private function extractJsonSchema(ReflectionMethod $method): array
     {
         $requestSchema = null;
@@ -223,7 +217,7 @@ final class HtmlGenerator
 
         if ($schemaAttr->schema !== '') {
             $responseSchema = $this->loadSchema($this->responseSchemaDir, $schemaAttr->schema);
-            if ($responseSchema !== null) {
+            if ($responseSchema instanceof \BEAR\ApiDoc\Schema) {
                 $responseSchemaName = $responseSchema->title ?: ucfirst(pathinfo($schemaAttr->schema, PATHINFO_FILENAME));
                 $this->addObject($responseSchemaName, $responseSchema);
             }
@@ -232,9 +226,7 @@ final class HtmlGenerator
         return [$requestSchema, $responseSchemaName];
     }
 
-    /**
-     * @return array{array<array{rel: string, src: string}>, array<array{rel: string, href: string, title: string}>}
-     */
+    /** @return array{array<array{rel: string, src: string}>, array<array{rel: string, href: string, title: string}>} */
     private function extractEmbedsAndLinks(ReflectionMethod $method): array
     {
         $embeds = [];
@@ -271,7 +263,7 @@ final class HtmlGenerator
             $example = '';
             $constraints = [];
 
-            if ($requestSchema !== null && isset($requestSchema->props[$paramName])) {
+            if ($requestSchema instanceof \BEAR\ApiDoc\Schema && isset($requestSchema->props[$paramName])) {
                 $prop = $requestSchema->props[$paramName];
                 $description = $prop->description;
                 $example = $prop->example;
@@ -331,7 +323,11 @@ final class HtmlGenerator
         }
 
         foreach ($schema->props as $propName => $prop) {
-            if ($propName === '_links' || $propName === '_embedded') {
+            if ($propName === '_links') {
+                continue;
+            }
+
+            if ($propName === '_embedded') {
                 continue;
             }
 
@@ -473,9 +469,7 @@ final class HtmlGenerator
         };
     }
 
-    /**
-     * @return array<DocLink>
-     */
+    /** @return array<DocLink> */
     private function extractLinks(): array
     {
         $links = [];

@@ -2,7 +2,7 @@
 
 BEAR.ApiDoc generates API documentation from the application.
 
-The documentation generated from the application's method signatures, phpdoc, JSON Schema, and ALPS profile will match the API documentation and the actual application.
+The documentation generated from the application's method signatures, phpdoc, JSON Schema, and ALPS profile will match the API documentation and the actual application. It supports HTML, Markdown, and OpenAPI 3.1 formats.
 
 This not only saves you the trouble of writing IDL, but also allows you to generate accurate documentation.
 
@@ -11,6 +11,8 @@ This not only saves you the trouble of writing IDL, but also allows you to gener
 [Live Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
 
 ## Installation
+
+    requires PHP 8.2 or later
 
     composer require bear/api-doc ^1.0
 
@@ -24,6 +26,8 @@ See the [API doc documentatiom](http://bearsunday.github.io/manuals/1.0/en/apido
 git clone https://github.com/bearsunday/BEAR.ApiDoc.git
 cd BEAR.ApiDoc
 composer install
-composer docs      # Generate docs with external CSS
-composer docs-dev  # Generate docs with inline CSS for development
+composer docs        # Generate docs with external CSS
+composer docs-dev    # Generate docs with inline CSS for development
+composer docs-md     # Generate Markdown docs
+composer docs-openapi # Generate OpenAPI spec
 ```

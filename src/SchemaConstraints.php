@@ -18,9 +18,7 @@ use function sprintf;
 use const FILTER_VALIDATE_URL;
 use const JSON_UNESCAPED_SLASHES;
 
-/**
- * @psalm-pure
- */
+/** @psalm-pure */
 final class SchemaConstraints implements Stringable
 {
     /**
@@ -44,7 +42,9 @@ final class SchemaConstraints implements Stringable
                 continue;
             }
 
-            $constrains[(string) $name] = $value;
+            if (is_string($name)) {
+                $constrains[$name] = $value;
+            }
         }
 
         $this->constrains = $constrains;

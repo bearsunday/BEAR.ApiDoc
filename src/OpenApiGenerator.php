@@ -91,7 +91,9 @@ final class OpenApiGenerator
     }
 
     /**
-     * @param ReflectionClass<object> $class
+     * @param ReflectionClass<T> $class
+     *
+     * @template T of object
      */
     private function processResource(string $path, ReflectionClass $class): void
     {
@@ -134,9 +136,7 @@ final class OpenApiGenerator
         return $this->addErrorResponses($operation, $hasRequestSchema, $pathParams);
     }
 
-    /**
-     * @return OperationBase
-     */
+    /** @return OperationBase */
     private function buildOperationBase(ReflectionMethod $method, string $classSummary, string $classDescription): array
     {
         $docComment = (string) $method->getDocComment();
@@ -195,8 +195,9 @@ final class OpenApiGenerator
                     'application/json' => ['schema' => $schemaRef],
                 ],
             ];
-            /** @var OpenApiResponses $responses */
-            $responses = ['200' => $successResponse];
+            /** @var array<string, OpenApiResponse> $responses */
+            $responses = [];
+            $responses['200'] = $successResponse;
             $operation['responses'] = $responses;
         }
 
@@ -228,7 +229,6 @@ final class OpenApiGenerator
 
         $operation['responses'] = $responses;
 
-        /** @var OpenApiOperation */
         return $operation;
     }
 
@@ -257,8 +257,9 @@ final class OpenApiGenerator
         if (! array_key_exists('responses', $operation)) {
             /** @var OpenApiResponse $defaultResponse */
             $defaultResponse = ['description' => 'Successful response'];
-            /** @var OpenApiResponses $responses */
-            $responses = ['200' => $defaultResponse];
+            /** @var array<string, OpenApiResponse> $responses */
+            $responses = [];
+            $responses['200'] = $defaultResponse;
             $operation['responses'] = $responses;
         }
 
@@ -276,7 +277,7 @@ final class OpenApiGenerator
         $parameters = [];
         $schema = $this->loadSchema($this->requestSchemaDir, $schemaFile);
 
-        if ($schema === null) {
+        if (! $schema instanceof \BEAR\ApiDoc\Schema) {
             return [];
         }
 
@@ -343,21 +344,18 @@ final class OpenApiGenerator
         return $parameters;
     }
 
-    /**
-     * @return SchemaRef|null
-     */
+    /** @return SchemaRef|null */
     private function processResponse(string $schemaFile): ?array
     {
         $schema = $this->loadSchema($this->responseSchemaDir, $schemaFile);
 
-        if ($schema === null) {
+        if (! $schema instanceof \BEAR\ApiDoc\Schema) {
             return null;
         }
 
         $schemaName = $this->sanitizeSchemaName($schema->title ?: 'Response');
         $this->addSchemaToComponents($schemaName, $schemaFile);
 
-        /** @var SchemaRef */
         return [
             '$ref' => sprintf('#/components/schemas/%s', $schemaName),
         ];
@@ -479,7 +477,11 @@ final class OpenApiGenerator
         $arrayKeys = ['allOf', 'oneOf', 'anyOf'];
 
         foreach ($nestedKeys as $key) {
-            if (! isset($schema[$key]) || ! is_array($schema[$key])) {
+            if (! isset($schema[$key])) {
+                continue;
+            }
+
+            if (! is_array($schema[$key])) {
                 continue;
             }
 
@@ -504,7 +506,7 @@ final class OpenApiGenerator
         if ($key === 'properties' || in_array($key, $arrayKeys, true)) {
             foreach ($nested as $subKey => $subSchema) {
                 if (is_array($subSchema)) {
-                    $nested[$subKey] = $this->cleanSchemaForOpenApi($subSchema);
+                    $nested[$subKey] = $this->cleanSchemaForOpenApi($subSchema); // @phpstan-ignore argument.type
                 }
             }
 
@@ -554,8 +556,8 @@ final class OpenApiGenerator
         if (is_file($schemaPath)) {
             $schemaJson = json_decode((string) file_get_contents($schemaPath));
             assert(is_object($schemaJson) || $schemaJson === null);
-            if (is_object($schemaJson) && isset($schemaJson->title)) {
-                return $this->sanitizeSchemaName((string) $schemaJson->title);
+            if (is_object($schemaJson) && isset($schemaJson->title) && is_string($schemaJson->title)) {
+                return $this->sanitizeSchemaName($schemaJson->title);
             }
         }
 
@@ -572,7 +574,7 @@ final class OpenApiGenerator
     {
         // Convert "Collection of Tickets" -> "CollectionOfTickets"
         $words = explode(' ', $name);
-        $words = array_map('ucfirst', $words);
+        $words = array_map(ucfirst(...), $words);
 
         return implode('', $words);
     }

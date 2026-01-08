@@ -6,9 +6,7 @@ namespace FakeVendor\FakeProject;
 
 use PHPUnit\Framework\TestCase;
 
-/**
- * @requires PHP >= 999
- */
+/** @requires PHP >= 999 */
 class ApiDocTest extends TestCase
 {
     public function testSkipped(): void

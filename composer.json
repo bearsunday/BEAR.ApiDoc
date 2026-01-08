@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-json": "*",
         "ext-filter": "*",
         "ext-simplexml": "*",
@@ -32,7 +32,6 @@
         "bamarni/composer-bin-plugin": "^1.8.2",
         "koriym/attributes": "^1.0.5",
         "phpunit/phpunit": "^9.6.15",
-        "rector/rector": "^1.1",
         "justinrainbow/json-schema": "^5.3 || ^6.0"
     },
     "autoload": {
@@ -81,6 +80,13 @@
         ],
         "docs": "php bin/apidoc -ctests/apidoc.html.xml",
         "docs-dev": "php bin/apidoc -ctests/apidoc.html.xml --inline-css",
+        "docs-md": "php bin/apidoc -ctests/apidoc.md.xml",
+        "docs-openapi": "php bin/apidoc -ctests/apidoc.openapi.xml",
+        "docs-all": [
+            "@docs",
+            "@docs-md",
+            "@docs-openapi"
+        ],
         "openapi-install": "npm install -g @redocly/cli",
         "openapi-lint": "npx @redocly/cli lint tests/docs/openapi/openapi.json",
         "openapi-html": "npx @redocly/cli build-docs tests/docs/openapi/openapi.json -o tests/docs/openapi/index.html",
@@ -98,8 +104,11 @@
         "metrics": "Build metrics report",
         "tests": "Run tests and quality checks",
         "build": "Build project",
-        "docs": "Generate API documentation with external CSS",
-        "docs-dev": "Generate API documentation with inline CSS for development",
+        "docs": "Generate HTML API documentation",
+        "docs-dev": "Generate HTML API documentation with inline CSS",
+        "docs-md": "Generate Markdown API documentation",
+        "docs-openapi": "Generate OpenAPI specification",
+        "docs-all": "Generate all documentation formats (HTML, Markdown, OpenAPI)",
         "openapi-install": "Install Redocly CLI globally",
         "openapi-lint": "Validate OpenAPI spec with Redocly CLI",
         "openapi-html": "Generate HTML documentation from OpenAPI spec"

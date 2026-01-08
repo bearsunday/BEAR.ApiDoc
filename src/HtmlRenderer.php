@@ -58,9 +58,12 @@ final class HtmlRenderer
         [$objectsHtml, $arraysHtml] = $this->renderObjectsAndArrays($objects, $objectRelations);
         $linksHtml = $this->renderLinks($links);
 
-        $objectsSection = $objectsHtml !== '' ? "<h2>Objects</h2>\n{$objectsHtml}" : '';
-        $arraysSection = $arraysHtml !== '' ? "<h2>Arrays</h2>\n{$arraysHtml}" : '';
-        $linksSection = $linksHtml !== '' ? "<h2>Links</h2>\n{$linksHtml}" : '';
+        $objectsSection = $objectsHtml !== '' ? '<h2>Objects</h2>
+' . $objectsHtml : '';
+        $arraysSection = $arraysHtml !== '' ? '<h2>Arrays</h2>
+' . $arraysHtml : '';
+        $linksSection = $linksHtml !== '' ? '<h2>Links</h2>
+' . $linksHtml : '';
 
         $cssHtml = $localCss !== null
             ? sprintf('<style>%s</style>', $localCss)
@@ -95,9 +98,7 @@ final class HtmlRenderer
 HTML;
     }
 
-    /**
-     * @param array<string, array<string, HtmlMethod>> $endpoints
-     */
+    /** @param array<string, array<string, HtmlMethod>> $endpoints */
     private function renderEndpoints(array $endpoints): string
     {
         $rows = '';
@@ -125,9 +126,7 @@ HTML;
 HTML;
     }
 
-    /**
-     * @param array<string, HtmlMethod> $methods
-     */
+    /** @param array<string, HtmlMethod> $methods */
     private function renderEndpointRows(string $path, array $methods): string
     {
         $rows = '';
@@ -184,9 +183,7 @@ HTML;
         return $rows;
     }
 
-    /**
-     * @param array<string, HtmlMethod> $methods
-     */
+    /** @param array<string, HtmlMethod> $methods */
     private function countTotalRows(array $methods): int
     {
         $total = 0;
@@ -198,9 +195,7 @@ HTML;
         return $total;
     }
 
-    /**
-     * @param array<string> $alps
-     */
+    /** @param array<string> $alps */
     private function renderMethodBadge(string $method, string $title = '', string $description = '', array $alps = []): string
     {
         $typeClass = match ($method) {
@@ -239,9 +234,7 @@ HTML;
         return sprintf('<a href="#%s" class="schema-link">%s</a>', htmlspecialchars($schemaName), htmlspecialchars($schemaName));
     }
 
-    /**
-     * @param HtmlParam $param
-     */
+    /** @param HtmlParam $param */
     private function renderParamRow(string $pathCell, string $methodCell, array $param, string $responseCell): string
     {
         $nameHtml = $this->renderParamName($param['name'], $param['alps']);
@@ -282,9 +275,7 @@ HTML;
         );
     }
 
-    /**
-     * @param array<string, mixed> $constraints
-     */
+    /** @param array<string, mixed> $constraints */
     private function renderMetaBadges(string $type, array $constraints, string $example = ''): string
     {
         $badges = [];
@@ -414,9 +405,7 @@ HTML;
 HTML;
     }
 
-    /**
-     * @param HtmlProperty $prop
-     */
+    /** @param HtmlProperty $prop */
     private function renderPropertyRow(array $prop): string
     {
         $nameHtml = sprintf('<span class="prop-name">%s</span>', htmlspecialchars($prop['name']));
@@ -433,9 +422,7 @@ HTML;
 HTML;
     }
 
-    /**
-     * @param HtmlProperty $prop
-     */
+    /** @param HtmlProperty $prop */
     private function renderPropertyMeta(array $prop): string
     {
         $badges = [];
@@ -487,9 +474,7 @@ HTML;
 HTML;
     }
 
-    /**
-     * @param HtmlRelation $relation
-     */
+    /** @param HtmlRelation $relation */
     private function renderRelationRow(array $relation, string $type): string
     {
         $rowClass = $type === 'embed' ? 'embed-row' : 'link-row';
@@ -549,9 +534,7 @@ HTML;
         );
     }
 
-    /**
-     * @param array<DocLink> $links
-     */
+    /** @param array<DocLink> $links */
     private function renderLinks(array $links): string
     {
         if ($links === []) {

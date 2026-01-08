@@ -12,7 +12,7 @@ class Card extends ResourceObject
      * @param string $id Card ID
      */
     #[JsonSchema(schema: 'card.json')]
-    public function onGet(string $id)
+    public function onGet(string $id): static
     {
         return $this;
     }

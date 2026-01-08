@@ -13,7 +13,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 
 class AppModule extends AbstractAppModule
 {
-    public function configure()
+    protected function configure()
     {
         $appDir = $this->appMeta->appDir;
         $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));

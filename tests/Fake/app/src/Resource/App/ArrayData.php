@@ -11,7 +11,7 @@ class ArrayData extends ResourceObject
      *
      * @param array $items List of item IDs to retrieve
      */
-    #[JsonSchema(key: 'array', schema: 'array.json')]
+    #[JsonSchema(schema: 'array.json', key: 'array')]
     public function onGet(array $items = [1, 2])
     {
     }

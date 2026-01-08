@@ -5,5 +5,5 @@
     <docDir>docs/openapi</docDir>
     <format>openapi</format>
     <title>API Documentation</title>
-    <description>This is a sample API documentation in OpenAPI 3.0 format</description>
+    <description>This is a sample API documentation in OpenAPI 3.1 format</description>
 </apidoc>

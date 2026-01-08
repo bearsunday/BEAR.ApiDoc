@@ -22,7 +22,7 @@ class Address extends ResourceObject
      *
      * @param string $id Address ID
      */
-    #[JsonSchema(key: 'address', schema: 'address.json')]
+    #[JsonSchema(schema: 'address.json', key: 'address')]
     public function onGet(string $id)
     {
     }

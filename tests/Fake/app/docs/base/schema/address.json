@@ -1,0 +1,51 @@
+{
+  "$id": "address.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Address",
+  "description": "Physical postal address following h-card microformat conventions",
+  "type": "object",
+  "properties": {
+    "post-office-box": {
+      "type": "string",
+      "title": "Post Office Box",
+      "description": "PO Box number for mail delivery",
+      "example": "PO Box 1234"
+    },
+    "extended-address": {
+      "type": "string",
+      "description": "Apartment, suite, or unit number",
+      "example": "Suite 500"
+    },
+    "street-address": {
+      "type": "string",
+      "description": "Street number and name",
+      "example": "123 Main Street"
+    },
+    "locality": {
+      "type": "string",
+      "description": "City or town name",
+      "example": "San Francisco"
+    },
+    "region": {
+      "type": ["integer", "string"],
+      "description": "State, province, or region",
+      "example": "CA"
+    },
+    "postal-code": {
+      "type": "string",
+      "description": "ZIP or postal code",
+      "example": "94102",
+      "pattern": "^[0-9A-Za-z\\- ]+$"
+    },
+    "country-name": {
+      "type": "string",
+      "description": "Full country name",
+      "example": "United States"
+    }
+  },
+  "required": ["locality", "region", "country-name"],
+  "dependencies": {
+    "post-office-box": ["street-address"],
+    "extended-address": ["street-address"]
+  }
+}

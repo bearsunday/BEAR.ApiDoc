@@ -1,0 +1,66 @@
+{
+  "$id": "calendar.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Calendar Event",
+  "description": "Calendar event following iCalendar (RFC 5545) conventions",
+  "type": "object",
+  "required": ["dtstart", "summary"],
+  "properties": {
+    "dtstart": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Event start date and time in ISO 8601 format",
+      "example": "2024-03-15T10:00:00Z"
+    },
+    "dtend": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Event end date and time in ISO 8601 format",
+      "example": "2024-03-15T11:30:00Z"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Brief title or name of the event",
+      "example": "Weekly Team Meeting",
+      "maxLength": 255
+    },
+    "location": {
+      "type": "string",
+      "description": "Physical location or virtual meeting URL",
+      "example": "Conference Room A / https://meet.example.com/abc"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL with more information about the event",
+      "example": "https://example.com/events/weekly-meeting"
+    },
+    "duration": {
+      "type": "string",
+      "description": "Event duration in ISO 8601 duration format",
+      "example": "PT1H30M"
+    },
+    "rdate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Additional recurrence date for the event",
+      "example": "2024-03-22T10:00:00Z"
+    },
+    "rrule": {
+      "type": "string",
+      "description": "Recurrence rule in iCalendar RRULE format",
+      "example": "FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=10"
+    },
+    "category": {
+      "type": "string",
+      "description": "Event category for organization and filtering",
+      "example": "meeting"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the event and agenda",
+      "example": "Discuss Q1 progress and plan Q2 objectives.",
+      "maxLength": 2000
+    }
+  }
+}

@@ -35,9 +35,7 @@ class DocMethodTest extends TestCase
         return $docMethod;
     }
 
-    /**
-     * @depends testPhpDocParamTag
-     */
+    /** @depends testPhpDocParamTag */
     public function testToString(DocMethod $method): void
     {
         $this->assertStringContainsString('### Request', (string) $method);
@@ -60,7 +58,7 @@ class DocMethodTest extends TestCase
         $responseSchemaFile = __DIR__ . '/Fake/app/src/var/json_schema/person.json';
         $responseSchema = new Schema(new SplFileInfo($responseSchemaFile), (object) json_decode((string) file_get_contents($responseSchemaFile)), new ArrayObject());
         $docMethod = (string) new DocMethod(new ReflectionMethod(Person::class, 'onGet'), null, $responseSchema, new ArrayObject(), 'md');
-        $expected = <<<EOT
+        $expected = <<<'EOT'
 | org | [<code>/org?id={org_id}</code>](org.md) |
 EOT;
         $this->assertStringContainsString($expected, $docMethod);

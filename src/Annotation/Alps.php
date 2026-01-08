@@ -6,8 +6,6 @@ namespace BEAR\ApiDoc\Annotation;
 
 use Attribute;
 
-use function assert;
-
 /**
  * Maps REST resource/method to ALPS semantic descriptor
  *
@@ -16,13 +14,13 @@ use function assert;
  *
  * @see https://alps-io.github.io/spec/
  */
+/** @psalm-import-type AlpsDescriptorId from \BEAR\ApiDoc\Types */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
-final class Alps
+final readonly class Alps
 {
+    /** @param AlpsDescriptorId $id */
     public function __construct(
-        /** ALPS descriptor ID */
-        public readonly string $id,
+        public string $id,
     ) {
-        assert($id !== '', 'ALPS descriptor ID must not be empty');
     }
 }

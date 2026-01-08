@@ -24,14 +24,21 @@ use function file_exists;
 use function file_put_contents;
 use function is_dir;
 use function is_object;
+use function is_string;
 use function mkdir;
+use function realpath;
 use function sprintf;
 use function substr;
 
-final class ApiDoc
+final readonly class ApiDoc
 {
-    /** @SuppressWarnings(PHPMD.BooleanArgumentFlag) */
-    public function __invoke(string $configFile, bool $inlineCss = false): string
+    /** @SuppressWarnings("PHPMD.BooleanArgumentFlag") */
+    public function __construct(
+        private bool $inlineCss = false,
+    ) {
+    }
+
+    public function __invoke(string $configFile): string
     {
         $config = new Config($configFile);
         $docClass = new DocClass(
@@ -39,14 +46,18 @@ final class ApiDoc
             $config->responseSchemaDir,
             new ModelRepository()
         );
-        $this->dump($config, $docClass, $inlineCss);
+        $this->dump($config, $docClass);
 
-        $outputFile = $config->format === 'openapi' ? 'openapi.json' : 'index.html';
+        $outputFile = match ($config->format) {
+            'openapi' => 'openapi.json',
+            'md' => 'index.md',
+            default => 'index.html',
+        };
 
-        return sprintf('ApiDoc generated. %s/%s', $config->docDir, $outputFile);
+        return sprintf('ApiDoc generated. %s/%s', (string) realpath($config->docDir), $outputFile);
     }
 
-    private function dump(Config $config, DocClass $docClass, bool $inlineCss): void
+    private function dump(Config $config, DocClass $docClass): void
     {
         $this->mkDir($config->docDir);
 
@@ -62,38 +73,42 @@ final class ApiDoc
             return;
         }
 
-        $this->dumpHtml($config, $docClass, $inlineCss);
+        $this->dumpHtml($config, $docClass);
     }
 
     public function dumpMd(Config $config, DocClass $docClass): void
     {
         $genMarkDown = $this->getGenMarkdown($config, 'md', $docClass);
         foreach ($genMarkDown as $file => [$markdown]) {
+            $dir = dirname($file);
+            if (! is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+
             $this->filePutContents($file . '.md', $markdown);
         }
     }
 
-    /** @SuppressWarnings(PHPMD.BooleanArgumentFlag) */
-    public function dumpHtml(Config $config, DocClass $docClass, bool $inlineCss = false): void
+    public function dumpHtml(Config $config, DocClass $docClass): void
     {
         unset($docClass);
 
         /** @var ArrayObject<string, string> $nullDictionary */
         $nullDictionary = new ArrayObject();
-        $semanticDictionary = $config->alps ? $this->registerAlpsProfile($config->alps) : $nullDictionary;
+        $semanticDictionary = $config->alps !== '' && $config->alps !== '0' ? $this->registerAlpsProfile($config->alps) : $nullDictionary;
 
         $generator = new HtmlGenerator(
             $config,
             $config->requestSchemaDir,
             $config->responseSchemaDir,
             $semanticDictionary,
-            $inlineCss
+            $this->inlineCss
         );
         $html = $generator->generate();
         $outputFile = sprintf('%s/index.html', $config->docDir);
         $this->filePutContents($outputFile, $html);
 
-        if ($config->responseSchemaDir) {
+        if ($config->responseSchemaDir !== '' && $config->responseSchemaDir !== '0') {
             $this->copySchemas($config);
         }
     }
@@ -118,18 +133,15 @@ final class ApiDoc
         mkdir($dir, 0777, true);
         chmod(dirname($dir), 0777);
         chmod($dir, 0777);
+        // @codeCoverageIgnoreEnd
     }
 
-        // @codeCoverageIgnoreEnd
-
-    /**
-     * @return Generator<string, array{0: string, 1:string}>
-     */
+    /** @return Generator<string, array{0: string, 1:string}> */
     private function getGenMarkdown(Config $config, string $ext, DocClass $docClass): Generator
     {
         /** @var ArrayObject<string, string> $nullDictionary */
         $nullDictionary = new ArrayObject();
-        $semanticDictionary = $config->alps  ? $this->registerAlpsProfile($config->alps) : $nullDictionary;
+        $semanticDictionary = $config->alps !== '' && $config->alps !== '0' ? $this->registerAlpsProfile($config->alps) : $nullDictionary;
         $paths = [];
         foreach ($config->resourceFiles as $meta) {
             $path = $config->routes[$meta->uriPath] ?? $meta->uriPath;
@@ -140,7 +152,7 @@ final class ApiDoc
             yield $file => [$markdown, $path];
         }
 
-        if ($config->responseSchemaDir) {
+        if ($config->responseSchemaDir !== '' && $config->responseSchemaDir !== '0') {
             $this->copySchemas($config);
         }
 
@@ -152,14 +164,16 @@ final class ApiDoc
     private function copySchemas(Config $config): void
     {
         $outputDir = sprintf('%s/schema', $config->docDir);
-        ! is_dir($outputDir) && ! mkdir($outputDir) && ! is_dir($outputDir);
+        if (! is_dir($outputDir) && ! mkdir($outputDir)) {
+            // @codeCoverageIgnoreStart
+            throw new NotWritableException($outputDir);
+            // @codeCoverageIgnoreEnd
+        }
 
         $this->copySchema($config->responseSchemaDir, $outputDir);
     }
 
-    /**
-     * @return ArrayObject<string, string>
-     */
+    /** @return ArrayObject<string, string> */
     private function registerAlpsProfile(string $file): ArrayObject
     {
         if (! file_exists($file)) {
@@ -180,17 +194,15 @@ final class ApiDoc
         return $semanticDictionary;
     }
 
-    /**
-     * @psalm-external-mutation-free
-     */
+    /** @psalm-external-mutation-free */
     private function getSemanticTitle(SemanticDescriptor $descriptor): string
     {
-        if ($descriptor->title) {
+        if ($descriptor->title !== '' && $descriptor->title !== '0') {
             return $descriptor->title;
         }
 
-        if (is_object($descriptor->doc) && isset($descriptor->doc->value)) {
-            return (string) $descriptor->doc->value;
+        if (is_object($descriptor->doc) && isset($descriptor->doc->value) && is_string($descriptor->doc->value)) {
+            return $descriptor->doc->value;
         }
 
         if (isset($descriptor->def)) {

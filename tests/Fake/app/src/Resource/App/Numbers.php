@@ -12,7 +12,7 @@ class Numbers extends ResourceObject
      * @param int $count Number of items to return
      */
     #[JsonSchema(schema: 'numbers.json')]
-    public function onGet(int $count = 10)
+    public function onGet(int $count = 10): static
     {
         return $this;
     }

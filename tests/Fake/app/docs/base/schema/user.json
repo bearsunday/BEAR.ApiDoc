@@ -1,0 +1,58 @@
+{
+  "$id": "user.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User",
+  "description": "User account and profile information",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the user account",
+      "example": "usr_abc123",
+      "maxLength": 30
+    },
+    "firstName": {
+      "type": "string",
+      "description": "User's first/given name",
+      "example": "Jane",
+      "maxLength": 30,
+      "pattern": "[a-zA-Z\\-']+"
+    },
+    "lastName": {
+      "type": "string",
+      "description": "User's last/family name",
+      "example": "Smith",
+      "maxLength": 30,
+      "pattern": "[a-zA-Z\\-']+"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the account was created",
+      "example": "2024-01-10T08:00:00Z"
+    },
+    "modified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the last profile update",
+      "example": "2024-02-15T14:30:00Z"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Primary email address for the account",
+      "example": "jane.smith@example.com"
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "Whether the account is active and can login",
+      "example": true
+    },
+    "age": {
+      "$ref": "age.json",
+      "description": "User's age in years",
+      "example": 29
+    }
+  },
+  "required": ["firstName", "lastName", "age"]
+}

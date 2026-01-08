@@ -19,42 +19,22 @@ use const PHP_EOL;
 
 final class DocParam implements Stringable
 {
-    /**
-     * @var string
-     * @readonly
-     */
-    private $name;
+    private readonly string $name;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    private $type;
+    private readonly string $type;
 
-    /**
-     * @var string
-     * @readonly
-     */
+    /** @var string */
     private $description;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $isOptional;
+    private readonly bool $isOptional;
 
-    /** @var string  */
-    private $default;
+    private readonly string $default;
 
-    /** @var string  */
-    private $example;
+    private readonly string $example;
 
-    /** @var ?SchemaConstraints */
-    private $constraints = null;
+    private ?\BEAR\ApiDoc\SchemaConstraints $constraints = null;
 
-    /**
-     * @param ArrayObject<string, string> $semanticDictionary
-     */
+    /** @param ArrayObject<string, string> $semanticDictionary */
     public function __construct(
         ReflectionParameter $parameter,
         TagParam $tagParam,
@@ -67,13 +47,13 @@ final class DocParam implements Stringable
         $this->default = $parameter->isDefaultValueAvailable() ? $this->getDefaultString($parameter) : '';
         $this->description = $tagParam->description;
         $this->example = $prop->example ?? '';
-        if ($prop) {
+        if ($prop instanceof \BEAR\ApiDoc\SchemaProp) {
             $this->setByProp($prop);
 
             return;
         }
 
-        if ($tagParam->description) {
+        if ($tagParam->description !== '' && $tagParam->description !== '0') {
             $this->description = $tagParam->description;
 
             return;
@@ -114,9 +94,7 @@ final class DocParam implements Stringable
         }
     }
 
-    /**
-     * @psalm-external-mutation-free
-     */
+    /** @psalm-external-mutation-free */
     #[\Override]
     public function __toString(): string
     {

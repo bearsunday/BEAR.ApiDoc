@@ -30,87 +30,42 @@ use function sprintf;
 
 final class Config
 {
-    /**
-     * @var string
-     * @readonly
-     */
-    public $appName;
+    /** @var non-empty-string */
+    public readonly string $appName;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $scheme;
+    /** @var '*'|'app'|'page' */
+    public readonly string $scheme;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $docDir;
+    /** @var non-empty-string */
+    public readonly string $docDir;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $format;
+    public readonly string $format;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $title;
+    public readonly string $title;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $description;
+    public readonly string $description;
 
-    /**
-     * @var list<SimpleXMLElement>
-     * @readonly
-     */
-    public $links;
+    /** @var list<SimpleXMLElement> */
+    public readonly array $links;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $alps = '';
+    public string $alps = '';
 
-    /**
-     * @var Generator<ResMeta>
-     * @readonly
-     */
-    public $resourceFiles;
+    /** @var Generator<ResMeta> */
+    public readonly Generator $resourceFiles;
 
-    /**
-     * @var ArrayObject<string, string>
-     * @readonly
-     */
-    public $modelRepository;
+    /** @var ArrayObject<string, string> */
+    public readonly ArrayObject $modelRepository;
 
-    /**
-     * @var array<string, string>
-     * @readonly
-     */
-    public $routes = [];
+    /** @var array<string, string> */
+    public array $routes = [];
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $requestSchemaDir = '';
+    public string $requestSchemaDir = '';
 
-    /**
-     * @var string
-     * @readonly
-     */
-    public $responseSchemaDir = '';
+    public string $responseSchemaDir = '';
 
     /**
      * @psalm-suppress
-     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings("PHPMD.NPathComplexity")
      */
     public function __construct(string $configFile)
     {
@@ -133,7 +88,7 @@ final class Config
         $this->description = property_exists($xml, 'description') ? (string) $xml->description : '';
         $this->title = property_exists($xml, 'title') ? (string) $xml->title : '';
         $alps = property_exists($xml, 'alps') ? (string) $xml->alps : '';
-        if ($alps) {
+        if ($alps !== '' && $alps !== '0') {
             $this->alps = sprintf('%s/%s', $dir, $alps);
         }
 
@@ -165,7 +120,6 @@ final class Config
         $appModule = new $appModuleClass($meta, new AppMetaModule($meta));
         /** @psalm-suppress all */
         $injector = new Injector($appModule);
-        assert($injector instanceof InjectorInterface);
         $this->resourceFiles = $meta->getGenerator($this->scheme);
 
         try {
@@ -173,7 +127,7 @@ final class Config
             assert(is_string($jsonSchemaDir));
             $this->responseSchemaDir = $jsonSchemaDir;
             // @codeCoverageIgnoreStart
-        } catch (Unbound $e) {
+        } catch (Unbound) {
         }
 
         try {
@@ -191,9 +145,9 @@ final class Config
             return;
         }
 
+        /** @var Route $route */
         foreach ($map as $route) {
             // @codeCoverageIgnoreEnd
-            assert($route instanceof Route);
             $this->routes[$route->name] = $route->path;
         }
     }

@@ -24,21 +24,16 @@ use const PHP_EOL;
 
 final class DocMethod implements Stringable
 {
-    /** @var string */
-    private $title = '';
+    private string $title = '';
 
-    /** @var string */
-    private $description = '';
+    private string $description = '';
 
-    /** @var string */
-    private $httpMethod;
+    private readonly string $httpMethod;
 
     /** @var array<int, DocParam> */
-    private $params;
+    private readonly array $params;
 
-    /**
-     * @param ArrayObject<string, string> $semanticDictionary
-     */
+    /** @param ArrayObject<string, string> $semanticDictionary */
     public function __construct(
         private readonly ReflectionMethod $method,
         ?Schema $request,
@@ -49,6 +44,8 @@ final class DocMethod implements Stringable
         $this->httpMethod = substr($this->method->name, 2);
         $factory = DocBlockFactory::createInstance();
         $docComment = $this->method->getDocComment();
+        /** @var array<string, TagParam>|null $tagParams */
+        $tagParams = null;
         if (is_string($docComment)) {
             $docblock = $factory->create($docComment);
             $this->title = $docblock->getSummary();
@@ -56,8 +53,6 @@ final class DocMethod implements Stringable
             $tagParams = $this->getTagParams($docblock);
         }
 
-        /** @var ?array<string, TagParam> $tagParams */   // phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.NoAssignment
-        $tagParams ??= null;
         $this->params = $this->getDocParams($this->method, $tagParams, $request, $semanticDictionary);
     }
 
@@ -82,9 +77,7 @@ final class DocMethod implements Stringable
         return $docParams;
     }
 
-    /**
-     * @return array<string, TagParam>
-     */
+    /** @return array<string, TagParam> */
     private function getTagParams(DocBlock $docblock): array
     {
         $tagParams = [];
@@ -150,7 +143,7 @@ EOT;
 
     private function toStringResponse(): string
     {
-        if ($this->response === null) {
+        if (! $this->response instanceof \BEAR\ApiDoc\Schema) {
             return '_Not available_';
         }
 
@@ -168,7 +161,7 @@ EOT;
             $rows .= $row . PHP_EOL;
         }
 
-        $object =  $this->getObjectTable($this->response->title(), $rows);
+        $object = $this->getObjectTable($this->response->title(), $rows);
 
         return $object . $this->getEmbeds() . $this->getLinks() . $this->getExample();
     }
@@ -186,7 +179,7 @@ EOT;
 
     private function lineString(?string $string): string
     {
-        return ! (bool) $string ? '' : $string . PHP_EOL . PHP_EOL;
+        return (bool) $string ? $string . PHP_EOL . PHP_EOL : '';
     }
 
     private function getEmbeds(): string
@@ -200,7 +193,7 @@ EOT;
 
         $rows = implode(PHP_EOL, $items);
 
-        if (! $rows) {
+        if ($rows === '' || $rows === '0') {
             return '';
         }
 
@@ -225,7 +218,7 @@ EOT;
 
         $rows = implode(PHP_EOL, $items);
 
-        if (! $rows) {
+        if ($rows === '' || $rows === '0') {
             return '';
         }
 
@@ -279,9 +272,7 @@ EOT;
         return sprintf("**ALPS**: `%s`%s\n\n", $alpsIds, $semanticInfo);
     }
 
-    /**
-     * @param array<string> $ids
-     */
+    /** @param array<string> $ids */
     private function getAlpsSemanticInfo(array $ids): string
     {
         $info = [];

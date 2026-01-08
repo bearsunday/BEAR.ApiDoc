@@ -38,8 +38,10 @@ final class DocClass
     }
 
     /**
-     * @param ReflectionClass<object>     $class
+     * @param ReflectionClass<T>          $class
      * @param ArrayObject<string, string> $semanticDictionary
+     *
+     * @template T of object
      */
     public function __invoke(string $title, string $path, ReflectionClass $class, ArrayObject $semanticDictionary, string $ext): string
     {
@@ -69,7 +71,9 @@ EOT;
     }
 
     /**
-     * @param ReflectionClass<object> $class
+     * @param ReflectionClass<T> $class
+     *
+     * @template T of object
      */
     private function getAlpsSection(ReflectionClass $class): string
     {
@@ -90,9 +94,7 @@ EOT;
         return sprintf("**ALPS**: `%s`%s\n\n", $alpsIds, $semanticInfo);
     }
 
-    /**
-     * @param array<string> $ids
-     */
+    /** @param array<string> $ids */
     private function getSemanticInfo(array $ids): string
     {
         $info = [];
@@ -117,8 +119,7 @@ EOT;
     private function getResponseSchema(string $dir, string $file): ?Schema
     {
         $schemaJson = $this->getSchema($dir, $file);
-        /** @psalm-suppress RedundantConditionGivenDocblockType */
-        if (isset($schemaJson->type) && $schemaJson->type === 'object') {
+        if ($schemaJson instanceof \BEAR\ApiDoc\Schema && $schemaJson->type === 'object') {
             $this->modelRepository[$schemaJson->title] = $file;
         }
 

@@ -104,9 +104,6 @@ final class XmlLoader
         return null;
     }
 
-    /**
-     * @@codeCoverageIgnore
-     */
     private function validate(string $xmlFullPath, string $xsdPath): void
     {
         libxml_use_internal_errors(true);
