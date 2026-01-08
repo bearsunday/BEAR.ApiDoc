@@ -40,6 +40,9 @@ final class HtmlRenderer
 {
     private string $alpsHtmlPath = 'alps.html';
 
+    /** @var array<string, string> Map of sanitized ID -> display name */
+    private array $knownObjects = [];
+
     /**
      * @param array<string, array<string, HtmlMethod>> $endpoints
      * @param array<string, HtmlObject>                $objects
@@ -237,7 +240,9 @@ HTML;
             return '';
         }
 
-        return sprintf('<a href="#%s" class="schema-link">%s</a>', htmlspecialchars($schemaName), htmlspecialchars($schemaName));
+        $sanitizedId = $this->sanitizeId($schemaName);
+
+        return sprintf('<a href="#%s" class="schema-link">%s</a>', htmlspecialchars($sanitizedId), htmlspecialchars($schemaName));
     }
 
     /** @param HtmlParam $param */
@@ -343,6 +348,13 @@ HTML;
      */
     private function renderObjectsAndArrays(array $objects, array $objectRelations): array
     {
+        // Collect known objects first (for relation linking)
+        $this->knownObjects = [];
+        foreach ($objects as $name => $object) {
+            $sanitizedId = $this->sanitizeId($name);
+            $this->knownObjects[$sanitizedId] = $name;
+        }
+
         $objectsHtml = '';
         $arraysHtml = '';
 
@@ -359,12 +371,14 @@ HTML;
 
     private function renderArrayType(string $name, string $itemType): string
     {
+        $sanitizedId = $this->sanitizeId($name);
         $escapedName = htmlspecialchars($name);
         $itemTypeCapitalized = ucfirst($itemType);
-        $itemLink = sprintf('<a href="#%s">%s</a>', htmlspecialchars($itemTypeCapitalized), htmlspecialchars($itemTypeCapitalized));
+        $itemTypeSanitized = $this->sanitizeId($itemTypeCapitalized);
+        $itemLink = sprintf('<a href="#%s">%s</a>', htmlspecialchars($itemTypeSanitized), htmlspecialchars($itemTypeCapitalized));
 
         return <<<HTML
-<div class="object-section" id="{$escapedName}">
+<div class="object-section" id="{$sanitizedId}">
 <h3 class="object-name">{$escapedName}</h3>
 <p class="array-type">array of {$itemLink}</p>
 </div>
@@ -378,6 +392,7 @@ HTML;
      */
     private function renderObject(string $name, array $object, array $objectRelations): string
     {
+        $sanitizedId = $this->sanitizeId($name);
         $escapedName = htmlspecialchars($name);
         $rows = '';
 
@@ -401,7 +416,7 @@ HTML;
         }
 
         return <<<HTML
-<div class="object-section" id="{$escapedName}">
+<div class="object-section" id="{$sanitizedId}">
 <h3 class="object-name">{$escapedName}</h3>
 <table>
 <thead>
@@ -422,7 +437,8 @@ HTML;
         $escapedName = htmlspecialchars($prop['name']);
         // If property has a ref, make the name a link to the object
         if ($prop['ref'] !== null) {
-            $nameHtml = sprintf('<a href="#%s" class="prop-name">%s</a>', htmlspecialchars($prop['ref']), $escapedName);
+            $sanitizedRef = $this->sanitizeId($prop['ref']);
+            $nameHtml = sprintf('<a href="#%s" class="prop-name">%s</a>', htmlspecialchars($sanitizedRef), $escapedName);
         } else {
             $nameHtml = sprintf('<span class="prop-name">%s</span>', $escapedName);
         }
@@ -494,7 +510,11 @@ HTML;
 HTML;
     }
 
-    /** @param HtmlRelation $relation */
+    /**
+     * @param HtmlRelation $relation
+     *
+     * @SuppressWarnings("PHPMD.NPathComplexity")
+     */
     private function renderRelationRow(array $relation, string $type): string
     {
         $rowClass = $type === 'embed' ? 'embed-row' : 'link-row';
@@ -505,25 +525,33 @@ HTML;
         $indicator = $transitionType !== '' ? sprintf('<span class="ti %s"></span>', $transitionType) : '';
         $hrefLabel = $type === 'embed' ? 'src' : 'href';
 
-        // Link to Object section - derive Object name from rel
+        // Try to link to Object section - derive Object name from rel
+        $relDisplay = $rel;
         $objectName = $relation['rel'];
+
         // Remove go/do prefix for links (e.g., goCard -> Card, doDelete -> Delete)
         if (preg_match('/^(go|do)([A-Z].*)$/', $objectName, $matches)) {
             $objectName = $matches[2];
             // Try singular form (e.g., Tickets -> Ticket)
             if (str_ends_with($objectName, 's') && strlen($objectName) > 1) {
                 $singular = rtrim($objectName, 's');
-                $objectName = $singular;
+                // Check if singular form exists first
+                if (isset($this->knownObjects[$singular])) {
+                    $objectName = $singular;
+                }
             }
         } else {
             $objectName = ucfirst($objectName);
         }
 
-        $relLink = sprintf('<a href="#%s">%s</a>', htmlspecialchars($objectName), $rel);
+        // Only create a link if the target object exists
+        if (isset($this->knownObjects[$objectName])) {
+            $relDisplay = sprintf('<a href="#%s">%s</a>', htmlspecialchars($objectName), $rel);
+        }
 
         return <<<HTML
 <tr class="{$rowClass}">
-  <td class="prop-name">{$indicator}{$relLink}</td>
+  <td class="prop-name">{$indicator}{$relDisplay}</td>
   <td><span class="badge {$type}">{$type}</span></td>
   <td class="param-desc">{$title}</td>
   <td>
@@ -556,6 +584,15 @@ HTML;
             'boolean' => 'bool',
             default => $type,
         };
+    }
+
+    /**
+     * Sanitize a name to be a valid HTML ID (remove spaces)
+     */
+    private function sanitizeId(string $name): string
+    {
+        // Remove spaces to create valid HTML ID (e.g., "Calendar Event" -> "CalendarEvent")
+        return (string) preg_replace('/\s+/', '', $name);
     }
 
     private function convertMarkdownLinks(string $text): string
