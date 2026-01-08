@@ -2,7 +2,7 @@
 
 BEAR.ApiDoc generates API documentation from the application.
 
-The documentation generated from the application's method signatures, phpdoc, JSON Schema, and ALPS profile will match the API documentation and the actual application. It supports HTML, Markdown, and OpenAPI formats.
+The documentation generated from the application's method signatures, phpdoc, JSON Schema, and ALPS profile will match the API documentation and the actual application. It supports HTML, Markdown, and OpenAPI 3.1 formats.
 
 This not only saves you the trouble of writing IDL, but also allows you to generate accurate documentation.
 
