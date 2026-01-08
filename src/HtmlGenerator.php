@@ -37,6 +37,7 @@ use const PATHINFO_FILENAME;
  * @psalm-import-type HtmlMethodArray from Types
  * @psalm-import-type HtmlObjectArray from Types
  * @psalm-import-type HtmlRelationArray from Types
+ * @psalm-import-type DocLink from Types
  */
 final class HtmlGenerator
 {
@@ -393,7 +394,7 @@ final class HtmlGenerator
     }
 
     /**
-     * @return array<array{rel: string, href: string}>
+     * @return array<DocLink>
      */
     private function extractLinks(): array
     {
@@ -401,8 +402,9 @@ final class HtmlGenerator
         foreach ($this->config->links as $link) {
             $rel = (string) ($link['rel'] ?? '');
             $href = (string) ($link['href'] ?? '');
+            $type = (string) ($link['type'] ?? '');
             if ($rel !== '' && $href !== '') {
-                $links[] = ['rel' => $rel, 'href' => $href];
+                $links[] = ['rel' => $rel, 'href' => $href, 'type' => $type];
             }
         }
 

@@ -137,10 +137,17 @@ final class Config
             $this->alps = sprintf('%s/%s', $dir, $alps);
         }
 
+        /** @var list<\SimpleXMLElement> $links */
         $links = [];
-        if (property_exists($xml, 'links')) {
-            foreach ($xml->links->link as $link) {
-                $links[] = $link;
+        if (property_exists($xml, 'links') && $xml->links instanceof \SimpleXMLElement) {
+            $linkElements = $xml->links->children();
+            if ($linkElements !== null) {
+                /** @var \SimpleXMLElement $link */
+                foreach ($linkElements as $link) {
+                    if ($link->getName() === 'link') {
+                        $links[] = $link;
+                    }
+                }
             }
         }
 

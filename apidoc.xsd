@@ -80,10 +80,22 @@
         </xs:attribute>
         <xs:attribute name="rel" type="xs:string">
             <xs:annotation>
-                <xs:documentation>Link Description</xs:documentation>
+                <xs:documentation>Link relation name</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type" type="linkTransitionType">
+            <xs:annotation>
+                <xs:documentation>Transition type: safe (go), unsafe (do create), idempotent (do update/delete)</xs:documentation>
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>
+    <xs:simpleType name="linkTransitionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="safe"/>
+            <xs:enumeration value="unsafe"/>
+            <xs:enumeration value="idempotent"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:element name="alps" type="xs:string">
         <xs:annotation>

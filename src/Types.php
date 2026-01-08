@@ -42,6 +42,7 @@ namespace BEAR\ApiDoc;
  * @psalm-type HtmlPropertyArray = array{name: string, type: string, description: string, example: string|null, format: string|null, constraints: array<string, mixed>}
  * @psalm-type HtmlObjectArray = array{name: string, properties: array<HtmlPropertyArray>, arrayItemType: string|null}
  * @psalm-type HtmlRelationArray = array{rel: string, target: string}
+ * @psalm-type DocLink = array{rel: string, href: string, type: string}
  */
 final class Types
 {

@@ -27,6 +27,7 @@ use const JSON_UNESCAPED_UNICODE;
  * @psalm-import-type HtmlPropertyArray from Types
  * @psalm-import-type HtmlObjectArray from Types
  * @psalm-import-type HtmlRelationArray from Types
+ * @psalm-import-type DocLink from Types
  */
 final class HtmlRenderer
 {
@@ -34,7 +35,7 @@ final class HtmlRenderer
      * @param array<string, array<string, HtmlMethodArray>>                                                                             $endpoints
      * @param array<string, HtmlObjectArray>                                                                                            $objects
      * @param array<string, array{embeds: array<array{rel: string, target: string}>, links: array<array{rel: string, target: string}>}> $objectRelations
-     * @param array<array{rel: string, href: string}>                                                                                   $links
+     * @param array<DocLink>                                                                                                            $links
      */
     public function render(
         string $title,
@@ -482,10 +483,12 @@ HTML;
         $rel = htmlspecialchars($relation['rel']);
         $target = htmlspecialchars($relation['target']);
         $description = ucfirst($rel);
+        $transitionType = $this->getTransitionType($relation['rel']);
+        $indicator = $transitionType !== '' ? sprintf('<span class="ti %s"></span>', $transitionType) : '';
 
         return <<<HTML
 <tr class="{$rowClass}">
-  <td class="prop-name"><a href="#{$target}">{$rel}</a></td>
+  <td class="prop-name">{$indicator}<a href="#{$target}">{$rel}</a></td>
   <td>{$description}</td>
   <td>
     <div class="extra-info">
@@ -495,6 +498,19 @@ HTML;
 </tr>
 
 HTML;
+    }
+
+    private function getTransitionType(string $rel): string
+    {
+        if (str_starts_with($rel, 'go')) {
+            return 'safe';
+        }
+
+        if (str_starts_with($rel, 'do')) {
+            return 'unsafe';
+        }
+
+        return '';
     }
 
     private function normalizeType(string $type): string
@@ -519,7 +535,7 @@ HTML;
     }
 
     /**
-     * @param array<array{rel: string, href: string}> $links
+     * @param array<DocLink> $links
      */
     private function renderLinks(array $links): string
     {
@@ -555,8 +571,8 @@ h1,h2,h3{margin-top:0;}
     background-position:0 0,3px 3px;
 }
 .ti.unsafe{
-    background-color:#FF4136;
-    background-image:repeating-linear-gradient(45deg,#FF4136,#FF4136 3px,#FF725C 3px,#FF725C 6px);
+    background-color:#FF91A4;
+    background-image:repeating-linear-gradient(45deg,#FF91A4,#FF91A4 3px,#FFB6C1 3px,#FFB6C1 6px);
 }
 .ti.idempotent{
     background-color:#D4A000;
