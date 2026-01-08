@@ -19,7 +19,7 @@ namespace BEAR\ApiDoc;
  * @psalm-type OpenApiSchema = array<string, mixed>
  * @psalm-type OpenApiParameter = array{name: string, in: ParameterLocation, required: bool, schema: array{type: string}, description?: string, example?: mixed}
  * @psalm-type OpenApiResponse = array{description: string, content?: array<string, array{schema: SchemaRef}>}
- * @psalm-type OpenApiResponses = array<string, OpenApiResponse>
+ * @psalm-type OpenApiResponses = array<int|string, OpenApiResponse>
  * @psalm-type OpenApiOperation = array{responses: OpenApiResponses, summary?: string, description?: string, operationId?: string, parameters?: list<OpenApiParameter>}
  * @psalm-type OpenApiPathItem = array<string, OpenApiOperation>
  * @psalm-type OpenApiInfo = array{title: string, description: string, version: string}

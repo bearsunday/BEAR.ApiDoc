@@ -166,9 +166,6 @@ final class OpenApiGenerator
      * @param PathParams                                                                                                                             $pathParams
      *
      * @return array{0: array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses}, 1: bool}
-     *
-     * @psalm-suppress MoreSpecificReturnType
-     * @psalm-suppress LessSpecificReturnStatement
      */
     private function applyJsonSchemaAttribute(ReflectionMethod $method, array $operation, array $pathParams): array
     {
@@ -200,7 +197,6 @@ final class OpenApiGenerator
             $operation['responses'] = $responses;
         }
 
-        // @phpstan-ignore return.type
         return [$operation, $hasRequestSchema];
     }
 
@@ -209,9 +205,6 @@ final class OpenApiGenerator
      * @param PathParams                                                                                                                            $pathParams
      *
      * @return OpenApiOperation
-     *
-     * @psalm-suppress MoreSpecificReturnType
-     * @psalm-suppress LessSpecificReturnStatement
      */
     private function addErrorResponses(array $operation, bool $hasRequestSchema, array $pathParams): array
     {
@@ -232,7 +225,6 @@ final class OpenApiGenerator
 
         $operation['responses'] = $responses;
 
-        // @phpstan-ignore return.type
         return $operation;
     }
 
@@ -244,7 +236,7 @@ final class OpenApiGenerator
      */
     private function ensurePathParameters(array $operation, array $pathParams): array
     {
-        if ($pathParams !== [] && !array_key_exists('parameters', $operation)) {
+        if ($pathParams !== [] && ! array_key_exists('parameters', $operation)) {
             $operation['parameters'] = $this->createPathParameters($pathParams);
         }
 
@@ -255,13 +247,10 @@ final class OpenApiGenerator
      * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
      *
      * @return array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses: OpenApiResponses}
-     *
-     * @psalm-suppress MoreSpecificReturnType
-     * @psalm-suppress LessSpecificReturnStatement
      */
     private function ensureDefaultResponse(array $operation): array
     {
-        if (!array_key_exists('responses', $operation)) {
+        if (! array_key_exists('responses', $operation)) {
             /** @var OpenApiResponse $defaultResponse */
             $defaultResponse = ['description' => 'Successful response'];
             /** @var array<string, OpenApiResponse> $responses */
@@ -270,7 +259,6 @@ final class OpenApiGenerator
             $operation['responses'] = $responses;
         }
 
-        // @phpstan-ignore return.type
         return $operation;
     }
 
@@ -285,7 +273,7 @@ final class OpenApiGenerator
         $parameters = [];
         $schema = $this->loadSchema($this->requestSchemaDir, $schemaFile);
 
-        if (!$schema instanceof \BEAR\ApiDoc\Schema) {
+        if (! $schema instanceof \BEAR\ApiDoc\Schema) {
             return [];
         }
 
@@ -311,7 +299,7 @@ final class OpenApiGenerator
             $parameter = [
                 'name' => $paramName,
                 'in' => $location,
-                'required' => $isPathParam || !$param->isOptional(),
+                'required' => $isPathParam || ! $param->isOptional(),
                 'schema' => ['type' => $this->convertPhpTypeToOpenApi($typeName)],
             ];
 
@@ -357,7 +345,7 @@ final class OpenApiGenerator
     {
         $schema = $this->loadSchema($this->responseSchemaDir, $schemaFile);
 
-        if (!$schema instanceof \BEAR\ApiDoc\Schema) {
+        if (! $schema instanceof \BEAR\ApiDoc\Schema) {
             return null;
         }
 
@@ -372,12 +360,12 @@ final class OpenApiGenerator
     private function loadSchema(string $dir, string $file): ?Schema
     {
         $schemaFile = sprintf('%s/%s', $dir, $file);
-        if (!is_file($schemaFile)) {
+        if (! is_file($schemaFile)) {
             return null;
         }
 
         $schemaJson = json_decode((string) file_get_contents($schemaFile));
-        if (!is_object($schemaJson)) {
+        if (! is_object($schemaJson)) {
             return null;
         }
 
@@ -396,12 +384,12 @@ final class OpenApiGenerator
         }
 
         $schemaPath = sprintf('%s/%s', $this->responseSchemaDir, $schemaFile);
-        if (!is_file($schemaPath)) {
+        if (! is_file($schemaPath)) {
             return;
         }
 
         $schemaJson = json_decode((string) file_get_contents($schemaPath));
-        if (!is_object($schemaJson)) {
+        if (! is_object($schemaJson)) {
             return;
         }
 
@@ -441,14 +429,14 @@ final class OpenApiGenerator
      */
     private function extractDefinitions(array $schema): void
     {
-        if (!isset($schema['definitions']) || !is_array($schema['definitions'])) {
+        if (! isset($schema['definitions']) || ! is_array($schema['definitions'])) {
             return;
         }
 
         foreach ($schema['definitions'] as $defName => $definition) {
             $schemaName = ucfirst((string) $defName);
             /** @var array<string, mixed> $definition */
-            if (!isset($this->schemas[$schemaName])) {
+            if (! isset($this->schemas[$schemaName])) {
                 $this->schemas[$schemaName] = $this->cleanSchemaForOpenApi($definition);
             }
         }
@@ -485,11 +473,11 @@ final class OpenApiGenerator
         $arrayKeys = ['allOf', 'oneOf', 'anyOf'];
 
         foreach ($nestedKeys as $key) {
-            if (!isset($schema[$key])) {
+            if (! isset($schema[$key])) {
                 continue;
             }
 
-            if (!is_array($schema[$key])) {
+            if (! is_array($schema[$key])) {
                 continue;
             }
 
@@ -540,7 +528,7 @@ final class OpenApiGenerator
                     // Convert #/definitions/name to #/components/schemas/Name
                     $defName = substr($value, 14); // Remove '#/definitions/'
                     $schema[$key] = sprintf('#/components/schemas/%s', ucfirst($defName));
-                } elseif (!str_starts_with($value, '#')) {
+                } elseif (! str_starts_with($value, '#')) {
                     // Convert file reference to OpenAPI internal reference
                     $refSchemaName = $this->resolveRefSchemaName($value);
                     $schema[$key] = sprintf('#/components/schemas/%s', $refSchemaName);
