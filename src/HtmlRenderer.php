@@ -122,7 +122,7 @@ HTML;
 
             if ($paramCount === 0) {
                 $pathCell = $isFirstPath ? sprintf('<td rowspan="%d" class="path-cell">%s</td>', $totalRows, htmlspecialchars($path)) : '';
-                $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description']);
+                $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description'], $data['alps']);
                 $responseHtml = $this->renderResponseLink($data['response']);
 
                 $rows .= <<<HTML
@@ -151,7 +151,7 @@ HTML;
                 }
 
                 if ($isFirstParam) {
-                    $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description']);
+                    $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description'], $data['alps']);
                     $methodCell = sprintf('<td rowspan="%d" class="method-cell">%s</td>', $methodRowspan, $methodHtml);
                     $responseCell = sprintf('<td rowspan="%d">%s</td>', $methodRowspan, $this->renderResponseLink($data['response']));
                 }
@@ -179,7 +179,10 @@ HTML;
         return $total;
     }
 
-    private function renderMethodBadge(string $method, string $title = '', string $description = ''): string
+    /**
+     * @param array<string> $alps
+     */
+    private function renderMethodBadge(string $method, string $title = '', string $description = '', array $alps = []): string
     {
         $typeClass = match ($method) {
             'GET' => 'safe',
@@ -194,6 +197,15 @@ HTML;
 
         if ($description !== '') {
             $html .= sprintf('<div class="method-desc">%s</div>', htmlspecialchars($description));
+        }
+
+        if ($alps !== []) {
+            $alpsLinks = [];
+            foreach ($alps as $alpsId) {
+                $alpsLinks[] = sprintf('<a href="alps.html#%s" class="alps-link">%s</a>', htmlspecialchars($alpsId), htmlspecialchars($alpsId));
+            }
+
+            $html .= sprintf('<div class="method-alps">%s</div>', implode(', ', $alpsLinks));
         }
 
         return $html;
@@ -478,6 +490,9 @@ h1,h2,h3{margin-top:0;}
 .method-cell{min-width:200px;}
 .method-title{font-size:0.85em;color:#24292f;font-weight:500;margin-top:4px;}
 .method-desc{font-size:0.8em;color:#57606a;margin-top:2px;}
+.method-alps{font-size:0.75em;margin-top:4px;}
+.alps-link{color:#8957e5;text-decoration:none;font-family:'SFMono-Regular',Consolas,monospace;}
+.alps-link:hover{text-decoration:underline;}
 /* Table */
 table{width:100%;border-collapse:collapse;margin:20px 0;}
 th,td{padding:6px 10px;border:1px solid #ddd;text-align:left;vertical-align:top;}

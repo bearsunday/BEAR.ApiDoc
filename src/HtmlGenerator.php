@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
@@ -97,6 +98,7 @@ final class HtmlGenerator
         [$summary, $methodDescription, $paramDescriptions] = $this->extractPhpDoc($method);
         [$requestSchema, $responseSchemaName] = $this->extractJsonSchema($method);
         [$embeds, $links] = $this->extractEmbedsAndLinks($method);
+        $alpsIds = $this->extractAlpsIds($method);
 
         if ($responseSchemaName !== null && ($embeds !== [] || $links !== [])) {
             $this->addObjectRelations($responseSchemaName, $embeds, $links);
@@ -115,7 +117,22 @@ final class HtmlGenerator
             'response' => $responseSchemaName,
             'embeds' => $embeds,
             'links' => $links,
+            'alps' => $alpsIds,
         ];
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function extractAlpsIds(ReflectionMethod $method): array
+    {
+        $ids = [];
+        foreach ($method->getAttributes(Alps::class) as $attr) {
+            $alps = $attr->newInstance();
+            $ids[] = $alps->id;
+        }
+
+        return $ids;
     }
 
     /**

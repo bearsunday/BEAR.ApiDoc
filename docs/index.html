@@ -33,6 +33,9 @@ h1,h2,h3{margin-top:0;}
 .method-cell{min-width:200px;}
 .method-title{font-size:0.85em;color:#24292f;font-weight:500;margin-top:4px;}
 .method-desc{font-size:0.8em;color:#57606a;margin-top:2px;}
+.method-alps{font-size:0.75em;margin-top:4px;}
+.alps-link{color:#8957e5;text-decoration:none;font-family:'SFMono-Regular',Consolas,monospace;}
+.alps-link:hover{text-decoration:underline;}
 /* Table */
 table{width:100%;border-collapse:collapse;margin:20px 0;}
 th,td{padding:6px 10px;border:1px solid #ddd;text-align:left;vertical-align:top;}
@@ -153,7 +156,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td rowspan="8" class="path-cell">/person</td>
-  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get person details</div><div class="method-desc">Retrieve personal information including name and associated organization.</div></td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get person details</div><div class="method-desc">Retrieve personal information including name and associated organization.</div><div class="method-alps"><a href="alps.html#goPerson" class="alps-link">goPerson</a></div></td>
   <td><span class="param">id</span></td>
   <td>Unique identifier of the person</td>
   <td><div class="extra-info">
@@ -164,7 +167,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   
-  <td rowspan="3" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Register a new person</div><div class="method-desc">Create a new person record in the system.</div></td>
+  <td rowspan="3" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Register a new person</div><div class="method-desc">Create a new person record in the system.</div><div class="method-alps"><a href="alps.html#doCreatePerson" class="alps-link">doCreatePerson</a></div></td>
   <td><span class="param">firstName</span><span class="req">*</span></td>
   <td>The person&#039;s first/given name</td>
   <td><div class="extra-info">
@@ -376,7 +379,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   <td rowspan="11" class="path-cell">/users/{id}</td>
-  <td rowspan="2" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get user profile</div><div class="method-desc">Retrieve detailed profile information for a specific user.</div></td>
+  <td rowspan="2" class="method-cell"><span class="ti safe"></span>GET<div class="method-title">Get user profile</div><div class="method-desc">Retrieve detailed profile information for a specific user.</div><div class="method-alps"><a href="alps.html#getUser" class="alps-link">getUser</a></div></td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td>Unique identifier for the user</td>
   <td><div class="extra-info">
@@ -399,7 +402,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   
-  <td rowspan="3" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Create a new user</div><div class="method-desc">Register a new user account in the system.</div></td>
+  <td rowspan="3" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Create a new user</div><div class="method-desc">Register a new user account in the system.</div><div class="method-alps"><a href="alps.html#createUser" class="alps-link">createUser</a></div></td>
   <td><span class="param">name</span><span class="req">*</span></td>
   <td>Display name of the user</td>
   <td><div class="extra-info">
@@ -435,7 +438,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   
-  <td rowspan="5" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Update user profile</div><div class="method-desc">Modify existing user account information.</div></td>
+  <td rowspan="5" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Update user profile</div><div class="method-desc">Modify existing user account information.</div><div class="method-alps"><a href="alps.html#updateUser" class="alps-link">updateUser</a></div></td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td>Unique identifier for the user</td>
   <td><div class="extra-info">
@@ -493,7 +496,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   
-  <td rowspan="1" class="method-cell"><span class="ti unsafe"></span>DELETE<div class="method-title">Delete user account</div><div class="method-desc">Permanently delete a user account and associated data.</div></td>
+  <td rowspan="1" class="method-cell"><span class="ti unsafe"></span>DELETE<div class="method-title">Delete user account</div><div class="method-desc">Permanently delete a user account and associated data.</div><div class="method-alps"><a href="alps.html#deleteUser" class="alps-link">deleteUser</a></div></td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td>Unique identifier for the user</td>
   <td><div class="extra-info">

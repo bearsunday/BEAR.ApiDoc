@@ -2,6 +2,7 @@
 
 namespace FakeVendor\FakeProject\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
@@ -21,6 +22,7 @@ class Person extends ResourceObject
      *
      * @param string $id The unique identifier of the person
      */
+    #[Alps('goPerson')]
     #[Embed(rel: 'org', src: '/org?id={org_id}')]
     #[Link(rel: 'goCard', href: '/card?id={card_id}')]
     #[Link(rel: 'goTickets', href: '/tickets')]
@@ -39,6 +41,7 @@ class Person extends ResourceObject
      * @param string $familyName The person's family/last name
      * @param int    $age       The person's age in years
      */
+    #[Alps('doCreatePerson')]
     #[JsonSchema(params: 'person.param.json')]
     public function onPost(string $firstName, string $familyName = '', int $age = 0): static
     {

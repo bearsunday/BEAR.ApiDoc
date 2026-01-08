@@ -4,7 +4,9 @@
     "descriptor": [
       {"id": "firstName", "title": "First Name by ALPS"},
       {"id": "familyName", "def": "https://schema.org/familyName"},
-      {"id": "age", "title": "Age in years which must be equal to or greater than zero."}
+      {"id": "age", "title": "Age in years which must be equal to or greater than zero."},
+      {"id": "goPerson", "type": "safe", "title": "Get person details", "rt": "#Person"},
+      {"id": "doCreatePerson", "type": "unsafe", "title": "Create a new person", "rt": "#Person"}
     ]
   }
 }
