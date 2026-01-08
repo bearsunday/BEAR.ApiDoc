@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alps version="1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
+
+  <title>JSON Schema Index</title>
+
+  <descriptor id="schema" type="semantic" title="JSON Schema file">
+    <link rel="describedby" href="https://json-schema.org/draft/2020-12/schema"/>
+  </descriptor>
+
+  <descriptor id="goSchema" type="safe" rt="#schema" title="View Schema"/>
+
+</alps>
