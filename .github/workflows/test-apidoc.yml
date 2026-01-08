@@ -22,30 +22,31 @@ jobs:
         with:
           node-version: '20'
 
-      # HTML
+      # HTML (output: docs/)
       - run: ./vendor/bin/apidoc -c=tests/apidoc.html.xml
 
-      # OpenAPI
+      # OpenAPI (output: docs/openapi/)
       - run: ./vendor/bin/apidoc -c=tests/apidoc.openapi.xml
       - run: npm install -g @redocly/cli
-      - run: redocly build-docs tests/docs/openapi/openapi.json -o tests/docs/openapi/index.html
+      - run: |
+          mkdir -p docs/openapi
+          cp tests/docs/openapi/openapi.json docs/openapi/
+          redocly build-docs docs/openapi/openapi.json -o docs/openapi/index.html
 
-      # ALPS
+      # ALPS (output: docs/alps/)
       - run: npm install -g @alps-asd/app-state-diagram
       - run: mkdir -p docs/alps && asd --echo docs/alps.json > docs/alps/index.html
 
       - uses: actions/upload-artifact@v4
         with:
           name: api-docs-all
-          path: |
-            docs
-            tests/docs
+          path: docs
 
       - uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: tests/docs
+          path: docs
 
   deploy:
     needs: test-all-formats
