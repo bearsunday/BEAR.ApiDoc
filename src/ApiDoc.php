@@ -30,7 +30,7 @@ use function substr;
 
 final class ApiDoc
 {
-    public function __invoke(string $configFile): string
+    public function __invoke(string $configFile, bool $inlineCss = false): string
     {
         $config = new Config($configFile);
         $docClass = new DocClass(
@@ -38,14 +38,14 @@ final class ApiDoc
             $config->responseSchemaDir,
             new ModelRepository()
         );
-        $this->dump($config, $docClass);
+        $this->dump($config, $docClass, $inlineCss);
 
         $outputFile = $config->format === 'openapi' ? 'openapi.json' : 'index.html';
 
         return sprintf('ApiDoc generated. %s/%s', $config->docDir, $outputFile);
     }
 
-    private function dump(Config $config, DocClass $docClass): void
+    private function dump(Config $config, DocClass $docClass, bool $inlineCss): void
     {
         $this->mkDir($config->docDir);
 
@@ -61,7 +61,7 @@ final class ApiDoc
             return;
         }
 
-        $this->dumpHtml($config, $docClass);
+        $this->dumpHtml($config, $docClass, $inlineCss);
     }
 
     public function dumpMd(Config $config, DocClass $docClass): void
@@ -72,7 +72,7 @@ final class ApiDoc
         }
     }
 
-    public function dumpHtml(Config $config, DocClass $docClass): void
+    public function dumpHtml(Config $config, DocClass $docClass, bool $inlineCss = false): void
     {
         unset($docClass);
 
@@ -84,7 +84,8 @@ final class ApiDoc
             $config,
             $config->requestSchemaDir,
             $config->responseSchemaDir,
-            $semanticDictionary
+            $semanticDictionary,
+            $inlineCss
         );
         $html = $generator->generate();
         $outputFile = sprintf('%s/index.html', $config->docDir);

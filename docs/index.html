@@ -4,67 +4,7 @@
 <meta charset="utf-8">
 <title>API Doc Title</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css">
-<style>
-html{scroll-behavior:smooth;}
-body{margin:0;padding:0;background:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
-.markdown-body{background:#fff;padding:45px;max-width:none;margin:0 auto;overflow:visible;}
-a{cursor:pointer;color:#0366d6;text-decoration:none;}
-a:hover{text-decoration:underline;}
-h1,h2,h3{margin-top:0;}
-/* Type indicator */
-.ti{display:inline-block;width:10px;height:10px;margin-right:4px;border:1px solid #000;vertical-align:middle;}
-.ti.safe{background-color:#00A86B;}
-.ti.unsafe{background-color:#FF91A4;}
-.ti.idempotent{background-color:#D4A000;}
-.ti.semantic{background-color:#fff;}
-/* Method cell */
-.method-cell{min-width:200px;}
-.method-title{font-size:0.85em;color:#24292f;font-weight:500;margin-top:4px;}
-.method-desc{font-size:0.8em;color:#57606a;margin-top:2px;}
-.method-alps{font-size:0.75em;margin-top:4px;}
-.alps-link{color:#8957e5;text-decoration:none;font-family:'SFMono-Regular',Consolas,monospace;}
-.alps-link:hover{text-decoration:underline;}
-/* Table */
-table{width:100%;border-collapse:collapse;margin:20px 0;}
-th,td{padding:6px 10px;border:1px solid #ddd;text-align:left;vertical-align:top;}
-th{background:#f6f8fa;font-weight:600;}
-tr:hover{background-color:#f5f5f5;}
-/* Path cell */
-.path-cell{font-family:'SFMono-Regular',Consolas,monospace;font-weight:600;}
-/* Param */
-.param{font-family:'SFMono-Regular',Consolas,monospace;}
-.alps-param{color:#8957e5;text-decoration:none;}
-.alps-param:hover{text-decoration:underline;}
-.req{color:#cf222e;}
-.param-desc{font-size:0.85em;color:#57606a;}
-/* Extra Info */
-.extra-info{display:flex;flex-direction:column;gap:2px;align-items:flex-start;}
-.extra-item{display:flex;align-items:center;line-height:normal;}
-/* Badge style - outline */
-.badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:0.75em;margin-right:4px;vertical-align:middle;width:fit-content;border:1px solid;}
-.badge.type-string{background:#EAF5FF;border-color:#5C9EE8;color:#0550ae;}
-.badge.type-int{background:#F5F0FF;border-color:#D8B9FF;color:#8957e5;}
-.badge.type-integer{background:#F5F0FF;border-color:#D8B9FF;color:#8957e5;}
-.badge.type-bool{background:#DAFBE1;border-color:#A7F3D0;color:#116329;}
-.badge.type-boolean{background:#DAFBE1;border-color:#A7F3D0;color:#116329;}
-.badge.type-array{background:#FFFBEB;border-color:#FDE68A;color:#92400E;}
-.badge.type-object{background:#FFF0F5;border-color:#FFB6C1;color:#CF222E;}
-.badge.type-mixed{background:#f6f8fa;border-color:#d0d7de;color:#57606a;}
-.badge.constraint{background:#f6f8fa;border-color:#d0d7de;color:#57606a;}
-.badge.format{background:#DAFBE1;border-color:#A7F3D0;color:#116329;}
-.badge.embed{background:#f6f8fa;border-color:#d0d7de;color:#57606a;}
-.badge.link{background:#f6f8fa;border-color:#d0d7de;color:#57606a;}
-.badge.example{background:#FFFBEB;border-color:#FDE68A;color:#92400E;font-family:'SFMono-Regular',Consolas,monospace;}
-/* Sticky rows */
-.embed-row,.link-row{background:#f6f8fa;}
-/* Response */
-.schema-link{font-family:'SFMono-Regular',Consolas,monospace;font-weight:500;}
-/* Object table */
-.object-section{margin:30px 0;}
-.object-name{font-family:'SFMono-Regular',Consolas,monospace;font-weight:600;font-size:1.1em;}
-.prop-name{font-family:'SFMono-Regular',Consolas,monospace;color:#000;}
-.prop-name a{color:#0366d6;text-decoration:none;}
-</style>
+<link rel="stylesheet" href="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.css">
 </head>
 <body>
 <div class="markdown-body">
@@ -358,7 +298,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   
-  <td rowspan="1" class="method-cell"><span class="ti unsafe"></span>DELETE<div class="method-title">Delete a ticket</div><div class="method-desc">Permanently remove a ticket from the system.</div></td>
+  <td rowspan="1" class="method-cell"><span class="ti idempotent"></span>DELETE<div class="method-title">Delete a ticket</div><div class="method-desc">Permanently remove a ticket from the system.</div></td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">The unique identifier for a ticket</td>
   <td><div class="extra-info">
@@ -494,7 +434,7 @@ tr:hover{background-color:#f5f5f5;}
 </tr>
 <tr>
   
-  <td rowspan="1" class="method-cell"><span class="ti unsafe"></span>DELETE<div class="method-title">Delete user account</div><div class="method-desc">Permanently delete a user account and associated data.</div><div class="method-alps"><a href="alps.html#deleteUser" class="alps-link">deleteUser</a></div></td>
+  <td rowspan="1" class="method-cell"><span class="ti idempotent"></span>DELETE<div class="method-title">Delete user account</div><div class="method-desc">Permanently delete a user account and associated data.</div><div class="method-alps"><a href="alps.html#deleteUser" class="alps-link">deleteUser</a></div></td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td class="param-desc">Unique identifier for the user</td>
   <td><div class="extra-info">
@@ -725,6 +665,88 @@ tr:hover{background-color:#f5f5f5;}
 </tbody>
 </table>
 </div>
+<div class="object-section" id="Card.Email">
+<h3 class="object-name">Card.Email</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">type</span></td>
+  <td class="param-desc">Category of email (work, home, other)</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+      <span class="badge example">example: work</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">value</span></td>
+  <td class="param-desc">The email address</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+      <span class="badge format">format: email</span>
+      <span class="badge example">example: jane.smith@company.com</span>
+    </div></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="Card.Tel">
+<h3 class="object-name">Card.Tel</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">type</span></td>
+  <td class="param-desc">Category of phone (work, home, mobile, fax)</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+      <span class="badge example">example: mobile</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">value</span></td>
+  <td class="param-desc">The phone number</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+      <span class="badge example">example: +1-555-123-4567</span>
+    </div></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="Card.Org">
+<h3 class="object-name">Card.Org</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">organizationName</span></td>
+  <td class="param-desc">Name of the organization</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+      <span class="badge example">example: Acme Corporation</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">organizationUnit</span></td>
+  <td class="param-desc">Department or division within organization</td>
+  <td><div class="extra-info">
+      <span class="badge type-string">string</span>
+      <span class="badge example">example: Engineering</span>
+    </div></td>
+</tr>
+
+</tbody>
+</table>
+</div>
 <div class="object-section" id="Card">
 <h3 class="object-name">Card</h3>
 <table>
@@ -801,14 +823,14 @@ tr:hover{background-color:#f5f5f5;}
   <td><span class="prop-name">email</span></td>
   <td class="param-desc">Email address with type classification</td>
   <td><div class="extra-info">
-      <span class="badge type-object">object</span>
+      <a href="#Card.Email" class="badge type-object">object</a>
     </div></td>
 </tr>
 <tr>
   <td><span class="prop-name">tel</span></td>
   <td class="param-desc">Telephone number with type classification</td>
   <td><div class="extra-info">
-      <span class="badge type-object">object</span>
+      <a href="#Card.Tel" class="badge type-object">object</a>
     </div></td>
 </tr>
 <tr>
@@ -875,7 +897,7 @@ tr:hover{background-color:#f5f5f5;}
   <td><span class="prop-name">org</span></td>
   <td class="param-desc">Organization or company affiliation</td>
   <td><div class="extra-info">
-      <span class="badge type-object">object</span>
+      <a href="#Card.Org" class="badge type-object">object</a>
     </div></td>
 </tr>
 
@@ -945,38 +967,42 @@ tr:hover{background-color:#f5f5f5;}
     </div></td>
 </tr>
 <tr class="embed-row">
-  <td class="prop-name"><span class="ti semantic"></span><a href="#Org">org</a></td>
-  <td>Org</td>
+  <td class="prop-name"><span class="ti semantic"></span>org</td>
+  <td class="param-desc"></td>
   <td>
     <div class="extra-info">
       <span class="badge embed">embed</span>
+      <span class="badge href">src: /org?id={org_id}</span>
     </div>
   </td>
 </tr>
 <tr class="link-row">
-  <td class="prop-name"><span class="ti safe"></span><a href="#Card">goCard</a></td>
-  <td>GoCard</td>
+  <td class="prop-name"><span class="ti safe"></span>goCard</td>
+  <td class="param-desc"></td>
   <td>
     <div class="extra-info">
       <span class="badge link">link</span>
+      <span class="badge href">href: /card?id={card_id}</span>
     </div>
   </td>
 </tr>
 <tr class="link-row">
-  <td class="prop-name"><span class="ti safe"></span><a href="#Tickets">goTickets</a></td>
-  <td>GoTickets</td>
+  <td class="prop-name"><span class="ti safe"></span>goTickets</td>
+  <td class="param-desc"></td>
   <td>
     <div class="extra-info">
       <span class="badge link">link</span>
+      <span class="badge href">href: /tickets</span>
     </div>
   </td>
 </tr>
 <tr class="link-row">
-  <td class="prop-name"><span class="ti unsafe"></span><a href="#Person">doDelete</a></td>
-  <td>DoDelete</td>
+  <td class="prop-name"><span class="ti unsafe"></span>doDelete</td>
+  <td class="param-desc"></td>
   <td>
     <div class="extra-info">
       <span class="badge link">link</span>
+      <span class="badge href">href: /person?id={id}</span>
     </div>
   </td>
 </tr>
@@ -1064,11 +1090,12 @@ tr:hover{background-color:#f5f5f5;}
     </div></td>
 </tr>
 <tr class="link-row">
-  <td class="prop-name"><span class="ti safe"></span><a href="#User">goAssignee</a></td>
-  <td>GoAssignee</td>
+  <td class="prop-name"><span class="ti safe"></span>goAssignee</td>
+  <td class="param-desc"></td>
   <td>
     <div class="extra-info">
       <span class="badge link">link</span>
+      <span class="badge href">href: /user{?id}</span>
     </div>
   </td>
 </tr>
@@ -1156,29 +1183,32 @@ tr:hover{background-color:#f5f5f5;}
     </div></td>
 </tr>
 <tr class="embed-row">
-  <td class="prop-name"><span class="ti semantic"></span><a href="#Ticket">ticket</a></td>
-  <td>Ticket</td>
+  <td class="prop-name"><span class="ti semantic"></span>ticket</td>
+  <td class="param-desc"></td>
   <td>
     <div class="extra-info">
       <span class="badge embed">embed</span>
+      <span class="badge href">src: /ticket/{id}</span>
     </div>
   </td>
 </tr>
 <tr class="link-row">
-  <td class="prop-name"><span class="ti safe"></span><a href="#Person">goPerson</a></td>
-  <td>GoPerson</td>
+  <td class="prop-name"><span class="ti safe"></span>goPerson</td>
+  <td class="param-desc"></td>
   <td>
     <div class="extra-info">
       <span class="badge link">link</span>
+      <span class="badge href">href: /person</span>
     </div>
   </td>
 </tr>
 <tr class="link-row">
-  <td class="prop-name"><span class="ti safe"></span><a href="#Calendar">goCalendar</a></td>
-  <td>GoCalendar</td>
+  <td class="prop-name"><span class="ti safe"></span>goCalendar</td>
+  <td class="param-desc"></td>
   <td>
     <div class="extra-info">
       <span class="badge link">link</span>
+      <span class="badge href">href: /calendar</span>
     </div>
   </td>
 </tr>
@@ -1200,7 +1230,7 @@ tr:hover{background-color:#f5f5f5;}
 
 
 <h2>Links</h2>
-<ul class="doc-links"><li><strong>home</strong> : <a href="https://github.com/bearsunday/BEAR.ApiDoc">https://github.com/bearsunday/BEAR.ApiDoc</a></li><li><strong>issues</strong> : <a href="https://github.com/bearsunday/BEAR.ApiDoc/issues">https://github.com/bearsunday/BEAR.ApiDoc/issues</a></li><li><strong>profile</strong> : <a href="alps.html">alps.html</a></li></ul>
+<ul class="doc-links"><li><strong>home</strong> : <a href="https://github.com/bearsunday/BEAR.ApiDoc">https://github.com/bearsunday/BEAR.ApiDoc</a></li><li><strong>issues</strong> : <a href="https://github.com/bearsunday/BEAR.ApiDoc/issues">https://github.com/bearsunday/BEAR.ApiDoc/issues</a></li><li><strong>profile</strong> : <a href="alps.html">alps.html</a></li><li><strong>openapi</strong> : <a href="openapi.json">openapi.json</a></li><li><strong>openapi-html</strong> : <a href="openapi.html">openapi.html</a></li></ul>
 
 </div>
 </body>

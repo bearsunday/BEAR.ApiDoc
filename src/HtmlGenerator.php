@@ -65,6 +65,7 @@ final class HtmlGenerator
         private readonly string $requestSchemaDir,
         private readonly string $responseSchemaDir,
         ?ArrayObject $semanticDictionary = null,
+        private readonly bool $inlineCss = false,
     ) {
         $this->renderer = new HtmlRenderer();
         /** @var ArrayObject<string, string> $emptyDictionary */
@@ -95,9 +96,11 @@ final class HtmlGenerator
 
     private function loadLocalCss(): ?string
     {
-        $cssFile = dirname(__DIR__) . '/docs/apidoc.css';
+        if (! $this->inlineCss) {
+            return null;
+        }
 
-        return is_file($cssFile) ? (string) file_get_contents($cssFile) : null;
+        return (string) file_get_contents(dirname(__DIR__) . '/docs/apidoc.css');
     }
 
     /**

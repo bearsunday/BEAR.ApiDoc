@@ -78,10 +78,8 @@
             "@pcov",
             "@metrics"
         ],
-        "docs": [
-            "php bin/apidoc -ctests/apidoc.html.xml",
-            "php bin/apidoc -ctests/apidoc.openapi.xml"
-        ],
+        "docs": "php bin/apidoc -ctests/apidoc.html.xml",
+        "docs-dev": "php bin/apidoc -ctests/apidoc.html.xml --inline-css",
         "openapi-install": "npm install -g @redocly/cli",
         "openapi-lint": "npx @redocly/cli lint tests/docs/openapi/openapi.json",
         "openapi-html": "npx @redocly/cli build-docs tests/docs/openapi/openapi.json -o tests/docs/openapi/index.html",
@@ -99,7 +97,8 @@
         "metrics": "Build metrics report",
         "tests": "Run tests and quality checks",
         "build": "Build project",
-        "docs": "Generate API documentation (HTML and OpenAPI)",
+        "docs": "Generate API documentation with external CSS",
+        "docs-dev": "Generate API documentation with inline CSS for development",
         "openapi-install": "Install Redocly CLI globally",
         "openapi-lint": "Validate OpenAPI spec with Redocly CLI",
         "openapi-html": "Generate HTML documentation from OpenAPI spec"
