@@ -385,7 +385,7 @@ HTML;
         // Schema file link
         $schemaLink = '';
         if ($schemaFile !== null) {
-            $schemaLink = sprintf('<a href="schema/%s" class="schema-file-link" title="JSON Schema">📄</a> ', htmlspecialchars($schemaFile));
+            $schemaLink = sprintf('<a href="schemas/%s" class="schema-file-link" title="JSON Schema">📄</a>', htmlspecialchars($schemaFile));
         }
 
         return <<<HTML
@@ -429,7 +429,7 @@ HTML;
         // Schema file link
         $schemaLink = '';
         if ($object['schemaFile'] !== null) {
-            $schemaLink = sprintf('<a href="schema/%s" class="schema-file-link" title="JSON Schema">📄</a> ', htmlspecialchars($object['schemaFile']));
+            $schemaLink = sprintf('<a href="schemas/%s" class="schema-file-link" title="JSON Schema">📄</a>', htmlspecialchars($object['schemaFile']));
         }
 
         return <<<HTML

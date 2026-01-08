@@ -54,7 +54,7 @@ jobs:
 ```text
 docs/
 ├── index.html          # apidoc
-├── schema/             # JSON Schema
+├── schemas/            # JSON Schema
 │   └── *.json
 ├── openapi/
 │   ├── openapi.json    # OpenAPI spec
