@@ -78,14 +78,31 @@ final class HtmlGenerator
             $this->processResource($path, new ReflectionClass($meta->class));
         }
 
+        $links = $this->extractLinks();
+
         return $this->renderer->render(
             $this->config->title,
             $this->config->description,
             $this->endpoints,
             $this->objects,
             $this->objectRelations,
-            $this->extractLinks(),
+            $links,
+            $this->extractAlpsHtmlPath($links),
         );
+    }
+
+    /**
+     * @param array<DocLink> $links
+     */
+    private function extractAlpsHtmlPath(array $links): string
+    {
+        foreach ($links as $link) {
+            if ($link['rel'] === 'profile') {
+                return $link['href'];
+            }
+        }
+
+        return 'alps.html';
     }
 
     /**
@@ -451,9 +468,8 @@ final class HtmlGenerator
         foreach ($this->config->links as $link) {
             $rel = (string) ($link['rel'] ?? '');
             $href = (string) ($link['href'] ?? '');
-            $type = (string) ($link['type'] ?? '');
             if ($rel !== '' && $href !== '') {
-                $links[] = ['rel' => $rel, 'href' => $href, 'type' => $type];
+                $links[] = ['rel' => $rel, 'href' => $href];
             }
         }
 

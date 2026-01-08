@@ -33,6 +33,8 @@ use const JSON_UNESCAPED_UNICODE;
  */
 final class HtmlRenderer
 {
+    private string $alpsHtmlPath = 'alps.html';
+
     /**
      * @param array<string, array<string, HtmlMethod>> $endpoints
      * @param array<string, HtmlObject>                $objects
@@ -46,7 +48,9 @@ final class HtmlRenderer
         array $objects,
         array $objectRelations,
         array $links = [],
+        string $alpsHtmlPath = 'alps.html',
     ): string {
+        $this->alpsHtmlPath = $alpsHtmlPath;
         $escapedTitle = htmlspecialchars($title ?: 'API Documentation');
         $escapedDescription = $this->convertMarkdownLinks($description ?: '');
         $css = $this->getCss();
@@ -215,7 +219,7 @@ HTML;
         if ($alps !== []) {
             $alpsLinks = [];
             foreach ($alps as $alpsId) {
-                $alpsLinks[] = sprintf('<a href="alps.html#%s" class="alps-link">%s</a>', htmlspecialchars($alpsId), htmlspecialchars($alpsId));
+                $alpsLinks[] = sprintf('<a href="%s#%s" class="alps-link">%s</a>', $this->alpsHtmlPath, htmlspecialchars($alpsId), htmlspecialchars($alpsId));
             }
 
             $html .= sprintf('<div class="method-alps">%s</div>', implode(', ', $alpsLinks));
@@ -268,7 +272,8 @@ HTML;
         }
 
         return sprintf(
-            '<a href="alps.html#%s" class="param alps-param" title="%s">%s</a>',
+            '<a href="%s#%s" class="param alps-param" title="%s">%s</a>',
+            $this->alpsHtmlPath,
             $escapedName,
             htmlspecialchars($alpsTitle),
             $escapedName,
