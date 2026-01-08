@@ -37,8 +37,8 @@ jobs:
       - run: npm install -g @alps-asd/app-state-diagram
       - run: |
           mkdir -p docs/alps
-          cp docs/alps.json docs/alps/
-          asd --echo docs/alps.json > docs/alps/index.html
+          cp tests/Fake/app/alps.json docs/alps/
+          asd --echo docs/alps/alps.json > docs/alps/index.html
 
       - uses: actions/upload-artifact@v4
         with:
