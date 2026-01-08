@@ -41,7 +41,7 @@ final readonly class SchemaIndex implements Stringable
 <head>
 <meta charset="utf-8">
 <title>JSON Schemas</title>
-<link rel="profile" href="../alps/index-schema.xml">
+<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/index-schema.xml">
 <style>body{font-family:system-ui,sans-serif;margin:2rem;padding:0}a{color:#0366d6}ul{line-height:1.8}</style>
 </head>
 <body>
