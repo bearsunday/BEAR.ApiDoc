@@ -527,14 +527,14 @@ HTML;
             return '';
         }
 
-        $items = [];
+        $items = '';
         foreach ($links as $link) {
             $rel = htmlspecialchars($link['rel']);
             $href = htmlspecialchars($link['href']);
-            $items[] = sprintf('<a href="%s">%s</a>', $href, $rel);
+            $items .= sprintf('<li><strong>%s</strong> : <a href="%s">%s</a></li>', $rel, $href, $href);
         }
 
-        return '<p class="doc-links">' . implode(' | ', $items) . '</p>';
+        return '<ul class="doc-links">' . $items . '</ul>';
     }
 
     private function getCss(): string
