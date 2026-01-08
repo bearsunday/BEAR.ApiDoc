@@ -1,10 +1,13 @@
 # BEAR.ApiDoc
 
-BEAR.ApiDoc generates API documentation from the application.
+BEAR.ApiDoc visualizes your API design and publishes it in formats that both humans and machines can understand.
 
-The documentation generated from the application's method signatures, phpdoc, JSON Schema, and ALPS profile will match the API documentation and the actual application. It supports HTML, Markdown, and OpenAPI 3.1 formats.
+- **HTML**: Developer documentation
+- **OpenAPI 3.1**: Tool chain integration (SDK generation, mock servers, Swagger UI)
+- **JSON Schema**: Client-side validation and form generation
+- **ALPS**: Semantic vocabulary definitions
 
-This not only saves you the trouble of writing IDL, but also allows you to generate accurate documentation.
+The documentation generated from your code and JSON Schema is always accurate and synchronized with the actual implementation.
 
 ## Demo
 
@@ -42,7 +45,7 @@ jobs:
 | Input | Default | Description |
 |-------|---------|-------------|
 | `php-version` | `'8.2'` | PHP version |
-| `format` | `'html'` | Comma-separated: html (apidoc), md, openapi, alps |
+| `format` | `'html,openapi'` | Comma-separated: html (apidoc), md, openapi, alps |
 | `alps-profile` | `''` | ALPS profile path (required for alps format) |
 | `docs-path` | `'docs/api'` | Output directory |
 | `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |

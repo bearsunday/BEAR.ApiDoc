@@ -174,6 +174,10 @@ final readonly class ApiDoc
         }
 
         $this->copySchema($config->responseSchemaDir, $outputDir);
+
+        // Generate schema index
+        $indexHtml = (string) new SchemaIndex($outputDir);
+        file_put_contents($outputDir . '/index.html', $indexHtml);
     }
 
     /** @return ArrayObject<string, string> */
