@@ -1,13 +1,11 @@
 # BEAR.ApiDoc
 
-BEAR.ApiDoc visualizes your API design and publishes it in formats that both humans and machines can understand.
+Your application is the documentation.
 
-- **HTML**: Developer documentation
-- **OpenAPI 3.1**: Tool chain integration (SDK generation, mock servers, Swagger UI)
-- **JSON Schema**: Client-side validation and form generation
-- **ALPS**: Semantic vocabulary definitions
-
-The documentation generated from your code and JSON Schema is always accurate and synchronized with the actual implementation.
+- **ApiDoc HTML**: Developer documentation
+- **OpenAPI 3.1**: Tool chain integration
+- **JSON Schema**: Information model
+- **ALPS**: Vocabulary semantics for AI understanding
 
 ## Demo
 
@@ -76,3 +74,5 @@ composer docs-dev    # Generate docs with inline CSS for development
 composer docs-md     # Generate Markdown docs
 composer docs-openapi # Generate OpenAPI spec
 ```
+
+Application as Documentation.
