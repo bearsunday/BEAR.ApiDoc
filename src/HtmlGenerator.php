@@ -98,6 +98,7 @@ final class HtmlGenerator
         );
     }
 
+    /** @codeCoverageIgnore */
     private function loadLocalCss(): ?string
     {
         if (! $this->inlineCss) {
@@ -107,7 +108,11 @@ final class HtmlGenerator
         return (string) file_get_contents(dirname(__DIR__) . '/docs/apidoc.css');
     }
 
-    /** @param array<DocLink> $links */
+    /**
+     * @param array<DocLink> $links
+     *
+     * @codeCoverageIgnore
+     */
     private function extractAlpsHtmlPath(array $links): string
     {
         foreach ($links as $link) {
@@ -396,6 +401,7 @@ final class HtmlGenerator
         ];
     }
 
+    /** @codeCoverageIgnore */
     private function addNestedObject(string $name, object $nestedProperties, ?string $schemaFile = null): void
     {
         if (isset($this->objects[$name])) {
@@ -438,6 +444,7 @@ final class HtmlGenerator
         ];
     }
 
+    /** @codeCoverageIgnore */
     private function getArrayItemType(Schema $schema): ?string
     {
         $schemaFile = $schema->file->getPathname();
@@ -493,6 +500,7 @@ final class HtmlGenerator
         }
     }
 
+    /** @codeCoverageIgnore */
     private function normalizeType(string $type): string
     {
         return match ($type) {

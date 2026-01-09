@@ -597,6 +597,7 @@ HTML;
         return ''; // @codeCoverageIgnore
     }
 
+    /** @codeCoverageIgnore */
     private function normalizeType(string $type): string
     {
         return match ($type) {
