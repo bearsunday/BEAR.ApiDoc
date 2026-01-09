@@ -40,6 +40,12 @@ Generate configuration file:
 
 This creates `apidoc.xml` from your `composer.json`.
 
+Generate documentation:
+
+```bash
+./vendor/bin/apidoc
+```
+
 ## Usage
 
 See the [API doc documentation](http://bearsunday.github.io/manuals/1.0/en/apidoc.html).
