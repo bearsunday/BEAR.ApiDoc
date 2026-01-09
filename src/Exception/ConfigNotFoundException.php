@@ -10,6 +10,7 @@ use function sprintf;
 
 final class ConfigNotFoundException extends RuntimeException
 {
+    /** @codeCoverageIgnore */
     public function __construct(string $path)
     {
         $message = $path !== ''

@@ -20,6 +20,7 @@ use function json_decode;
 use function rtrim;
 use function sprintf;
 
+/** @codeCoverageIgnore */
 final class ConfigGenerator
 {
     private const TEMPLATE = <<<'XML'
