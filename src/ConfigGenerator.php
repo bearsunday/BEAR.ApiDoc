@@ -52,12 +52,12 @@ XML;
 
         $outputPath = dirname($composerJsonPath) . '/' . self::OUTPUT_FILE;
         if (file_exists($outputPath)) {
-            return sprintf('%s already exists', self::OUTPUT_FILE);
+            return sprintf('ApiDoc config already exists: %s', $outputPath);
         }
 
         file_put_contents($outputPath, $xml);
 
-        return sprintf('Created %s', self::OUTPUT_FILE);
+        return sprintf('ApiDoc config created: %s', $outputPath);
     }
 
     private function findComposerJson(): string
