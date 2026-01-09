@@ -2,7 +2,7 @@
 <?php
 
 use BEAR\ApiDoc\ApiDoc;
-use BEAR\ApiDoc\Exception\ConfigException;
+use BEAR\ApiDoc\ConfigGenerator;
 
 /**
  * @param array<int,string> $argv
@@ -15,6 +15,19 @@ use BEAR\ApiDoc\Exception\ConfigException;
             break;
         }
     }
+
+    // Handle 'init' subcommand
+    if (isset($argv[1]) && $argv[1] === 'init') {
+        try {
+            $generator = new ConfigGenerator();
+            echo $generator() . PHP_EOL;
+        } catch (RuntimeException $e) {
+            printf("%s: %s\n", (new ReflectionClass($e))->getShortName(), $e->getMessage());
+            exit(1);
+        }
+        return;
+    }
+
     $options = getopt('c::', ['inline-css']);
     $apidocXml = isset($options['c']) && is_string($options['c']) ? $options['c'] : '';
     $inlineCss = isset($options['inline-css']);
