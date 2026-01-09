@@ -48,6 +48,13 @@ jobs:
             exit 1
           fi
 
+      # Backwards compatibility symlink (schema -> schemas)
+      - if: contains(inputs.format, 'html') || contains(inputs.format, 'md') || contains(inputs.format, 'openapi')
+        run: |
+          if [ -d "${{ inputs.docs-path }}/schemas" ]; then
+            ln -s schemas ${{ inputs.docs-path }}/schema
+          fi
+
       # Node.js steps (for openapi and alps formats)
       - if: contains(inputs.format, 'openapi') || contains(inputs.format, 'alps')
         uses: actions/setup-node@v4
