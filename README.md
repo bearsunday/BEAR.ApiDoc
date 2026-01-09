@@ -16,9 +16,19 @@ Your application is the documentation.
 
     composer require bear/api-doc ^1.0
 
+## Quick Start
+
+Generate configuration file:
+
+```bash
+./vendor/bin/apidoc init
+```
+
+This creates `apidoc.xml` from your `composer.json`.
+
 ## Usage
 
-See the [API doc documentatiom](http://bearsunday.github.io/manuals/1.0/en/apidoc.html).
+See the [API doc documentation](http://bearsunday.github.io/manuals/1.0/en/apidoc.html).
 
 ## GitHub Actions
 
