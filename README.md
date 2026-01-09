@@ -26,9 +26,29 @@ This is a semantic application document, not just an API reference. It describes
 - [ApiDoc](https://bearsunday.github.io/BEAR.ApiDoc/)
 - [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
 
+## Installation
+
+    composer require bear/api-doc ^1.0
+
+## Quick Start
+
+Generate configuration file:
+
+```bash
+./vendor/bin/apidoc init
+```
+
+This creates `apidoc.xml` from your `composer.json`.
+
+Generate documentation:
+
+```bash
+./vendor/bin/apidoc
+```
+
 ## Usage
 
-See the [documentation](http://bearsunday.github.io/manuals/1.0/en/apidoc.html).
+See the [API doc documentation](http://bearsunday.github.io/manuals/1.0/en/apidoc.html).
 
 ## GitHub Actions
 
