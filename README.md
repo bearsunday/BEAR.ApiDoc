@@ -7,6 +7,20 @@ Your application is the documentation.
 - **JSON Schema**: Information model
 - **ALPS**: Vocabulary semantics for AI understanding
 
+## Semantic Depth
+
+The same document reveals different insights depending on your perspective:
+
+| Depth | What You See |
+|-------|--------------|
+| Surface | Remote function list (API reference) |
+| Middle | Resources and operations (REST design) |
+| Deep | Application semantics (ALPS three layers) |
+
+A developer sees endpoints to call. An architect sees state transitions. An AI extracts Ontology, Taxonomy, and Choreography. One document, multiple layers of understanding.
+
+This is a semantic application document, not just an API reference. It describes what the application **is**, not just how to call it.
+
 ## Demo
 
 - [ApiDoc](https://bearsunday.github.io/BEAR.ApiDoc/)
