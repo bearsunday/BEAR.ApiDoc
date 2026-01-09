@@ -500,14 +500,9 @@ final class HtmlGenerator
         }
     }
 
-    /** @codeCoverageIgnore */
     private function normalizeType(string $type): string
     {
-        return match ($type) {
-            'integer' => 'int',
-            'boolean' => 'bool',
-            default => $type,
-        };
+        return $type;
     }
 
     /** @return array<DocLink> */
