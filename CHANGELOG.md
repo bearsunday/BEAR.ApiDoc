@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-01-09
+
+### Added
+- Add `apidoc init` command to generate `apidoc.xml` from `composer.json`
+- Add helpful error message suggesting `apidoc init` when config not found
+- Add backwards compatibility symlink `schema` -> `schemas`
+
 ## [1.5.0] - 2026-01-09
 
 ### Added
@@ -69,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update dependencies
 
+[1.6.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.3.1...1.4.0
 [1.3.1]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.3.0...1.3.1
