@@ -92,4 +92,20 @@ class ApiDocTest extends TestCase
         $apiDoc = new ApiDoc();
         $apiDoc(__DIR__ . '/apidoc.invalid-app.xml');
     }
+
+    public function testLlmsOutput(): void
+    {
+        $apiDoc = new ApiDoc();
+        $result = $apiDoc(__DIR__ . '/apidoc.llms.xml');
+
+        $this->assertStringContainsString('llms.txt', $result);
+        // Output to docs root (parent of docDir)
+        $this->assertFileExists(__DIR__ . '/docs/llms.txt');
+
+        $content = file_get_contents(__DIR__ . '/docs/llms.txt');
+        $this->assertIsString($content);
+        $this->assertStringContainsString('# FakeVendor\\FakeProject', $content);
+        $this->assertStringContainsString('## Routes', $content);
+        $this->assertStringContainsString('## ResourceObjects', $content);
+    }
 }

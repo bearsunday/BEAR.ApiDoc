@@ -4,7 +4,7 @@
         xsi:noNamespaceSchemaLocation="../apidoc.xsd">
     <appName>FakeVendor\FakeProject</appName>
     <scheme>app</scheme>
-    <docDir>docs/llms</docDir>
+    <docDir>docs/api</docDir>
     <format>llms</format>
     <title>FakeProject</title>
     <description>A sample BEAR.Sunday application for testing</description>

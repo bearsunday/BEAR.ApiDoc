@@ -260,7 +260,9 @@ final readonly class ApiDoc
     {
         $generator = new AppDocGenerator($config);
         $content = $generator->generate();
-        $outputFile = sprintf('%s/llms.txt', $config->docDir);
+        // Output to docs root (parent of docDir) like robots.txt convention
+        $docsRoot = dirname($config->docDir);
+        $outputFile = sprintf('%s/llms.txt', $docsRoot);
         $this->filePutContents($outputFile, $content);
     }
 }
