@@ -63,6 +63,11 @@ final class Config
 
     public string $responseSchemaDir = '';
 
+    /** @var list<class-string> */
+    public array $queryClasses = [];
+
+    public string $sqlDir = '';
+
     /**
      * @psalm-suppress
      * @SuppressWarnings("PHPMD.NPathComplexity")
@@ -136,6 +141,9 @@ final class Config
         } catch (Unbound) { // @codeCoverageIgnore
         }
 
+        $this->queryClasses = $this->getQueryClasses($injector);
+        $this->sqlDir = $this->getSqlDir($injector);
+
         $this->modelRepository = new ModelRepository();
         $map = $this->getRouterMap($injector);
         // @codeCoverageIgnoreStart
@@ -163,5 +171,44 @@ final class Config
         } catch (Unbound) { // @codeCoverageIgnore
             return null; // @codeCoverageIgnore
         }
+    }
+
+    /** @return list<class-string> */
+    private function getQueryClasses(InjectorInterface $injector): array
+    {
+        // Try to get Ray\MediaQuery\Queries if available
+        $queriesClass = 'Ray\\MediaQuery\\Queries';
+        if (! class_exists($queriesClass)) {
+            return [];
+        }
+
+        try {
+            /** @var object{classes: list<class-string>} $queries */
+            $queries = $injector->getInstance($queriesClass);
+
+            return $queries->classes;
+        } catch (Unbound) { // @codeCoverageIgnore
+        }
+
+        return [];
+    }
+
+    private function getSqlDir(InjectorInterface $injector): string
+    {
+        // Try to get SqlDir from Ray\MediaQuery if available
+        $sqlDirClass = 'Ray\\MediaQuery\\Annotation\\Qualifier\\SqlDir';
+        if (! class_exists($sqlDirClass)) {
+            return '';
+        }
+
+        try {
+            $sqlDir = $injector->getInstance('', $sqlDirClass);
+            assert(is_string($sqlDir));
+
+            return $sqlDir;
+        } catch (Unbound) { // @codeCoverageIgnore
+        }
+
+        return '';
     }
 }

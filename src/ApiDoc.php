@@ -51,6 +51,7 @@ final readonly class ApiDoc
         $outputFile = match ($config->format) {
             'openapi' => 'openapi.json',
             'md' => 'index.md',
+            'llms' => 'llms.txt',
             default => 'index.html',
         };
 
@@ -69,6 +70,12 @@ final readonly class ApiDoc
 
         if ($config->format === 'openapi') {
             $this->dumpOpenApi($config);
+
+            return;
+        }
+
+        if ($config->format === 'llms') {
+            $this->dumpLlms($config);
 
             return;
         }
@@ -247,5 +254,13 @@ final readonly class ApiDoc
         $openApiJson = $generator->generate();
         $outputFile = sprintf('%s/openapi.json', $config->docDir);
         $this->filePutContents($outputFile, $openApiJson);
+    }
+
+    private function dumpLlms(Config $config): void
+    {
+        $generator = new AppDocGenerator($config);
+        $content = $generator->generate();
+        $outputFile = sprintf('%s/llms.txt', $config->docDir);
+        $this->filePutContents($outputFile, $content);
     }
 }

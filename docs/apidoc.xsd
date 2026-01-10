@@ -49,6 +49,7 @@
                 <xs:enumeration value="html"/>
                 <xs:enumeration value="md"/>
                 <xs:enumeration value="openapi"/>
+                <xs:enumeration value="llms"/>
             </xs:restriction>
         </xs:simpleType>
     </xs:element>
