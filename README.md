@@ -83,11 +83,10 @@ jobs:
 
 ```text
 docs/
+├── index.html          # apidoc
 ├── llms.txt            # AI-readable overview
-├── api/
-│   ├── index.html      # apidoc
-│   └── schemas/        # JSON Schema
-│       └── *.json
+├── schemas/            # JSON Schema
+│   └── *.json
 ├── openapi/
 │   ├── openapi.json    # OpenAPI spec
 │   └── index.html      # Redocly HTML

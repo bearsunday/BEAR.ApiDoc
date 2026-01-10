@@ -99,7 +99,6 @@ class ApiDocTest extends TestCase
         $result = $apiDoc(__DIR__ . '/apidoc.llms.xml');
 
         $this->assertStringContainsString('llms.txt', $result);
-        // Output to docs root (parent of docDir)
         $this->assertFileExists(__DIR__ . '/docs/llms.txt');
 
         $content = file_get_contents(__DIR__ . '/docs/llms.txt');
