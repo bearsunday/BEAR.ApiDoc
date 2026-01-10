@@ -171,11 +171,13 @@ final class AppDocGenerator
     {
         // Use query classes from config if available (from DI container)
         if ($this->config->queryClasses !== []) {
+            // @codeCoverageIgnoreStart
             foreach ($this->config->queryClasses as $class) {
                 $this->collectQueryInterfaceFromClass($class);
             }
 
             return;
+            // @codeCoverageIgnoreEnd
         }
 
         // Fallback to filesystem scanning
@@ -200,7 +202,11 @@ final class AppDocGenerator
         }
     }
 
-    /** @param class-string $class */
+    /**
+     * @param class-string $class
+     *
+     * @codeCoverageIgnore Only used when Ray.MediaQuery DI bindings are available
+     */
     private function collectQueryInterfaceFromClass(string $class): void
     {
         if (! interface_exists($class)) {
@@ -222,7 +228,11 @@ final class AppDocGenerator
         }
     }
 
-    /** @param array<ReflectionParameter> $params */
+    /**
+     * @param array<ReflectionParameter> $params
+     *
+     * @codeCoverageIgnore Only used when Ray.MediaQuery DI bindings are available
+     */
     private function simplifyReflectionParams(array $params): string
     {
         $names = [];
@@ -233,6 +243,7 @@ final class AppDocGenerator
         return implode(', ', $names);
     }
 
+    /** @codeCoverageIgnore Only used when Ray.MediaQuery DI bindings are available */
     private function getMethodReturnTypeName(ReflectionMethod $method): string
     {
         $returnType = $method->getReturnType();
