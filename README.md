@@ -74,7 +74,7 @@ jobs:
 | Input | Default | Description |
 |-------|---------|-------------|
 | `php-version` | `'8.2'` | PHP version |
-| `format` | `'html,openapi'` | Comma-separated: html (apidoc), md, openapi, alps, llms |
+| `format` | `'html,openapi,llms'` | Comma-separated: html (apidoc), md, openapi, alps, llms |
 | `alps-profile` | `''` | ALPS profile path (required for alps format) |
 | `docs-path` | `'docs/api'` | Output directory |
 | `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
