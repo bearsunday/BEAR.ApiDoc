@@ -186,8 +186,9 @@ final class Config
             return [];
         }
 
+        assert(class_exists($queriesClass));
+
         try {
-            /** @var class-string $queriesClass */
             /** @var object{classes: list<class-string>} $queries */
             $queries = $injector->getInstance($queriesClass);
 
