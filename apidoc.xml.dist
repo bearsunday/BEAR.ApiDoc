@@ -4,7 +4,7 @@
         xsi:noNamespaceSchemaLocation="./apidoc.xsd">
     <appName>MyVendor/Package</appName>
     <scheme>app</scheme>
-    <docDir>docs/api</docDir>
+    <docDir>docs</docDir>
     <!-- format: html | md | openapi | llms -->
     <format>html</format>
     <title>MyVendor/Package</title>

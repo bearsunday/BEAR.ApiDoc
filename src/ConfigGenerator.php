@@ -30,7 +30,7 @@ final class ConfigGenerator
         xsi:noNamespaceSchemaLocation="vendor/bear/apidoc/apidoc.xsd">
     <appName>%s</appName>
     <scheme>app</scheme>
-    <docDir>docs/api</docDir>
+    <docDir>docs</docDir>
     <!-- format: html | md | openapi | llms -->
     <format>html</format>
     <title>%s API Doc</title>%s
