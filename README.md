@@ -85,11 +85,10 @@ jobs:
 docs/
 ├── index.html          # apidoc
 ├── llms.txt            # AI-readable overview
+├── openapi.json        # OpenAPI spec
+├── openapi.html        # Redocly HTML (gh workflow only)
 ├── schemas/            # JSON Schema
 │   └── *.json
-├── openapi/
-│   ├── openapi.json    # OpenAPI spec
-│   └── index.html      # Redocly HTML (gh workflow only)
 └── alps/
     ├── alps.json       # ALPS profile
     └── index.html      # ASD HTML (gh workflow only)

@@ -64,12 +64,11 @@ jobs:
       # OpenAPI to HTML conversion
       - if: contains(inputs.format, 'openapi')
         run: |
-          if [ -f "${{ inputs.docs-path }}/openapi/openapi.json" ]; then
+          if [ -f "${{ inputs.docs-path }}/openapi.json" ]; then
             npm install -g @redocly/cli
-            redocly build-docs ${{ inputs.docs-path }}/openapi/openapi.json -o ${{ inputs.docs-path }}/openapi/index.html
+            redocly build-docs ${{ inputs.docs-path }}/openapi.json -o ${{ inputs.docs-path }}/openapi.html
           else
-            echo "::error::${{ inputs.docs-path }}/openapi/openapi.json not found."
-            exit 1
+            echo "::warning::openapi.json not found. Skipping Redocly HTML generation."
           fi
 
       # ALPS to HTML conversion
