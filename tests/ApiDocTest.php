@@ -107,4 +107,15 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('## Routes', $content);
         $this->assertStringContainsString('## ResourceObjects', $content);
     }
+
+    public function testMultipleFormatsOutput(): void
+    {
+        $apiDoc = new ApiDoc();
+        $result = $apiDoc(__DIR__ . '/apidoc.multi.xml');
+
+        $this->assertStringContainsString('index.html', $result);
+        $this->assertStringContainsString('llms.txt', $result);
+        $this->assertFileExists(__DIR__ . '/docs/multi/index.html');
+        $this->assertFileExists(__DIR__ . '/docs/multi/llms.txt');
+    }
 }
