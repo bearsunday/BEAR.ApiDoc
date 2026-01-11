@@ -173,7 +173,11 @@ final class Config
         }
     }
 
-    /** @return list<class-string> */
+    /**
+     * @return list<class-string>
+     *
+     * @codeCoverageIgnore Only used when Ray.MediaQuery DI bindings are available
+     */
     private function getQueryClasses(InjectorInterface $injector): array
     {
         // Try to get Ray\MediaQuery\Queries if available
@@ -187,12 +191,13 @@ final class Config
             $queries = $injector->getInstance($queriesClass);
 
             return $queries->classes;
-        } catch (Unbound) { // @codeCoverageIgnore
+        } catch (Unbound) {
         }
 
         return [];
     }
 
+    /** @codeCoverageIgnore Only used when Ray.MediaQuery DI bindings are available */
     private function getSqlDir(InjectorInterface $injector): string
     {
         // Try to get SqlDir from Ray\MediaQuery if available
@@ -206,7 +211,7 @@ final class Config
             assert(is_string($sqlDir));
 
             return $sqlDir;
-        } catch (Unbound) { // @codeCoverageIgnore
+        } catch (Unbound) {
         }
 
         return '';

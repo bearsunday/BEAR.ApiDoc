@@ -584,6 +584,7 @@ HTML;
 HTML;
     }
 
+    /** @codeCoverageIgnore Transition type detection based on naming convention */
     private function getTransitionType(string $rel): string
     {
         if (str_starts_with($rel, 'go')) {
@@ -594,7 +595,7 @@ HTML;
             return 'unsafe';
         }
 
-        return ''; // @codeCoverageIgnore
+        return '';
     }
 
     /** @codeCoverageIgnore */

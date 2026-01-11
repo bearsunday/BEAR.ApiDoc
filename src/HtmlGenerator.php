@@ -309,7 +309,7 @@ final class HtmlGenerator
 
         $schemaJson = json_decode((string) file_get_contents($schemaFile));
         if (! is_object($schemaJson)) {
-            return null; // @codeCoverageIgnore DocClass throws assertion before this
+            return null; // @codeCoverageIgnore
         }
 
         $fileInfo = new SplFileInfo($schemaFile);
