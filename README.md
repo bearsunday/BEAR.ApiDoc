@@ -6,6 +6,7 @@ Your application is the documentation.
 - **OpenAPI 3.1**: Tool chain integration
 - **JSON Schema**: Information model
 - **ALPS**: Vocabulary semantics for AI understanding
+- **llms.txt**: AI-readable application overview
 
 ## Semantic Depth
 
@@ -73,7 +74,7 @@ jobs:
 | Input | Default | Description |
 |-------|---------|-------------|
 | `php-version` | `'8.2'` | PHP version |
-| `format` | `'html,openapi'` | Comma-separated: html (apidoc), md, openapi, alps |
+| `format` | `'html,openapi,llms'` | Comma-separated: html (apidoc), md, openapi, alps, llms |
 | `alps-profile` | `''` | ALPS profile path (required for alps format) |
 | `docs-path` | `'docs/api'` | Output directory |
 | `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
@@ -83,6 +84,7 @@ jobs:
 ```text
 docs/
 ├── index.html          # apidoc
+├── llms.txt            # AI-readable overview
 ├── schemas/            # JSON Schema
 │   └── *.json
 ├── openapi/

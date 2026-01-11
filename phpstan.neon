@@ -6,3 +6,9 @@ parameters:
 
   excludePaths:
     - tests/Fake/*
+
+  ignoreErrors:
+    - # Ray.MediaQuery optional dependency - class existence checked at runtime
+      message: '#Parameter \#1 \$interface of method Ray\\Di\\InjectorInterface::getInstance\(\) expects#'
+      path: src/Config.php
+      reportUnmatched: false
