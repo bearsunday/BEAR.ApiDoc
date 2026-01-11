@@ -83,15 +83,11 @@ jobs:
 
 ```text
 docs/
-├── index.html          # apidoc
+├── index.html          # API documentation
 ├── llms.txt            # AI-readable overview
 ├── openapi.json        # OpenAPI spec
-├── openapi.html        # Redocly HTML (gh workflow only)
-├── schemas/            # JSON Schema
-│   └── *.json
-└── alps/
-    ├── alps.json       # ALPS profile
-    └── index.html      # ASD HTML (gh workflow only)
+└── schemas/
+    └── *.json          # JSON Schema
 ```
 
 ## Development
