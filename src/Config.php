@@ -187,6 +187,7 @@ final class Config
         }
 
         try {
+            /** @var class-string $queriesClass */
             /** @var object{classes: list<class-string>} $queries */
             $queries = $injector->getInstance($queriesClass);
 
