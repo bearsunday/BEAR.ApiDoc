@@ -11,22 +11,25 @@ use Aura\Router\RouterContainer;
 use BEAR\ApiDoc\Exception\InvalidAppNamespaceException;
 use BEAR\AppMeta\Meta;
 use BEAR\AppMeta\ResMeta;
-use Generator;
 use Ray\Di\AbstractModule;
 use Ray\Di\Exception\Unbound;
 use Ray\Di\Injector;
 use Ray\Di\InjectorInterface;
 use SimpleXMLElement;
 
+use function array_map;
 use function assert;
 use function class_exists;
 use function dirname;
+use function explode;
 use function in_array;
 use function is_iterable;
 use function is_string;
+use function iterator_to_array;
 use function property_exists;
 use function realpath;
 use function sprintf;
+use function trim;
 
 final class Config
 {
@@ -39,7 +42,8 @@ final class Config
     /** @var non-empty-string */
     public readonly string $docDir;
 
-    public readonly string $format;
+    /** @var list<string> */
+    public readonly array $formats;
 
     public readonly string $title;
 
@@ -50,8 +54,8 @@ final class Config
 
     public string $alps = '';
 
-    /** @var Generator<ResMeta> */
-    public readonly Generator $resourceFiles;
+    /** @var array<ResMeta> */
+    public readonly array $resourceFiles;
 
     /** @var ArrayObject<string, string> */
     public readonly ArrayObject $modelRepository;
@@ -85,7 +89,8 @@ final class Config
         assert($appName !== '');
         $this->appName = $appName;
         $this->docDir = sprintf('%s/%s', $dir, (string) $xml->docDir);
-        $this->format = (string) $xml->format;
+        $formatString = (string) $xml->format;
+        $this->formats = array_map(trim(...), explode(',', $formatString));
         $scheme = (string) $xml->scheme;
         assert(in_array($scheme, ['*', 'app', 'page'], true));
         $this->scheme = $scheme;
@@ -125,7 +130,7 @@ final class Config
         $appModule = new $appModuleClass($meta, new AppMetaModule($meta));
         /** @psalm-suppress all */
         $injector = new Injector($appModule);
-        $this->resourceFiles = $meta->getGenerator($this->scheme);
+        $this->resourceFiles = iterator_to_array($meta->getGenerator($this->scheme));
 
         try {
             $jsonSchemaDir = $injector->getInstance('', 'json_schema_dir');

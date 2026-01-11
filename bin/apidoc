@@ -29,7 +29,7 @@ use BEAR\ApiDoc\ConfigGenerator;
     }
 
     $options = getopt('c::', ['inline-css']);
-    $apidocXml = isset($options['c']) && is_string($options['c']) ? $options['c'] : '';
+    $apidocXml = isset($options['c']) && is_string($options['c']) ? $options['c'] : './apidoc.xml';
     $inlineCss = isset($options['inline-css']);
 
     try {

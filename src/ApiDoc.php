@@ -22,6 +22,7 @@ use function copy;
 use function dirname;
 use function file_exists;
 use function file_put_contents;
+use function implode;
 use function is_dir;
 use function is_object;
 use function is_string;
@@ -46,35 +47,38 @@ final readonly class ApiDoc
             $config->responseSchemaDir,
             new ModelRepository()
         );
-        $this->dump($config, $docClass);
 
-        $outputFile = match ($config->format) {
-            'openapi' => 'openapi.json',
-            'md' => 'index.md',
-            'llms' => 'llms.txt',
-            default => 'index.html',
-        };
+        $outputFiles = [];
+        foreach ($config->formats as $format) {
+            $this->dumpFormat($config, $docClass, $format);
+            $outputFiles[] = match ($format) {
+                'openapi' => 'openapi.json',
+                'md' => 'index.md',
+                'llms' => 'llms.txt',
+                default => 'index.html',
+            };
+        }
 
-        return sprintf('ApiDoc generated. %s/%s', (string) realpath($config->docDir), $outputFile);
+        return sprintf('ApiDoc generated. %s/%s', (string) realpath($config->docDir), implode(', ', $outputFiles));
     }
 
-    private function dump(Config $config, DocClass $docClass): void
+    private function dumpFormat(Config $config, DocClass $docClass, string $format): void
     {
         $this->mkDir($config->docDir);
 
-        if ($config->format === 'md') {
+        if ($format === 'md') {
             $this->dumpMd($config, $docClass);
 
             return;
         }
 
-        if ($config->format === 'openapi') {
+        if ($format === 'openapi') {
             $this->dumpOpenApi($config);
 
             return;
         }
 
-        if ($config->format === 'llms') {
+        if ($format === 'llms') {
             $this->dumpLlms($config);
 
             return;
