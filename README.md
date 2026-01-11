@@ -89,10 +89,10 @@ docs/
 │   └── *.json
 ├── openapi/
 │   ├── openapi.json    # OpenAPI spec
-│   └── index.html      # Redocly HTML
+│   └── index.html      # Redocly HTML (gh workflow only)
 └── alps/
     ├── alps.json       # ALPS profile
-    └── index.html      # ASD HTML
+    └── index.html      # ASD HTML (gh workflow only)
 ```
 
 ## Development
