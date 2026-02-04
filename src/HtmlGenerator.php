@@ -286,15 +286,10 @@ final class HtmlGenerator
 
             $alpsTitle = $this->semanticDictionary[$paramName] ?? null;
 
-            // Use ALPS semantic dictionary as fallback for empty description
-            if ($description === '' && $alpsTitle !== null) {
-                $description = $alpsTitle;
-            }
-
             $params[] = [
                 'name' => $paramName,
                 'type' => $this->normalizeType($typeName),
-                'description' => $description,
+                'description' => $this->getDescriptionWithAlpsFallback($description, $paramName),
                 'required' => ! $param->isOptional(),
                 'example' => $example,
                 'constraints' => $constraints,
@@ -387,16 +382,10 @@ final class HtmlGenerator
                 unset($constraints['$ref']);
             }
 
-            // Use ALPS semantic dictionary as fallback for empty description
-            $description = $prop->description;
-            if ($description === '' && isset($this->semanticDictionary[$propName])) {
-                $description = $this->semanticDictionary[$propName];
-            }
-
             $properties[] = [
                 'name' => $propName,
                 'type' => $prop->type,
-                'description' => $description,
+                'description' => $this->getDescriptionWithAlpsFallback($prop->description, $propName),
                 'example' => $prop->example,
                 'format' => $format,
                 'constraints' => $constraints,
@@ -436,16 +425,12 @@ final class HtmlGenerator
             /** @psalm-suppress MixedAssignment */
             $format = $prop->format ?? null;
 
-            // Use ALPS semantic dictionary as fallback for empty description
             $descriptionStr = is_string($description) ? $description : '';
-            if ($descriptionStr === '' && isset($this->semanticDictionary[$propName])) {
-                $descriptionStr = $this->semanticDictionary[$propName];
-            }
 
             $properties[] = [
                 'name' => $propName,
                 'type' => is_string($type) ? $type : 'mixed',
-                'description' => $descriptionStr,
+                'description' => $this->getDescriptionWithAlpsFallback($descriptionStr, $propName),
                 'example' => is_string($example) || is_numeric($example) ? (string) $example : null,
                 'format' => is_string($format) ? $format : null,
                 'constraints' => [],
@@ -520,6 +505,18 @@ final class HtmlGenerator
     private function normalizeType(string $type): string
     {
         return $type;
+    }
+
+    /**
+     * Get description with ALPS semantic dictionary fallback
+     */
+    private function getDescriptionWithAlpsFallback(string $description, string $propName): string
+    {
+        if ($description !== '') {
+            return $description;
+        }
+
+        return $this->semanticDictionary[$propName] ?? '';
     }
 
     /** @return array<DocLink> */
