@@ -286,6 +286,11 @@ final class HtmlGenerator
 
             $alpsTitle = $this->semanticDictionary[$paramName] ?? null;
 
+            // Use ALPS semantic dictionary as fallback for empty description
+            if ($description === '' && $alpsTitle !== null) {
+                $description = $alpsTitle;
+            }
+
             $params[] = [
                 'name' => $paramName,
                 'type' => $this->normalizeType($typeName),
@@ -382,10 +387,16 @@ final class HtmlGenerator
                 unset($constraints['$ref']);
             }
 
+            // Use ALPS semantic dictionary as fallback for empty description
+            $description = $prop->description;
+            if ($description === '' && isset($this->semanticDictionary[$propName])) {
+                $description = $this->semanticDictionary[$propName];
+            }
+
             $properties[] = [
                 'name' => $propName,
                 'type' => $prop->type,
-                'description' => $prop->description,
+                'description' => $description,
                 'example' => $prop->example,
                 'format' => $format,
                 'constraints' => $constraints,
@@ -425,10 +436,16 @@ final class HtmlGenerator
             /** @psalm-suppress MixedAssignment */
             $format = $prop->format ?? null;
 
+            // Use ALPS semantic dictionary as fallback for empty description
+            $descriptionStr = is_string($description) ? $description : '';
+            if ($descriptionStr === '' && isset($this->semanticDictionary[$propName])) {
+                $descriptionStr = $this->semanticDictionary[$propName];
+            }
+
             $properties[] = [
                 'name' => $propName,
                 'type' => is_string($type) ? $type : 'mixed',
-                'description' => is_string($description) ? $description : '',
+                'description' => $descriptionStr,
                 'example' => is_string($example) || is_numeric($example) ? (string) $example : null,
                 'format' => is_string($format) ? $format : null,
                 'constraints' => [],
