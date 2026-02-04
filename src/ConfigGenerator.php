@@ -27,7 +27,7 @@ final class ConfigGenerator
 <?xml version="1.0" encoding="UTF-8"?>
 <apidoc
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="vendor/bear/apidoc/apidoc.xsd">
+        xsi:noNamespaceSchemaLocation="vendor/bear/api-doc/apidoc.xsd">
     <appName>%s</appName>
     <scheme>app</scheme>
     <docDir>docs</docDir>
