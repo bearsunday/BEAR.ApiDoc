@@ -437,7 +437,7 @@ final class AppDocGenerator
     private function collectParams(ReflectionMethod $method): string
     {
         $params = [];
-        foreach ($method->getParameters() as $param) {
+        foreach ((new InputParamExpander())($method) as $param) {
             $params[] = $this->formatParam($param);
         }
 

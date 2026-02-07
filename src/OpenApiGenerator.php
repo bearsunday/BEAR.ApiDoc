@@ -281,7 +281,7 @@ final class OpenApiGenerator
             return [];
         }
 
-        $methodParams = $method->getParameters();
+        $methodParams = (new InputParamExpander())($method);
         foreach ($methodParams as $param) {
             $paramName = $param->getName();
             $paramSchema = $schema->props[$paramName] ?? null;

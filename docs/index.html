@@ -5,7 +5,308 @@
 <title>API Doc Title</title>
 <link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/apidoc.xml">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css">
-<link rel="stylesheet" href="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.css">
+<style>/**
+ * BEAR.ApiDoc - API Documentation Stylesheet
+ * https://github.com/bearsunday/BEAR.ApiDoc
+ */
+
+/* Base */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.markdown-body {
+    background: #fff;
+    padding: 45px;
+    max-width: none;
+    margin: 0 auto;
+    overflow: visible;
+}
+
+a {
+    cursor: pointer;
+    color: #0366d6;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+}
+
+/* Type indicator (ALPS-aligned colors) */
+.ti {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 4px;
+    border: 1px solid #000;
+    vertical-align: middle;
+}
+
+.ti.safe {
+    background-color: #00A86B;
+}
+
+.ti.unsafe {
+    background-color: #FF4136;
+}
+
+.ti.idempotent {
+    background-color: #D4A000;
+}
+
+.ti.semantic {
+    background-color: #fff;
+}
+
+/* Method cell */
+.method-cell {
+    min-width: 200px;
+}
+
+.method-title {
+    font-size: 0.85em;
+    color: #24292f;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.method-desc {
+    font-size: 0.8em;
+    color: #57606a;
+    margin-top: 2px;
+}
+
+.method-alps {
+    font-size: 0.75em;
+    margin-top: 4px;
+}
+
+.alps-link {
+    color: #8957e5;
+    text-decoration: none;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+}
+
+.alps-link:hover {
+    text-decoration: underline;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    background: #f6f8fa;
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Path cell */
+.path-cell {
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-weight: 600;
+}
+
+/* Param */
+.param {
+    font-family: 'SFMono-Regular', Consolas, monospace;
+}
+
+.alps-param {
+    color: #8957e5;
+    text-decoration: none;
+}
+
+.alps-param:hover {
+    text-decoration: underline;
+}
+
+.req {
+    color: #cf222e;
+}
+
+.param-desc {
+    font-size: 0.85em;
+    color: #57606a;
+}
+
+/* Extra Info */
+.extra-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+}
+
+.extra-item {
+    display: flex;
+    align-items: center;
+    line-height: normal;
+}
+
+/* Badge style - outline */
+.badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    margin-right: 4px;
+    vertical-align: middle;
+    width: fit-content;
+    border: 1px solid;
+}
+
+.badge[class*="type-"] {
+    min-width: 45px;
+    text-align: center;
+}
+
+.badge.type-string {
+    background: #EAF5FF;
+    border-color: #5C9EE8;
+    color: #0550ae;
+}
+
+.badge.type-int,
+.badge.type-integer {
+    background: #F5F0FF;
+    border-color: #D8B9FF;
+    color: #8957e5;
+}
+
+.badge.type-bool,
+.badge.type-boolean {
+    background: #DAFBE1;
+    border-color: #A7F3D0;
+    color: #116329;
+}
+
+.badge.type-array {
+    background: #FFFBEB;
+    border-color: #FDE68A;
+    color: #92400E;
+}
+
+.badge.type-object {
+    background: #FFF0F5;
+    border-color: #FFB6C1;
+    color: #CF222E;
+}
+
+.badge.type-mixed,
+.badge.constraint,
+.badge.embed,
+.badge.link {
+    background: #f6f8fa;
+    border-color: #d0d7de;
+    color: #57606a;
+}
+
+.badge.format {
+    background: #DAFBE1;
+    border-color: #A7F3D0;
+    color: #116329;
+}
+
+.badge.href {
+    background: #FFF4E6;
+    border-color: #FFB366;
+    color: #CC5500;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+}
+
+.badge.example {
+    background: #FFFBEB;
+    border-color: #FDE68A;
+    color: #92400E;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+}
+
+/* Sticky rows */
+.embed-row,
+.link-row {
+    background: #f6f8fa;
+}
+
+/* Response */
+.schema-link {
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-weight: 500;
+}
+
+.schema-file-link {
+    text-decoration: none;
+    opacity: 0.7;
+}
+
+.schema-file-link:hover {
+    opacity: 1;
+    text-decoration: none;
+}
+
+/* Object section */
+.object-section {
+    margin: 30px 0;
+}
+
+.object-name {
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.array-type {
+    color: #57606a;
+    font-size: 0.9em;
+    margin-top: -10px;
+}
+
+.prop-name {
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    color: #000;
+}
+
+.prop-name a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+/* Links section */
+.doc-links {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.doc-links li {
+    margin: 5px 0;
+}
+</style>
 </head>
 <body>
 <div class="markdown-body">
@@ -69,6 +370,50 @@
       
     </div></td>
   <td rowspan="1"><a href="#Card" class="schema-link">Card</a></td>
+</tr>
+<tr>
+  <td rowspan="4" class="path-cell" id="path-contact">/contact</td>
+  <td rowspan="4" class="method-cell"><span class="ti unsafe"></span>POST</td>
+  <td><span class="param">name</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="4"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">email</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">age</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">subject</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
 </tr>
 <tr>
   <td rowspan="1" class="path-cell" id="path-index">/index</td>

@@ -64,7 +64,7 @@ final class DocMethod implements Stringable
      */
     private function getDocParams(ReflectionMethod $method, ?array $tagParams, ?Schema $request, ArrayObject $semanticDictionary): array
     {
-        $parameters = $method->getParameters();
+        $parameters = (new InputParamExpander())($method);
         $docParams = [];
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
