@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use FakeVendor\FakeProject\Resource\App\Contact;
+use FakeVendor\FakeProject\Resource\App\InputEdgeCases;
 use FakeVendor\FakeProject\Resource\App\User;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -25,8 +26,8 @@ class InputParamExpanderTest extends TestCase
         $method = new ReflectionMethod(Contact::class, 'onPost');
         $params = ($this->expander)($method);
 
-        // #[Input] ContactInput $contact は name, email, age に展開される
-        // string $subject はそのまま
+        // #[Input] ContactInput $contact expands to name, email, age
+        // string $subject remains as-is
         $this->assertCount(4, $params);
 
         $names = array_map(static fn ($p) => $p->getName(), $params);
@@ -54,12 +55,30 @@ class InputParamExpanderTest extends TestCase
         $method = new ReflectionMethod(User::class, 'onGet');
         $params = ($this->expander)($method);
 
-        // #[Input] なしなので getParameters() と同じ結果
+        // Without #[Input], result should match getParameters()
         $expected = array_map(
             static fn ($p) => $p->getName(),
             $method->getParameters(),
         );
         $actual = array_map(static fn ($p) => $p->getName(), $params);
         $this->assertSame($expected, $actual);
+    }
+
+    public function testBuiltinTypeWithInputFallsBack(): void
+    {
+        $method = new ReflectionMethod(InputEdgeCases::class, 'onPost');
+        $params = ($this->expander)($method);
+
+        $this->assertCount(1, $params);
+        $this->assertSame('builtinType', $params[0]->getName());
+    }
+
+    public function testNoConstructorClassFallsBack(): void
+    {
+        $method = new ReflectionMethod(InputEdgeCases::class, 'onPut');
+        $params = ($this->expander)($method);
+
+        $this->assertCount(1, $params);
+        $this->assertSame('noCtor', $params[0]->getName());
     }
 }

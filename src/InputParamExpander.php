@@ -50,7 +50,7 @@ final class InputParamExpander
 
         $className = $type->getName();
         if (! class_exists($className)) {
-            return null;
+            return null; // @codeCoverageIgnore
         }
 
         $refClass = new ReflectionClass($className);
