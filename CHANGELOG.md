@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-02-07
+
+### Added
+- Add `#[Input]` parameter expansion support for API documentation (#74)
+  - Parameters annotated with `#[Input]` are expanded to their constructor parameters in generated docs
+  - Applied consistently across HTML, Markdown, and OpenAPI generators
+- Add ALPS semantic dictionary fallback for empty descriptions (#73) Thanks @jingu
+  - When description is empty, ALPS profile `title`, `doc`, or `def` is used as fallback
+  - Applied to request parameters and response properties in HTML output
+- Add `ray/input-query` as direct dependency
+
+### Fixed
+- Fix XSD path in `ConfigGenerator` template: `vendor/bear/apidoc` → `vendor/bear/api-doc`
+
 ## [1.7.0] - 2026-01-11
 
 ### Added
@@ -88,6 +102,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update dependencies
 
+[1.8.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.7.0...1.8.0
 [1.7.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.4.0...1.5.0
