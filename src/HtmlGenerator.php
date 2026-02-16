@@ -264,7 +264,7 @@ final class HtmlGenerator
     {
         $params = [];
 
-        foreach ($method->getParameters() as $param) {
+        foreach ((new InputParamExpander())($method) as $param) {
             $paramName = $param->getName();
             $paramType = $param->getType();
             $typeName = $paramType instanceof ReflectionNamedType ? $paramType->getName() : 'string';

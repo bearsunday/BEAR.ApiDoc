@@ -11,6 +11,8 @@ use SimpleXMLElement;
 
 use function chdir;
 use function dirname;
+use function mkdir;
+use function rmdir;
 
 class XmlLoaderTest extends TestCase
 {
@@ -49,5 +51,17 @@ class XmlLoaderTest extends TestCase
         // Load using relative path from cwd
         $xml = (new XmlLoader())('apidoc.xml', dirname(__DIR__) . '/apidoc.xsd');
         $this->assertInstanceOf(SimpleXMLElement::class, $xml);
+    }
+
+    public function testFindDistConfigInParentDirectory(): void
+    {
+        // Search from a subdirectory of dist-only to find apidoc.xml.dist
+        $distOnlyDir = __DIR__ . '/Fake/dist-only';
+        $subDir = $distOnlyDir . '/sub';
+        @mkdir($subDir, 0777, true);
+        chdir($subDir);
+        $xml = (new XmlLoader())('', dirname(__DIR__) . '/apidoc.xsd');
+        $this->assertInstanceOf(SimpleXMLElement::class, $xml);
+        @rmdir($subDir);
     }
 }
