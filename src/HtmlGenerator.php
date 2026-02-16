@@ -289,7 +289,7 @@ final class HtmlGenerator
             $params[] = [
                 'name' => $paramName,
                 'type' => $this->normalizeType($typeName),
-                'description' => $description,
+                'description' => $this->getDescriptionWithAlpsFallback($description, $paramName),
                 'required' => ! $param->isOptional(),
                 'example' => $example,
                 'constraints' => $constraints,
@@ -385,7 +385,7 @@ final class HtmlGenerator
             $properties[] = [
                 'name' => $propName,
                 'type' => $prop->type,
-                'description' => $prop->description,
+                'description' => $this->getDescriptionWithAlpsFallback($prop->description, $propName),
                 'example' => $prop->example,
                 'format' => $format,
                 'constraints' => $constraints,
@@ -425,10 +425,12 @@ final class HtmlGenerator
             /** @psalm-suppress MixedAssignment */
             $format = $prop->format ?? null;
 
+            $descriptionStr = is_string($description) ? $description : '';
+
             $properties[] = [
                 'name' => $propName,
                 'type' => is_string($type) ? $type : 'mixed',
-                'description' => is_string($description) ? $description : '',
+                'description' => $this->getDescriptionWithAlpsFallback($descriptionStr, $propName),
                 'example' => is_string($example) || is_numeric($example) ? (string) $example : null,
                 'format' => is_string($format) ? $format : null,
                 'constraints' => [],
@@ -503,6 +505,18 @@ final class HtmlGenerator
     private function normalizeType(string $type): string
     {
         return $type;
+    }
+
+    /**
+     * Get description with ALPS semantic dictionary fallback
+     */
+    private function getDescriptionWithAlpsFallback(string $description, string $propName): string
+    {
+        if ($description !== '') {
+            return $description;
+        }
+
+        return $this->semanticDictionary[$propName] ?? '';
     }
 
     /** @return array<DocLink> */

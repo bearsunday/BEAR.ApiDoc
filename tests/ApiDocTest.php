@@ -44,6 +44,31 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('Person', $html);
     }
 
+    public function testAlpsDescriptionFallback(): void
+    {
+        $apiDoc = new ApiDoc();
+        $apiDoc(__DIR__ . '/apidoc.alps.xml');
+
+        $html = file_get_contents(__DIR__ . '/docs/html/index.html');
+        $this->assertIsString($html);
+
+        // Verify ALPS semantic dictionary is used as fallback for empty descriptions
+        // AlpsFallback resource has parameters without PHPDoc descriptions
+        // ALPS profile defines semantic information that should be used as fallback
+
+        // profile.json defines: firstName with title - shown in description column
+        $this->assertStringContainsString('<td class="param-desc">First Name by ALPS</td>', $html);
+
+        // profile.json defines: familyName with def - shown as link in description column
+        $this->assertStringContainsString('schema.org/familyName', $html);
+
+        // profile.json defines: age with doc - shown in description column
+        $this->assertStringContainsString('Age in years which must be equal to or greater than zero.', $html);
+
+        // profile.json defines: foo without title/doc/def - description should be empty
+        $this->assertMatchesRegularExpression('/<td><span class="param">foo<\/span>.*<td class="param-desc"><\/td>/s', $html);
+    }
+
     public function testOpenApiOutput(): void
     {
         $apiDoc = new ApiDoc();
