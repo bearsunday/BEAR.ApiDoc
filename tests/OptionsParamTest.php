@@ -21,8 +21,9 @@ class OptionsParamTest extends TestCase
     protected function setUp(): void
     {
         $meta = new Meta('FakeVendor\FakeProject');
-        $appModule = new \FakeVendor\FakeProject\Module\AppModule($meta);
-        $appModule->override(new AppMetaModule($meta));
+        $appMetaModule = new AppMetaModule($meta);
+        $appModule = new \FakeVendor\FakeProject\Module\AppModule($meta, $appMetaModule);
+        $appModule->override($appMetaModule);
         $injector = new Injector($appModule);
 
         /** @var ResourceInterface $resource */
