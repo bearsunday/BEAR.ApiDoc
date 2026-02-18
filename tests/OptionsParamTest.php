@@ -24,6 +24,7 @@ class OptionsParamTest extends TestCase
         $meta = new Meta('FakeVendor\FakeProject');
         $appMetaModule = new AppMetaModule($meta);
         $appModule = new \FakeVendor\FakeProject\Module\AppModule($meta, $appMetaModule);
+        // AppMetaModule bindings (AppName etc.) must take precedence over PackageModule's
         $appModule->override($appMetaModule);
         $injector = new Injector($appModule);
 
