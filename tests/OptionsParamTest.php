@@ -146,4 +146,34 @@ class OptionsParamTest extends TestCase
         // No ReflectionMethod provided, returns empty
         $this->assertSame([], $params);
     }
+
+    public function testFallbackArrayDefault(): void
+    {
+        $obj = new class {
+            /** @param list<string> $tags */
+            public function onGet(array $tags = []): void
+            {
+            }
+        };
+        $method = new ReflectionMethod($obj, 'onGet');
+        $params = ($this->optionsParam)('/nonexistent-resource-xyz', 'onGet', $method);
+
+        $this->assertCount(1, $params);
+        $this->assertSame('tags', $params[0]->name);
+        $this->assertSame('[]', $params[0]->default);
+    }
+
+    public function testFallbackNullDefault(): void
+    {
+        $method = new ReflectionMethod(Person::class, 'onPatch');
+        $params = ($this->optionsParam)('/nonexistent-resource-xyz', 'onPatch', $method);
+
+        $indexed = [];
+        foreach ($params as $param) {
+            $indexed[$param->name] = $param;
+        }
+
+        // ?string $firstName = null → default is null (non-scalar), returns ''
+        $this->assertSame('', $indexed['firstName']->default);
+    }
 }
