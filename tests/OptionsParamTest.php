@@ -47,10 +47,7 @@ class OptionsParamTest extends TestCase
     {
         $params = ($this->optionsParam)('/contact', 'onPost');
         $names = array_map(static fn (ParamMeta $p) => $p->name, $params);
-
-        if (in_array('contact', $names, true)) {
-            $this->markTestSkipped('#[Input] expansion not supported in this bear/resource version');
-        }
+        $this->skipIfInputNotExpanded($names);
 
         // OPTIONS success expands #[Input] ContactInput into individual properties
         $this->assertContains('name', $names);
@@ -63,10 +60,7 @@ class OptionsParamTest extends TestCase
     {
         $params = ($this->optionsParam)('/contact', 'onPost');
         $names = array_map(static fn (ParamMeta $p) => $p->name, $params);
-
-        if (in_array('contact', $names, true)) {
-            $this->markTestSkipped('#[Input] expansion not supported in this bear/resource version');
-        }
+        $this->skipIfInputNotExpanded($names);
 
         $indexed = [];
         foreach ($params as $param) {
@@ -83,10 +77,7 @@ class OptionsParamTest extends TestCase
     {
         $params = ($this->optionsParam)('/contact', 'onPost');
         $names = array_map(static fn (ParamMeta $p) => $p->name, $params);
-
-        if (in_array('contact', $names, true)) {
-            $this->markTestSkipped('#[Input] expansion not supported in this bear/resource version');
-        }
+        $this->skipIfInputNotExpanded($names);
 
         $indexed = [];
         foreach ($params as $param) {
@@ -104,10 +95,7 @@ class OptionsParamTest extends TestCase
     {
         $params = ($this->optionsParam)('/contact', 'onPost');
         $names = array_map(static fn (ParamMeta $p) => $p->name, $params);
-
-        if (in_array('contact', $names, true)) {
-            $this->markTestSkipped('#[Input] expansion not supported in this bear/resource version');
-        }
+        $this->skipIfInputNotExpanded($names);
 
         $indexed = [];
         foreach ($params as $param) {
@@ -176,5 +164,13 @@ class OptionsParamTest extends TestCase
 
         // ?string $firstName = null → default is null (non-scalar), returns ''
         $this->assertSame('', $indexed['firstName']->default);
+    }
+
+    /** @param list<string> $names */
+    private function skipIfInputNotExpanded(array $names): void
+    {
+        if (in_array('contact', $names, true)) {
+            $this->markTestSkipped('#[Input] expansion not supported in this bear/resource version');
+        }
     }
 }
