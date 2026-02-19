@@ -45,9 +45,7 @@ class OptionsParamTest extends TestCase
 
     public function testInputExpansionViaOptions(): void
     {
-        $params = ($this->optionsParam)('/contact', 'onPost');
-        $names = array_map(static fn (ParamMeta $p) => $p->name, $params);
-        $this->skipIfInputNotExpanded($names);
+        [$names] = $this->getExpandedContactParams();
 
         // OPTIONS success expands #[Input] ContactInput into individual properties
         $this->assertContains('name', $names);
@@ -58,14 +56,7 @@ class OptionsParamTest extends TestCase
 
     public function testInputExpansionTypes(): void
     {
-        $params = ($this->optionsParam)('/contact', 'onPost');
-        $names = array_map(static fn (ParamMeta $p) => $p->name, $params);
-        $this->skipIfInputNotExpanded($names);
-
-        $indexed = [];
-        foreach ($params as $param) {
-            $indexed[$param->name] = $param;
-        }
+        [, $indexed] = $this->getExpandedContactParams();
 
         $this->assertSame('string', $indexed['name']->type);
         $this->assertSame('string', $indexed['email']->type);
@@ -75,14 +66,7 @@ class OptionsParamTest extends TestCase
 
     public function testInputExpansionOptionality(): void
     {
-        $params = ($this->optionsParam)('/contact', 'onPost');
-        $names = array_map(static fn (ParamMeta $p) => $p->name, $params);
-        $this->skipIfInputNotExpanded($names);
-
-        $indexed = [];
-        foreach ($params as $param) {
-            $indexed[$param->name] = $param;
-        }
+        [, $indexed] = $this->getExpandedContactParams();
 
         // name, email, subject are required; age is optional (has default 0)
         $this->assertFalse($indexed['name']->isOptional);
@@ -93,14 +77,7 @@ class OptionsParamTest extends TestCase
 
     public function testInputExpansionDefault(): void
     {
-        $params = ($this->optionsParam)('/contact', 'onPost');
-        $names = array_map(static fn (ParamMeta $p) => $p->name, $params);
-        $this->skipIfInputNotExpanded($names);
-
-        $indexed = [];
-        foreach ($params as $param) {
-            $indexed[$param->name] = $param;
-        }
+        [, $indexed] = $this->getExpandedContactParams();
 
         $this->assertSame('0', $indexed['age']->default);
         $this->assertSame('', $indexed['name']->default);
@@ -166,11 +143,20 @@ class OptionsParamTest extends TestCase
         $this->assertSame('', $indexed['firstName']->default);
     }
 
-    /** @param list<string> $names */
-    private function skipIfInputNotExpanded(array $names): void
+    /** @return array{list<string>, array<string, ParamMeta>} */
+    private function getExpandedContactParams(): array
     {
+        $params = ($this->optionsParam)('/contact', 'onPost');
+        $names = array_map(static fn (ParamMeta $p) => $p->name, $params);
         if (in_array('contact', $names, true)) {
             $this->markTestSkipped('#[Input] expansion not supported in this bear/resource version');
         }
+
+        $indexed = [];
+        foreach ($params as $param) {
+            $indexed[$param->name] = $param;
+        }
+
+        return [$names, $indexed];
     }
 }
