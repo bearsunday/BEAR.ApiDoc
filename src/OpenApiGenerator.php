@@ -307,8 +307,13 @@ final class OpenApiGenerator
                 'schema' => ['type' => $this->convertPhpTypeToOpenApi($typeName)],
             ];
 
-            if ($paramSchema->description !== '') {
-                $parameter['description'] = $paramSchema->description;
+            $description = $paramSchema->description;
+            if ($description === '' && $param instanceof DescribedInputParam) {
+                $description = $param->description;
+            }
+
+            if ($description !== '') {
+                $parameter['description'] = $description;
             }
 
             if ($paramSchema->example !== '') {

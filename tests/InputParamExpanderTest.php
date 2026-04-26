@@ -50,6 +50,23 @@ class InputParamExpanderTest extends TestCase
         $this->assertFalse($params[3]->isOptional());
     }
 
+    public function testExpandedParamDescriptionFromPromotedPropertyDocblock(): void
+    {
+        $method = new ReflectionMethod(Contact::class, 'onPost');
+        $params = ($this->expander)($method);
+
+        $this->assertInstanceOf(DescribedInputParam::class, $params[0]);
+        $this->assertSame('Contact name for display', $params[0]->description);
+    }
+
+    public function testExpandedParamWithoutDocblockOmitsDescription(): void
+    {
+        $method = new ReflectionMethod(Contact::class, 'onPost');
+        $params = ($this->expander)($method);
+
+        $this->assertNotInstanceOf(DescribedInputParam::class, $params[2]);
+    }
+
     public function testNoInputAttribute(): void
     {
         $method = new ReflectionMethod(User::class, 'onGet');

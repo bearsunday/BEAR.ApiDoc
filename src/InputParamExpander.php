@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+use phpDocumentor\Reflection\DocBlockFactory;
+use phpDocumentor\Reflection\DocBlockFactoryInterface;
 use Ray\InputQuery\Attribute\Input;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -12,9 +14,17 @@ use ReflectionNamedType;
 use ReflectionParameter;
 
 use function class_exists;
+use function trim;
 
 final class InputParamExpander
 {
+    private readonly DocBlockFactoryInterface $docBlockFactory;
+
+    public function __construct(?DocBlockFactoryInterface $docBlockFactory = null)
+    {
+        $this->docBlockFactory = $docBlockFactory ?? DocBlockFactory::createInstance();
+    }
+
     /** @return list<ReflectionParameter> */
     public function __invoke(ReflectionMethod $method): array
     {
@@ -59,6 +69,40 @@ final class InputParamExpander
             return null;
         }
 
-        return $constructor->getParameters();
+        $constructorParams = [];
+        foreach ($constructor->getParameters() as $constructorParam) {
+            $description = $this->getPromotedPropertyDescription($refClass, $constructorParam);
+            $constructorParams[] = $description === null
+                ? $constructorParam
+                : new DescribedInputParam($constructorParam, $description);
+        }
+
+        return $constructorParams;
+    }
+
+    /** @param ReflectionClass<object> $refClass */
+    private function getPromotedPropertyDescription(ReflectionClass $refClass, ReflectionParameter $parameter): string|null
+    {
+        if (! $parameter->isPromoted() || ! $refClass->hasProperty($parameter->getName())) {
+            return null;
+        }
+
+        $docComment = $refClass->getProperty($parameter->getName())->getDocComment();
+        if ($docComment === false) {
+            return null;
+        }
+
+        $docblock = $this->docBlockFactory->create($docComment);
+        $summary = trim($docblock->getSummary());
+        $description = trim((string) $docblock->getDescription());
+        if ($summary === '') {
+            return $description === '' ? null : $description;
+        }
+
+        if ($description === '') {
+            return $summary;
+        }
+
+        return $summary . "\n\n" . $description;
     }
 }
