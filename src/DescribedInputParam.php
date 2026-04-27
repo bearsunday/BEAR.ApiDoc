@@ -17,6 +17,8 @@ final class DescribedInputParam extends ReflectionParameter
 {
     public function __construct(ReflectionParameter $parameter, public readonly string $description)
     {
+        // #[Input] only ever decorates resource method parameters, so the
+        // declaring function is always a ReflectionMethod here.
         $function = $parameter->getDeclaringFunction();
         assert($function instanceof ReflectionMethod);
 
