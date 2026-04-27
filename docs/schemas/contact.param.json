@@ -1,0 +1,22 @@
+{
+  "$id": "contact.param.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Contact request parameters",
+  "type": "object",
+  "required": ["name", "email", "subject"],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "age": {
+      "type": "integer"
+    },
+    "subject": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

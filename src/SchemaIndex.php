@@ -27,7 +27,6 @@ final readonly class SchemaIndex implements Stringable
         $this->schemas = $schemas;
     }
 
-    #[\Override]
     public function __toString(): string
     {
         $list = '';

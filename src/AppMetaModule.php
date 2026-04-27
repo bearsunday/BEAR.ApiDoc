@@ -22,7 +22,6 @@ final class AppMetaModule extends AbstractModule
     /**
      * {@inheritDoc}
      */
-    #[\Override]
     protected function configure(): void
     {
         $this->bind(AbstractAppMeta::class)->toInstance($this->appMeta);

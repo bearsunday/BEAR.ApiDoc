@@ -25,7 +25,6 @@ final readonly class Src implements Stringable
     ) {
     }
 
-    #[\Override]
     public function __toString(): string
     {
         $uriTemplate = new UriTemplate($this->src);

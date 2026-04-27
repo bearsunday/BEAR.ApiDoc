@@ -21,7 +21,6 @@ final readonly class TagLinks implements Stringable
     ) {
     }
 
-    #[\Override]
     public function __toString(): string
     {
         $view = [];
