@@ -9,15 +9,16 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactoryInterface;
 use phpDocumentor\Reflection\Location;
 use phpDocumentor\Reflection\Types\Context;
+use RuntimeException;
 
 final class ThrowingDocBlockFactory implements DocBlockFactoryInterface
 {
     /** @param array<string, class-string<\phpDocumentor\Reflection\DocBlock\Tag>> $additionalTags */
-    public static function createInstance(array $additionalTags = []): DocBlockFactoryInterface
+    public static function createInstance(array $additionalTags = []): never
     {
         unset($additionalTags);
 
-        return new self();
+        throw new RuntimeException('ThrowingDocBlockFactory::createInstance is not supported.');
     }
 
     /** @param string|object $docblock */
