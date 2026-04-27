@@ -6,6 +6,7 @@ namespace BEAR\ApiDoc;
 
 use BEAR\ApiDoc\Doc\ThrowingDocBlockFactory;
 use FakeVendor\FakeProject\Resource\App\Contact;
+use FakeVendor\FakeProject\Resource\App\DocblockVariants;
 use FakeVendor\FakeProject\Resource\App\InputEdgeCases;
 use FakeVendor\FakeProject\Resource\App\User;
 use PHPUnit\Framework\TestCase;
@@ -107,5 +108,27 @@ class InputParamExpanderTest extends TestCase
 
         $this->assertCount(1, $params);
         $this->assertSame('noCtor', $params[0]->getName());
+    }
+
+    public function testDocblockVariants(): void
+    {
+        $method = new ReflectionMethod(DocblockVariants::class, 'onPost');
+        $params = ($this->expander)($method);
+
+        $this->assertCount(3, $params);
+
+        // Summary + description docblock combines both into description.
+        $this->assertInstanceOf(DescribedInputParam::class, $params[0]);
+        $this->assertSame(
+            "Short summary line.\n\nLonger description on a second paragraph.",
+            $params[0]->description,
+        );
+
+        // Tag-only docblock yields no summary or description.
+        $this->assertNotInstanceOf(DescribedInputParam::class, $params[1]);
+
+        // Non-promoted constructor parameter has no backing property.
+        $this->assertNotInstanceOf(DescribedInputParam::class, $params[2]);
+        $this->assertSame('nonPromoted', $params[2]->getName());
     }
 }
