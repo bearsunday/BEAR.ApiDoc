@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-04-28
+
+### Added
+- Carry DTO property docblocks into OpenAPI parameter descriptions (#77, #78)
+  - Promoted constructor property docblocks on `#[Input]` DTOs are surfaced as parameter descriptions
+  - New `DescribedInputParam` decorator exposes the resolved description to renderers
+  - Both summary and long description text are combined into the OpenAPI `description`
+- Add `OptionsParam` and `ParamMeta` classes to support `OPTIONS` method documentation
+
+### Changed
+- Guard `DocBlockFactory::create()` against malformed docblocks so they are treated as undocumented instead of failing
+- Pin `phpstan/phpstan` to `2.1.38` and `vimeo/psalm` to `7.0.0-beta14` in `vendor-bin/tools` for reproducible static analysis
+
+### Fixed
+- Restore PHP 8.2 compatibility by removing `#[\Override]` attributes and disabling Psalm's `ensureOverrideAttribute` check
+- Fix `AbstractAppModule` constructor compatibility for lowest-deps installs (#75)
+- Make `ThrowingDocBlockFactory::createInstance()` signature compatible across `phpdocumentor/reflection-docblock` 5.x and 6.x
+
 ## [1.8.0] - 2026-02-07
 
 ### Added
@@ -102,6 +120,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update dependencies
 
+[1.9.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.7.0...1.8.0
 [1.7.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.5.0...1.6.0
