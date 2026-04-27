@@ -12,6 +12,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
+use Throwable;
 
 use function class_exists;
 use function trim;
@@ -92,7 +93,14 @@ final class InputParamExpander
             return null;
         }
 
-        $docblock = $this->docBlockFactory->create($docComment);
+        try {
+            $docblock = $this->docBlockFactory->create($docComment);
+        } catch (Throwable) {
+            // Malformed docblock — treat the parameter as undocumented rather
+            // than aborting the whole documentation generation.
+            return null;
+        }
+
         $summary = trim($docblock->getSummary());
         $description = trim((string) $docblock->getDescription());
         if ($summary === '') {

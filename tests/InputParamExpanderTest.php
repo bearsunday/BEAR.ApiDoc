@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+use BEAR\ApiDoc\Doc\ThrowingDocBlockFactory;
 use FakeVendor\FakeProject\Resource\App\Contact;
 use FakeVendor\FakeProject\Resource\App\InputEdgeCases;
 use FakeVendor\FakeProject\Resource\App\User;
@@ -65,6 +66,15 @@ class InputParamExpanderTest extends TestCase
         $params = ($this->expander)($method);
 
         $this->assertNotInstanceOf(DescribedInputParam::class, $params[2]);
+    }
+
+    public function testMalformedDocblockTreatsParamAsUndocumented(): void
+    {
+        $expander = new InputParamExpander(new ThrowingDocBlockFactory());
+        $params = $expander(new ReflectionMethod(Contact::class, 'onPost'));
+
+        $this->assertNotInstanceOf(DescribedInputParam::class, $params[0]);
+        $this->assertSame('name', $params[0]->getName());
     }
 
     public function testNoInputAttribute(): void
