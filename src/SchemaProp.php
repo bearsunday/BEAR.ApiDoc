@@ -21,7 +21,6 @@ final class SchemaProp implements Stringable
     ) {
     }
 
-    #[\Override]
     public function __toString(): string
     {
         if ($this->name === '_links' || $this->name === '_embedded') {

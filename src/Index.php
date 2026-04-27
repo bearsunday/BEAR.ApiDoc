@@ -37,7 +37,6 @@ final readonly class Index implements Stringable
         $this->links = new TagLinks($links);
     }
 
-    #[\Override]
     public function __toString(): string
     {
         $paths = '';
