@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Emit OpenAPI request inputs for `#[Input]` DTO methods without requiring `#[JsonSchema(params: ...)]` (#81)
 
 ### Changed
+- Allow `phpdocumentor/reflection-docblock` `^6.0` while keeping `^5.2` compatibility (#82)
 - Emit non-path inputs for `POST`, `PUT`, and `PATCH` operations as JSON `requestBody` schemas instead of query parameters
 
 ## [1.9.0] - 2026-04-28
