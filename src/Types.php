@@ -18,10 +18,13 @@ namespace BEAR\ApiDoc;
  * @psalm-type OperationBase = array{operationId?: string, summary?: string, description?: string}
  * @psalm-type SchemaRef = array{'$ref': string}
  * @psalm-type OpenApiSchema = array<string, mixed>
+ * @psalm-type OpenApiParameterSchema = array{type: string, description?: string, example?: mixed}
  * @psalm-type OpenApiParameter = array{name: string, in: ParameterLocation, required: bool, schema: array{type: string}, description?: string, example?: mixed}
+ * @psalm-type OpenApiRequestBody = array{content: array{'application/json': array{schema: array{type: 'object', properties: array<string, OpenApiParameterSchema>, required?: list<string>}}}, required?: bool}
  * @psalm-type OpenApiResponse = array{description: string, content?: array<string, array{schema: SchemaRef}>}
  * @psalm-type OpenApiResponses = array<int|string, OpenApiResponse>
- * @psalm-type OpenApiOperation = array{responses: OpenApiResponses, summary?: string, description?: string, operationId?: string, parameters?: list<OpenApiParameter>}
+ * @psalm-type OpenApiOperationPartial = array{responses?: OpenApiResponses, summary?: string, description?: string, operationId?: string, parameters?: list<OpenApiParameter>, requestBody?: OpenApiRequestBody}
+ * @psalm-type OpenApiOperation = array{responses: OpenApiResponses, summary?: string, description?: string, operationId?: string, parameters?: list<OpenApiParameter>, requestBody?: OpenApiRequestBody}
  * @psalm-type OpenApiPathItem = array<string, OpenApiOperation>
  * @psalm-type OpenApiInfo = array{title: string, description: string, version: string}
  * @psalm-type OpenApiComponents = array{schemas: array<string, OpenApiSchema>}

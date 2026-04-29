@@ -9,7 +9,6 @@ use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use ReflectionClass;
 use ReflectionMethod;
-use ReflectionNamedType;
 use SplFileInfo;
 
 use function array_key_exists;
@@ -42,11 +41,10 @@ use const PATHINFO_FILENAME;
 /**
  * @psalm-import-type OpenApiSpec from Types
  * @psalm-import-type OpenApiOperation from Types
- * @psalm-import-type OpenApiParameter from Types
+ * @psalm-import-type OpenApiOperationPartial from Types
  * @psalm-import-type OpenApiResponse from Types
  * @psalm-import-type OpenApiResponses from Types
  * @psalm-import-type OperationBase from Types
- * @psalm-import-type ParameterLocation from Types
  * @psalm-import-type PathParams from Types
  * @psalm-import-type SchemaRef from Types
  */
@@ -112,7 +110,7 @@ final class OpenApiGenerator
             $isRequestMethod = in_array($name, ['onGet', 'onPut', 'onPost', 'onPatch', 'onDelete']);
             if ($isRequestMethod) {
                 $httpMethod = strtolower(substr($name, 2));
-                $pathItem[$httpMethod] = $this->processMethod($method, $summary, $description, $pathParams);
+                $pathItem[$httpMethod] = $this->processMethod($method, $httpMethod, $summary, $description, $pathParams);
             }
         }
 
@@ -126,11 +124,10 @@ final class OpenApiGenerator
      *
      * @return OpenApiOperation
      */
-    private function processMethod(ReflectionMethod $method, string $classSummary, string $classDescription, array $pathParams): array
+    private function processMethod(ReflectionMethod $method, string $httpMethod, string $classSummary, string $classDescription, array $pathParams): array
     {
         $operation = $this->buildOperationBase($method, $classSummary, $classDescription);
-        [$operation, $hasRequestSchema] = $this->applyJsonSchemaAttribute($method, $operation, $pathParams);
-        $operation = $this->ensurePathParameters($operation, $pathParams);
+        [$operation, $hasRequestSchema] = $this->applyJsonSchemaAttribute($method, $httpMethod, $operation, $pathParams);
         $operation = $this->ensureDefaultResponse($operation);
 
         return $this->addErrorResponses($operation, $hasRequestSchema, $pathParams);
@@ -166,25 +163,23 @@ final class OpenApiGenerator
     }
 
     /**
-     * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
-     * @param PathParams                                                                                                                             $pathParams
+     * @param OpenApiOperationPartial $operation
+     * @param PathParams              $pathParams
      *
-     * @return array{0: array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses}, 1: bool}
+     * @return array{0: OpenApiOperationPartial, 1: bool}
      */
-    private function applyJsonSchemaAttribute(ReflectionMethod $method, array $operation, array $pathParams): array
+    private function applyJsonSchemaAttribute(ReflectionMethod $method, string $httpMethod, array $operation, array $pathParams): array
     {
         $attributes = $method->getAttributes(JsonSchema::class);
-        if ($attributes === []) {
+        $schemaAttribute = $attributes === [] ? null : $attributes[0]->newInstance();
+        $requestSchemaFile = $schemaAttribute instanceof JsonSchema ? $schemaAttribute->params : '';
+        $requestSchema = $requestSchemaFile === '' ? null : $this->loadSchema($this->requestSchemaDir, $requestSchemaFile);
+        $operation = (new OpenApiInputBuilder())($method, $httpMethod, $operation, $requestSchema, $pathParams);
+        if (! $schemaAttribute instanceof JsonSchema) {
             return [$operation, false];
         }
 
-        $schemaAttribute = $attributes[0]->newInstance();
         $hasRequestSchema = $schemaAttribute->params !== '';
-
-        $parameters = $this->processParameters($method, $schemaAttribute->params, $pathParams);
-        if ($parameters !== []) {
-            $operation['parameters'] = $parameters;
-        }
 
         $schemaRef = $this->processResponse($schemaAttribute->schema);
         if ($schemaRef !== null) {
@@ -205,8 +200,8 @@ final class OpenApiGenerator
     }
 
     /**
-     * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses: OpenApiResponses} $operation
-     * @param PathParams                                                                                                                            $pathParams
+     * @param OpenApiOperation $operation
+     * @param PathParams       $pathParams
      *
      * @return OpenApiOperation
      */
@@ -233,24 +228,9 @@ final class OpenApiGenerator
     }
 
     /**
-     * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
-     * @param PathParams                                                                                                                             $pathParams
+     * @param OpenApiOperationPartial $operation
      *
-     * @return array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses}
-     */
-    private function ensurePathParameters(array $operation, array $pathParams): array
-    {
-        if ($pathParams !== [] && ! array_key_exists('parameters', $operation)) {
-            $operation['parameters'] = $this->createPathParameters($pathParams);
-        }
-
-        return $operation;
-    }
-
-    /**
-     * @param array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses?: OpenApiResponses} $operation
-     *
-     * @return array{operationId?: string, summary?: string, description?: string, parameters?: list<OpenApiParameter>, responses: OpenApiResponses}
+     * @return OpenApiOperation
      */
     private function ensureDefaultResponse(array $operation): array
     {
@@ -264,89 +244,6 @@ final class OpenApiGenerator
         }
 
         return $operation;
-    }
-
-    /**
-     * @param PathParams $pathParams
-     *
-     * @return list<OpenApiParameter>
-     */
-    private function processParameters(ReflectionMethod $method, string $schemaFile, array $pathParams): array
-    {
-        /** @var list<OpenApiParameter> $parameters */
-        $parameters = [];
-        $schema = $this->loadSchema($this->requestSchemaDir, $schemaFile);
-
-        if (! $schema instanceof \BEAR\ApiDoc\Schema) {
-            return [];
-        }
-
-        $methodParams = (new InputParamExpander())($method);
-        foreach ($methodParams as $param) {
-            $paramName = $param->getName();
-            $paramSchema = $schema->props[$paramName] ?? null;
-
-            if ($paramSchema === null) {
-                continue; // @codeCoverageIgnore
-            }
-
-            $paramType = $param->getType();
-            $typeName = 'string';
-            if ($paramType instanceof ReflectionNamedType) {
-                $typeName = $paramType->getName();
-            }
-
-            $isPathParam = in_array($paramName, $pathParams, true);
-            /** @var ParameterLocation $location */
-            $location = $isPathParam ? 'path' : 'query';
-            /** @var OpenApiParameter $parameter */
-            $parameter = [
-                'name' => $paramName,
-                'in' => $location,
-                'required' => $isPathParam || ! $param->isOptional(),
-                'schema' => ['type' => $this->convertPhpTypeToOpenApi($typeName)],
-            ];
-
-            $description = $paramSchema->description;
-            if ($description === '' && $param instanceof DescribedInputParam) {
-                $description = $param->description;
-            }
-
-            if ($description !== '') {
-                $parameter['description'] = $description;
-            }
-
-            if ($paramSchema->example !== '') {
-                $parameter['example'] = $paramSchema->example;
-            }
-
-            $parameters[] = $parameter;
-        }
-
-        return $parameters;
-    }
-
-    /**
-     * @param PathParams $pathParams
-     *
-     * @return list<OpenApiParameter>
-     */
-    private function createPathParameters(array $pathParams): array
-    {
-        /** @var list<OpenApiParameter> $parameters */
-        $parameters = [];
-        foreach ($pathParams as $paramName) {
-            /** @var OpenApiParameter $parameter */
-            $parameter = [
-                'name' => $paramName,
-                'in' => 'path',
-                'required' => true,
-                'schema' => ['type' => 'string'],
-            ];
-            $parameters[] = $parameter;
-        }
-
-        return $parameters;
     }
 
     /** @return SchemaRef|null */
@@ -584,17 +481,5 @@ final class OpenApiGenerator
         $words = array_map(ucfirst(...), $words);
 
         return implode('', $words);
-    }
-
-    /** @codeCoverageIgnore */
-    private function convertPhpTypeToOpenApi(string $phpType): string
-    {
-        return match ($phpType) {
-            'int', 'integer' => 'integer',
-            'float', 'double' => 'number',
-            'bool', 'boolean' => 'boolean',
-            'array' => 'array',
-            default => 'string',
-        }; // phpcs:ignore SlevomatCodingStandard.PHP.UselessSemicolon.UselessSemicolon
     }
 }
