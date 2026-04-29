@@ -5,14 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.9.1] - 2026-04-29
+
+### Fixed
+- Emit OpenAPI request inputs for `#[Input]` DTO methods without requiring `#[JsonSchema(params: ...)]` (#81)
 
 ### Changed
-- Emit OpenAPI request inputs for `#[Input]` DTO methods without requiring `#[JsonSchema(params: ...)]` (#81)
 - Emit non-path inputs for `POST`, `PUT`, and `PATCH` operations as JSON `requestBody` schemas instead of query parameters
-
-### Breaking Changes
-- OpenAPI output for existing `POST`, `PUT`, and `PATCH` operations changes non-path request inputs from `parameters` with `in: query` to `requestBody`
 
 ## [1.9.0] - 2026-04-28
 
@@ -129,7 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update dependencies
 
-[Unreleased]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.0...HEAD
+[1.9.1]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.0...1.9.1
 [1.9.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.7.0...1.8.0
 [1.7.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.6.0...1.7.0
