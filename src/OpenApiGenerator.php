@@ -174,7 +174,7 @@ final class OpenApiGenerator
         $schemaAttribute = $attributes === [] ? null : $attributes[0]->newInstance();
         $requestSchemaFile = $schemaAttribute instanceof JsonSchema ? $schemaAttribute->params : '';
         $requestSchema = $requestSchemaFile === '' ? null : $this->loadSchema($this->requestSchemaDir, $requestSchemaFile);
-        $operation = (new OpenApiRequestBuilder())($method, $httpMethod, $operation, $requestSchema, $pathParams);
+        $operation = (new OpenApiInputBuilder())($method, $httpMethod, $operation, $requestSchema, $pathParams);
         if (! $schemaAttribute instanceof JsonSchema) {
             return [$operation, false];
         }

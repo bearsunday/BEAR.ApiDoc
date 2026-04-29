@@ -19,7 +19,7 @@ use function file_get_contents;
 use function is_object;
 use function json_decode;
 
-class OpenApiRequestBuilderTest extends TestCase
+class OpenApiInputBuilderTest extends TestCase
 {
     public function testGetBuildsQueryAndPathParametersFromSchema(): void
     {
@@ -139,7 +139,7 @@ class OpenApiRequestBuilderTest extends TestCase
      */
     private function build(string $class, string $method, string $httpMethod, ?Schema $schema = null, array $pathParams = []): array
     {
-        return (new OpenApiRequestBuilder())(new ReflectionMethod($class, $method), $httpMethod, [], $schema, $pathParams);
+        return (new OpenApiInputBuilder())(new ReflectionMethod($class, $method), $httpMethod, [], $schema, $pathParams);
     }
 
     /**

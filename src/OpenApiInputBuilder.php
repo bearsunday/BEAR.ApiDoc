@@ -18,7 +18,7 @@ use function in_array;
  * @psalm-import-type ParameterLocation from Types
  * @psalm-import-type PathParams from Types
  */
-final class OpenApiRequestBuilder
+final class OpenApiInputBuilder
 {
     /**
      * @param OpenApiOperationPartial $operation
