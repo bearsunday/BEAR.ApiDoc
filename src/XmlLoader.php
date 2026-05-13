@@ -9,7 +9,6 @@ use BEAR\ApiDoc\Exception\ConfigNotFoundException;
 use DOMDocument;
 use SimpleXMLElement;
 
-use function assert;
 use function dirname;
 use function file_exists;
 use function file_get_contents;
@@ -31,11 +30,21 @@ final class XmlLoader
     public function __invoke(string $xmlPath, string $xsdPath): SimpleXMLElement
     {
         $xmlFullPath = $this->locateConfigFile($xmlPath);
-        $contents = (string) file_get_contents($xmlFullPath);
-        $this->validate($xmlFullPath, $xsdPath);
-        $simpleXml = simplexml_load_string($contents);
-        assert($simpleXml instanceof SimpleXMLElement);
+        $contents = file_get_contents($xmlFullPath);
+        // @codeCoverageIgnoreStart
+        if ($contents === false) {
+            throw new ConfigException(sprintf('Cannot read XML config: %s', $xmlFullPath));
+        }
 
+        // @codeCoverageIgnoreEnd
+        $this->validate($contents, $xmlFullPath, $xsdPath);
+        $simpleXml = simplexml_load_string($contents);
+        // @codeCoverageIgnoreStart
+        if (! $simpleXml instanceof SimpleXMLElement) {
+            throw new ConfigException(sprintf('Invalid XML config: %s', $xmlFullPath));
+        }
+
+        // @codeCoverageIgnoreEnd
         return $simpleXml;
     }
 
@@ -110,29 +119,35 @@ final class XmlLoader
         return null;
     }
 
-    private function validate(string $xmlFullPath, string $xsdPath): void
+    private function validate(string $xmlContents, string $xmlFullPath, string $xsdPath): void
     {
-        libxml_use_internal_errors(true);
-        $dom = new DOMDocument();
-        $dom->load($xmlFullPath);
-        if ($dom->schemaValidate($xsdPath)) {
-            return;
-        }
+        $previous = libxml_use_internal_errors(true);
+        try {
+            $dom = new DOMDocument();
+            if ($dom->loadXML($xmlContents) && $dom->schemaValidate($xsdPath)) {
+                return;
+            }
 
-        $this->error();
+            $this->error($xmlFullPath);
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+        }
     }
 
-    private function error(): void
+    private function error(string $xmlFullPath): void
     {
         $errors = libxml_get_errors();
         foreach ($errors as $error) {
             if ($error->level === LIBXML_ERR_FATAL || $error->level === LIBXML_ERR_ERROR) {
-                libxml_clear_errors();
-
                 $msg = sprintf('%s in %s:%s', substr($error->message, 0, -2), $error->file, $error->line);
 
                 throw new ConfigException($msg);
             }
         }
+
+        // @codeCoverageIgnoreStart
+        throw new ConfigException(sprintf('Invalid XML config: %s', $xmlFullPath));
+        // @codeCoverageIgnoreEnd
     }
 }

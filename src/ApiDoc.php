@@ -144,7 +144,10 @@ final readonly class ApiDoc
         }
 
         // @codeCoverageIgnoreStart
-        mkdir($dir, 0777, true);
+        if (! mkdir($dir, 0777, true) && ! is_dir($dir)) {
+            throw new NotWritableException($dir);
+        }
+
         chmod(dirname($dir), 0777);
         chmod($dir, 0777);
         // @codeCoverageIgnoreEnd
@@ -178,7 +181,7 @@ final readonly class ApiDoc
     private function copySchemas(Config $config): void
     {
         $outputDir = sprintf('%s/schemas', $config->docDir);
-        if (! is_dir($outputDir) && ! mkdir($outputDir)) {
+        if (! is_dir($outputDir) && ! mkdir($outputDir, 0777, true) && ! is_dir($outputDir)) {
             // @codeCoverageIgnoreStart
             throw new NotWritableException($outputDir);
             // @codeCoverageIgnoreEnd
@@ -188,7 +191,7 @@ final readonly class ApiDoc
 
         // Generate schema index
         $indexHtml = (string) new SchemaIndex($outputDir);
-        file_put_contents($outputDir . '/index.html', $indexHtml);
+        $this->filePutContents($outputDir . '/index.html', $indexHtml);
     }
 
     /** @return ArrayObject<string, string> */
@@ -245,7 +248,12 @@ final readonly class ApiDoc
             return;
         }
 
-        copy($path, $destination);
+        // @codeCoverageIgnoreStart
+        if (! copy($path, $destination)) {
+            throw new NotWritableException($destination);
+        }
+
+        // @codeCoverageIgnoreEnd
     }
 
     private function dumpOpenApi(Config $config): void

@@ -9,13 +9,32 @@ use BEAR\ApiDoc\Exception\ConfigNotFoundException;
 use PHPUnit\Framework\TestCase;
 use SimpleXMLElement;
 
+use function assert;
 use function chdir;
 use function dirname;
+use function getcwd;
+use function is_string;
+use function libxml_clear_errors;
+use function libxml_use_internal_errors;
 use function mkdir;
 use function rmdir;
 
 class XmlLoaderTest extends TestCase
 {
+    private string $cwd;
+
+    protected function setUp(): void
+    {
+        $cwd = getcwd();
+        assert(is_string($cwd));
+        $this->cwd = $cwd;
+    }
+
+    protected function tearDown(): void
+    {
+        chdir($this->cwd);
+    }
+
     public function testLoad(): void
     {
         $xml = (new XmlLoader())('', dirname(__DIR__) . '/apidoc.xsd');
@@ -26,6 +45,23 @@ class XmlLoaderTest extends TestCase
     {
         $this->expectException(ConfigException::class);
         (new XmlLoader())(__DIR__ . '/apidoc.error.xml', dirname(__DIR__) . '/apidoc.xsd');
+    }
+
+    public function testInvalidXmlRestoresLibxmlInternalErrors(): void
+    {
+        $previous = libxml_use_internal_errors(false);
+
+        try {
+            try {
+                (new XmlLoader())(__DIR__ . '/apidoc.error.xml', dirname(__DIR__) . '/apidoc.xsd');
+                $this->fail('Expected invalid XML to throw');
+            } catch (ConfigException) {
+                $this->assertFalse(libxml_use_internal_errors());
+            }
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+        }
     }
 
     public function testInvalidXmlPath(): void
