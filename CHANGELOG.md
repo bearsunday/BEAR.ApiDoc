@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.9.1] - 2026-04-29
 
+### Added
+- Reference fake-data JSON files as OpenAPI external examples with optional `<fakeData>` config (#85)
+
 ### Fixed
 - Emit OpenAPI request inputs for `#[Input]` DTO methods without requiring `#[JsonSchema(params: ...)]` (#81)
 - Fix `composer setup` to call the existing `apidoc init` command instead of a missing setup script (#86)

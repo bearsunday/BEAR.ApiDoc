@@ -52,7 +52,15 @@ final class OpenApiGenerator
     /** @var array<string, array<string, mixed>> */
     private array $schemas = [];
 
+    /** @var array<string, array{summary: string, externalValue: string}> */
+    private array $examples = [];
+
+    /** @var array<string, FakeDataExample> */
+    private array $requestExamples = [];
+
     private readonly JsonFile $jsonFile;
+
+    private readonly FakeDataExampleResolver $fakeDataExampleResolver;
 
     public function __construct(
         private readonly Config $config,
@@ -61,6 +69,7 @@ final class OpenApiGenerator
         ?JsonFile $jsonFile = null,
     ) {
         $this->jsonFile = $jsonFile ?? new JsonFile();
+        $this->fakeDataExampleResolver = new FakeDataExampleResolver($this->config->fakeDataDir, $this->config->docDir);
         $this->openApiSpec = [
             'openapi' => '3.1.0',
             'info' => [
@@ -84,6 +93,9 @@ final class OpenApiGenerator
 
         // Add collected schemas to components
         $this->openApiSpec['components']['schemas'] = $this->schemas;
+        if ($this->examples !== []) {
+            $this->openApiSpec['components']['examples'] = $this->examples;
+        }
 
         return json_encode($this->openApiSpec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
     }
@@ -174,7 +186,12 @@ final class OpenApiGenerator
         $schemaAttribute = $attributes === [] ? null : $attributes[0]->newInstance();
         $requestSchemaFile = $schemaAttribute instanceof JsonSchema ? $schemaAttribute->params : '';
         $requestSchema = $requestSchemaFile === '' ? null : $this->loadSchema($this->requestSchemaDir, $requestSchemaFile);
+        $requestExample = $schemaAttribute instanceof JsonSchema ? $this->resolveRequestExample($method, $httpMethod, $requestSchemaFile, $requestSchema, $schemaAttribute->schema, $pathParams) : null;
         $operation = (new OpenApiInputBuilder())($method, $httpMethod, $operation, $requestSchema, $pathParams);
+        if ($requestExample instanceof FakeDataExample) {
+            $operation = $this->withRequestExample($operation, $requestExample);
+        }
+
         if (! $schemaAttribute instanceof JsonSchema) {
             return [$operation, false];
         }
@@ -183,12 +200,16 @@ final class OpenApiGenerator
 
         $schemaRef = $this->processResponse($schemaAttribute->schema);
         if ($schemaRef !== null) {
+            $jsonMediaType = ['schema' => $schemaRef];
+            $responseExample = $this->resolveResponseExample($schemaAttribute->schema);
+            if ($responseExample instanceof FakeDataExample) {
+                $jsonMediaType['examples'] = $responseExample->toMediaTypeExamples();
+            }
+
             /** @var OpenApiResponse $successResponse */
             $successResponse = [
                 'description' => 'Successful response',
-                'content' => [
-                    'application/json' => ['schema' => $schemaRef],
-                ],
+                'content' => ['application/json' => $jsonMediaType],
             ];
             /** @var array<string, OpenApiResponse> $responses */
             $responses = [];
@@ -197,6 +218,22 @@ final class OpenApiGenerator
         }
 
         return [$operation, $hasRequestSchema];
+    }
+
+    /**
+     * @param OpenApiOperationPartial $operation
+     *
+     * @return OpenApiOperationPartial
+     */
+    private function withRequestExample(array $operation, FakeDataExample $example): array
+    {
+        if (! isset($operation['requestBody']['content']['application/json'])) {
+            return $operation;
+        }
+
+        $operation['requestBody']['content']['application/json']['examples'] = $example->toMediaTypeExamples();
+
+        return $operation;
     }
 
     /**
@@ -275,6 +312,61 @@ final class OpenApiGenerator
         $emptyDictionary = new ArrayObject();
 
         return new Schema($fileInfo, $this->jsonFile->object($schemaFile), $emptyDictionary);
+    }
+
+    private function resolveResponseExample(string $schemaFile): ?FakeDataExample
+    {
+        $example = $this->fakeDataExampleResolver->responseExample($schemaFile, $this->loadSchema($this->responseSchemaDir, $schemaFile));
+        if (! $example instanceof FakeDataExample) {
+            return null;
+        }
+
+        $this->examples[$example->componentName] = $example->toOpenApiExampleObject();
+
+        return $example;
+    }
+
+    /** @param PathParams $pathParams */
+    private function resolveRequestExample(ReflectionMethod $method, string $httpMethod, string $requestSchemaFile, ?Schema $requestSchema, string $responseSchemaFile, array $pathParams): ?FakeDataExample
+    {
+        if (isset($this->requestExamples[$requestSchemaFile])) {
+            return $this->requestExamples[$requestSchemaFile];
+        }
+
+        $propertyNames = $this->requestBodyPropertyNames($method, $httpMethod, $pathParams);
+        $example = $this->fakeDataExampleResolver->requestExample($requestSchemaFile, $requestSchema, $responseSchemaFile, $propertyNames);
+        if (! $example instanceof FakeDataExample) {
+            return null;
+        }
+
+        $this->examples[$example->componentName] = $example->toOpenApiExampleObject();
+        $this->requestExamples[$requestSchemaFile] = $example;
+
+        return $example;
+    }
+
+    /**
+     * @param PathParams $pathParams
+     *
+     * @return list<string>
+     */
+    private function requestBodyPropertyNames(ReflectionMethod $method, string $httpMethod, array $pathParams): array
+    {
+        if (! in_array($httpMethod, ['post', 'put', 'patch'], true)) {
+            return [];
+        }
+
+        $propertyNames = [];
+        foreach ((new InputParamExpander())($method) as $param) {
+            $paramName = $param->getName();
+            if (in_array($paramName, $pathParams, true)) {
+                continue;
+            }
+
+            $propertyNames[] = $paramName;
+        }
+
+        return $propertyNames;
     }
 
     private function addSchemaToComponents(string $schemaName, string $schemaFile): void
