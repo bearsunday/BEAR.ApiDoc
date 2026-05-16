@@ -5,12 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.2] - Unreleased
+
+### Fixed
+- Preserve JSON Schema param property definitions when expanding OpenAPI request bodies (#84)
+
+### Changed
+- OpenAPI request body property `example` values are now sourced exclusively from JSON Schema `params` files; `@SchemaProp::example` is no longer emitted for request body properties (#84)
+
 ## [1.9.1] - 2026-04-29
 
 ### Fixed
 - Emit OpenAPI request inputs for `#[Input]` DTO methods without requiring `#[JsonSchema(params: ...)]` (#81)
 - Fix `composer setup` to call the existing `apidoc init` command instead of a missing setup script (#86)
-- Preserve JSON Schema param property definitions when expanding OpenAPI request bodies (#84)
 - Surface invalid JSON, XML loading, and output write failures during documentation generation (#86)
 
 ### Changed

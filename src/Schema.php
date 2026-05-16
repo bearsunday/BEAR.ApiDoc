@@ -83,8 +83,10 @@ final class Schema
         /** @var array<string, array<string, mixed>> $properties */
         $properties = [];
         foreach ((array) $this->schema->properties as $name => $property) {
-            assert(is_string($name));
-            assert(is_object($property));
+            if (! is_string($name) || ! is_object($property)) {
+                continue;
+            }
+
             $properties[$name] = $this->objectToArray($property);
         }
 

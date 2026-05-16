@@ -16,14 +16,3 @@ final class JsonSchemaInputFixture extends ResourceObject
         return $this;
     }
 }
-
-final readonly class JsonSchemaInput
-{
-    public function __construct(
-        public mixed $ids,
-        public mixed $status = null,
-        /** DTO docblock fallback description */
-        public mixed $docOnly = null,
-    ) {
-    }
-}
