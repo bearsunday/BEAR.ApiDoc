@@ -10,9 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Preserve JSON Schema param property definitions when expanding OpenAPI request bodies (#84)
 
-### Changed
-- OpenAPI request body property `example` values are now sourced exclusively from JSON Schema `params` files; `@SchemaProp::example` is no longer emitted for request body properties (#84)
-
 ## [1.9.1] - 2026-04-29
 
 ### Fixed
