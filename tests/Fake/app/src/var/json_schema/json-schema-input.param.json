@@ -1,0 +1,29 @@
+{
+  "$id": "json-schema-input.param.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JSON Schema input parameters",
+  "type": "object",
+  "required": ["ids"],
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "minItems": 1,
+      "description": "Identifiers from the request schema",
+      "example": [1, 2, 3]
+    },
+    "status": {
+      "type": ["string", "null"],
+      "enum": ["open", "closed", null],
+      "description": "Nullable ticket status",
+      "example": null
+    },
+    "docOnly": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

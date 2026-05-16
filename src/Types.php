@@ -18,7 +18,7 @@ namespace BEAR\ApiDoc;
  * @psalm-type OperationBase = array{operationId?: string, summary?: string, description?: string}
  * @psalm-type SchemaRef = array{'$ref': string}
  * @psalm-type OpenApiSchema = array<string, mixed>
- * @psalm-type OpenApiParameterSchema = array{type: string, description?: string, example?: mixed}
+ * @psalm-type OpenApiParameterSchema = array<string, mixed>
  * @psalm-type OpenApiParameter = array{name: string, in: ParameterLocation, required: bool, schema: array{type: string}, description?: string, example?: mixed}
  * @psalm-type OpenApiRequestBody = array{content: array{'application/json': array{schema: array{type: 'object', properties: array<string, OpenApiParameterSchema>, required?: list<string>}}}, required?: bool}
  * @psalm-type OpenApiResponse = array{description: string, content?: array<string, array{schema: SchemaRef}>}
