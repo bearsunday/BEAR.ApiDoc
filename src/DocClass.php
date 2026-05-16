@@ -11,13 +11,9 @@ use ReflectionClass;
 use ReflectionMethod;
 use SplFileInfo;
 
-use function assert;
-use function file_get_contents;
 use function implode;
 use function in_array;
 use function is_file;
-use function is_object;
-use function json_decode;
 use function sprintf;
 
 use const PHP_EOL;
@@ -27,14 +23,18 @@ final class DocClass
     /** @var ArrayObject<string, string> */
     private $semanticDictionary;
 
+    private readonly JsonFile $jsonFile;
+
     public function __construct(
         private readonly string $requestSchemaDir,
         private readonly string $responseSchemaDir,
-        public ModelRepository $modelRepository
+        public ModelRepository $modelRepository,
+        ?JsonFile $jsonFile = null,
     ) {
         /** @var ArrayObject<string, string> $nullDictinary */
         $nullDictinary = new ArrayObject();
         $this->semanticDictionary = $nullDictinary;
+        $this->jsonFile = $jsonFile ?? new JsonFile();
     }
 
     /**
@@ -133,10 +133,8 @@ EOT;
             return null;
         }
 
-        $schemaJson = json_decode((string) file_get_contents($schemaFile));
-        assert(is_object($schemaJson));
         $fileInfo = new SplFileInfo($schemaFile);
 
-        return new Schema($fileInfo, $schemaJson, $this->semanticDictionary);
+        return new Schema($fileInfo, $this->jsonFile->object($schemaFile), $this->semanticDictionary);
     }
 }

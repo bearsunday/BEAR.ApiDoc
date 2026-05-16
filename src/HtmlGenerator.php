@@ -22,7 +22,6 @@ use function is_file;
 use function is_numeric;
 use function is_object;
 use function is_string;
-use function json_decode;
 use function lcfirst;
 use function pathinfo;
 use function sprintf;
@@ -59,6 +58,8 @@ final class HtmlGenerator
     /** @var ArrayObject<string, string> */
     private readonly ArrayObject $semanticDictionary;
 
+    private readonly JsonFile $jsonFile;
+
     /**
      * @param ArrayObject<string, string>|null $semanticDictionary
      *
@@ -70,11 +71,13 @@ final class HtmlGenerator
         private readonly string $responseSchemaDir,
         ?ArrayObject $semanticDictionary = null,
         private readonly bool $inlineCss = false,
+        ?JsonFile $jsonFile = null,
     ) {
         $this->renderer = new HtmlRenderer();
         /** @var ArrayObject<string, string> $emptyDictionary */
         $emptyDictionary = new ArrayObject();
         $this->semanticDictionary = $semanticDictionary ?? $emptyDictionary;
+        $this->jsonFile = $jsonFile ?? new JsonFile();
     }
 
     public function generate(): string
@@ -307,16 +310,11 @@ final class HtmlGenerator
             return null;
         }
 
-        $schemaJson = json_decode((string) file_get_contents($schemaFile));
-        if (! is_object($schemaJson)) {
-            return null; // @codeCoverageIgnore
-        }
-
         $fileInfo = new SplFileInfo($schemaFile);
         /** @var ArrayObject<string, string> $emptyDictionary */
         $emptyDictionary = new ArrayObject();
 
-        return new Schema($fileInfo, $schemaJson, $emptyDictionary);
+        return new Schema($fileInfo, $this->jsonFile->object($schemaFile), $emptyDictionary);
     }
 
     /** @SuppressWarnings("PHPMD.NPathComplexity") */
@@ -334,8 +332,7 @@ final class HtmlGenerator
         }
 
         // Load raw schema to access definitions
-        /** @psalm-suppress MixedAssignment */
-        $schemaJson = json_decode((string) file_get_contents($schema->file->getPathname()));
+        $schemaJson = $this->jsonFile->object($schema->file->getPathname());
 
         foreach ($schema->props as $propName => $prop) {
             if ($propName === '_links') {
@@ -369,7 +366,7 @@ final class HtmlGenerator
                     $ref = $defName;
                     // Add the definition as an Object if it exists
                     /** @psalm-suppress MixedPropertyFetch */
-                    if (is_object($schemaJson) && isset($schemaJson->definitions->{lcfirst($defName)}) && is_object($schemaJson->definitions->{lcfirst($defName)})) {
+                    if (isset($schemaJson->definitions->{lcfirst($defName)}) && is_object($schemaJson->definitions->{lcfirst($defName)})) {
                         /** @psalm-suppress MixedPropertyFetch, MixedAssignment */
                         $definition = $schemaJson->definitions->{lcfirst($defName)};
                         /** @psalm-suppress MixedPropertyFetch, MixedArgument */
@@ -450,9 +447,9 @@ final class HtmlGenerator
     private function getArrayItemType(Schema $schema): ?string
     {
         $schemaFile = $schema->file->getPathname();
-        $schemaJson = json_decode((string) file_get_contents($schemaFile));
+        $schemaJson = $this->jsonFile->object($schemaFile);
 
-        if (! is_object($schemaJson) || ! isset($schemaJson->items) || ! is_object($schemaJson->items)) {
+        if (! isset($schemaJson->items) || ! is_object($schemaJson->items)) {
             return null; // @codeCoverageIgnore
         }
 

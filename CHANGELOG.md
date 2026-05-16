@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Emit OpenAPI request inputs for `#[Input]` DTO methods without requiring `#[JsonSchema(params: ...)]` (#81)
+- Fix `composer setup` to call the existing `apidoc init` command instead of a missing setup script (#86)
+- Surface invalid JSON, XML loading, and output write failures during documentation generation (#86)
 
 ### Changed
 - Allow `phpdocumentor/reflection-docblock` `^6.0` while keeping `^5.2` compatibility (#82)

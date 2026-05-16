@@ -23,7 +23,6 @@ use function interface_exists;
 use function is_array;
 use function is_dir;
 use function is_string;
-use function json_decode;
 use function pathinfo;
 use function preg_match;
 use function preg_match_all;
@@ -58,9 +57,13 @@ final class AppDocGenerator
 
     private string $appDir = '';
 
+    private readonly JsonFile $jsonFile;
+
     public function __construct(
         private readonly Config $config,
+        ?JsonFile $jsonFile = null,
     ) {
+        $this->jsonFile = $jsonFile ?? new JsonFile();
     }
 
     public function generate(): string
@@ -140,15 +143,7 @@ final class AppDocGenerator
     /** @codeCoverageIgnore Response schema parsing depends on runtime schema availability */
     private function parseJsonSchemaProperties(string $schemaFile): string
     {
-        $content = file_get_contents($schemaFile);
-        if ($content === false) {
-            return '';
-        }
-
-        $schema = json_decode($content, true);
-        if (! is_array($schema)) {
-            return '';
-        }
+        $schema = $this->jsonFile->assoc($schemaFile);
 
         // Handle array type
         if (isset($schema['type']) && $schema['type'] === 'array') {

@@ -13,16 +13,12 @@ use SplFileInfo;
 
 use function array_key_exists;
 use function array_map;
-use function assert;
 use function explode;
-use function file_get_contents;
 use function implode;
 use function in_array;
 use function is_array;
 use function is_file;
-use function is_object;
 use function is_string;
-use function json_decode;
 use function json_encode;
 use function pathinfo;
 use function preg_match_all;
@@ -56,11 +52,15 @@ final class OpenApiGenerator
     /** @var array<string, array<string, mixed>> */
     private array $schemas = [];
 
+    private readonly JsonFile $jsonFile;
+
     public function __construct(
         private readonly Config $config,
         private readonly string $requestSchemaDir,
-        private readonly string $responseSchemaDir
+        private readonly string $responseSchemaDir,
+        ?JsonFile $jsonFile = null,
     ) {
+        $this->jsonFile = $jsonFile ?? new JsonFile();
         $this->openApiSpec = [
             'openapi' => '3.1.0',
             'info' => [
@@ -270,16 +270,11 @@ final class OpenApiGenerator
             return null; // @codeCoverageIgnore
         }
 
-        $schemaJson = json_decode((string) file_get_contents($schemaFile));
-        if (! is_object($schemaJson)) {
-            return null; // @codeCoverageIgnore
-        }
-
         $fileInfo = new SplFileInfo($schemaFile);
         /** @var ArrayObject<string, string> $emptyDictionary */
         $emptyDictionary = new ArrayObject();
 
-        return new Schema($fileInfo, $schemaJson, $emptyDictionary);
+        return new Schema($fileInfo, $this->jsonFile->object($schemaFile), $emptyDictionary);
     }
 
     private function addSchemaToComponents(string $schemaName, string $schemaFile): void
@@ -294,17 +289,8 @@ final class OpenApiGenerator
             return; // @codeCoverageIgnore
         }
 
-        $schemaJson = json_decode((string) file_get_contents($schemaPath));
-        if (! is_object($schemaJson)) {
-            return; // @codeCoverageIgnore
-        }
-
-        // Convert to array for OpenAPI
-        /** @var array<string, mixed> $schemaArray */
-        $schemaArray = json_decode((string) json_encode($schemaJson), true);
-
         // Clean up and convert for OpenAPI compatibility
-        $cleanedSchema = $this->cleanSchemaForOpenApi($schemaArray);
+        $cleanedSchema = $this->cleanSchemaForOpenApi($this->jsonFile->assoc($schemaPath));
         $this->schemas[$schemaName] = $this->convertRefs($cleanedSchema);
     }
 
@@ -456,9 +442,8 @@ final class OpenApiGenerator
         // Load the referenced schema to get its title
         $schemaPath = sprintf('%s/%s', $this->responseSchemaDir, $refFile);
         if (is_file($schemaPath)) {
-            $schemaJson = json_decode((string) file_get_contents($schemaPath));
-            assert(is_object($schemaJson) || $schemaJson === null);
-            if (is_object($schemaJson) && isset($schemaJson->title) && is_string($schemaJson->title)) {
+            $schemaJson = $this->jsonFile->object($schemaPath);
+            if (isset($schemaJson->title) && is_string($schemaJson->title)) {
                 return $this->sanitizeSchemaName($schemaJson->title);
             }
         }
