@@ -67,9 +67,10 @@ final class OpenApiGenerator
         private readonly string $requestSchemaDir,
         private readonly string $responseSchemaDir,
         ?JsonFile $jsonFile = null,
+        ?FakeDataExampleResolver $fakeDataExampleResolver = null,
     ) {
         $this->jsonFile = $jsonFile ?? new JsonFile();
-        $this->fakeDataExampleResolver = new FakeDataExampleResolver($this->config->fakeDataDir, $this->config->docDir);
+        $this->fakeDataExampleResolver = $fakeDataExampleResolver ?? new FakeDataExampleResolver($this->config->fakeDataDir, $this->config->docDir);
         $this->openApiSpec = [
             'openapi' => '3.1.0',
             'info' => [

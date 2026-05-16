@@ -30,6 +30,7 @@ use const JSON_UNESCAPED_UNICODE;
  *
  * @psalm-import-type HtmlParam from Types
  * @psalm-import-type HtmlMethod from Types
+ * @psalm-import-type HtmlExampleLinks from Types
  * @psalm-import-type HtmlProperty from Types
  * @psalm-import-type HtmlObject from Types
  * @psalm-import-type HtmlRelation from Types
@@ -149,10 +150,11 @@ HTML;
             $params = $data['params'];
             $paramCount = count($params);
             $methodRowspan = $paramCount > 0 ? $paramCount : 1;
+            $exampleLinks = $data['exampleLinks'] ?? [];
 
             if ($paramCount === 0) {
                 $pathCell = $isFirstPath ? sprintf('<td rowspan="%d" class="path-cell" id="path-%s">%s</td>', $totalRows, htmlspecialchars(ltrim($path, '/')), htmlspecialchars($path)) : '';
-                $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description'], $data['alps']);
+                $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description'], $data['alps'], $exampleLinks);
                 $responseHtml = $this->renderResponseLink($data['response']);
 
                 $rows .= <<<HTML
@@ -181,7 +183,7 @@ HTML;
                 }
 
                 if ($isFirstParam) {
-                    $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description'], $data['alps']);
+                    $methodHtml = $this->renderMethodBadge($httpMethod, $data['summary'], $data['description'], $data['alps'], $exampleLinks);
                     $methodCell = sprintf('<td rowspan="%d" class="method-cell">%s</td>', $methodRowspan, $methodHtml);
                     $responseCell = sprintf('<td rowspan="%d">%s</td>', $methodRowspan, $this->renderResponseLink($data['response']));
                 }
@@ -207,8 +209,11 @@ HTML;
         return $total;
     }
 
-    /** @param array<string> $alps */
-    private function renderMethodBadge(string $method, string $title = '', string $description = '', array $alps = []): string
+    /**
+     * @param array<string>    $alps
+     * @param HtmlExampleLinks $exampleLinks
+     */
+    private function renderMethodBadge(string $method, string $title = '', string $description = '', array $alps = [], array $exampleLinks = []): string
     {
         $typeClass = match ($method) {
             'GET' => 'safe',
@@ -234,7 +239,40 @@ HTML;
             $html .= sprintf('<div class="method-alps">%s</div>', implode(', ', $alpsLinks));
         }
 
+        $exampleHtml = $this->renderExampleLinks($exampleLinks);
+        if ($exampleHtml !== '') {
+            $html .= $exampleHtml;
+        }
+
         return $html;
+    }
+
+    /** @param HtmlExampleLinks $exampleLinks */
+    private function renderExampleLinks(array $exampleLinks): string
+    {
+        if ($exampleLinks === []) {
+            return '';
+        }
+
+        $items = [];
+        foreach (['request', 'response'] as $kind) {
+            if (! isset($exampleLinks[$kind])) {
+                continue;
+            }
+
+            $link = $exampleLinks[$kind];
+            $items[] = sprintf(
+                '<a href="%s" class="example-link" rel="example">%s</a>',
+                htmlspecialchars($link['href']),
+                htmlspecialchars($link['label']),
+            );
+        }
+
+        if ($items === []) {
+            return '';
+        }
+
+        return sprintf('<div class="method-examples">Example: %s</div>', implode(' / ', $items));
     }
 
     private function renderResponseLink(?string $schemaName): string

@@ -31,7 +31,9 @@ namespace BEAR\ApiDoc;
  * @psalm-type OpenApiComponents = array{schemas: array<string, OpenApiSchema>, examples?: array<string, array{summary: string, externalValue: string}>}
  * @psalm-type OpenApiSpec = array{openapi: string, info: OpenApiInfo, paths: array<string, OpenApiPathItem>, components: OpenApiComponents}
  * @psalm-type HtmlParam = array{name: string, type: string, description: string, required: bool, example: string, constraints: array<string, mixed>, alps: string|null}
- * @psalm-type HtmlMethod = array{params: array<HtmlParam>, response: string|null, responseSchemaFile: string|null, summary: string, description: string, embeds: array<mixed>, links: array<mixed>, alps: array<string>}
+ * @psalm-type HtmlExampleLink = array{label: string, href: string}
+ * @psalm-type HtmlExampleLinks = array{request?: HtmlExampleLink, response?: HtmlExampleLink}
+ * @psalm-type HtmlMethod = array{params: array<HtmlParam>, response: string|null, responseSchemaFile: string|null, summary: string, description: string, embeds: array<mixed>, links: array<mixed>, alps: array<string>, exampleLinks?: HtmlExampleLinks}
  * @psalm-type HtmlProperty = array{name: string, type: string, description: string, example: string|null, format: string|null, constraints: array<string, mixed>, ref: string|null}
  * @psalm-type HtmlObject = array{name: string, properties: array<HtmlProperty>, arrayItemType: string|null, schemaFile: string|null}
  * @psalm-type HtmlRelation = array{rel: string, href: string, title: string}

@@ -14,7 +14,9 @@ use ReflectionMethod;
 use Stringable;
 
 use function assert;
+use function basename;
 use function implode;
+use function in_array;
 use function is_string;
 use function sprintf;
 use function strtoupper;
@@ -33,6 +35,8 @@ final class DocMethod implements Stringable
     /** @var array<int, DocParam> */
     private readonly array $params;
 
+    private readonly ?Schema $request;
+
     /** @param ArrayObject<string, string> $semanticDictionary */
     public function __construct(
         private readonly ReflectionMethod $method,
@@ -40,7 +44,11 @@ final class DocMethod implements Stringable
         private readonly ?Schema $response,
         private readonly ArrayObject $semanticDictionary,
         private readonly string $ext,
+        private readonly ?FakeDataExampleResolver $fakeDataExampleResolver = null,
+        private readonly string $requestSchemaFile = '',
+        private readonly string $responseSchemaFile = '',
     ) {
+        $this->request = $request;
         $this->httpMethod = substr($this->method->name, 2);
         $factory = DocBlockFactory::createInstance();
         $docComment = $this->method->getDocComment();
@@ -143,11 +151,11 @@ EOT;
     private function toStringResponse(): string
     {
         if (! $this->response instanceof \BEAR\ApiDoc\Schema) {
-            return '_Not available_';
+            return '_Not available_' . $this->getExternalExample();
         }
 
         if ($this->response->type === 'array') {
-            return $this->response->toStringTypeArray();
+            return $this->response->toStringTypeArray() . $this->getExternalExample();
         }
 
         $rows = '';
@@ -162,7 +170,7 @@ EOT;
 
         $object = $this->getObjectTable($this->response->title(), $rows);
 
-        return $object . $this->getEmbeds() . $this->getLinks() . $this->getExample();
+        return $object . $this->getEmbeds() . $this->getLinks() . $this->getExample() . $this->getExternalExample();
     }
 
     private function getObjectTable(string $responseTitle, string $rows): string
@@ -250,6 +258,60 @@ EOT;
 ```json
 {$examples}```
 EOT;
+    }
+
+    private function getExternalExample(): string
+    {
+        if (! $this->fakeDataExampleResolver instanceof FakeDataExampleResolver) {
+            return '';
+        }
+
+        $items = [];
+
+        if ($this->responseSchemaFile !== '') {
+            $responseExample = $this->fakeDataExampleResolver->responseExample($this->responseSchemaFile, $this->response);
+            if ($responseExample instanceof FakeDataExample) {
+                $items[] = sprintf('- Response: [%s](%s)', basename($responseExample->externalValue), $responseExample->externalValueRelativeTo('paths'));
+            }
+        }
+
+        if ($this->requestSchemaFile !== '' && in_array(strtoupper($this->httpMethod), ['POST', 'PUT', 'PATCH'], true)) {
+            $propertyNames = $this->requestBodyPropertyNames();
+            $requestExample = $this->fakeDataExampleResolver->requestExample(
+                $this->requestSchemaFile,
+                $this->request,
+                $this->responseSchemaFile,
+                $propertyNames,
+            );
+            if ($requestExample instanceof FakeDataExample) {
+                $items[] = sprintf('- Request: [%s](%s)', basename($requestExample->externalValue), $requestExample->externalValueRelativeTo('paths'));
+            }
+        }
+
+        if ($items === []) {
+            return '';
+        }
+
+        $list = implode(PHP_EOL, $items);
+
+        return <<<EOT
+
+
+#### External Example
+
+{$list}
+EOT;
+    }
+
+    /** @return list<string> */
+    private function requestBodyPropertyNames(): array
+    {
+        $propertyNames = [];
+        foreach ((new InputParamExpander())($this->method) as $param) {
+            $propertyNames[] = $param->getName();
+        }
+
+        return $propertyNames;
     }
 
     private function getAlpsSection(): string

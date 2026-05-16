@@ -31,7 +31,12 @@ use function realpath;
 use function sprintf;
 use function trim;
 
-/** @SuppressWarnings("PHPMD.TooManyFields") */
+/**
+ * Aggregates parsed apidoc.xml configuration; the wide surface area mirrors the
+ * configuration schema, so PHPMD.TooManyFields is intentionally suppressed.
+ *
+ * @SuppressWarnings("PHPMD.TooManyFields")
+ */
 final class Config
 {
     /** @var non-empty-string */

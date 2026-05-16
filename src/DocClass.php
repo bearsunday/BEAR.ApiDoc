@@ -30,6 +30,7 @@ final class DocClass
         private readonly string $responseSchemaDir,
         public ModelRepository $modelRepository,
         ?JsonFile $jsonFile = null,
+        private readonly ?FakeDataExampleResolver $fakeDataExampleResolver = null,
     ) {
         /** @var ArrayObject<string, string> $nullDictinary */
         $nullDictinary = new ArrayObject();
@@ -112,8 +113,19 @@ EOT;
         $attributes = $method->getAttributes(JsonSchema::class);
         $schema = isset($attributes[0]) ? $attributes[0]->newInstance() : null;
         [$request, $response] = $schema instanceof JsonSchema ? [$this->getSchema($this->requestSchemaDir, $schema->params), $this->getResponseSchema($this->responseSchemaDir, $schema->schema)] : [null, null];
+        $requestSchemaFile = $schema instanceof JsonSchema ? $schema->params : '';
+        $responseSchemaFile = $schema instanceof JsonSchema ? $schema->schema : '';
 
-        return (string) new DocMethod($method, $request, $response, $this->semanticDictionary, $ext);
+        return (string) new DocMethod(
+            $method,
+            $request,
+            $response,
+            $this->semanticDictionary,
+            $ext,
+            $this->fakeDataExampleResolver,
+            $requestSchemaFile,
+            $responseSchemaFile,
+        );
     }
 
     private function getResponseSchema(string $dir, string $file): ?Schema

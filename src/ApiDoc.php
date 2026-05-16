@@ -42,15 +42,19 @@ final readonly class ApiDoc
     public function __invoke(string $configFile): string
     {
         $config = new Config($configFile);
+        $this->mkDir($config->docDir);
+        $fakeDataExampleResolver = new FakeDataExampleResolver($config->fakeDataDir, $config->docDir);
         $docClass = new DocClass(
             $config->requestSchemaDir,
             $config->responseSchemaDir,
-            new ModelRepository()
+            new ModelRepository(),
+            null,
+            $fakeDataExampleResolver,
         );
 
         $outputFiles = [];
         foreach ($config->formats as $format) {
-            $this->dumpFormat($config, $docClass, $format);
+            $this->dumpFormat($config, $docClass, $format, $fakeDataExampleResolver);
             $outputFiles[] = match ($format) {
                 'openapi' => 'openapi.json',
                 'md' => 'index.md',
@@ -62,7 +66,7 @@ final readonly class ApiDoc
         return sprintf('ApiDoc generated. %s/%s', (string) realpath($config->docDir), implode(', ', $outputFiles));
     }
 
-    private function dumpFormat(Config $config, DocClass $docClass, string $format): void
+    private function dumpFormat(Config $config, DocClass $docClass, string $format, FakeDataExampleResolver $fakeDataExampleResolver): void
     {
         $this->mkDir($config->docDir);
 
@@ -73,7 +77,7 @@ final readonly class ApiDoc
         }
 
         if ($format === 'openapi') {
-            $this->dumpOpenApi($config);
+            $this->dumpOpenApi($config, $fakeDataExampleResolver);
 
             return;
         }
@@ -84,7 +88,7 @@ final readonly class ApiDoc
             return;
         }
 
-        $this->dumpHtml($config, $docClass);
+        $this->dumpHtml($config, $docClass, $fakeDataExampleResolver);
     }
 
     public function dumpMd(Config $config, DocClass $docClass): void
@@ -103,7 +107,7 @@ final readonly class ApiDoc
         }
     }
 
-    public function dumpHtml(Config $config, DocClass $docClass): void
+    public function dumpHtml(Config $config, DocClass $docClass, ?FakeDataExampleResolver $fakeDataExampleResolver = null): void
     {
         unset($docClass);
 
@@ -116,7 +120,9 @@ final readonly class ApiDoc
             $config->requestSchemaDir,
             $config->responseSchemaDir,
             $semanticDictionary,
-            $this->inlineCss
+            $this->inlineCss,
+            null,
+            $fakeDataExampleResolver,
         );
         $html = $generator->generate();
         $outputFile = sprintf('%s/index.html', $config->docDir);
@@ -256,12 +262,14 @@ final readonly class ApiDoc
         // @codeCoverageIgnoreEnd
     }
 
-    private function dumpOpenApi(Config $config): void
+    private function dumpOpenApi(Config $config, ?FakeDataExampleResolver $fakeDataExampleResolver = null): void
     {
         $generator = new OpenApiGenerator(
             $config,
             $config->requestSchemaDir,
-            $config->responseSchemaDir
+            $config->responseSchemaDir,
+            null,
+            $fakeDataExampleResolver,
         );
         $openApiJson = $generator->generate();
         $outputFile = sprintf('%s/openapi.json', $config->docDir);

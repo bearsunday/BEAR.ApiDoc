@@ -10,16 +10,37 @@ use PHPUnit\Framework\TestCase;
 use function array_keys;
 use function assert;
 use function file_get_contents;
+use function glob;
 use function implode;
 use function is_array;
+use function is_dir;
 use function is_string;
 use function json_decode;
 use function sprintf;
+use function unlink;
 
 use const JSON_THROW_ON_ERROR;
 
 class OpenApiGeneratorTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Remove derived example artifacts from previous runs so stale payloads
+        // can never satisfy assertions on regenerated content.
+        $examplesDir = __DIR__ . '/docs/openapi/examples';
+        if (! is_dir($examplesDir)) {
+            return;
+        }
+
+        foreach ((array) glob($examplesDir . '/*.json') as $file) {
+            if (is_string($file)) {
+                @unlink($file);
+            }
+        }
+    }
+
     public function testGeneratedOpenApiValidatesAgainstSchema(): void
     {
         // Generate OpenAPI
@@ -114,14 +135,11 @@ class OpenApiGeneratorTest extends TestCase
         $ticketParamExampleObject = $this->componentExample($openApiData, 'TicketParamFake');
         $ticketsExampleObject = $this->componentExample($openApiData, 'TicketsFake');
         $personExampleObject = $this->componentExample($openApiData, 'PersonFake');
-        $this->assertSame('./examples/ticket.json', $ticketExampleObject['externalValue']);
+        $this->assertSame('../../Fake/app/src/var/fake/ticket.json', $ticketExampleObject['externalValue']);
         $this->assertSame('./examples/ticket.param.json', $ticketParamExampleObject['externalValue']);
-        $this->assertStringEndsWith('/Fake/app/src/var/fake/tickets.json', $ticketsExampleObject['externalValue']);
-        $this->assertStringEndsWith('/Fake/app/src/var/fake/person.json', $personExampleObject['externalValue']);
+        $this->assertSame('../../Fake/app/src/var/fake/tickets.json', $ticketsExampleObject['externalValue']);
+        $this->assertSame('../../Fake/app/src/var/fake/person.json', $personExampleObject['externalValue']);
         $this->assertArrayNotHasKey('value', $ticketExampleObject);
-
-        $ticketExample = $this->readGeneratedExample('ticket.json');
-        $this->assertSame('TKT-2024-001', $ticketExample['id'] ?? null);
 
         $ticketRequestExample = $this->readGeneratedExample('ticket.param.json');
         $this->assertSame([

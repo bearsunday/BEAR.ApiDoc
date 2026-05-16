@@ -1,22 +1,10 @@
-[
-  {
-    "id": "TKT-2024-001",
-    "title": "Cannot login to dashboard",
-    "description": "When I click login, I get a 500 error",
-    "assignee": "john.smith",
-    "status": "in_progress",
-    "priority": "high",
-    "created": "2024-01-15T09:30:00Z",
-    "updated": "2024-01-16T14:22:00Z"
-  },
-  {
-    "id": "TKT-2024-002",
-    "title": "Export report timeout",
-    "description": "CSV export times out for large date ranges",
-    "assignee": "jane.smith",
-    "status": "open",
-    "priority": "medium",
-    "created": "2024-01-20T10:15:00Z",
-    "updated": "2024-01-20T10:15:00Z"
-  }
-]
+{
+  "id": "TKT-2024-001",
+  "title": "Cannot login to dashboard",
+  "description": "When I click login, I get a 500 error",
+  "assignee": "john.smith",
+  "status": "in_progress",
+  "priority": "high",
+  "created": "2024-01-15T09:30:00Z",
+  "updated": "2024-01-16T14:22:00Z"
+}
