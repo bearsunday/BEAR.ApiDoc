@@ -15,6 +15,7 @@
                 <xs:element ref="description" minOccurs="0"/>
                 <xs:element ref="links" minOccurs="0"/>
                 <xs:element ref="alps" minOccurs="0"/>
+                <xs:element ref="fakeData" minOccurs="0"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
@@ -88,4 +89,16 @@
             <xs:documentation>ALPS link</xs:documentation>
         </xs:annotation>
     </xs:element>
+    <xs:element name="fakeData" type="fakeDataType">
+        <xs:annotation>
+            <xs:documentation>Fake data directory for external OpenAPI examples</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="fakeDataType">
+        <xs:attribute name="dir" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Fake data directory relative to apidoc.xml</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
 </xs:schema>

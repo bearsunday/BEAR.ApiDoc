@@ -24,6 +24,7 @@ use function is_object;
 use function is_string;
 use function lcfirst;
 use function pathinfo;
+use function preg_match_all;
 use function sprintf;
 use function str_starts_with;
 use function strtoupper;
@@ -37,6 +38,7 @@ use const PATHINFO_FILENAME;
  *
  * @psalm-import-type HtmlParam from Types
  * @psalm-import-type HtmlMethod from Types
+ * @psalm-import-type HtmlExampleLinks from Types
  * @psalm-import-type HtmlObject from Types
  * @psalm-import-type HtmlRelation from Types
  * @psalm-import-type HtmlObjectRelations from Types
@@ -60,6 +62,8 @@ final class HtmlGenerator
 
     private readonly JsonFile $jsonFile;
 
+    private readonly FakeDataExampleResolver $fakeDataExampleResolver;
+
     /**
      * @param ArrayObject<string, string>|null $semanticDictionary
      *
@@ -72,12 +76,14 @@ final class HtmlGenerator
         ?ArrayObject $semanticDictionary = null,
         private readonly bool $inlineCss = false,
         ?JsonFile $jsonFile = null,
+        ?FakeDataExampleResolver $fakeDataExampleResolver = null,
     ) {
         $this->renderer = new HtmlRenderer();
         /** @var ArrayObject<string, string> $emptyDictionary */
         $emptyDictionary = new ArrayObject();
         $this->semanticDictionary = $semanticDictionary ?? $emptyDictionary;
         $this->jsonFile = $jsonFile ?? new JsonFile();
+        $this->fakeDataExampleResolver = $fakeDataExampleResolver ?? new FakeDataExampleResolver($this->config->fakeDataDir, $this->config->docDir);
     }
 
     public function generate(): string
@@ -150,7 +156,7 @@ final class HtmlGenerator
     private function processMethod(string $path, string $httpMethod, ReflectionMethod $method): void
     {
         [$summary, $methodDescription, $paramDescriptions] = $this->extractPhpDoc($method);
-        [$requestSchema, $responseSchemaName, $responseSchemaFile] = $this->extractJsonSchema($method);
+        [$requestSchema, $responseSchemaName, $responseSchemaFile, $requestSchemaFile] = $this->extractJsonSchema($method);
         [$embeds, $links] = $this->extractEmbedsAndLinks($method);
         $alpsIds = $this->extractAlpsIds($method);
 
@@ -164,7 +170,7 @@ final class HtmlGenerator
             $this->endpoints[$path] = [];
         }
 
-        $this->endpoints[$path][$httpMethod] = [
+        $entry = [
             'summary' => $summary,
             'description' => $methodDescription,
             'params' => $params,
@@ -174,6 +180,70 @@ final class HtmlGenerator
             'links' => $links,
             'alps' => $alpsIds,
         ];
+
+        $exampleLinks = $this->buildExampleLinks($method, $httpMethod, $path, $requestSchema, $requestSchemaFile, $responseSchemaFile);
+        if ($exampleLinks !== []) {
+            $entry['exampleLinks'] = $exampleLinks;
+        }
+
+        $this->endpoints[$path][$httpMethod] = $entry;
+    }
+
+    /** @return HtmlExampleLinks */
+    private function buildExampleLinks(ReflectionMethod $method, string $httpMethod, string $path, ?Schema $requestSchema, string $requestSchemaFile, ?string $responseSchemaFile): array
+    {
+        $links = [];
+
+        if ($responseSchemaFile !== null && $responseSchemaFile !== '') {
+            $responseSchema = $this->loadSchema($this->responseSchemaDir, $responseSchemaFile);
+            $responseExample = $this->fakeDataExampleResolver->responseExample($responseSchemaFile, $responseSchema);
+            if ($responseExample instanceof FakeDataExample) {
+                $links['response'] = [
+                    'label' => 'Response',
+                    'href' => $responseExample->externalValue,
+                ];
+            }
+        }
+
+        if ($requestSchemaFile !== '' && in_array($httpMethod, ['POST', 'PUT', 'PATCH'], true)) {
+            preg_match_all('/\{([^}]+)\}/', $path, $matches);
+            $pathParams = $matches[1];
+            $propertyNames = $this->requestBodyPropertyNames($method, $pathParams);
+            $requestExample = $this->fakeDataExampleResolver->requestExample(
+                $requestSchemaFile,
+                $requestSchema,
+                $responseSchemaFile ?? '',
+                $propertyNames,
+            );
+            if ($requestExample instanceof FakeDataExample) {
+                $links['request'] = [
+                    'label' => 'Request',
+                    'href' => $requestExample->externalValue,
+                ];
+            }
+        }
+
+        return $links;
+    }
+
+    /**
+     * @param list<string> $pathParams
+     *
+     * @return list<string>
+     */
+    private function requestBodyPropertyNames(ReflectionMethod $method, array $pathParams): array
+    {
+        $propertyNames = [];
+        foreach ((new InputParamExpander())($method) as $param) {
+            $paramName = $param->getName();
+            if (in_array($paramName, $pathParams, true)) {
+                continue;
+            }
+
+            $propertyNames[] = $paramName;
+        }
+
+        return $propertyNames;
     }
 
     /** @return array<string> */
@@ -210,20 +280,22 @@ final class HtmlGenerator
         return [$summary, $methodDescription, $paramDescriptions];
     }
 
-    /** @return array{Schema|null, string|null, string|null} */
+    /** @return array{Schema|null, string|null, string|null, string} */
     private function extractJsonSchema(ReflectionMethod $method): array
     {
         $requestSchema = null;
         $responseSchemaName = null;
         $responseSchemaFile = null;
+        $requestSchemaFile = '';
         $attributes = $method->getAttributes(JsonSchema::class);
 
         if ($attributes === []) {
-            return [$requestSchema, $responseSchemaName, $responseSchemaFile];
+            return [$requestSchema, $responseSchemaName, $responseSchemaFile, $requestSchemaFile];
         }
 
         $schemaAttr = $attributes[0]->newInstance();
         if ($schemaAttr->params !== '') {
+            $requestSchemaFile = $schemaAttr->params;
             $requestSchema = $this->loadSchema($this->requestSchemaDir, $schemaAttr->params);
         }
 
@@ -236,7 +308,7 @@ final class HtmlGenerator
             }
         }
 
-        return [$requestSchema, $responseSchemaName, $responseSchemaFile];
+        return [$requestSchema, $responseSchemaName, $responseSchemaFile, $requestSchemaFile];
     }
 
     /** @return array{array<array{rel: string, src: string}>, array<array{rel: string, href: string, title: string}>} */

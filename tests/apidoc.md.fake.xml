@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc>
+    <appName>FakeVendor\FakeProject</appName>
+    <scheme>app</scheme>
+    <docDir>docs/md-fake</docDir>
+    <format>md</format>
+    <title>API Documentation</title>
+    <description>Markdown documentation with fake data examples</description>
+    <fakeData dir="Fake/app/src/var/fake"/>
+</apidoc>

@@ -143,4 +143,43 @@ class ApiDocTest extends TestCase
         $this->assertFileExists(__DIR__ . '/docs/multi/index.html');
         $this->assertFileExists(__DIR__ . '/docs/multi/llms.txt');
     }
+
+    public function testHtmlOutputWithFakeExamples(): void
+    {
+        $apiDoc = new ApiDoc();
+        $apiDoc(__DIR__ . '/apidoc.html.fake.xml');
+
+        $html = file_get_contents(__DIR__ . '/docs/html-fake/index.html');
+        $this->assertIsString($html);
+
+        // Response examples are sourced directly from fake-data files
+        $this->assertStringContainsString('class="method-examples"', $html);
+        $this->assertStringContainsString('../../Fake/app/src/var/fake/ticket.json', $html);
+        $this->assertStringContainsString('../../Fake/app/src/var/fake/tickets.json', $html);
+        $this->assertStringContainsString('../../Fake/app/src/var/fake/person.json', $html);
+
+        // Request bodies project from response payloads into docDir/examples
+        $this->assertStringContainsString('./examples/ticket.param.json', $html);
+        $this->assertFileExists(__DIR__ . '/docs/html-fake/examples/ticket.param.json');
+    }
+
+    public function testMdOutputWithFakeExamples(): void
+    {
+        $apiDoc = new ApiDoc();
+        $apiDoc(__DIR__ . '/apidoc.md.fake.xml');
+
+        $ticketMd = file_get_contents(__DIR__ . '/docs/md-fake/paths/ticket.md');
+        $this->assertIsString($ticketMd);
+        $this->assertStringContainsString('#### External Example', $ticketMd);
+        // GET response references the fake-data source file (no derivation needed)
+        $this->assertStringContainsString('[ticket.json](../../../Fake/app/src/var/fake/ticket.json)', $ticketMd);
+        // POST/PUT requests project into docDir/examples
+        $this->assertStringContainsString('[ticket.param.json](../examples/ticket.param.json)', $ticketMd);
+
+        $ticketsMd = file_get_contents(__DIR__ . '/docs/md-fake/paths/tickets.md');
+        $this->assertIsString($ticketsMd);
+        $this->assertStringContainsString('[tickets.json](../../../Fake/app/src/var/fake/tickets.json)', $ticketsMd);
+
+        $this->assertFileExists(__DIR__ . '/docs/md-fake/examples/ticket.param.json');
+    }
 }

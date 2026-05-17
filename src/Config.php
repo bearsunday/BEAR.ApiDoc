@@ -31,6 +31,12 @@ use function realpath;
 use function sprintf;
 use function trim;
 
+/**
+ * Aggregates parsed apidoc.xml configuration; the wide surface area mirrors the
+ * configuration schema, so PHPMD.TooManyFields is intentionally suppressed.
+ *
+ * @SuppressWarnings("PHPMD.TooManyFields")
+ */
 final class Config
 {
     /** @var non-empty-string */
@@ -67,6 +73,8 @@ final class Config
 
     public string $responseSchemaDir = '';
 
+    public string $fakeDataDir = '';
+
     /** @var list<class-string> */
     public array $queryClasses = [];
 
@@ -75,6 +83,7 @@ final class Config
     /**
      * @psalm-suppress
      * @SuppressWarnings("PHPMD.NPathComplexity")
+     * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      */
     public function __construct(string $configFile)
     {
@@ -100,6 +109,16 @@ final class Config
         $alps = property_exists($xml, 'alps') ? (string) $xml->alps : '';
         if ($alps !== '' && $alps !== '0') {
             $this->alps = sprintf('%s/%s', $dir, $alps);
+        }
+
+        if (property_exists($xml, 'fakeData')) {
+            $fakeData = $xml->fakeData;
+            if ($fakeData instanceof SimpleXMLElement) {
+                $fakeDataDir = (string) $fakeData['dir'];
+                if ($fakeDataDir !== '' && $fakeDataDir !== '0') {
+                    $this->fakeDataDir = sprintf('%s/%s', $dir, $fakeDataDir);
+                }
+            }
         }
 
         /** @var list<\SimpleXMLElement> $links */
