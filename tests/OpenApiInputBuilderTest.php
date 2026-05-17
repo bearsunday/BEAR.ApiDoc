@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
+use BEAR\ApiDoc\Fake\Ro\JsonSchemaInputFixture;
 use BEAR\ApiDoc\Fake\Ro\PathOnlyInputFixture;
 use BEAR\ApiDoc\Fake\Ro\TypedInputFixture;
 use FakeVendor\FakeProject\Resource\App\ArrayData;
@@ -86,7 +87,33 @@ class OpenApiInputBuilderTest extends TestCase
         $this->assertArrayNotHasKey('required', $requestBody);
         $this->assertArrayNotHasKey('required', $schema);
         $this->assertSame('boolean', $properties['enabled']['type'] ?? null);
-        $this->assertSame('true', $properties['enabled']['example'] ?? null);
+        $this->assertTrue($properties['enabled']['example'] ?? null);
+    }
+
+    public function testRequestBodyUsesJsonSchemaPropertyDefinitionsForExpandedInput(): void
+    {
+        $operation = $this->build(JsonSchemaInputFixture::class, 'onPost', 'post', $this->schema('json-schema-input.param.json'));
+        $properties = $this->requestBodyProperties($operation);
+
+        $this->assertSame(
+            [
+                'type' => 'array',
+                'items' => [
+                    'type' => 'integer',
+                    'minimum' => 1,
+                ],
+                'minItems' => 1,
+                'description' => 'Identifiers from the request schema',
+                'example' => [1, 2, 3],
+            ],
+            $properties['ids'] ?? null,
+        );
+        $this->assertSame(['string', 'null'], $properties['status']['type'] ?? null);
+        $this->assertSame(['open', 'closed', null], $properties['status']['enum'] ?? null);
+        $this->assertArrayHasKey('example', $properties['status']);
+        $this->assertNull($properties['status']['example']);
+        $this->assertSame('DTO docblock fallback description', $properties['docOnly']['description'] ?? null);
+        $this->assertSame('string', $properties['fallback']['type'] ?? null);
     }
 
     public function testUrlPathParameterIsAddedWhenMethodHasNoMatchingArgument(): void

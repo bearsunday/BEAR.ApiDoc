@@ -10,6 +10,7 @@ use SplFileInfo;
 
 use function array_map;
 use function assert;
+use function get_object_vars;
 use function implode;
 use function in_array;
 use function is_array;
@@ -70,6 +71,62 @@ final class Schema
         $title = $this->title !== '' && $this->title !== '0' ? sprintf('%s: %s', ucfirst($this->type), $this->title) : ucfirst($this->type);
 
         return sprintf('[%s](../schemas/%s)', $title, $this->file->getFilename());
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    public function propertySchemas(): array
+    {
+        if (! isset($this->schema->properties) || (! is_array($this->schema->properties) && ! is_object($this->schema->properties))) {
+            return [];
+        }
+
+        /** @var array<string, array<string, mixed>> $properties */
+        $properties = [];
+        foreach ((array) $this->schema->properties as $name => $property) {
+            if (! is_string($name) || ! is_object($property)) {
+                continue;
+            }
+
+            $properties[$name] = $this->objectToArray($property);
+        }
+
+        return $properties;
+    }
+
+    /**
+     * @return array<string, mixed>
+     *
+     * @psalm-suppress MixedAssignment
+     */
+    private function objectToArray(object $object): array
+    {
+        /** @var array<string, mixed> $array */
+        $array = [];
+        foreach (get_object_vars($object) as $key => $value) {
+            $array[$key] = $this->schemaValueToArray($value);
+        }
+
+        return $array;
+    }
+
+    /** @psalm-suppress MixedAssignment */
+    private function schemaValueToArray(mixed $value): mixed
+    {
+        if (is_object($value)) {
+            return $this->objectToArray($value);
+        }
+
+        if (! is_array($value)) {
+            return $value;
+        }
+
+        /** @var array<array-key, mixed> $array */
+        $array = [];
+        foreach ($value as $key => $item) {
+            $array[$key] = $this->schemaValueToArray($item);
+        }
+
+        return $array;
     }
 
     public function toStringTypeArray(): string

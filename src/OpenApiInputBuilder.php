@@ -8,6 +8,7 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
 
+use function array_key_exists;
 use function in_array;
 
 /**
@@ -121,13 +122,18 @@ final class OpenApiInputBuilder
         $properties = [];
         /** @var list<string> $required */
         $required = [];
+        $schemaProperties = $schema?->propertySchemas() ?? [];
         foreach ($methodParams as $param) {
             $paramName = $param->getName();
             if (in_array($paramName, $pathParams, true)) {
                 continue;
             }
 
-            $properties[$paramName] = $this->createParameterSchema($param, $schema?->props[$paramName] ?? null);
+            $properties[$paramName] = $this->createRequestBodyPropertySchema(
+                $param,
+                $schemaProperties[$paramName] ?? null,
+                $schema?->props[$paramName] ?? null,
+            );
             if (! $param->isOptional()) {
                 $required[] = $paramName;
             }
@@ -156,6 +162,27 @@ final class OpenApiInputBuilder
         }
 
         return $requestBody;
+    }
+
+    /**
+     * @param array<string, mixed>|null $jsonSchemaProperty
+     *
+     * @return OpenApiParameterSchema
+     */
+    private function createRequestBodyPropertySchema(ReflectionParameter $param, ?array $jsonSchemaProperty, ?SchemaProp $paramSchema): array
+    {
+        if ($jsonSchemaProperty === null) {
+            return $this->createParameterSchema($param, $paramSchema);
+        }
+
+        $schema = $jsonSchemaProperty;
+        $description = $this->getParameterDescription($param, $paramSchema);
+        if ($description !== '' && ! array_key_exists('description', $schema)) {
+            $schema['description'] = $description;
+        }
+
+        /** @var OpenApiParameterSchema $schema */
+        return $schema;
     }
 
     /**
@@ -194,10 +221,6 @@ final class OpenApiInputBuilder
         $description = $this->getParameterDescription($param, $paramSchema);
         if ($description !== '') {
             $schema['description'] = $description;
-        }
-
-        if ($paramSchema instanceof SchemaProp && $paramSchema->example !== '') {
-            $schema['example'] = $paramSchema->example;
         }
 
         return $schema;

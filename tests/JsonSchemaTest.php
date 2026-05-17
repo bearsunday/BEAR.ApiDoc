@@ -63,6 +63,18 @@ class JsonSchemaTest extends TestCase
         $this->assertStringContainsString('Constraints', $output);
     }
 
+    public function testArraySchemaHasNoPropertySchemas(): void
+    {
+        $jsonFile = __DIR__ . '/Fake/app/docs/base/schema/tickets.json';
+        $jsonSchema = new Schema(
+            new SplFileInfo($jsonFile),
+            (object) json_decode((string) file_get_contents($jsonFile)),
+            new ArrayObject()
+        );
+
+        $this->assertSame([], $jsonSchema->propertySchemas());
+    }
+
     public function testSchemaWithSemanticDictionary(): void
     {
         /** @var ArrayObject<string, string> $semanticDictionary */

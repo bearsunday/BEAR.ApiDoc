@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reference fake-data JSON files as OpenAPI external examples with optional `<fakeData>` config (#85)
 - Surface fake-data external example links in HTML and Markdown documentation (#85)
 
+## [1.9.2] - Unreleased
+
+### Fixed
+- Preserve JSON Schema param property definitions when expanding OpenAPI request bodies (#84)
+
 ## [1.9.1] - 2026-04-29
 
 ### Fixed
@@ -137,7 +142,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update dependencies
 
-[1.10.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.1...1.10.0
+[1.10.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.2...1.10.0
+[1.9.2]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.1...1.9.2
 [1.9.1]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.0...1.9.1
 [1.9.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.7.0...1.8.0
