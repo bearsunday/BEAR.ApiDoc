@@ -5,13 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.10.0] - Unreleased
+## [1.10.0] - 2026-05-17
 
 ### Added
 - Reference fake-data JSON files as OpenAPI external examples with optional `<fakeData>` config (#85)
 - Surface fake-data external example links in HTML and Markdown documentation (#85)
-
-## [1.9.2] - Unreleased
 
 ### Fixed
 - Preserve JSON Schema param property definitions when expanding OpenAPI request bodies (#84)
