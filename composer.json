@@ -83,10 +83,14 @@
         "docs-dev": "php bin/apidoc -ctests/apidoc.html.xml --inline-css",
         "docs-md": "php bin/apidoc -ctests/apidoc.md.xml",
         "docs-openapi": "php bin/apidoc -ctests/apidoc.openapi.xml",
+        "docs-audit": "php bin/apidoc -ctests/apidoc.demo-audit.xml",
+        "docs-terms": "php bin/apidoc -ctests/apidoc.demo-terms.xml",
         "docs-all": [
             "@docs",
             "@docs-md",
-            "@docs-openapi"
+            "@docs-openapi",
+            "@docs-audit",
+            "@docs-terms"
         ],
         "openapi-install": "npm install -g @redocly/cli",
         "openapi-lint": "npx @redocly/cli lint tests/docs/openapi/openapi.json",

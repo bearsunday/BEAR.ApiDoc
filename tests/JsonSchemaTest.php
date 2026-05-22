@@ -129,6 +129,17 @@ class JsonSchemaTest extends TestCase
         $this->assertStringContainsString('TKT-001', $jsonSchema->examples[0]);
     }
 
+    public function testPropertySchemasSkipsNonObjectProperties(): void
+    {
+        $jsonSchema = new Schema(
+            new SplFileInfo(__FILE__),
+            (object) ['type' => 'array', 'properties' => ['id' => 'string']],
+            new ArrayObject()
+        );
+
+        $this->assertSame([], $jsonSchema->propertySchemas());
+    }
+
     public function testSchemaPropertyWithExample(): void
     {
         $jsonFile = __DIR__ . '/Fake/app/docs/base/schema/ticket.json';

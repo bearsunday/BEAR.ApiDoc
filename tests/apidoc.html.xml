@@ -14,5 +14,7 @@
         <link rel="profile" href="alps/" />
         <link rel="openapi" href="openapi/openapi.json" />
         <link rel="openapi-html" href="openapi/" />
+        <link rel="audit" href="audit.md" />
+        <link rel="terms" href="terms.md" />
     </links>
 </apidoc>

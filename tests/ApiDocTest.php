@@ -133,6 +133,34 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('## ResourceObjects', $content);
     }
 
+    public function testAuditOutput(): void
+    {
+        $apiDoc = new ApiDoc();
+        $result = $apiDoc(__DIR__ . '/apidoc.audit.xml');
+
+        $this->assertStringContainsString('audit.md', $result);
+        $this->assertFileExists(__DIR__ . '/docs/audit/audit.md');
+
+        $content = file_get_contents(__DIR__ . '/docs/audit/audit.md');
+        $this->assertIsString($content);
+        $this->assertStringContainsString('# API Documentation Audit', $content);
+        $this->assertStringContainsString('## Findings', $content);
+    }
+
+    public function testTermsOutput(): void
+    {
+        $apiDoc = new ApiDoc();
+        $result = $apiDoc(__DIR__ . '/apidoc.terms.xml');
+
+        $this->assertStringContainsString('terms.md', $result);
+        $this->assertFileExists(__DIR__ . '/docs/terms/terms.md');
+
+        $content = file_get_contents(__DIR__ . '/docs/terms/terms.md');
+        $this->assertIsString($content);
+        $this->assertStringContainsString('# Term Usage Index', $content);
+        $this->assertStringContainsString('Lexical ALPS coverage', $content);
+    }
+
     public function testMultipleFormatsOutput(): void
     {
         $apiDoc = new ApiDoc();

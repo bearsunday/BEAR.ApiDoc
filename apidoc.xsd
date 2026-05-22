@@ -43,11 +43,11 @@
     </xs:element>
     <xs:element name="format">
         <xs:annotation>
-            <xs:documentation>Output document format (comma-separated for multiple: html,llms)</xs:documentation>
+            <xs:documentation>Output document format (comma-separated for multiple: html,llms,audit,terms)</xs:documentation>
         </xs:annotation>
         <xs:simpleType>
             <xs:restriction base="xs:string">
-                <xs:pattern value="(html|md|openapi|llms)(,(html|md|openapi|llms))*"/>
+                <xs:pattern value="(html|md|openapi|llms|audit|terms)(,(html|md|openapi|llms|audit|terms))*"/>
             </xs:restriction>
         </xs:simpleType>
     </xs:element>

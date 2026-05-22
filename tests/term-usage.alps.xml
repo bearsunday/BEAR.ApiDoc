@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alps version="1.0">
+  <descriptor id="id" title="Identifier" def="https://schema.org/identifier">
+    <descriptor id="nested"/>
+    <doc format="text">Identifier.</doc>
+  </descriptor>
+</alps>
