@@ -99,7 +99,7 @@ final class TermUsageIndex
 
         foreach ($apiUsages as $term => $usages) {
             $descriptor = $alpsDescriptors[$term] ?? null;
-            $lines[] = sprintf('### Term: `%s`%s', $term, $descriptor !== null ? ' ☑︎' : '');
+            $lines[] = sprintf('### `%s`%s', $term, $descriptor !== null ? ' ☑︎' : '');
             $lines[] = '';
 
             if ($descriptor !== null) {

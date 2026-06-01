@@ -20,7 +20,7 @@ final class TermUsageIndexTest extends TestCase
 
     public function testParameterUsagesFromResourceMethodsAndInputExpansion(): void
     {
-        $this->assertStringContainsString('### Term: `firstName`', $this->markdown);
+        $this->assertStringContainsString('### `firstName`', $this->markdown);
         $this->assertStringContainsString('- parameter: POST /person {firstName}', $this->markdown);
         $this->assertStringContainsString('- parameter: PATCH /person {familyName}', $this->markdown);
         $this->assertStringContainsString('- parameter: POST /contact {name}', $this->markdown);
@@ -42,11 +42,11 @@ final class TermUsageIndexTest extends TestCase
         $this->assertStringContainsString('- Lexical ALPS coverage:', $markdown);
         $this->assertStringContainsString('- Reserved representation fields:', $markdown);
         $this->assertStringContainsString('- ☑︎ = ALPS descriptor binding', $markdown);
-        $this->assertStringContainsString("### Term: `firstName` ☑︎\n\n- title: firstName by ALPS", $markdown);
-        $this->assertStringContainsString("### Term: `familyName` ☑︎\n\n- def: https://schema.org/familyName", $markdown);
-        $this->assertStringContainsString("### Term: `age` ☑︎\n\n- doc: Age in years which must be equal to or greater than zero.", $markdown);
-        $this->assertStringContainsString("### Term: `foo` ☑︎\n\n- doc: Foo descriptor", $markdown);
-        $this->assertStringContainsString("### Term: `assignee`\n\n- usages:", $markdown);
+        $this->assertStringContainsString("### `firstName` ☑︎\n\n- title: firstName by ALPS", $markdown);
+        $this->assertStringContainsString("### `familyName` ☑︎\n\n- def: https://schema.org/familyName", $markdown);
+        $this->assertStringContainsString("### `age` ☑︎\n\n- doc: Age in years which must be equal to or greater than zero.", $markdown);
+        $this->assertStringContainsString("### `foo` ☑︎\n\n- doc: Foo descriptor", $markdown);
+        $this->assertStringContainsString("### `assignee`\n\n- usages:", $markdown);
     }
 
     public function testReservedRepresentationFieldsAreSeparatedFromApiTerms(): void
@@ -54,8 +54,8 @@ final class TermUsageIndexTest extends TestCase
         $markdown = self::normalizeNewlines($this->markdown);
 
         $this->assertStringContainsString('- Reserved representation fields: 2', $markdown);
-        $this->assertStringNotContainsString('### Term: `_embedded`', $markdown);
-        $this->assertStringNotContainsString('### Term: `_links`', $markdown);
+        $this->assertStringNotContainsString('### `_embedded`', $markdown);
+        $this->assertStringNotContainsString('### `_links`', $markdown);
         $this->assertStringContainsString("## Reserved Representation Fields\n\nLeading-underscore fields are listed separately", $markdown);
         $this->assertStringContainsString("### Field: `_embedded`\n\n- usages:\n  - schema property: user.json#/properties/_embedded", $markdown);
         $this->assertStringContainsString("### Field: `_links`\n\n- usages:\n  - schema property: user.json#/properties/_links", $markdown);
@@ -76,7 +76,7 @@ final class TermUsageIndexTest extends TestCase
         $this->assertStringContainsString('- Terms with same-name ALPS descriptor: 0', $markdown);
         $this->assertStringContainsString('- Lexical ALPS coverage: 0%', $markdown);
         $this->assertStringContainsString('- Reserved representation fields: 0', $markdown);
-        $this->assertStringNotContainsString('### Term:', $markdown);
+        $this->assertStringNotContainsString('### `', $markdown);
         $this->assertStringNotContainsString('## Reserved Representation Fields', $markdown);
     }
 
@@ -89,7 +89,7 @@ final class TermUsageIndexTest extends TestCase
         ]);
         $markdown = (new TermUsageIndex($config))->generateMarkdown();
 
-        $this->assertStringContainsString('### Term: `id` ☑︎', $markdown);
+        $this->assertStringContainsString('### `id` ☑︎', $markdown);
         $this->assertStringContainsString('- title: Identifier', $markdown);
         $this->assertStringContainsString('- def: https://schema.org/identifier', $markdown);
         $this->assertStringContainsString('- doc: Identifier.', $markdown);
