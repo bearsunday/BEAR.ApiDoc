@@ -592,12 +592,18 @@ final class HtmlGenerator
     private function extractLinks(): array
     {
         $links = [];
+        $hasTermsLink = false;
         foreach ($this->config->links as $link) {
             $rel = (string) ($link['rel'] ?? '');
             $href = (string) ($link['href'] ?? '');
             if ($rel !== '' && $href !== '') {
+                $hasTermsLink = $hasTermsLink || $rel === 'terms';
                 $links[] = ['rel' => $rel, 'href' => $href];
             }
+        }
+
+        if (! $hasTermsLink) {
+            $links[] = ['rel' => 'terms', 'href' => 'terms.html'];
         }
 
         return $links;

@@ -18,7 +18,13 @@ class ApiDocTest extends TestCase
         $result = $apiDoc(__DIR__ . '/apidoc.html.xml');
 
         $this->assertStringContainsString('ApiDoc generated', $result);
+        $this->assertStringContainsString('terms.html', $result);
         $this->assertFileExists(__DIR__ . '/../docs/index.html');
+        $this->assertFileExists(__DIR__ . '/../docs/terms.html');
+
+        $html = file_get_contents(__DIR__ . '/../docs/index.html');
+        $this->assertIsString($html);
+        $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
     }
 
     public function testMdOutput(): void
@@ -27,7 +33,13 @@ class ApiDocTest extends TestCase
         $result = $apiDoc(__DIR__ . '/apidoc.md.xml');
 
         $this->assertStringContainsString('ApiDoc generated', $result);
+        $this->assertStringContainsString('terms.md', $result);
         $this->assertFileExists(__DIR__ . '/docs/md/index.md');
+        $this->assertFileExists(__DIR__ . '/docs/md/terms.md');
+
+        $markdown = file_get_contents(__DIR__ . '/docs/md/index.md');
+        $this->assertIsString($markdown);
+        $this->assertStringContainsString(' * terms [terms.md](terms.md)', $markdown);
     }
 
     public function testAlpsHtmlOutput(): void
@@ -103,11 +115,12 @@ class ApiDocTest extends TestCase
 
         $this->assertStringContainsString('ApiDoc generated', $result);
         $this->assertFileExists(__DIR__ . '/docs/html-nolinks/index.html');
+        $this->assertFileExists(__DIR__ . '/docs/html-nolinks/terms.html');
 
-        // Verify no Links section
         $html = file_get_contents(__DIR__ . '/docs/html-nolinks/index.html');
         $this->assertIsString($html);
-        $this->assertStringNotContainsString('<h2>Links</h2>', $html);
+        $this->assertStringContainsString('<h2>Links</h2>', $html);
+        $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
     }
 
     public function testInvalidAppNamespace(): void
@@ -167,8 +180,10 @@ class ApiDocTest extends TestCase
         $result = $apiDoc(__DIR__ . '/apidoc.multi.xml');
 
         $this->assertStringContainsString('index.html', $result);
+        $this->assertStringContainsString('terms.html', $result);
         $this->assertStringContainsString('llms.txt', $result);
         $this->assertFileExists(__DIR__ . '/docs/multi/index.html');
+        $this->assertFileExists(__DIR__ . '/docs/multi/terms.html');
         $this->assertFileExists(__DIR__ . '/docs/multi/llms.txt');
     }
 

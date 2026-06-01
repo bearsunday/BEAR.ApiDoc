@@ -50,7 +50,7 @@ final class ApiDocAuditTest extends TestCase
 
     public function testAlpsCountsAndFindingsAreOnlyReportedWhenProfileIsConfigured(): void
     {
-        $report = (new ApiDocAudit(new Config(__DIR__ . '/apidoc.html.xml')))->generateMarkdown();
+        $report = (new ApiDocAudit(new Config(__DIR__ . '/apidoc.html-nolinks.xml')))->generateMarkdown();
 
         $this->assertStringNotContainsString('Operations with ALPS attributes', $report);
         $this->assertStringNotContainsString('Missing ALPS attribute.', $report);

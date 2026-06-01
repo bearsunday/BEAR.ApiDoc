@@ -68,6 +68,19 @@ final class TermUsageIndexTest extends TestCase
         $this->assertSame($this->markdown, (new TermUsageIndex($config))->generateMarkdown());
     }
 
+    public function testHtmlIndexRendersTermsAndBackLink(): void
+    {
+        $config = new Config(__DIR__ . '/apidoc.xml');
+        $html = (new TermUsageIndex($config))->generateHtml();
+
+        $this->assertStringContainsString('<title>Term Usage Index</title>', $html);
+        $this->assertStringContainsString('<a href="index.html">API Documentation</a>', $html);
+        $this->assertStringContainsString('<li>Terms used in API:', $html);
+        $this->assertStringContainsString('<h3><code>firstName</code><span class="badge">ALPS</span></h3>', $html);
+        $this->assertStringContainsString('<li>parameter: POST /person {firstName}</li>', $html);
+        $this->assertStringContainsString('<h2>Reserved Representation Fields</h2>', $html);
+    }
+
     public function testMissingInputsProduceEmptySummary(): void
     {
         $markdown = (new TermUsageIndex(TestConfigFactory::new()))->generateMarkdown();
