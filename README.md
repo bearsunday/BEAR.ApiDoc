@@ -26,6 +26,8 @@ This is a semantic application document, not just an API reference. It describes
 
 - [ApiDoc](https://bearsunday.github.io/BEAR.ApiDoc/)
 - [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
+- [Documentation Audit](https://bearsunday.github.io/BEAR.ApiDoc/audit.md)
+- [Term Usage Index](https://bearsunday.github.io/BEAR.ApiDoc/terms.md)
 
 ## Installation
 
@@ -45,6 +47,13 @@ Generate documentation:
 
 ```bash
 ./vendor/bin/apidoc
+```
+
+Generate documentation quality reports:
+
+```bash
+./vendor/bin/apidoc audit
+./vendor/bin/apidoc terms
 ```
 
 ## Usage
@@ -74,7 +83,7 @@ jobs:
 | Input | Default | Description |
 |-------|---------|-------------|
 | `php-version` | `'8.2'` | PHP version |
-| `format` | `'html,openapi,llms'` | Comma-separated: html (apidoc), md, openapi, alps, llms |
+| `format` | `'html,openapi,llms'` | Comma-separated: html (apidoc), md, openapi, alps, llms, audit, terms |
 | `alps-profile` | `''` | ALPS profile path (required for alps format) |
 | `docs-path` | `'docs/api'` | Output directory |
 | `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
@@ -84,6 +93,8 @@ jobs:
 ```text
 docs/
 ├── index.html          # API documentation
+├── audit.md            # Documentation coverage report
+├── terms.md            # Term usage index
 ├── llms.txt            # AI-readable overview
 ├── openapi.json        # OpenAPI spec
 └── schemas/
@@ -100,6 +111,8 @@ composer docs        # Generate docs with external CSS
 composer docs-dev    # Generate docs with inline CSS for development
 composer docs-md     # Generate Markdown docs
 composer docs-openapi # Generate OpenAPI spec
+composer docs-audit  # Generate documentation audit report
+composer docs-terms  # Generate term usage index
 ```
 
 Application as Documentation.

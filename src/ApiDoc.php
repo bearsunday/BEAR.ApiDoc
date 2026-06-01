@@ -56,9 +56,11 @@ final readonly class ApiDoc
         foreach ($config->formats as $format) {
             $this->dumpFormat($config, $docClass, $format, $fakeDataExampleResolver);
             $outputFiles[] = match ($format) {
+                'audit' => 'audit.md',
                 'openapi' => 'openapi.json',
                 'md' => 'index.md',
                 'llms' => 'llms.txt',
+                'terms' => 'terms.md',
                 default => 'index.html',
             };
         }
@@ -84,6 +86,18 @@ final readonly class ApiDoc
 
         if ($format === 'llms') {
             $this->dumpLlms($config);
+
+            return;
+        }
+
+        if ($format === 'audit') {
+            $this->dumpAudit($config);
+
+            return;
+        }
+
+        if ($format === 'terms') {
+            $this->dumpTerms($config);
 
             return;
         }
@@ -282,5 +296,17 @@ final readonly class ApiDoc
         $content = $generator->generate();
         $outputFile = sprintf('%s/llms.txt', $config->docDir);
         $this->filePutContents($outputFile, $content);
+    }
+
+    private function dumpAudit(Config $config): void
+    {
+        $outputFile = sprintf('%s/audit.md', $config->docDir);
+        $this->filePutContents($outputFile, (new ApiDocAudit($config))->generateMarkdown());
+    }
+
+    private function dumpTerms(Config $config): void
+    {
+        $outputFile = sprintf('%s/terms.md', $config->docDir);
+        $this->filePutContents($outputFile, (new TermUsageIndex($config))->generateMarkdown());
     }
 }

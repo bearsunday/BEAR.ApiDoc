@@ -2,7 +2,10 @@
 <?php
 
 use BEAR\ApiDoc\ApiDoc;
+use BEAR\ApiDoc\ApiDocAudit;
+use BEAR\ApiDoc\Config;
 use BEAR\ApiDoc\ConfigGenerator;
+use BEAR\ApiDoc\TermUsageIndex;
 
 /**
  * @param array<int,string> $argv
@@ -16,11 +19,36 @@ use BEAR\ApiDoc\ConfigGenerator;
         }
     }
 
-    // Handle 'init' subcommand
     if (isset($argv[1]) && $argv[1] === 'init') {
         try {
             $generator = new ConfigGenerator();
             echo $generator() . PHP_EOL;
+        } catch (RuntimeException $e) {
+            printf("%s: %s\n", (new ReflectionClass($e))->getShortName(), $e->getMessage());
+            exit(1);
+        }
+        return;
+    }
+
+    if (isset($argv[1]) && in_array($argv[1], ['audit', 'terms'], true)) {
+        $apidocXml = './apidoc.xml';
+        foreach ($argv as $index => $arg) {
+            if ($arg === '-c' && isset($argv[$index + 1])) {
+                $apidocXml = $argv[$index + 1];
+                continue;
+            }
+
+            if (str_starts_with($arg, '-c') && $arg !== '-c') {
+                $apidocXml = substr($arg, 2);
+            }
+        }
+
+        try {
+            $config = new Config($apidocXml);
+            echo match ($argv[1]) {
+                'audit' => (new ApiDocAudit($config))->generateMarkdown(),
+                'terms' => (new TermUsageIndex($config))->generateMarkdown(),
+            };
         } catch (RuntimeException $e) {
             printf("%s: %s\n", (new ReflectionClass($e))->getShortName(), $e->getMessage());
             exit(1);

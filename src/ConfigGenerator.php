@@ -40,7 +40,7 @@ final class ConfigGenerator
     <appName>%s</appName>
     <scheme>app</scheme>
     <docDir>docs</docDir>
-    <!-- format: html | md | openapi | llms -->
+    <!-- format: html | md | openapi | llms | audit | terms -->
     <format>html</format>
     <title>%s API Doc</title>%s
     <links>

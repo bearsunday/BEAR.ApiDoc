@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../apidoc.xsd">
+    <appName>FakeVendor\FakeProject</appName>
+    <scheme>app</scheme>
+    <docDir>docs/audit</docDir>
+    <format>audit</format>
+    <title>API Doc Title</title>
+    <description>This is the description of API Doc</description>
+    <alps>Fake/app/alps.json</alps>
+</apidoc>

@@ -5,7 +5,7 @@
       {"id": "firstName", "title": "firstName by ALPS"},
       {"id": "familyName", "def": "https://schema.org/familyName"},
       {"id": "age", "doc": {"value": "Age in years which must be equal to or greater than zero."}},
-      {"id": "foo"}
+      {"id": "foo", "doc": "Foo descriptor"}
     ]
   }
 }

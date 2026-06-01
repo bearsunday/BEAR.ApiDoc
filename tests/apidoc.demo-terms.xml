@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../apidoc.xsd">
+    <appName>FakeVendor\FakeProject</appName>
+    <scheme>app</scheme>
+    <docDir>../docs</docDir>
+    <format>terms</format>
+    <title>Term Usage Index</title>
+    <description>Term usage index for the demo API</description>
+    <alps>../docs/alps.json</alps>
+</apidoc>

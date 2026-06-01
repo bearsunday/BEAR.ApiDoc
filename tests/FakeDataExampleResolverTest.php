@@ -149,6 +149,30 @@ final class FakeDataExampleResolverTest extends TestCase
         $this->assertSame(['title' => 'Hello'], $this->readJson('docs/examples/create.param.json'));
     }
 
+    public function testRequestProjectionUsesFirstObjectFromListPayload(): void
+    {
+        $this->writeJson('fake/article.json', [['title' => 'Hello', 'extra' => true]]);
+        $resolver = $this->resolver();
+        $example = $resolver->requestExample(
+            'article.param.json',
+            $this->schema('article.param.json', 'object', ['title']),
+            '',
+            ['title'],
+        );
+
+        $this->assertInstanceOf(FakeDataExample::class, $example);
+        $this->assertSame('./examples/article.param.json', $example->externalValue);
+        $this->assertSame(['title' => 'Hello'], $this->readJson('docs/examples/article.param.json'));
+    }
+
+    public function testExternalValueRelativeToBaseDirectory(): void
+    {
+        $example = new FakeDataExample('ArticleFake', 'summary', './fake/article.json');
+
+        $this->assertSame('./fake/article.json', $example->externalValueRelativeTo(''));
+        $this->assertSame('./fake/article.json', $example->externalValueRelativeTo('.'));
+    }
+
     public function testUnsupportedResponseAndRequestPayloadsAreSkipped(): void
     {
         $resolver = $this->resolver();
