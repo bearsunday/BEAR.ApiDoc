@@ -5,7 +5,7 @@
     <appName>FakeVendor\FakeProject</appName>
     <scheme>app</scheme>
     <docDir>./</docDir>
-    <format>html</format>
+    <format>html,audit,terms</format>
     <title>Sample API Doc</title>
     <description>This is an example API doc. See [ApiDoc manual](http://bearsunday.github.io/manuals/1.0/en/apidoc.html).</description>
     <links>
@@ -13,6 +13,8 @@
         <link rel="issue" href="https://github.com/bearsunday/BEAR.ApiDoc/issues" />
         <link rel="openapi" href="openapi.json" />
         <link rel="schemas" href="schemas/" />
+        <link rel="audit" href="audit.md" />
+        <link rel="terms" href="terms.md" />
     </links>
     <alps>alps.json</alps>
 </apidoc>

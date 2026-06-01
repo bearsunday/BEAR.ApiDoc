@@ -15,6 +15,7 @@
                 <xs:element ref="description" minOccurs="0"/>
                 <xs:element ref="links" minOccurs="0"/>
                 <xs:element ref="alps" minOccurs="0"/>
+                <xs:element ref="fakeData" minOccurs="0"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
@@ -42,14 +43,11 @@
     </xs:element>
     <xs:element name="format">
         <xs:annotation>
-            <xs:documentation>Output document format</xs:documentation>
+            <xs:documentation>Output document format (comma-separated for multiple: html,llms,audit,terms)</xs:documentation>
         </xs:annotation>
         <xs:simpleType>
             <xs:restriction base="xs:string">
-                <xs:enumeration value="html"/>
-                <xs:enumeration value="md"/>
-                <xs:enumeration value="openapi"/>
-                <xs:enumeration value="llms"/>
+                <xs:pattern value="(html|md|openapi|llms|audit|terms)(,(html|md|openapi|llms|audit|terms))*"/>
             </xs:restriction>
         </xs:simpleType>
     </xs:element>
@@ -91,4 +89,16 @@
             <xs:documentation>ALPS link</xs:documentation>
         </xs:annotation>
     </xs:element>
+    <xs:element name="fakeData" type="fakeDataType">
+        <xs:annotation>
+            <xs:documentation>Fake data directory for external OpenAPI examples</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="fakeDataType">
+        <xs:attribute name="dir" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Fake data directory relative to apidoc.xml</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
 </xs:schema>
