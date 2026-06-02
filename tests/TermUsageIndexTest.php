@@ -68,6 +68,24 @@ final class TermUsageIndexTest extends TestCase
         $this->assertSame($this->markdown, (new TermUsageIndex($config))->generateMarkdown());
     }
 
+    public function testHtmlIndexRendersTermsAndBackLink(): void
+    {
+        $config = new Config(__DIR__ . '/apidoc.xml');
+        $html = (new TermUsageIndex($config))->generateHtml();
+
+        $this->assertStringContainsString('<title>Term Usage Index</title>', $html);
+        $this->assertStringContainsString('<a href="index.html">API Documentation</a>', $html);
+        $this->assertStringContainsString('<li>Terms used in API:', $html);
+        // The Index links each term (and reserved field) down to its entry anchor.
+        $this->assertStringContainsString('<ul class="index-list">', $html);
+        $this->assertStringContainsString('<li><a href="#term-firstName">firstName</a></li>', $html);
+        $this->assertStringContainsString('<li><a href="#field-_links">_links</a></li>', $html);
+        $this->assertStringContainsString('<dt id="term-firstName" class="firstName"><code>firstName</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>', $html);
+        $this->assertStringContainsString('<dd><p>title: firstName by ALPS</p>', $html);
+        $this->assertStringContainsString('<li>parameter: POST /person {firstName}</li>', $html);
+        $this->assertStringContainsString('<h2>Reserved Representation Fields</h2>', $html);
+    }
+
     public function testMissingInputsProduceEmptySummary(): void
     {
         $markdown = (new TermUsageIndex(TestConfigFactory::new()))->generateMarkdown();

@@ -30,8 +30,15 @@ final readonly class Index implements Stringable
         $this->title = $config->title;
         $this->description = $config->description !== '' && $config->description !== '0' ? $config->description . PHP_EOL . PHP_EOL : '';
         $links = [];
+        $hasTermsLink = false;
         foreach ($config->links as $link) {
-            $links[] = new Link((string) $link['href'], new Description((string) $link['rel']));
+            $rel = (string) $link['rel'];
+            $hasTermsLink = $hasTermsLink || $rel === 'terms';
+            $links[] = new Link((string) $link['href'], new Description($rel));
+        }
+
+        if (! $hasTermsLink && $this->ext === 'md') {
+            $links[] = new Link('terms.md', new Description('terms'));
         }
 
         $this->links = new TagLinks($links);

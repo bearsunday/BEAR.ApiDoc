@@ -89,8 +89,7 @@
             "@docs",
             "@docs-md",
             "@docs-openapi",
-            "@docs-audit",
-            "@docs-terms"
+            "@docs-audit"
         ],
         "openapi-install": "npm install -g @redocly/cli",
         "openapi-lint": "npx @redocly/cli lint tests/docs/openapi/openapi.json",

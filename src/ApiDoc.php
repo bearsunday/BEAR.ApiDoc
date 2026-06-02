@@ -55,17 +55,25 @@ final readonly class ApiDoc
         $outputFiles = [];
         foreach ($config->formats as $format) {
             $this->dumpFormat($config, $docClass, $format, $fakeDataExampleResolver);
-            $outputFiles[] = match ($format) {
-                'audit' => 'audit.md',
-                'openapi' => 'openapi.json',
-                'md' => 'index.md',
-                'llms' => 'llms.txt',
-                'terms' => 'terms.md',
-                default => 'index.html',
-            };
+            foreach ($this->outputFilesForFormat($format) as $outputFile) {
+                $outputFiles[] = $outputFile;
+            }
         }
 
         return sprintf('ApiDoc generated. %s/%s', (string) realpath($config->docDir), implode(', ', $outputFiles));
+    }
+
+    /** @return list<string> */
+    private function outputFilesForFormat(string $format): array
+    {
+        return match ($format) {
+            'audit' => ['audit.md'],
+            'openapi' => ['openapi.json'],
+            'md' => ['index.md', 'terms.md'],
+            'llms' => ['llms.txt'],
+            'terms' => ['terms.md'],
+            default => ['index.html', 'terms.html'],
+        };
     }
 
     private function dumpFormat(Config $config, DocClass $docClass, string $format, FakeDataExampleResolver $fakeDataExampleResolver): void
@@ -119,6 +127,8 @@ final readonly class ApiDoc
 
             $this->filePutContents($file . '.md', $markdown);
         }
+
+        $this->dumpTermsMarkdown($config);
     }
 
     public function dumpHtml(Config $config, DocClass $docClass, ?FakeDataExampleResolver $fakeDataExampleResolver = null): void
@@ -141,6 +151,7 @@ final readonly class ApiDoc
         $html = $generator->generate();
         $outputFile = sprintf('%s/index.html', $config->docDir);
         $this->filePutContents($outputFile, $html);
+        $this->dumpTermsHtml($config);
 
         if ($config->responseSchemaDir !== '' && $config->responseSchemaDir !== '0') {
             $this->copySchemas($config);
@@ -306,7 +317,18 @@ final readonly class ApiDoc
 
     private function dumpTerms(Config $config): void
     {
+        $this->dumpTermsMarkdown($config);
+    }
+
+    private function dumpTermsMarkdown(Config $config): void
+    {
         $outputFile = sprintf('%s/terms.md', $config->docDir);
         $this->filePutContents($outputFile, (new TermUsageIndex($config))->generateMarkdown());
+    }
+
+    private function dumpTermsHtml(Config $config): void
+    {
+        $outputFile = sprintf('%s/terms.html', $config->docDir);
+        $this->filePutContents($outputFile, (new TermUsageIndex($config))->generateHtml());
     }
 }

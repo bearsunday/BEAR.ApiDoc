@@ -40,7 +40,10 @@ use function usort;
 use const PATHINFO_EXTENSION;
 use const PHP_EOL;
 
-/** @psalm-type AlpsDescriptor = array{title?: string, def?: string, doc?: string} */
+/**
+ * @psalm-type AlpsDescriptor = array{title?: string, def?: string, doc?: string}
+ * @psalm-type TermUsageData = array{apiUsages: array<string, array<string, true>>, reservedUsages: array<string, array<string, true>>, alpsDescriptors: array<string, AlpsDescriptor>, matchedAlpsDescriptorCount: int}
+ */
 final class TermUsageIndex
 {
     /** @var array<string, array<string, true>> */
@@ -61,24 +64,11 @@ final class TermUsageIndex
 
     public function generateMarkdown(): string
     {
-        $this->apiUsages = [];
-        $this->reservedUsages = [];
-        $this->alpsDescriptors = [];
-        $this->collectParameterUsages();
-        $this->collectSchemaPropertyUsages($this->config->requestSchemaDir);
-        $this->collectSchemaPropertyUsages($this->config->responseSchemaDir);
-        $this->collectAlpsDescriptors();
-
-        /** @var array<string, array<string, true>> $apiUsages */
-        $apiUsages = $this->apiUsages;
-        /** @var array<string, array<string, true>> $reservedUsages */
-        $reservedUsages = $this->reservedUsages;
-        /** @var array<string, AlpsDescriptor> $alpsDescriptors */
-        $alpsDescriptors = $this->alpsDescriptors;
-        ksort($apiUsages);
-        ksort($reservedUsages);
-        ksort($alpsDescriptors);
-        $matchedAlpsDescriptorCount = $this->matchedAlpsDescriptorCount($apiUsages, $alpsDescriptors);
+        $data = $this->collectData();
+        $apiUsages = $data['apiUsages'];
+        $reservedUsages = $data['reservedUsages'];
+        $alpsDescriptors = $data['alpsDescriptors'];
+        $matchedAlpsDescriptorCount = $data['matchedAlpsDescriptorCount'];
 
         $lines = [
             '# Term Usage Index',
@@ -140,6 +130,53 @@ final class TermUsageIndex
         }
 
         return rtrim(implode(PHP_EOL, $lines)) . PHP_EOL;
+    }
+
+    public function generateHtml(): string
+    {
+        $data = $this->collectData();
+        $apiUsages = $data['apiUsages'];
+        $reservedUsages = $data['reservedUsages'];
+        $alpsDescriptors = $data['alpsDescriptors'];
+        $matchedAlpsDescriptorCount = $data['matchedAlpsDescriptorCount'];
+        $coverage = $this->coveragePercent(count($apiUsages), $matchedAlpsDescriptorCount);
+
+        return (new TermUsageHtmlRenderer())->render(
+            $apiUsages,
+            $reservedUsages,
+            $alpsDescriptors,
+            $matchedAlpsDescriptorCount,
+            $coverage,
+        );
+    }
+
+    /** @return TermUsageData */
+    private function collectData(): array
+    {
+        $this->apiUsages = [];
+        $this->reservedUsages = [];
+        $this->alpsDescriptors = [];
+        $this->collectParameterUsages();
+        $this->collectSchemaPropertyUsages($this->config->requestSchemaDir);
+        $this->collectSchemaPropertyUsages($this->config->responseSchemaDir);
+        $this->collectAlpsDescriptors();
+
+        /** @var array<string, array<string, true>> $apiUsages */
+        $apiUsages = $this->apiUsages;
+        /** @var array<string, array<string, true>> $reservedUsages */
+        $reservedUsages = $this->reservedUsages;
+        /** @var array<string, AlpsDescriptor> $alpsDescriptors */
+        $alpsDescriptors = $this->alpsDescriptors;
+        ksort($apiUsages);
+        ksort($reservedUsages);
+        ksort($alpsDescriptors);
+
+        return [
+            'apiUsages' => $apiUsages,
+            'reservedUsages' => $reservedUsages,
+            'alpsDescriptors' => $alpsDescriptors,
+            'matchedAlpsDescriptorCount' => $this->matchedAlpsDescriptorCount($apiUsages, $alpsDescriptors),
+        ];
     }
 
     private function collectParameterUsages(): void
