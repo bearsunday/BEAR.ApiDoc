@@ -33,6 +33,9 @@ final readonly class TermUsageHtmlRenderer
     ): string {
         $termsHtml = $this->renderTerms($apiUsages, $alpsDescriptors);
         $reservedHtml = $this->renderReservedTerms($reservedUsages);
+        $legend = $matchedAlpsDescriptorCount > 0
+            ? '<p class="legend">' . $this->alpsMark() . ' = defined in <a href="http://alps.io/">ALPS</a></p>'
+            : '';
 
         return <<<HTML
 <!DOCTYPE html>
@@ -76,15 +79,15 @@ code {
 .usages {
     margin: 8px 0;
 }
-.badge {
-    display: inline-block;
+.alps {
     margin-left: 6px;
-    padding: 0.1em 0.45em;
-    border-radius: 4px;
-    background: #ddf4ff;
-    color: #055160;
-    font-size: 0.8em;
-    font-weight: 600;
+    color: #1a7f37;
+    font-size: 0.9em;
+}
+.legend {
+    margin: 0 0 8px;
+    color: #57606a;
+    font-size: 0.9em;
 }
 </style>
 </head>
@@ -103,6 +106,7 @@ code {
 </ul>
 
 <h2>Terms</h2>
+{$legend}
 {$termsHtml}
 {$reservedHtml}
 </main>
@@ -124,7 +128,7 @@ HTML;
         $html = [];
         foreach ($apiUsages as $term => $usages) {
             $descriptor = $alpsDescriptors[$term] ?? null;
-            $badge = $descriptor !== null ? '<span class="badge">ALPS</span>' : '';
+            $badge = $descriptor !== null ? $this->alpsMark() : '';
             $html[] = sprintf(
                 '<section class="term" id="%s"><h3><code>%s</code>%s</h3>%s%s</section>',
                 $this->htmlId('term', $term),
@@ -204,6 +208,11 @@ HTML;
         }
 
         return sprintf('<ul class="usages">%s</ul>', implode('', $items));
+    }
+
+    private function alpsMark(): string
+    {
+        return '<span class="alps" title="defined in ALPS">&#x2611;</span>';
     }
 
     private function htmlId(string $prefix, string $value): string

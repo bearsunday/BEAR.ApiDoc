@@ -39,15 +39,15 @@ code {
 .usages {
     margin: 8px 0;
 }
-.badge {
-    display: inline-block;
+.alps {
     margin-left: 6px;
-    padding: 0.1em 0.45em;
-    border-radius: 4px;
-    background: #ddf4ff;
-    color: #055160;
-    font-size: 0.8em;
-    font-weight: 600;
+    color: #1a7f37;
+    font-size: 0.9em;
+}
+.legend {
+    margin: 0 0 8px;
+    color: #57606a;
+    font-size: 0.9em;
 }
 </style>
 </head>
@@ -66,8 +66,9 @@ code {
 </ul>
 
 <h2>Terms</h2>
+<p class="legend"><span class="alps" title="defined in ALPS">&#x2611;</span> = defined in <a href="http://alps.io/">ALPS</a></p>
 <section class="term" id="term-additionalName"><h3><code>additionalName</code></h3><ul class="usages"><li>schema property: card.json#/properties/additionalName</li></ul></section>
-<section class="term" id="term-age"><h3><code>age</code><span class="badge">ALPS</span></h3><ul class="descriptor"><li>title: Age in years which must be equal to or greater than zero.</li></ul><ul class="usages"><li>parameter: GET /alps-fallback {age}</li><li>parameter: POST /contact {age}</li><li>parameter: POST /contact-with-descriptions {age}</li><li>parameter: POST /person {age}</li><li>parameter: PATCH /person {age}</li><li>parameter: POST /users/{id} {age}</li><li>parameter: PUT /users/{id} {age}</li><li>schema property: contact.param.json#/properties/age</li><li>schema property: person.json#/properties/age</li><li>schema property: person.param.json#/properties/age</li><li>schema property: user.json#/properties/age</li><li>schema property: user.param.json#/properties/age</li></ul></section>
+<section class="term" id="term-age"><h3><code>age</code><span class="alps" title="defined in ALPS">&#x2611;</span></h3><ul class="descriptor"><li>title: Age in years which must be equal to or greater than zero.</li></ul><ul class="usages"><li>parameter: GET /alps-fallback {age}</li><li>parameter: POST /contact {age}</li><li>parameter: POST /contact-with-descriptions {age}</li><li>parameter: POST /person {age}</li><li>parameter: PATCH /person {age}</li><li>parameter: POST /users/{id} {age}</li><li>parameter: PUT /users/{id} {age}</li><li>schema property: contact.param.json#/properties/age</li><li>schema property: person.json#/properties/age</li><li>schema property: person.param.json#/properties/age</li><li>schema property: user.json#/properties/age</li><li>schema property: user.param.json#/properties/age</li></ul></section>
 <section class="term" id="term-assignee"><h3><code>assignee</code></h3><ul class="usages"><li>parameter: POST /ticket/{id} {assignee}</li><li>parameter: PUT /ticket/{id} {assignee}</li><li>parameter: PUT /ticket/assign {assignee}</li><li>schema property: ticket.json#/properties/assignee</li><li>schema property: ticket.param.json#/properties/assignee</li></ul></section>
 <section class="term" id="term-bday"><h3><code>bday</code></h3><ul class="usages"><li>schema property: card.json#/properties/bday</li></ul></section>
 <section class="term" id="term-bothSummaryAndDescription"><h3><code>bothSummaryAndDescription</code></h3><ul class="usages"><li>parameter: POST /docblock-variants {bothSummaryAndDescription}</li></ul></section>
@@ -85,8 +86,8 @@ code {
 <section class="term" id="term-email"><h3><code>email</code></h3><ul class="usages"><li>parameter: POST /contact {email}</li><li>parameter: POST /contact-with-descriptions {email}</li><li>parameter: POST /users/{id} {email}</li><li>parameter: PUT /users/{id} {email}</li><li>schema property: card.json#/properties/email</li><li>schema property: contact.param.json#/properties/email</li><li>schema property: user.json#/properties/email</li><li>schema property: user.param.json#/properties/email</li></ul></section>
 <section class="term" id="term-enabled"><h3><code>enabled</code></h3><ul class="usages"><li>parameter: PUT /users/{id} {enabled}</li><li>schema property: user.json#/properties/enabled</li><li>schema property: user.param.json#/properties/enabled</li></ul></section>
 <section class="term" id="term-extended-address"><h3><code>extended-address</code></h3><ul class="usages"><li>schema property: address.json#/properties/extended-address</li></ul></section>
-<section class="term" id="term-familyName"><h3><code>familyName</code><span class="badge">ALPS</span></h3><ul class="descriptor"><li>def: <a href="https://schema.org/familyName">https://schema.org/familyName</a></li></ul><ul class="usages"><li>parameter: GET /alps-fallback {familyName}</li><li>parameter: POST /person {familyName}</li><li>parameter: PATCH /person {familyName}</li><li>schema property: card.json#/properties/familyName</li><li>schema property: person.json#/properties/familyName</li><li>schema property: person.param.json#/properties/familyName</li></ul></section>
-<section class="term" id="term-firstName"><h3><code>firstName</code><span class="badge">ALPS</span></h3><ul class="descriptor"><li>title: First Name by ALPS</li></ul><ul class="usages"><li>parameter: GET /alps-fallback {firstName}</li><li>parameter: POST /person {firstName}</li><li>parameter: PATCH /person {firstName}</li><li>schema property: person.json#/properties/firstName</li><li>schema property: person.param.json#/properties/firstName</li><li>schema property: user.json#/properties/firstName</li></ul></section>
+<section class="term" id="term-familyName"><h3><code>familyName</code><span class="alps" title="defined in ALPS">&#x2611;</span></h3><ul class="descriptor"><li>def: <a href="https://schema.org/familyName">https://schema.org/familyName</a></li></ul><ul class="usages"><li>parameter: GET /alps-fallback {familyName}</li><li>parameter: POST /person {familyName}</li><li>parameter: PATCH /person {familyName}</li><li>schema property: card.json#/properties/familyName</li><li>schema property: person.json#/properties/familyName</li><li>schema property: person.param.json#/properties/familyName</li></ul></section>
+<section class="term" id="term-firstName"><h3><code>firstName</code><span class="alps" title="defined in ALPS">&#x2611;</span></h3><ul class="descriptor"><li>title: First Name by ALPS</li></ul><ul class="usages"><li>parameter: GET /alps-fallback {firstName}</li><li>parameter: POST /person {firstName}</li><li>parameter: PATCH /person {firstName}</li><li>schema property: person.json#/properties/firstName</li><li>schema property: person.param.json#/properties/firstName</li><li>schema property: user.json#/properties/firstName</li></ul></section>
 <section class="term" id="term-fn"><h3><code>fn</code></h3><ul class="usages"><li>schema property: card.json#/properties/fn</li></ul></section>
 <section class="term" id="term-foo"><h3><code>foo</code></h3><ul class="usages"><li>parameter: GET /alps-fallback {foo}</li></ul></section>
 <section class="term" id="term-fruits"><h3><code>fruits</code></h3><ul class="usages"><li>schema property: array.json#/properties/fruits</li></ul></section>
@@ -94,7 +95,7 @@ code {
 <section class="term" id="term-honorificPrefix"><h3><code>honorificPrefix</code></h3><ul class="usages"><li>schema property: card.json#/properties/honorificPrefix</li></ul></section>
 <section class="term" id="term-honorificSuffix"><h3><code>honorificSuffix</code></h3><ul class="usages"><li>schema property: card.json#/properties/honorificSuffix</li></ul></section>
 <section class="term" id="term-href"><h3><code>href</code></h3><ul class="usages"><li>schema property: user.json#/properties/_links/properties/self/properties/href</li></ul></section>
-<section class="term" id="term-id"><h3><code>id</code><span class="badge">ALPS</span></h3><ul class="descriptor"><li>title: Person identifier</li></ul><ul class="usages"><li>parameter: GET /address {id}</li><li>parameter: GET /card {id}</li><li>parameter: GET /org {id}</li><li>parameter: GET /person {id}</li><li>parameter: PATCH /person {id}</li><li>parameter: GET /ticket/{id} {id}</li><li>parameter: PUT /ticket/{id} {id}</li><li>parameter: DELETE /ticket/{id} {id}</li><li>parameter: PUT /ticket/assign {id}</li><li>parameter: GET /union-type {id}</li><li>parameter: GET /users/{id} {id}</li><li>parameter: PUT /users/{id} {id}</li><li>parameter: DELETE /users/{id} {id}</li><li>schema property: org.json#/properties/id</li><li>schema property: person.param.json#/properties/id</li><li>schema property: ticket.json#/properties/id</li><li>schema property: ticket.param.json#/properties/id</li><li>schema property: user.json#/properties/id</li><li>schema property: user.param.json#/properties/id</li></ul></section>
+<section class="term" id="term-id"><h3><code>id</code><span class="alps" title="defined in ALPS">&#x2611;</span></h3><ul class="descriptor"><li>title: Person identifier</li></ul><ul class="usages"><li>parameter: GET /address {id}</li><li>parameter: GET /card {id}</li><li>parameter: GET /org {id}</li><li>parameter: GET /person {id}</li><li>parameter: PATCH /person {id}</li><li>parameter: GET /ticket/{id} {id}</li><li>parameter: PUT /ticket/{id} {id}</li><li>parameter: DELETE /ticket/{id} {id}</li><li>parameter: PUT /ticket/assign {id}</li><li>parameter: GET /union-type {id}</li><li>parameter: GET /users/{id} {id}</li><li>parameter: PUT /users/{id} {id}</li><li>parameter: DELETE /users/{id} {id}</li><li>schema property: org.json#/properties/id</li><li>schema property: person.param.json#/properties/id</li><li>schema property: ticket.json#/properties/id</li><li>schema property: ticket.param.json#/properties/id</li><li>schema property: user.json#/properties/id</li><li>schema property: user.param.json#/properties/id</li></ul></section>
 <section class="term" id="term-ids"><h3><code>ids</code></h3><ul class="usages"><li>schema property: json-schema-input.param.json#/properties/ids</li></ul></section>
 <section class="term" id="term-items"><h3><code>items</code></h3><ul class="usages"><li>parameter: GET /array-data {items}</li></ul></section>
 <section class="term" id="term-juice"><h3><code>juice</code></h3><ul class="usages"><li>schema property: array.json#/properties/juice</li></ul></section>

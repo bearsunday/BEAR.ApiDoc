@@ -26,7 +26,7 @@ final class TermUsageHtmlRendererTest extends TestCase
             '100',
         );
 
-        $this->assertStringContainsString('<h3><code>emptyDescriptor</code><span class="badge">ALPS</span></h3>', $html);
+        $this->assertStringContainsString('<h3><code>emptyDescriptor</code><span class="alps" title="defined in ALPS">&#x2611;</span></h3>', $html);
         $this->assertStringNotContainsString('class="descriptor"', $html);
     }
 

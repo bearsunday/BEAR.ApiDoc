@@ -76,7 +76,8 @@ final class TermUsageIndexTest extends TestCase
         $this->assertStringContainsString('<title>Term Usage Index</title>', $html);
         $this->assertStringContainsString('<a href="index.html">API Documentation</a>', $html);
         $this->assertStringContainsString('<li>Terms used in API:', $html);
-        $this->assertStringContainsString('<h3><code>firstName</code><span class="badge">ALPS</span></h3>', $html);
+        $this->assertStringContainsString('<h3><code>firstName</code><span class="alps" title="defined in ALPS">&#x2611;</span></h3>', $html);
+        $this->assertStringContainsString('= defined in <a href="http://alps.io/">ALPS</a>', $html);
         $this->assertStringContainsString('<li>parameter: POST /person {firstName}</li>', $html);
         $this->assertStringContainsString('<h2>Reserved Representation Fields</h2>', $html);
     }
