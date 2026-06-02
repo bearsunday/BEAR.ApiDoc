@@ -16,7 +16,7 @@ final class TermUsageHtmlRendererTest extends TestCase
         $this->assertStringNotContainsString('Reserved Representation Fields', $html);
     }
 
-    public function testEmptyDescriptorDoesNotRenderDescriptorList(): void
+    public function testDescriptorBackedTermCarriesItsDescriptorAsClassWithoutDescription(): void
     {
         $html = (new TermUsageHtmlRenderer())->render(
             ['emptyDescriptor' => ['parameter: GET /empty {emptyDescriptor}' => true]],
@@ -26,8 +26,10 @@ final class TermUsageHtmlRendererTest extends TestCase
             '100',
         );
 
-        $this->assertStringContainsString('<h3><code>emptyDescriptor</code><span class="alps" title="defined in ALPS">&#x2611;</span></h3>', $html);
-        $this->assertStringNotContainsString('class="descriptor"', $html);
+        // The same-name ALPS descriptor is the semantic token, not a UI badge.
+        $this->assertStringContainsString('class="emptyDescriptor"', $html);
+        // An empty descriptor contributes no description, so the dd opens straight into usages.
+        $this->assertStringContainsString('<dd><ul>', $html);
     }
 
     /**

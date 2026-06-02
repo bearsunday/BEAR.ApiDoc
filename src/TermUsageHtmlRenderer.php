@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use function array_keys;
+use function array_map;
 use function htmlspecialchars;
 use function implode;
 use function preg_replace;
@@ -33,9 +34,6 @@ final readonly class TermUsageHtmlRenderer
     ): string {
         $termsHtml = $this->renderTerms($apiUsages, $alpsDescriptors);
         $reservedHtml = $this->renderReservedTerms($reservedUsages);
-        $legend = $matchedAlpsDescriptorCount > 0
-            ? '<p class="legend">' . $this->alpsMark() . ' = defined in <a href="http://alps.io/">ALPS</a></p>'
-            : '';
 
         return <<<HTML
 <!DOCTYPE html>
@@ -65,29 +63,23 @@ code {
     background: #f6f8fa;
     font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Consolas, monospace;
 }
-.summary {
-    padding-left: 1.4em;
+dl {
+    margin: 0;
 }
-.term {
+dt {
+    margin-top: 16px;
     border-top: 1px solid #d8dee4;
-    padding: 16px 0;
+    padding-top: 16px;
 }
-.term h3 {
-    margin: 0 0 8px;
+dd {
+    margin: 4px 0 0;
 }
-.descriptor,
-.usages {
-    margin: 8px 0;
-}
-.alps {
-    margin-left: 6px;
-    color: #1a7f37;
-    font-size: 0.9em;
-}
-.legend {
-    margin: 0 0 8px;
+dd p {
+    margin: 0 0 4px;
     color: #57606a;
-    font-size: 0.9em;
+}
+dd ul {
+    margin: 4px 0;
 }
 </style>
 </head>
@@ -95,10 +87,10 @@ code {
 <main>
 <p><a href="index.html">API Documentation</a></p>
 <h1>Term Usage Index</h1>
-<p>This index reports lexical identifier matches only; it does not prove semantic equivalence.</p>
+<p>This index reports lexical identifier matches only; it does not prove semantic equivalence. A term backed by an ALPS descriptor carries that descriptor as its class, per the profile linked above.</p>
 
 <h2>Summary</h2>
-<ul class="summary">
+<ul>
   <li>Terms used in API: {$this->html((string) \count($apiUsages))}</li>
   <li>Terms with same-name ALPS descriptor: {$this->html((string) $matchedAlpsDescriptorCount)}</li>
   <li>Lexical ALPS coverage: {$this->html($coverage)}%</li>
@@ -106,7 +98,6 @@ code {
 </ul>
 
 <h2>Terms</h2>
-{$legend}
 {$termsHtml}
 {$reservedHtml}
 </main>
@@ -125,21 +116,12 @@ HTML;
             return '<p>No API terms found.</p>';
         }
 
-        $html = [];
+        $entries = [];
         foreach ($apiUsages as $term => $usages) {
-            $descriptor = $alpsDescriptors[$term] ?? null;
-            $badge = $descriptor !== null ? $this->alpsMark() : '';
-            $html[] = sprintf(
-                '<section class="term" id="%s"><h3><code>%s</code>%s</h3>%s%s</section>',
-                $this->htmlId('term', $term),
-                $this->html($term),
-                $badge,
-                $this->renderDescriptor($descriptor),
-                $this->renderUsageList($usages),
-            );
+            $entries[] = $this->renderEntry('term', $term, $usages, $alpsDescriptors[$term] ?? null);
         }
 
-        return implode(PHP_EOL, $html);
+        return sprintf('<dl>%s</dl>', PHP_EOL . implode(PHP_EOL, $entries) . PHP_EOL);
     }
 
     /** @param array<string, array<string, true>> $reservedUsages */
@@ -149,54 +131,67 @@ HTML;
             return '';
         }
 
-        $html = [
-            '<h2>Reserved Representation Fields</h2>',
-            '<p>Leading-underscore fields are listed separately because they usually belong to the representation format rather than the API domain vocabulary.</p>',
-        ];
+        $entries = [];
         foreach ($reservedUsages as $term => $usages) {
-            $html[] = sprintf(
-                '<section class="term" id="%s"><h3>Field: <code>%s</code></h3>%s</section>',
-                $this->htmlId('field', $term),
-                $this->html($term),
-                $this->renderUsageList($usages),
-            );
+            $entries[] = $this->renderEntry('field', $term, $usages, null);
         }
 
-        return implode(PHP_EOL, $html);
+        return implode(PHP_EOL, [
+            '<h2>Reserved Representation Fields</h2>',
+            '<p>Leading-underscore fields are listed separately because they usually belong to the representation format rather than the API domain vocabulary.</p>',
+            sprintf('<dl>%s</dl>', PHP_EOL . implode(PHP_EOL, $entries) . PHP_EOL),
+        ]);
+    }
+
+    /**
+     * @param array<string, true> $usages
+     * @param AlpsDescriptor|null $descriptor
+     */
+    private function renderEntry(string $idPrefix, string $term, array $usages, ?array $descriptor): string
+    {
+        $def = $descriptor !== null ? ($descriptor['def'] ?? '') : '';
+        $defIsUrl = $def !== '' && str_starts_with($def, 'http');
+
+        $code = sprintf('<code>%s</code>', $this->html($term));
+        $name = $defIsUrl ? sprintf('<a href="%s">%s</a>', $this->html($def), $code) : $code;
+        $classAttr = $descriptor !== null ? sprintf(' class="%s"', $this->html($term)) : '';
+
+        return sprintf(
+            '<dt id="%s"%s>%s</dt>%s<dd>%s%s</dd>',
+            $this->htmlId($idPrefix, $term),
+            $classAttr,
+            $name,
+            PHP_EOL,
+            $this->renderDescription($descriptor, $defIsUrl),
+            $this->renderUsageList($usages),
+        );
     }
 
     /** @param AlpsDescriptor|null $descriptor */
-    private function renderDescriptor(?array $descriptor): string
+    private function renderDescription(?array $descriptor, bool $defIsUrl): string
     {
         if ($descriptor === null) {
             return '';
         }
 
-        $items = [];
-        foreach (['title', 'def', 'doc'] as $field) {
+        $lines = [];
+        foreach (['title', 'doc'] as $field) {
             $value = $descriptor[$field] ?? '';
-            if ($value === '') {
-                continue;
+            if ($value !== '') {
+                $lines[] = $this->html($value);
             }
-
-            $items[] = sprintf('<li>%s: %s</li>', $this->html($field), $this->renderDescriptorValue($field, $value));
         }
 
-        if ($items === []) {
+        $def = $descriptor['def'] ?? '';
+        if ($def !== '' && ! $defIsUrl) {
+            $lines[] = $this->html($def);
+        }
+
+        if ($lines === []) {
             return '';
         }
 
-        return sprintf('<ul class="descriptor">%s</ul>', implode('', $items));
-    }
-
-    private function renderDescriptorValue(string $field, string $value): string
-    {
-        $escapedValue = $this->html($value);
-        if ($field === 'def' && str_starts_with($value, 'http')) {
-            return sprintf('<a href="%s">%s</a>', $escapedValue, $escapedValue);
-        }
-
-        return $escapedValue;
+        return implode('', array_map(static fn (string $line): string => sprintf('<p>%s</p>', $line), $lines));
     }
 
     /** @param array<string, true> $usages */
@@ -207,12 +202,7 @@ HTML;
             $items[] = sprintf('<li>%s</li>', $this->html($usage));
         }
 
-        return sprintf('<ul class="usages">%s</ul>', implode('', $items));
-    }
-
-    private function alpsMark(): string
-    {
-        return '<span class="alps" title="defined in ALPS">&#x2611;</span>';
+        return sprintf('<ul>%s</ul>', implode('', $items));
     }
 
     private function htmlId(string $prefix, string $value): string
