@@ -71,6 +71,10 @@ dt {
     border-top: 1px solid #d8dee4;
     padding-top: 16px;
 }
+dt code {
+    font-size: 1.05em;
+    font-weight: 600;
+}
 dd {
     margin: 4px 0 0;
 }
