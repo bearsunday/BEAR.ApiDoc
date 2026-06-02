@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Term Usage Index</title>
 <link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/apidoc.xml">
 <style>
@@ -18,6 +19,10 @@ main {
 }
 a {
     color: #0969da;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
 }
 code {
     padding: 0.15em 0.35em;
@@ -34,11 +39,15 @@ dt {
     padding-top: 16px;
 }
 dt code {
-    font-size: 1.05em;
+    font-size: 1.2em;
     font-weight: 600;
 }
+.alps {
+    margin-left: 6px;
+    color: #1a7f37;
+}
 dd {
-    margin: 4px 0 0;
+    margin: 4px 0 0 16px;
 }
 dd p {
     margin: 0 0 4px;
@@ -46,6 +55,22 @@ dd p {
 }
 dd ul {
     margin: 4px 0;
+    padding-left: 1.2em;
+}
+.index-list {
+    column-width: 220px;
+    column-gap: 24px;
+    list-style-type: none;
+    padding: 0;
+    margin: 16px 0 32px;
+}
+.index-list li {
+    padding: 4px 0;
+    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Consolas, monospace;
+    font-size: 0.95em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>
 </head>
@@ -63,12 +88,14 @@ dd ul {
   <li>Reserved representation fields: 2</li>
 </ul>
 
+<h2>Index</h2>
+<ul class="index-list"><li><a href="#term-additionalName">additionalName</a></li><li><a href="#term-age">age</a></li><li><a href="#term-assignee">assignee</a></li><li><a href="#term-bday">bday</a></li><li><a href="#term-bothSummaryAndDescription">bothSummaryAndDescription</a></li><li><a href="#term-builtinType">builtinType</a></li><li><a href="#term-category">category</a></li><li><a href="#term-count">count</a></li><li><a href="#term-country-name">country-name</a></li><li><a href="#term-created">created</a></li><li><a href="#term-date">date</a></li><li><a href="#term-description">description</a></li><li><a href="#term-docOnly">docOnly</a></li><li><a href="#term-dtend">dtend</a></li><li><a href="#term-dtstart">dtstart</a></li><li><a href="#term-duration">duration</a></li><li><a href="#term-email">email</a></li><li><a href="#term-enabled">enabled</a></li><li><a href="#term-extended-address">extended-address</a></li><li><a href="#term-familyName">familyName</a></li><li><a href="#term-firstName">firstName</a></li><li><a href="#term-fn">fn</a></li><li><a href="#term-foo">foo</a></li><li><a href="#term-fruits">fruits</a></li><li><a href="#term-givenName">givenName</a></li><li><a href="#term-honorificPrefix">honorificPrefix</a></li><li><a href="#term-honorificSuffix">honorificSuffix</a></li><li><a href="#term-href">href</a></li><li><a href="#term-id">id</a></li><li><a href="#term-ids">ids</a></li><li><a href="#term-items">items</a></li><li><a href="#term-juice">juice</a></li><li><a href="#term-juiceLike">juiceLike</a></li><li><a href="#term-juiceName">juiceName</a></li><li><a href="#term-lastName">lastName</a></li><li><a href="#term-locality">locality</a></li><li><a href="#term-location">location</a></li><li><a href="#term-logo">logo</a></li><li><a href="#term-modified">modified</a></li><li><a href="#term-name">name</a></li><li><a href="#term-nickname">nickname</a></li><li><a href="#term-noCtor">noCtor</a></li><li><a href="#term-nonPromoted">nonPromoted</a></li><li><a href="#term-options">options</a></li><li><a href="#term-org">org</a></li><li><a href="#term-organizationName">organizationName</a></li><li><a href="#term-organizationUnit">organizationUnit</a></li><li><a href="#term-photo">photo</a></li><li><a href="#term-post-office-box">post-office-box</a></li><li><a href="#term-postal-code">postal-code</a></li><li><a href="#term-priority">priority</a></li><li><a href="#term-rdate">rdate</a></li><li><a href="#term-region">region</a></li><li><a href="#term-role">role</a></li><li><a href="#term-rrule">rrule</a></li><li><a href="#term-self">self</a></li><li><a href="#term-sound">sound</a></li><li><a href="#term-status">status</a></li><li><a href="#term-street-address">street-address</a></li><li><a href="#term-subject">subject</a></li><li><a href="#term-summary">summary</a></li><li><a href="#term-tagOnly">tagOnly</a></li><li><a href="#term-tel">tel</a></li><li><a href="#term-tickets">tickets</a></li><li><a href="#term-title">title</a></li><li><a href="#term-type">type</a></li><li><a href="#term-tz">tz</a></li><li><a href="#term-updated">updated</a></li><li><a href="#term-url">url</a></li><li><a href="#term-value">value</a></li><li><a href="#term-vegetables">vegetables</a></li><li><a href="#term-veggieLike">veggieLike</a></li><li><a href="#term-veggieName">veggieName</a></li><li><a href="#field-_embedded">_embedded</a></li><li><a href="#field-_links">_links</a></li></ul>
 <h2>Terms</h2>
 <dl>
 <dt id="term-additionalName"><code>additionalName</code></dt>
 <dd><ul><li>schema property: card.json#/properties/additionalName</li></ul></dd>
-<dt id="term-age" class="age"><code>age</code></dt>
-<dd><p>Age in years which must be equal to or greater than zero.</p><ul><li>parameter: GET /alps-fallback {age}</li><li>parameter: POST /contact {age}</li><li>parameter: POST /contact-with-descriptions {age}</li><li>parameter: POST /person {age}</li><li>parameter: PATCH /person {age}</li><li>parameter: POST /users/{id} {age}</li><li>parameter: PUT /users/{id} {age}</li><li>schema property: contact.param.json#/properties/age</li><li>schema property: person.json#/properties/age</li><li>schema property: person.param.json#/properties/age</li><li>schema property: user.json#/properties/age</li><li>schema property: user.param.json#/properties/age</li></ul></dd>
+<dt id="term-age" class="age"><code>age</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Age in years which must be equal to or greater than zero.</p><ul><li>parameter: GET /alps-fallback {age}</li><li>parameter: POST /contact {age}</li><li>parameter: POST /contact-with-descriptions {age}</li><li>parameter: POST /person {age}</li><li>parameter: PATCH /person {age}</li><li>parameter: POST /users/{id} {age}</li><li>parameter: PUT /users/{id} {age}</li><li>schema property: contact.param.json#/properties/age</li><li>schema property: person.json#/properties/age</li><li>schema property: person.param.json#/properties/age</li><li>schema property: user.json#/properties/age</li><li>schema property: user.param.json#/properties/age</li></ul></dd>
 <dt id="term-assignee"><code>assignee</code></dt>
 <dd><ul><li>parameter: POST /ticket/{id} {assignee}</li><li>parameter: PUT /ticket/{id} {assignee}</li><li>parameter: PUT /ticket/assign {assignee}</li><li>schema property: ticket.json#/properties/assignee</li><li>schema property: ticket.param.json#/properties/assignee</li></ul></dd>
 <dt id="term-bday"><code>bday</code></dt>
@@ -103,10 +130,10 @@ dd ul {
 <dd><ul><li>parameter: PUT /users/{id} {enabled}</li><li>schema property: user.json#/properties/enabled</li><li>schema property: user.param.json#/properties/enabled</li></ul></dd>
 <dt id="term-extended-address"><code>extended-address</code></dt>
 <dd><ul><li>schema property: address.json#/properties/extended-address</li></ul></dd>
-<dt id="term-familyName" class="familyName"><a href="https://schema.org/familyName"><code>familyName</code></a></dt>
-<dd><ul><li>parameter: GET /alps-fallback {familyName}</li><li>parameter: POST /person {familyName}</li><li>parameter: PATCH /person {familyName}</li><li>schema property: card.json#/properties/familyName</li><li>schema property: person.json#/properties/familyName</li><li>schema property: person.param.json#/properties/familyName</li></ul></dd>
-<dt id="term-firstName" class="firstName"><code>firstName</code></dt>
-<dd><p>First Name by ALPS</p><ul><li>parameter: GET /alps-fallback {firstName}</li><li>parameter: POST /person {firstName}</li><li>parameter: PATCH /person {firstName}</li><li>schema property: person.json#/properties/firstName</li><li>schema property: person.param.json#/properties/firstName</li><li>schema property: user.json#/properties/firstName</li></ul></dd>
+<dt id="term-familyName" class="familyName"><code>familyName</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>def: <a href="https://schema.org/familyName">https://schema.org/familyName</a></p><ul><li>parameter: GET /alps-fallback {familyName}</li><li>parameter: POST /person {familyName}</li><li>parameter: PATCH /person {familyName}</li><li>schema property: card.json#/properties/familyName</li><li>schema property: person.json#/properties/familyName</li><li>schema property: person.param.json#/properties/familyName</li></ul></dd>
+<dt id="term-firstName" class="firstName"><code>firstName</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: First Name by ALPS</p><ul><li>parameter: GET /alps-fallback {firstName}</li><li>parameter: POST /person {firstName}</li><li>parameter: PATCH /person {firstName}</li><li>schema property: person.json#/properties/firstName</li><li>schema property: person.param.json#/properties/firstName</li><li>schema property: user.json#/properties/firstName</li></ul></dd>
 <dt id="term-fn"><code>fn</code></dt>
 <dd><ul><li>schema property: card.json#/properties/fn</li></ul></dd>
 <dt id="term-foo"><code>foo</code></dt>
@@ -121,8 +148,8 @@ dd ul {
 <dd><ul><li>schema property: card.json#/properties/honorificSuffix</li></ul></dd>
 <dt id="term-href"><code>href</code></dt>
 <dd><ul><li>schema property: user.json#/properties/_links/properties/self/properties/href</li></ul></dd>
-<dt id="term-id" class="id"><code>id</code></dt>
-<dd><p>Person identifier</p><ul><li>parameter: GET /address {id}</li><li>parameter: GET /card {id}</li><li>parameter: GET /org {id}</li><li>parameter: GET /person {id}</li><li>parameter: PATCH /person {id}</li><li>parameter: GET /ticket/{id} {id}</li><li>parameter: PUT /ticket/{id} {id}</li><li>parameter: DELETE /ticket/{id} {id}</li><li>parameter: PUT /ticket/assign {id}</li><li>parameter: GET /union-type {id}</li><li>parameter: GET /users/{id} {id}</li><li>parameter: PUT /users/{id} {id}</li><li>parameter: DELETE /users/{id} {id}</li><li>schema property: org.json#/properties/id</li><li>schema property: person.param.json#/properties/id</li><li>schema property: ticket.json#/properties/id</li><li>schema property: ticket.param.json#/properties/id</li><li>schema property: user.json#/properties/id</li><li>schema property: user.param.json#/properties/id</li></ul></dd>
+<dt id="term-id" class="id"><code>id</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Person identifier</p><ul><li>parameter: GET /address {id}</li><li>parameter: GET /card {id}</li><li>parameter: GET /org {id}</li><li>parameter: GET /person {id}</li><li>parameter: PATCH /person {id}</li><li>parameter: GET /ticket/{id} {id}</li><li>parameter: PUT /ticket/{id} {id}</li><li>parameter: DELETE /ticket/{id} {id}</li><li>parameter: PUT /ticket/assign {id}</li><li>parameter: GET /union-type {id}</li><li>parameter: GET /users/{id} {id}</li><li>parameter: PUT /users/{id} {id}</li><li>parameter: DELETE /users/{id} {id}</li><li>schema property: org.json#/properties/id</li><li>schema property: person.param.json#/properties/id</li><li>schema property: ticket.json#/properties/id</li><li>schema property: ticket.param.json#/properties/id</li><li>schema property: user.json#/properties/id</li><li>schema property: user.param.json#/properties/id</li></ul></dd>
 <dt id="term-ids"><code>ids</code></dt>
 <dd><ul><li>schema property: json-schema-input.param.json#/properties/ids</li></ul></dd>
 <dt id="term-items"><code>items</code></dt>

@@ -16,7 +16,7 @@ final class TermUsageHtmlRendererTest extends TestCase
         $this->assertStringNotContainsString('Reserved Representation Fields', $html);
     }
 
-    public function testDescriptorBackedTermCarriesItsDescriptorAsClassWithoutDescription(): void
+    public function testDescriptorBackedTermIsMarkedAndCarriesItsDescriptorAsClass(): void
     {
         $html = (new TermUsageHtmlRenderer())->render(
             ['emptyDescriptor' => ['parameter: GET /empty {emptyDescriptor}' => true]],
@@ -26,13 +26,14 @@ final class TermUsageHtmlRendererTest extends TestCase
             '100',
         );
 
-        // The same-name ALPS descriptor is the semantic token, not a UI badge.
+        // ALPS-defined terms get a checkmark plus the descriptor id as class.
         $this->assertStringContainsString('class="emptyDescriptor"', $html);
-        // An empty descriptor contributes no description, so the dd opens straight into usages.
+        $this->assertStringContainsString('<span class="alps" title="defined in ALPS">&#x2611;</span>', $html);
+        // An empty descriptor contributes no attribute lines, so the dd opens straight into usages.
         $this->assertStringContainsString('<dd><ul>', $html);
     }
 
-    public function testDefRendersAsLinkWhenUrlAndAsDescriptionTextOtherwise(): void
+    public function testDescriptorIsRenderedAsLabelledAttributesWithDefLinkedWhenUrl(): void
     {
         $html = (new TermUsageHtmlRenderer())->render(
             [
@@ -48,11 +49,11 @@ final class TermUsageHtmlRendererTest extends TestCase
             '100',
         );
 
-        // A URL def turns the term name into a link to the definition.
-        $this->assertStringContainsString('<dt id="term-familyName" class="familyName"><a href="https://schema.org/familyName"><code>familyName</code></a></dt>', $html);
-        // A non-URL def is shown as descriptor text; the term name is not linked.
-        $this->assertStringContainsString('<dt id="term-role" class="role"><code>role</code></dt>', $html);
-        $this->assertStringContainsString('<dd><p>A role within the org</p><p>identifier</p>', $html);
+        // The term name stays plain; only the def value is a link.
+        $this->assertStringContainsString('<dt id="term-familyName" class="familyName"><code>familyName</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>', $html);
+        $this->assertStringContainsString('<p>def: <a href="https://schema.org/familyName">https://schema.org/familyName</a></p>', $html);
+        // A non-URL def is shown as a labelled attribute, in field order (title, def, doc).
+        $this->assertStringContainsString('<p>def: identifier</p><p>doc: A role within the org</p>', $html);
     }
 
     /**

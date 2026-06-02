@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use function array_keys;
-use function array_map;
 use function htmlspecialchars;
 use function implode;
 use function preg_replace;
@@ -34,12 +33,14 @@ final readonly class TermUsageHtmlRenderer
     ): string {
         $termsHtml = $this->renderTerms($apiUsages, $alpsDescriptors);
         $reservedHtml = $this->renderReservedTerms($reservedUsages);
+        $indexHtml = $this->renderIndex($apiUsages, $reservedUsages);
 
         return <<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Term Usage Index</title>
 <link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/apidoc.xml">
 <style>
@@ -56,6 +57,10 @@ main {
 }
 a {
     color: #0969da;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
 }
 code {
     padding: 0.15em 0.35em;
@@ -72,11 +77,15 @@ dt {
     padding-top: 16px;
 }
 dt code {
-    font-size: 1.05em;
+    font-size: 1.2em;
     font-weight: 600;
 }
+.alps {
+    margin-left: 6px;
+    color: #1a7f37;
+}
 dd {
-    margin: 4px 0 0;
+    margin: 4px 0 0 16px;
 }
 dd p {
     margin: 0 0 4px;
@@ -84,6 +93,22 @@ dd p {
 }
 dd ul {
     margin: 4px 0;
+    padding-left: 1.2em;
+}
+.index-list {
+    column-width: 220px;
+    column-gap: 24px;
+    list-style-type: none;
+    padding: 0;
+    margin: 16px 0 32px;
+}
+.index-list li {
+    padding: 4px 0;
+    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Consolas, monospace;
+    font-size: 0.95em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>
 </head>
@@ -101,6 +126,7 @@ dd ul {
   <li>Reserved representation fields: {$this->html((string) \count($reservedUsages))}</li>
 </ul>
 
+{$indexHtml}
 <h2>Terms</h2>
 {$termsHtml}
 {$reservedHtml}
@@ -148,54 +174,83 @@ HTML;
     }
 
     /**
+     * @param array<string, array<string, true>> $apiUsages
+     * @param array<string, array<string, true>> $reservedUsages
+     */
+    private function renderIndex(array $apiUsages, array $reservedUsages): string
+    {
+        $items = [];
+        foreach (array_keys($apiUsages) as $term) {
+            $items[] = $this->indexItem('term', $term);
+        }
+
+        foreach (array_keys($reservedUsages) as $term) {
+            $items[] = $this->indexItem('field', $term);
+        }
+
+        if ($items === []) {
+            return '';
+        }
+
+        return sprintf('<h2>Index</h2>%s<ul class="index-list">%s</ul>', PHP_EOL, implode('', $items));
+    }
+
+    private function indexItem(string $idPrefix, string $term): string
+    {
+        return sprintf('<li><a href="#%s">%s</a></li>', $this->htmlId($idPrefix, $term), $this->html($term));
+    }
+
+    /**
      * @param array<string, true> $usages
      * @param AlpsDescriptor|null $descriptor
      */
     private function renderEntry(string $idPrefix, string $term, array $usages, ?array $descriptor): string
     {
-        $def = $descriptor !== null ? ($descriptor['def'] ?? '') : '';
-        $defIsUrl = $def !== '' && str_starts_with($def, 'http');
-
-        $code = sprintf('<code>%s</code>', $this->html($term));
-        $name = $defIsUrl ? sprintf('<a href="%s">%s</a>', $this->html($def), $code) : $code;
+        // The term name stays plain for a consistent column; the ALPS binding is
+        // shown by a checkmark and (machine-readably) by the descriptor-id class.
+        $mark = $descriptor !== null ? '<span class="alps" title="defined in ALPS">&#x2611;</span>' : '';
         $classAttr = $descriptor !== null ? sprintf(' class="%s"', $this->html($term)) : '';
 
         return sprintf(
-            '<dt id="%s"%s>%s</dt>%s<dd>%s%s</dd>',
+            '<dt id="%s"%s><code>%s</code>%s</dt>%s<dd>%s%s</dd>',
             $this->htmlId($idPrefix, $term),
             $classAttr,
-            $name,
+            $this->html($term),
+            $mark,
             PHP_EOL,
-            $this->renderDescription($descriptor, $defIsUrl),
+            $this->renderDescriptor($descriptor),
             $this->renderUsageList($usages),
         );
     }
 
     /** @param AlpsDescriptor|null $descriptor */
-    private function renderDescription(?array $descriptor, bool $defIsUrl): string
+    private function renderDescriptor(?array $descriptor): string
     {
         if ($descriptor === null) {
             return '';
         }
 
         $lines = [];
-        foreach (['title', 'doc'] as $field) {
+        foreach (['title', 'def', 'doc'] as $field) {
             $value = $descriptor[$field] ?? '';
-            if ($value !== '') {
-                $lines[] = $this->html($value);
+            if ($value === '') {
+                continue;
             }
+
+            $lines[] = sprintf('<p>%s: %s</p>', $field, $this->renderDescriptorValue($field, $value));
         }
 
-        $def = $descriptor['def'] ?? '';
-        if ($def !== '' && ! $defIsUrl) {
-            $lines[] = $this->html($def);
+        return implode('', $lines);
+    }
+
+    private function renderDescriptorValue(string $field, string $value): string
+    {
+        $escaped = $this->html($value);
+        if ($field === 'def' && str_starts_with($value, 'http')) {
+            return sprintf('<a href="%s">%s</a>', $escaped, $escaped);
         }
 
-        if ($lines === []) {
-            return '';
-        }
-
-        return implode('', array_map(static fn (string $line): string => sprintf('<p>%s</p>', $line), $lines));
+        return $escaped;
     }
 
     /** @param array<string, true> $usages */
