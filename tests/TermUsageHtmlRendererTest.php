@@ -32,6 +32,29 @@ final class TermUsageHtmlRendererTest extends TestCase
         $this->assertStringContainsString('<dd><ul>', $html);
     }
 
+    public function testDefRendersAsLinkWhenUrlAndAsDescriptionTextOtherwise(): void
+    {
+        $html = (new TermUsageHtmlRenderer())->render(
+            [
+                'familyName' => ['parameter: POST /person {familyName}' => true],
+                'role' => ['parameter: POST /person {role}' => true],
+            ],
+            [],
+            [
+                'familyName' => ['def' => 'https://schema.org/familyName'],
+                'role' => ['def' => 'identifier', 'doc' => 'A role within the org'],
+            ],
+            2,
+            '100',
+        );
+
+        // A URL def turns the term name into a link to the definition.
+        $this->assertStringContainsString('<dt id="term-familyName" class="familyName"><a href="https://schema.org/familyName"><code>familyName</code></a></dt>', $html);
+        // A non-URL def is shown as descriptor text; the term name is not linked.
+        $this->assertStringContainsString('<dt id="term-role" class="role"><code>role</code></dt>', $html);
+        $this->assertStringContainsString('<dd><p>A role within the org</p><p>identifier</p>', $html);
+    }
+
     /**
      * Parameter-derived terms are always valid PHP identifiers, so symbols never
      * arise from method signatures. However, JSON Schemas are reusable, independent
