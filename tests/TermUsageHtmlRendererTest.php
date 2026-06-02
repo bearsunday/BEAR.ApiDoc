@@ -30,6 +30,13 @@ final class TermUsageHtmlRendererTest extends TestCase
         $this->assertStringNotContainsString('class="descriptor"', $html);
     }
 
+    /**
+     * Parameter-derived terms are always valid PHP identifiers, so symbols never
+     * arise from method signatures. However, JSON Schemas are reusable, independent
+     * artifacts whose property names are arbitrary JSON keys and may contain symbols.
+     * The renderer must therefore sanitize term ids defensively rather than assume
+     * an identifier-safe character set.
+     */
     public function testHtmlIdsFallbackWhenTermSanitizesToEmptyString(): void
     {
         $html = (new TermUsageHtmlRenderer())->render(
