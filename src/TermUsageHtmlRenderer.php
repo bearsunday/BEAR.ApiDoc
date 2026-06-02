@@ -74,7 +74,7 @@ HTML;
 
     private function styles(): string
     {
-        return <<<CSS
+        return <<<'CSS'
 body {
     margin: 0;
     padding: 32px;
