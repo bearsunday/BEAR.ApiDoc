@@ -34,6 +34,7 @@ final readonly class TermUsageHtmlRenderer
         $termsHtml = $this->renderTerms($apiUsages, $alpsDescriptors);
         $reservedHtml = $this->renderReservedTerms($reservedUsages);
         $indexHtml = $this->renderIndex($apiUsages, $reservedUsages);
+        $styles = $this->styles();
 
         return <<<HTML
 <!DOCTYPE html>
@@ -44,6 +45,36 @@ final readonly class TermUsageHtmlRenderer
 <title>Term Usage Index</title>
 <link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/apidoc.xml">
 <style>
+{$styles}
+</style>
+</head>
+<body>
+<main>
+<p><a href="index.html">API Documentation</a></p>
+<h1>Term Usage Index</h1>
+<p>This index reports lexical identifier matches only; it does not prove semantic equivalence. A term backed by an ALPS descriptor carries that descriptor as its class, per the profile linked above.</p>
+
+<h2>Summary</h2>
+<ul>
+  <li>Terms used in API: {$this->html((string) \count($apiUsages))}</li>
+  <li>Terms with same-name ALPS descriptor: {$this->html((string) $matchedAlpsDescriptorCount)}</li>
+  <li>Lexical ALPS coverage: {$this->html($coverage)}%</li>
+  <li>Reserved representation fields: {$this->html((string) \count($reservedUsages))}</li>
+</ul>
+
+{$indexHtml}
+<h2>Terms</h2>
+{$termsHtml}
+{$reservedHtml}
+</main>
+</body>
+</html>
+HTML;
+    }
+
+    private function styles(): string
+    {
+        return <<<CSS
 body {
     margin: 0;
     padding: 32px;
@@ -110,30 +141,7 @@ dd ul {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-</style>
-</head>
-<body>
-<main>
-<p><a href="index.html">API Documentation</a></p>
-<h1>Term Usage Index</h1>
-<p>This index reports lexical identifier matches only; it does not prove semantic equivalence. A term backed by an ALPS descriptor carries that descriptor as its class, per the profile linked above.</p>
-
-<h2>Summary</h2>
-<ul>
-  <li>Terms used in API: {$this->html((string) \count($apiUsages))}</li>
-  <li>Terms with same-name ALPS descriptor: {$this->html((string) $matchedAlpsDescriptorCount)}</li>
-  <li>Lexical ALPS coverage: {$this->html($coverage)}%</li>
-  <li>Reserved representation fields: {$this->html((string) \count($reservedUsages))}</li>
-</ul>
-
-{$indexHtml}
-<h2>Terms</h2>
-{$termsHtml}
-{$reservedHtml}
-</main>
-</body>
-</html>
-HTML;
+CSS;
     }
 
     /**
