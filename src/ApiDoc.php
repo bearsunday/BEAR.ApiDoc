@@ -67,7 +67,7 @@ final readonly class ApiDoc
     private function outputFilesForFormat(string $format): array
     {
         return match ($format) {
-            'audit' => ['audit.md'],
+            'audit' => ['audit.md', 'audit.html'],
             'openapi' => ['openapi.json'],
             'md' => ['index.md', 'terms.md'],
             'llms' => ['llms.txt'],
@@ -311,8 +311,9 @@ final readonly class ApiDoc
 
     private function dumpAudit(Config $config): void
     {
-        $outputFile = sprintf('%s/audit.md', $config->docDir);
-        $this->filePutContents($outputFile, (new ApiDocAudit($config))->generateMarkdown());
+        $audit = new ApiDocAudit($config);
+        $this->filePutContents(sprintf('%s/audit.md', $config->docDir), $audit->generateMarkdown());
+        $this->filePutContents(sprintf('%s/audit.html', $config->docDir), $audit->generateHtml());
     }
 
     private function dumpTerms(Config $config): void

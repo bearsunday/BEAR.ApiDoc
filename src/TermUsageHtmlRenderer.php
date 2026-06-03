@@ -111,9 +111,21 @@ dt code {
     font-size: 1.2em;
     font-weight: 600;
 }
-.mark {
+.alpsBacked::after {
+    content: "\2611";
     margin-left: 6px;
     color: #1a7f37;
+}
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 dd {
     margin: 4px 0 0 16px;
@@ -222,7 +234,11 @@ CSS;
         $baseClass = $idPrefix === 'field' ? 'reservedField' : 'term';
         $class = $backed ? $baseClass . ' alpsBacked' : $baseClass;
         $dataAlps = $backed ? sprintf(' data-alps="%s"', $this->html($term)) : '';
-        $mark = $backed ? '<span class="mark" title="same-name ALPS descriptor">&#x2611;</span>' : '';
+        // Meaning in class, presentation in CSS: the alpsBacked state is the class;
+        // the checkmark is rendered by CSS (.alpsBacked::after), not baked into the
+        // markup. A visually-hidden label carries the meaning to assistive
+        // technology, which does not reliably announce CSS-generated content.
+        $a11yLabel = $backed ? '<span class="visually-hidden"> (ALPS-backed)</span>' : '';
 
         return sprintf(
             '<dt id="%s" class="%s"%s><code>%s</code>%s</dt>%s<dd>%s%s</dd>',
@@ -230,7 +246,7 @@ CSS;
             $class,
             $dataAlps,
             $this->html($term),
-            $mark,
+            $a11yLabel,
             PHP_EOL,
             $this->renderDescriptor($descriptor),
             $this->renderUsageList($usages),
