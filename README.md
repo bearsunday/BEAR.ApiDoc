@@ -26,7 +26,7 @@ This is a semantic application document, not just an API reference. It describes
 
 - [ApiDoc](https://bearsunday.github.io/BEAR.ApiDoc/)
 - [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
-- [Documentation Audit](https://bearsunday.github.io/BEAR.ApiDoc/audit.md)
+- [Documentation Audit](https://bearsunday.github.io/BEAR.ApiDoc/audit.html)
 - [Term Usage Index](https://bearsunday.github.io/BEAR.ApiDoc/terms.html)
 
 ## Installation
@@ -57,6 +57,8 @@ Generate the documentation quality report:
 ./vendor/bin/apidoc audit
 ```
 
+Each finding in the HTML audit carries a machine-readable `findingType`, so the report is a worklist, not just a list to read: the [`bear-audit-fix`](https://github.com/bearsunday/BEAR.Skills) skill reads `audit.html` and closes the gaps it reports (PHPDoc summaries, JSON Schema, `#[Alps]`).
+
 ## Usage
 
 See the [API doc documentation](http://bearsunday.github.io/manuals/1.0/en/apidoc.html).
@@ -75,7 +77,7 @@ jobs:
   docs:
     uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
     with:
-      format: 'html,openapi,alps'
+      format: 'html,openapi,alps,audit,llms'
       alps-profile: 'alps.json'
 ```
 
@@ -95,9 +97,11 @@ jobs:
 docs/
 ├── index.html          # API documentation
 ├── terms.html          # Term usage index for HTML docs
-├── audit.md            # Documentation coverage report
+├── audit.html          # Documentation coverage report (HTML, ALPS-profiled)
+├── audit.md            # Documentation coverage report (Markdown, for CLI/tooling)
 ├── llms.txt            # AI-readable overview
 ├── openapi.json        # OpenAPI spec
+├── alps/               # ALPS report profiles (terms.xml, audit.xml)
 └── schemas/
     └── *.json          # JSON Schema
 ```
