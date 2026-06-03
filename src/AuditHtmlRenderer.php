@@ -7,7 +7,9 @@ namespace BEAR\ApiDoc;
 use function htmlspecialchars;
 use function implode;
 use function preg_replace;
+use function sha1;
 use function sprintf;
+use function substr;
 use function trim;
 
 use const PHP_EOL;
@@ -42,7 +44,6 @@ final readonly class AuditHtmlRenderer
 </head>
 <body>
 <main class="apiDocumentationAudit">
-<p><a href="index.html">API Documentation</a></p>
 <h1>API Documentation Audit</h1>
 <p>This report lists missing documentation per operation. It describes the documentation's structure, not the API's domain meaning, per the profile linked above.</p>
 
@@ -158,12 +159,13 @@ CSS;
 
     private function htmlId(string $method, string $path): string
     {
-        // The method is always a non-empty HTTP verb, so the id never sanitizes
-        // to empty; no fallback branch is needed here (unlike term ids, which
-        // derive from arbitrary JSON Schema property names).
-        $id = trim((string) preg_replace('/[^A-Za-z0-9_-]+/', '-', $method . ' ' . $path), '-');
+        $raw = $method . ' ' . $path;
+        // A readable slug plus a short stable hash of the raw method+path: distinct
+        // operations whose slugs would collide (e.g. "/foo-bar" vs "/foo/bar", both
+        // slugging to "op-GET-foo-bar") still get distinct, deterministic ids.
+        $slug = trim((string) preg_replace('/[^A-Za-z0-9_-]+/', '-', $raw), '-');
 
-        return 'op-' . $id;
+        return sprintf('op-%s-%s', $slug, substr(sha1($raw), 0, 7));
     }
 
     private function html(string $value): string

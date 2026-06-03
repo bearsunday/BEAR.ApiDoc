@@ -113,7 +113,8 @@ final class ApiDocAuditTest extends TestCase
         $this->assertStringContainsString('<li class="operationCount">Operations: 28</li>', $html);
         $this->assertStringContainsString('<li class="alpsAttributeCount">Operations with ALPS attributes: 6</li>', $html);
         // Each operation with gaps is a bound section; each finding carries a bound type token.
-        $this->assertStringContainsString('<section class="operation" id="op-POST-contact"><h3>POST /contact</h3>', $html);
+        // The section id is a readable slug plus a short stable hash for uniqueness.
+        $this->assertMatchesRegularExpression('#<section class="operation" id="op-POST-contact-[0-9a-f]{7}"><h3>POST /contact</h3>#', $html);
         $this->assertStringContainsString('<li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li>', $html);
         $this->assertStringContainsString('<li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li>', $html);
     }
