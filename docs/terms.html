@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Term Usage Index</title>
-<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/apidoc.xml">
+<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/terms.xml">
 <style>
 body {
     margin: 0;
@@ -42,7 +42,7 @@ dt code {
     font-size: 1.2em;
     font-weight: 600;
 }
-.alps {
+.mark {
     margin-left: 6px;
     color: #1a7f37;
 }
@@ -78,174 +78,174 @@ dd ul {
 <main>
 <p><a href="index.html">API Documentation</a></p>
 <h1>Term Usage Index</h1>
-<p>This index reports lexical identifier matches only; it does not prove semantic equivalence. A term backed by an ALPS descriptor carries that descriptor as its class, per the profile linked above.</p>
+<p>This index reports lexical identifier matches only; it does not prove semantic equivalence. Its own vocabulary (term, alpsBacked, usage, reservedField, coverage) is defined by the profile linked above. A term whose spelling also exists in the configured application ALPS profile is marked <code>alpsBacked</code>; the matched application descriptor id is carried on the entry's <code>data-alps</code> attribute.</p>
 
 <h2>Summary</h2>
 <ul>
-  <li>Terms used in API: 73</li>
-  <li>Terms with same-name ALPS descriptor: 4</li>
-  <li>Lexical ALPS coverage: 5.5%</li>
-  <li>Reserved representation fields: 2</li>
+  <li class="termsUsedCount">Terms used in API: 73</li>
+  <li class="alpsMatchedCount">Terms with same-name ALPS descriptor: 4</li>
+  <li class="lexicalCoverage">Lexical ALPS coverage: 5.5%</li>
+  <li class="reservedCount">Reserved representation fields: 2</li>
 </ul>
 
 <h2>Index</h2>
 <ul class="index-list"><li><a href="#term-additionalName">additionalName</a></li><li><a href="#term-age">age</a></li><li><a href="#term-assignee">assignee</a></li><li><a href="#term-bday">bday</a></li><li><a href="#term-bothSummaryAndDescription">bothSummaryAndDescription</a></li><li><a href="#term-builtinType">builtinType</a></li><li><a href="#term-category">category</a></li><li><a href="#term-count">count</a></li><li><a href="#term-country-name">country-name</a></li><li><a href="#term-created">created</a></li><li><a href="#term-date">date</a></li><li><a href="#term-description">description</a></li><li><a href="#term-docOnly">docOnly</a></li><li><a href="#term-dtend">dtend</a></li><li><a href="#term-dtstart">dtstart</a></li><li><a href="#term-duration">duration</a></li><li><a href="#term-email">email</a></li><li><a href="#term-enabled">enabled</a></li><li><a href="#term-extended-address">extended-address</a></li><li><a href="#term-familyName">familyName</a></li><li><a href="#term-firstName">firstName</a></li><li><a href="#term-fn">fn</a></li><li><a href="#term-foo">foo</a></li><li><a href="#term-fruits">fruits</a></li><li><a href="#term-givenName">givenName</a></li><li><a href="#term-honorificPrefix">honorificPrefix</a></li><li><a href="#term-honorificSuffix">honorificSuffix</a></li><li><a href="#term-href">href</a></li><li><a href="#term-id">id</a></li><li><a href="#term-ids">ids</a></li><li><a href="#term-items">items</a></li><li><a href="#term-juice">juice</a></li><li><a href="#term-juiceLike">juiceLike</a></li><li><a href="#term-juiceName">juiceName</a></li><li><a href="#term-lastName">lastName</a></li><li><a href="#term-locality">locality</a></li><li><a href="#term-location">location</a></li><li><a href="#term-logo">logo</a></li><li><a href="#term-modified">modified</a></li><li><a href="#term-name">name</a></li><li><a href="#term-nickname">nickname</a></li><li><a href="#term-noCtor">noCtor</a></li><li><a href="#term-nonPromoted">nonPromoted</a></li><li><a href="#term-options">options</a></li><li><a href="#term-org">org</a></li><li><a href="#term-organizationName">organizationName</a></li><li><a href="#term-organizationUnit">organizationUnit</a></li><li><a href="#term-photo">photo</a></li><li><a href="#term-post-office-box">post-office-box</a></li><li><a href="#term-postal-code">postal-code</a></li><li><a href="#term-priority">priority</a></li><li><a href="#term-rdate">rdate</a></li><li><a href="#term-region">region</a></li><li><a href="#term-role">role</a></li><li><a href="#term-rrule">rrule</a></li><li><a href="#term-self">self</a></li><li><a href="#term-sound">sound</a></li><li><a href="#term-status">status</a></li><li><a href="#term-street-address">street-address</a></li><li><a href="#term-subject">subject</a></li><li><a href="#term-summary">summary</a></li><li><a href="#term-tagOnly">tagOnly</a></li><li><a href="#term-tel">tel</a></li><li><a href="#term-tickets">tickets</a></li><li><a href="#term-title">title</a></li><li><a href="#term-type">type</a></li><li><a href="#term-tz">tz</a></li><li><a href="#term-updated">updated</a></li><li><a href="#term-url">url</a></li><li><a href="#term-value">value</a></li><li><a href="#term-vegetables">vegetables</a></li><li><a href="#term-veggieLike">veggieLike</a></li><li><a href="#term-veggieName">veggieName</a></li><li><a href="#field-_embedded">_embedded</a></li><li><a href="#field-_links">_links</a></li></ul>
 <h2>Terms</h2>
 <dl>
-<dt id="term-additionalName"><code>additionalName</code></dt>
-<dd><ul><li>schema property: card.json#/properties/additionalName</li></ul></dd>
-<dt id="term-age" class="age"><code>age</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
-<dd><p>title: Age in years which must be equal to or greater than zero.</p><ul><li>parameter: GET /alps-fallback {age}</li><li>parameter: POST /contact {age}</li><li>parameter: POST /contact-with-descriptions {age}</li><li>parameter: POST /person {age}</li><li>parameter: PATCH /person {age}</li><li>parameter: POST /users/{id} {age}</li><li>parameter: PUT /users/{id} {age}</li><li>schema property: contact.param.json#/properties/age</li><li>schema property: person.json#/properties/age</li><li>schema property: person.param.json#/properties/age</li><li>schema property: user.json#/properties/age</li><li>schema property: user.param.json#/properties/age</li></ul></dd>
-<dt id="term-assignee"><code>assignee</code></dt>
-<dd><ul><li>parameter: POST /ticket/{id} {assignee}</li><li>parameter: PUT /ticket/{id} {assignee}</li><li>parameter: PUT /ticket/assign {assignee}</li><li>schema property: ticket.json#/properties/assignee</li><li>schema property: ticket.param.json#/properties/assignee</li></ul></dd>
-<dt id="term-bday"><code>bday</code></dt>
-<dd><ul><li>schema property: card.json#/properties/bday</li></ul></dd>
-<dt id="term-bothSummaryAndDescription"><code>bothSummaryAndDescription</code></dt>
-<dd><ul><li>parameter: POST /docblock-variants {bothSummaryAndDescription}</li></ul></dd>
-<dt id="term-builtinType"><code>builtinType</code></dt>
-<dd><ul><li>parameter: POST /input-edge-cases {builtinType}</li></ul></dd>
-<dt id="term-category"><code>category</code></dt>
-<dd><ul><li>schema property: calendar.json#/properties/category</li></ul></dd>
-<dt id="term-count"><code>count</code></dt>
-<dd><ul><li>parameter: GET /numbers {count}</li></ul></dd>
-<dt id="term-country-name"><code>country-name</code></dt>
-<dd><ul><li>schema property: address.json#/properties/country-name</li></ul></dd>
-<dt id="term-created"><code>created</code></dt>
-<dd><ul><li>schema property: ticket.json#/properties/created</li><li>schema property: user.json#/properties/created</li></ul></dd>
-<dt id="term-date"><code>date</code></dt>
-<dd><ul><li>parameter: GET /calendar/{year}/{month} {date}</li></ul></dd>
-<dt id="term-description"><code>description</code></dt>
-<dd><ul><li>parameter: POST /ticket/{id} {description}</li><li>parameter: PUT /ticket/{id} {description}</li><li>schema property: calendar.json#/properties/description</li><li>schema property: ticket.json#/properties/description</li><li>schema property: ticket.param.json#/properties/description</li></ul></dd>
-<dt id="term-docOnly"><code>docOnly</code></dt>
-<dd><ul><li>schema property: json-schema-input.param.json#/properties/docOnly</li></ul></dd>
-<dt id="term-dtend"><code>dtend</code></dt>
-<dd><ul><li>schema property: calendar.json#/properties/dtend</li></ul></dd>
-<dt id="term-dtstart"><code>dtstart</code></dt>
-<dd><ul><li>schema property: calendar.json#/properties/dtstart</li></ul></dd>
-<dt id="term-duration"><code>duration</code></dt>
-<dd><ul><li>schema property: calendar.json#/properties/duration</li></ul></dd>
-<dt id="term-email"><code>email</code></dt>
-<dd><ul><li>parameter: POST /contact {email}</li><li>parameter: POST /contact-with-descriptions {email}</li><li>parameter: POST /users/{id} {email}</li><li>parameter: PUT /users/{id} {email}</li><li>schema property: card.json#/properties/email</li><li>schema property: contact.param.json#/properties/email</li><li>schema property: user.json#/properties/email</li><li>schema property: user.param.json#/properties/email</li></ul></dd>
-<dt id="term-enabled"><code>enabled</code></dt>
-<dd><ul><li>parameter: PUT /users/{id} {enabled}</li><li>schema property: user.json#/properties/enabled</li><li>schema property: user.param.json#/properties/enabled</li></ul></dd>
-<dt id="term-extended-address"><code>extended-address</code></dt>
-<dd><ul><li>schema property: address.json#/properties/extended-address</li></ul></dd>
-<dt id="term-familyName" class="familyName"><code>familyName</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
-<dd><p>def: <a href="https://schema.org/familyName">https://schema.org/familyName</a></p><ul><li>parameter: GET /alps-fallback {familyName}</li><li>parameter: POST /person {familyName}</li><li>parameter: PATCH /person {familyName}</li><li>schema property: card.json#/properties/familyName</li><li>schema property: person.json#/properties/familyName</li><li>schema property: person.param.json#/properties/familyName</li></ul></dd>
-<dt id="term-firstName" class="firstName"><code>firstName</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
-<dd><p>title: First Name by ALPS</p><ul><li>parameter: GET /alps-fallback {firstName}</li><li>parameter: POST /person {firstName}</li><li>parameter: PATCH /person {firstName}</li><li>schema property: person.json#/properties/firstName</li><li>schema property: person.param.json#/properties/firstName</li><li>schema property: user.json#/properties/firstName</li></ul></dd>
-<dt id="term-fn"><code>fn</code></dt>
-<dd><ul><li>schema property: card.json#/properties/fn</li></ul></dd>
-<dt id="term-foo"><code>foo</code></dt>
-<dd><ul><li>parameter: GET /alps-fallback {foo}</li></ul></dd>
-<dt id="term-fruits"><code>fruits</code></dt>
-<dd><ul><li>schema property: array.json#/properties/fruits</li></ul></dd>
-<dt id="term-givenName"><code>givenName</code></dt>
-<dd><ul><li>schema property: card.json#/properties/givenName</li></ul></dd>
-<dt id="term-honorificPrefix"><code>honorificPrefix</code></dt>
-<dd><ul><li>schema property: card.json#/properties/honorificPrefix</li></ul></dd>
-<dt id="term-honorificSuffix"><code>honorificSuffix</code></dt>
-<dd><ul><li>schema property: card.json#/properties/honorificSuffix</li></ul></dd>
-<dt id="term-href"><code>href</code></dt>
-<dd><ul><li>schema property: user.json#/properties/_links/properties/self/properties/href</li></ul></dd>
-<dt id="term-id" class="id"><code>id</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
-<dd><p>title: Person identifier</p><ul><li>parameter: GET /address {id}</li><li>parameter: GET /card {id}</li><li>parameter: GET /org {id}</li><li>parameter: GET /person {id}</li><li>parameter: PATCH /person {id}</li><li>parameter: GET /ticket/{id} {id}</li><li>parameter: PUT /ticket/{id} {id}</li><li>parameter: DELETE /ticket/{id} {id}</li><li>parameter: PUT /ticket/assign {id}</li><li>parameter: GET /union-type {id}</li><li>parameter: GET /users/{id} {id}</li><li>parameter: PUT /users/{id} {id}</li><li>parameter: DELETE /users/{id} {id}</li><li>schema property: org.json#/properties/id</li><li>schema property: person.param.json#/properties/id</li><li>schema property: ticket.json#/properties/id</li><li>schema property: ticket.param.json#/properties/id</li><li>schema property: user.json#/properties/id</li><li>schema property: user.param.json#/properties/id</li></ul></dd>
-<dt id="term-ids"><code>ids</code></dt>
-<dd><ul><li>schema property: json-schema-input.param.json#/properties/ids</li></ul></dd>
-<dt id="term-items"><code>items</code></dt>
-<dd><ul><li>parameter: GET /array-data {items}</li></ul></dd>
-<dt id="term-juice"><code>juice</code></dt>
-<dd><ul><li>schema property: array.json#/properties/juice</li></ul></dd>
-<dt id="term-juiceLike"><code>juiceLike</code></dt>
-<dd><ul><li>schema property: array.json#/definitions/juice/properties/juiceLike</li></ul></dd>
-<dt id="term-juiceName"><code>juiceName</code></dt>
-<dd><ul><li>schema property: array.json#/definitions/juice/properties/juiceName</li></ul></dd>
-<dt id="term-lastName"><code>lastName</code></dt>
-<dd><ul><li>schema property: user.json#/properties/lastName</li></ul></dd>
-<dt id="term-locality"><code>locality</code></dt>
-<dd><ul><li>schema property: address.json#/properties/locality</li></ul></dd>
-<dt id="term-location"><code>location</code></dt>
-<dd><ul><li>schema property: calendar.json#/properties/location</li></ul></dd>
-<dt id="term-logo"><code>logo</code></dt>
-<dd><ul><li>schema property: card.json#/properties/logo</li></ul></dd>
-<dt id="term-modified"><code>modified</code></dt>
-<dd><ul><li>schema property: user.json#/properties/modified</li></ul></dd>
-<dt id="term-name"><code>name</code></dt>
-<dd><ul><li>parameter: POST /contact {name}</li><li>parameter: POST /contact-with-descriptions {name}</li><li>parameter: POST /users/{id} {name}</li><li>parameter: PUT /users/{id} {name}</li><li>schema property: contact.param.json#/properties/name</li><li>schema property: org.json#/properties/name</li><li>schema property: user.param.json#/properties/name</li></ul></dd>
-<dt id="term-nickname"><code>nickname</code></dt>
-<dd><ul><li>schema property: card.json#/properties/nickname</li></ul></dd>
-<dt id="term-noCtor"><code>noCtor</code></dt>
-<dd><ul><li>parameter: PUT /input-edge-cases {noCtor}</li></ul></dd>
-<dt id="term-nonPromoted"><code>nonPromoted</code></dt>
-<dd><ul><li>parameter: POST /docblock-variants {nonPromoted}</li></ul></dd>
-<dt id="term-options"><code>options</code></dt>
-<dd><ul><li>parameter: GET /users/{id} {options}</li><li>schema property: user.param.json#/properties/options</li></ul></dd>
-<dt id="term-org"><code>org</code></dt>
-<dd><ul><li>schema property: card.json#/properties/org</li></ul></dd>
-<dt id="term-organizationName"><code>organizationName</code></dt>
-<dd><ul><li>schema property: card.json#/properties/org/properties/organizationName</li></ul></dd>
-<dt id="term-organizationUnit"><code>organizationUnit</code></dt>
-<dd><ul><li>schema property: card.json#/properties/org/properties/organizationUnit</li></ul></dd>
-<dt id="term-photo"><code>photo</code></dt>
-<dd><ul><li>schema property: card.json#/properties/photo</li></ul></dd>
-<dt id="term-post-office-box"><code>post-office-box</code></dt>
-<dd><ul><li>schema property: address.json#/properties/post-office-box</li></ul></dd>
-<dt id="term-postal-code"><code>postal-code</code></dt>
-<dd><ul><li>schema property: address.json#/properties/postal-code</li></ul></dd>
-<dt id="term-priority"><code>priority</code></dt>
-<dd><ul><li>schema property: ticket.json#/properties/priority</li></ul></dd>
-<dt id="term-rdate"><code>rdate</code></dt>
-<dd><ul><li>schema property: calendar.json#/properties/rdate</li></ul></dd>
-<dt id="term-region"><code>region</code></dt>
-<dd><ul><li>schema property: address.json#/properties/region</li></ul></dd>
-<dt id="term-role"><code>role</code></dt>
-<dd><ul><li>schema property: card.json#/properties/role</li></ul></dd>
-<dt id="term-rrule"><code>rrule</code></dt>
-<dd><ul><li>schema property: calendar.json#/properties/rrule</li></ul></dd>
-<dt id="term-self"><code>self</code></dt>
-<dd><ul><li>schema property: user.json#/properties/_links/properties/self</li></ul></dd>
-<dt id="term-sound"><code>sound</code></dt>
-<dd><ul><li>schema property: card.json#/properties/sound</li></ul></dd>
-<dt id="term-status"><code>status</code></dt>
-<dd><ul><li>parameter: PUT /ticket/{id} {status}</li><li>schema property: json-schema-input.param.json#/properties/status</li><li>schema property: ticket.json#/properties/status</li><li>schema property: ticket.param.json#/properties/status</li></ul></dd>
-<dt id="term-street-address"><code>street-address</code></dt>
-<dd><ul><li>schema property: address.json#/properties/street-address</li></ul></dd>
-<dt id="term-subject"><code>subject</code></dt>
-<dd><ul><li>parameter: POST /contact {subject}</li><li>parameter: POST /contact-with-descriptions {subject}</li><li>schema property: contact.param.json#/properties/subject</li></ul></dd>
-<dt id="term-summary"><code>summary</code></dt>
-<dd><ul><li>schema property: calendar.json#/properties/summary</li></ul></dd>
-<dt id="term-tagOnly"><code>tagOnly</code></dt>
-<dd><ul><li>parameter: POST /docblock-variants {tagOnly}</li></ul></dd>
-<dt id="term-tel"><code>tel</code></dt>
-<dd><ul><li>schema property: card.json#/properties/tel</li></ul></dd>
-<dt id="term-tickets"><code>tickets</code></dt>
-<dd><ul><li>schema property: user.json#/properties/_embedded/properties/tickets</li></ul></dd>
-<dt id="term-title"><code>title</code></dt>
-<dd><ul><li>parameter: POST /ticket/{id} {title}</li><li>parameter: PUT /ticket/{id} {title}</li><li>schema property: card.json#/properties/title</li><li>schema property: ticket.json#/properties/title</li><li>schema property: ticket.param.json#/properties/title</li></ul></dd>
-<dt id="term-type"><code>type</code></dt>
-<dd><ul><li>schema property: card.json#/properties/email/properties/type</li><li>schema property: card.json#/properties/tel/properties/type</li></ul></dd>
-<dt id="term-tz"><code>tz</code></dt>
-<dd><ul><li>schema property: card.json#/properties/tz</li></ul></dd>
-<dt id="term-updated"><code>updated</code></dt>
-<dd><ul><li>schema property: ticket.json#/properties/updated</li></ul></dd>
-<dt id="term-url"><code>url</code></dt>
-<dd><ul><li>schema property: calendar.json#/properties/url</li><li>schema property: card.json#/properties/url</li></ul></dd>
-<dt id="term-value"><code>value</code></dt>
-<dd><ul><li>schema property: card.json#/properties/email/properties/value</li><li>schema property: card.json#/properties/tel/properties/value</li></ul></dd>
-<dt id="term-vegetables"><code>vegetables</code></dt>
-<dd><ul><li>schema property: array.json#/properties/vegetables</li></ul></dd>
-<dt id="term-veggieLike"><code>veggieLike</code></dt>
-<dd><ul><li>schema property: array.json#/definitions/veggie/properties/veggieLike</li></ul></dd>
-<dt id="term-veggieName"><code>veggieName</code></dt>
-<dd><ul><li>schema property: array.json#/definitions/veggie/properties/veggieName</li></ul></dd>
+<dt id="term-additionalName" class="term"><code>additionalName</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/additionalName</li></ul></dd>
+<dt id="term-age" class="term alpsBacked" data-alps="age"><code>age</code><span class="mark" title="same-name ALPS descriptor">&#x2611;</span></dt>
+<dd><p class="borrowedDescriptor">title: Age in years which must be equal to or greater than zero.</p><ul><li class="usage parameterUsage">parameter: GET /alps-fallback {age}</li><li class="usage parameterUsage">parameter: POST /contact {age}</li><li class="usage parameterUsage">parameter: POST /contact-with-descriptions {age}</li><li class="usage parameterUsage">parameter: POST /person {age}</li><li class="usage parameterUsage">parameter: PATCH /person {age}</li><li class="usage parameterUsage">parameter: POST /users/{id} {age}</li><li class="usage parameterUsage">parameter: PUT /users/{id} {age}</li><li class="usage schemaPropertyUsage">schema property: contact.param.json#/properties/age</li><li class="usage schemaPropertyUsage">schema property: person.json#/properties/age</li><li class="usage schemaPropertyUsage">schema property: person.param.json#/properties/age</li><li class="usage schemaPropertyUsage">schema property: user.json#/properties/age</li><li class="usage schemaPropertyUsage">schema property: user.param.json#/properties/age</li></ul></dd>
+<dt id="term-assignee" class="term"><code>assignee</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: POST /ticket/{id} {assignee}</li><li class="usage parameterUsage">parameter: PUT /ticket/{id} {assignee}</li><li class="usage parameterUsage">parameter: PUT /ticket/assign {assignee}</li><li class="usage schemaPropertyUsage">schema property: ticket.json#/properties/assignee</li><li class="usage schemaPropertyUsage">schema property: ticket.param.json#/properties/assignee</li></ul></dd>
+<dt id="term-bday" class="term"><code>bday</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/bday</li></ul></dd>
+<dt id="term-bothSummaryAndDescription" class="term"><code>bothSummaryAndDescription</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: POST /docblock-variants {bothSummaryAndDescription}</li></ul></dd>
+<dt id="term-builtinType" class="term"><code>builtinType</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: POST /input-edge-cases {builtinType}</li></ul></dd>
+<dt id="term-category" class="term"><code>category</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: calendar.json#/properties/category</li></ul></dd>
+<dt id="term-count" class="term"><code>count</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: GET /numbers {count}</li></ul></dd>
+<dt id="term-country-name" class="term"><code>country-name</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: address.json#/properties/country-name</li></ul></dd>
+<dt id="term-created" class="term"><code>created</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: ticket.json#/properties/created</li><li class="usage schemaPropertyUsage">schema property: user.json#/properties/created</li></ul></dd>
+<dt id="term-date" class="term"><code>date</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: GET /calendar/{year}/{month} {date}</li></ul></dd>
+<dt id="term-description" class="term"><code>description</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: POST /ticket/{id} {description}</li><li class="usage parameterUsage">parameter: PUT /ticket/{id} {description}</li><li class="usage schemaPropertyUsage">schema property: calendar.json#/properties/description</li><li class="usage schemaPropertyUsage">schema property: ticket.json#/properties/description</li><li class="usage schemaPropertyUsage">schema property: ticket.param.json#/properties/description</li></ul></dd>
+<dt id="term-docOnly" class="term"><code>docOnly</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: json-schema-input.param.json#/properties/docOnly</li></ul></dd>
+<dt id="term-dtend" class="term"><code>dtend</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: calendar.json#/properties/dtend</li></ul></dd>
+<dt id="term-dtstart" class="term"><code>dtstart</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: calendar.json#/properties/dtstart</li></ul></dd>
+<dt id="term-duration" class="term"><code>duration</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: calendar.json#/properties/duration</li></ul></dd>
+<dt id="term-email" class="term"><code>email</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: POST /contact {email}</li><li class="usage parameterUsage">parameter: POST /contact-with-descriptions {email}</li><li class="usage parameterUsage">parameter: POST /users/{id} {email}</li><li class="usage parameterUsage">parameter: PUT /users/{id} {email}</li><li class="usage schemaPropertyUsage">schema property: card.json#/properties/email</li><li class="usage schemaPropertyUsage">schema property: contact.param.json#/properties/email</li><li class="usage schemaPropertyUsage">schema property: user.json#/properties/email</li><li class="usage schemaPropertyUsage">schema property: user.param.json#/properties/email</li></ul></dd>
+<dt id="term-enabled" class="term"><code>enabled</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: PUT /users/{id} {enabled}</li><li class="usage schemaPropertyUsage">schema property: user.json#/properties/enabled</li><li class="usage schemaPropertyUsage">schema property: user.param.json#/properties/enabled</li></ul></dd>
+<dt id="term-extended-address" class="term"><code>extended-address</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: address.json#/properties/extended-address</li></ul></dd>
+<dt id="term-familyName" class="term alpsBacked" data-alps="familyName"><code>familyName</code><span class="mark" title="same-name ALPS descriptor">&#x2611;</span></dt>
+<dd><p class="borrowedDescriptor">def: <a href="https://schema.org/familyName">https://schema.org/familyName</a></p><ul><li class="usage parameterUsage">parameter: GET /alps-fallback {familyName}</li><li class="usage parameterUsage">parameter: POST /person {familyName}</li><li class="usage parameterUsage">parameter: PATCH /person {familyName}</li><li class="usage schemaPropertyUsage">schema property: card.json#/properties/familyName</li><li class="usage schemaPropertyUsage">schema property: person.json#/properties/familyName</li><li class="usage schemaPropertyUsage">schema property: person.param.json#/properties/familyName</li></ul></dd>
+<dt id="term-firstName" class="term alpsBacked" data-alps="firstName"><code>firstName</code><span class="mark" title="same-name ALPS descriptor">&#x2611;</span></dt>
+<dd><p class="borrowedDescriptor">title: First Name by ALPS</p><ul><li class="usage parameterUsage">parameter: GET /alps-fallback {firstName}</li><li class="usage parameterUsage">parameter: POST /person {firstName}</li><li class="usage parameterUsage">parameter: PATCH /person {firstName}</li><li class="usage schemaPropertyUsage">schema property: person.json#/properties/firstName</li><li class="usage schemaPropertyUsage">schema property: person.param.json#/properties/firstName</li><li class="usage schemaPropertyUsage">schema property: user.json#/properties/firstName</li></ul></dd>
+<dt id="term-fn" class="term"><code>fn</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/fn</li></ul></dd>
+<dt id="term-foo" class="term"><code>foo</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: GET /alps-fallback {foo}</li></ul></dd>
+<dt id="term-fruits" class="term"><code>fruits</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: array.json#/properties/fruits</li></ul></dd>
+<dt id="term-givenName" class="term"><code>givenName</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/givenName</li></ul></dd>
+<dt id="term-honorificPrefix" class="term"><code>honorificPrefix</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/honorificPrefix</li></ul></dd>
+<dt id="term-honorificSuffix" class="term"><code>honorificSuffix</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/honorificSuffix</li></ul></dd>
+<dt id="term-href" class="term"><code>href</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: user.json#/properties/_links/properties/self/properties/href</li></ul></dd>
+<dt id="term-id" class="term alpsBacked" data-alps="id"><code>id</code><span class="mark" title="same-name ALPS descriptor">&#x2611;</span></dt>
+<dd><p class="borrowedDescriptor">title: Person identifier</p><ul><li class="usage parameterUsage">parameter: GET /address {id}</li><li class="usage parameterUsage">parameter: GET /card {id}</li><li class="usage parameterUsage">parameter: GET /org {id}</li><li class="usage parameterUsage">parameter: GET /person {id}</li><li class="usage parameterUsage">parameter: PATCH /person {id}</li><li class="usage parameterUsage">parameter: GET /ticket/{id} {id}</li><li class="usage parameterUsage">parameter: PUT /ticket/{id} {id}</li><li class="usage parameterUsage">parameter: DELETE /ticket/{id} {id}</li><li class="usage parameterUsage">parameter: PUT /ticket/assign {id}</li><li class="usage parameterUsage">parameter: GET /union-type {id}</li><li class="usage parameterUsage">parameter: GET /users/{id} {id}</li><li class="usage parameterUsage">parameter: PUT /users/{id} {id}</li><li class="usage parameterUsage">parameter: DELETE /users/{id} {id}</li><li class="usage schemaPropertyUsage">schema property: org.json#/properties/id</li><li class="usage schemaPropertyUsage">schema property: person.param.json#/properties/id</li><li class="usage schemaPropertyUsage">schema property: ticket.json#/properties/id</li><li class="usage schemaPropertyUsage">schema property: ticket.param.json#/properties/id</li><li class="usage schemaPropertyUsage">schema property: user.json#/properties/id</li><li class="usage schemaPropertyUsage">schema property: user.param.json#/properties/id</li></ul></dd>
+<dt id="term-ids" class="term"><code>ids</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: json-schema-input.param.json#/properties/ids</li></ul></dd>
+<dt id="term-items" class="term"><code>items</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: GET /array-data {items}</li></ul></dd>
+<dt id="term-juice" class="term"><code>juice</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: array.json#/properties/juice</li></ul></dd>
+<dt id="term-juiceLike" class="term"><code>juiceLike</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: array.json#/definitions/juice/properties/juiceLike</li></ul></dd>
+<dt id="term-juiceName" class="term"><code>juiceName</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: array.json#/definitions/juice/properties/juiceName</li></ul></dd>
+<dt id="term-lastName" class="term"><code>lastName</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: user.json#/properties/lastName</li></ul></dd>
+<dt id="term-locality" class="term"><code>locality</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: address.json#/properties/locality</li></ul></dd>
+<dt id="term-location" class="term"><code>location</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: calendar.json#/properties/location</li></ul></dd>
+<dt id="term-logo" class="term"><code>logo</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/logo</li></ul></dd>
+<dt id="term-modified" class="term"><code>modified</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: user.json#/properties/modified</li></ul></dd>
+<dt id="term-name" class="term"><code>name</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: POST /contact {name}</li><li class="usage parameterUsage">parameter: POST /contact-with-descriptions {name}</li><li class="usage parameterUsage">parameter: POST /users/{id} {name}</li><li class="usage parameterUsage">parameter: PUT /users/{id} {name}</li><li class="usage schemaPropertyUsage">schema property: contact.param.json#/properties/name</li><li class="usage schemaPropertyUsage">schema property: org.json#/properties/name</li><li class="usage schemaPropertyUsage">schema property: user.param.json#/properties/name</li></ul></dd>
+<dt id="term-nickname" class="term"><code>nickname</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/nickname</li></ul></dd>
+<dt id="term-noCtor" class="term"><code>noCtor</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: PUT /input-edge-cases {noCtor}</li></ul></dd>
+<dt id="term-nonPromoted" class="term"><code>nonPromoted</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: POST /docblock-variants {nonPromoted}</li></ul></dd>
+<dt id="term-options" class="term"><code>options</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: GET /users/{id} {options}</li><li class="usage schemaPropertyUsage">schema property: user.param.json#/properties/options</li></ul></dd>
+<dt id="term-org" class="term"><code>org</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/org</li></ul></dd>
+<dt id="term-organizationName" class="term"><code>organizationName</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/org/properties/organizationName</li></ul></dd>
+<dt id="term-organizationUnit" class="term"><code>organizationUnit</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/org/properties/organizationUnit</li></ul></dd>
+<dt id="term-photo" class="term"><code>photo</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/photo</li></ul></dd>
+<dt id="term-post-office-box" class="term"><code>post-office-box</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: address.json#/properties/post-office-box</li></ul></dd>
+<dt id="term-postal-code" class="term"><code>postal-code</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: address.json#/properties/postal-code</li></ul></dd>
+<dt id="term-priority" class="term"><code>priority</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: ticket.json#/properties/priority</li></ul></dd>
+<dt id="term-rdate" class="term"><code>rdate</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: calendar.json#/properties/rdate</li></ul></dd>
+<dt id="term-region" class="term"><code>region</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: address.json#/properties/region</li></ul></dd>
+<dt id="term-role" class="term"><code>role</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/role</li></ul></dd>
+<dt id="term-rrule" class="term"><code>rrule</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: calendar.json#/properties/rrule</li></ul></dd>
+<dt id="term-self" class="term"><code>self</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: user.json#/properties/_links/properties/self</li></ul></dd>
+<dt id="term-sound" class="term"><code>sound</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/sound</li></ul></dd>
+<dt id="term-status" class="term"><code>status</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: PUT /ticket/{id} {status}</li><li class="usage schemaPropertyUsage">schema property: json-schema-input.param.json#/properties/status</li><li class="usage schemaPropertyUsage">schema property: ticket.json#/properties/status</li><li class="usage schemaPropertyUsage">schema property: ticket.param.json#/properties/status</li></ul></dd>
+<dt id="term-street-address" class="term"><code>street-address</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: address.json#/properties/street-address</li></ul></dd>
+<dt id="term-subject" class="term"><code>subject</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: POST /contact {subject}</li><li class="usage parameterUsage">parameter: POST /contact-with-descriptions {subject}</li><li class="usage schemaPropertyUsage">schema property: contact.param.json#/properties/subject</li></ul></dd>
+<dt id="term-summary" class="term"><code>summary</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: calendar.json#/properties/summary</li></ul></dd>
+<dt id="term-tagOnly" class="term"><code>tagOnly</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: POST /docblock-variants {tagOnly}</li></ul></dd>
+<dt id="term-tel" class="term"><code>tel</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/tel</li></ul></dd>
+<dt id="term-tickets" class="term"><code>tickets</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: user.json#/properties/_embedded/properties/tickets</li></ul></dd>
+<dt id="term-title" class="term"><code>title</code></dt>
+<dd><ul><li class="usage parameterUsage">parameter: POST /ticket/{id} {title}</li><li class="usage parameterUsage">parameter: PUT /ticket/{id} {title}</li><li class="usage schemaPropertyUsage">schema property: card.json#/properties/title</li><li class="usage schemaPropertyUsage">schema property: ticket.json#/properties/title</li><li class="usage schemaPropertyUsage">schema property: ticket.param.json#/properties/title</li></ul></dd>
+<dt id="term-type" class="term"><code>type</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/email/properties/type</li><li class="usage schemaPropertyUsage">schema property: card.json#/properties/tel/properties/type</li></ul></dd>
+<dt id="term-tz" class="term"><code>tz</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/tz</li></ul></dd>
+<dt id="term-updated" class="term"><code>updated</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: ticket.json#/properties/updated</li></ul></dd>
+<dt id="term-url" class="term"><code>url</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: calendar.json#/properties/url</li><li class="usage schemaPropertyUsage">schema property: card.json#/properties/url</li></ul></dd>
+<dt id="term-value" class="term"><code>value</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/email/properties/value</li><li class="usage schemaPropertyUsage">schema property: card.json#/properties/tel/properties/value</li></ul></dd>
+<dt id="term-vegetables" class="term"><code>vegetables</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: array.json#/properties/vegetables</li></ul></dd>
+<dt id="term-veggieLike" class="term"><code>veggieLike</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: array.json#/definitions/veggie/properties/veggieLike</li></ul></dd>
+<dt id="term-veggieName" class="term"><code>veggieName</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: array.json#/definitions/veggie/properties/veggieName</li></ul></dd>
 </dl>
 <h2>Reserved Representation Fields</h2>
 <p>Leading-underscore fields are listed separately because they usually belong to the representation format rather than the API domain vocabulary.</p>
 <dl>
-<dt id="field-_embedded"><code>_embedded</code></dt>
-<dd><ul><li>schema property: user.json#/properties/_embedded</li></ul></dd>
-<dt id="field-_links"><code>_links</code></dt>
-<dd><ul><li>schema property: user.json#/properties/_links</li></ul></dd>
+<dt id="field-_embedded" class="reservedField"><code>_embedded</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: user.json#/properties/_embedded</li></ul></dd>
+<dt id="field-_links" class="reservedField"><code>_links</code></dt>
+<dd><ul><li class="usage schemaPropertyUsage">schema property: user.json#/properties/_links</li></ul></dd>
 </dl>
 </main>
 </body>
