@@ -49,7 +49,7 @@ final readonly class TermUsageHtmlRenderer
 </style>
 </head>
 <body>
-<main>
+<main class="termUsageIndex">
 <p><a href="index.html">API Documentation</a></p>
 <h1>Term Usage Index</h1>
 <p>This index reports lexical identifier matches only; it does not prove semantic equivalence. Its own vocabulary (term, alpsBacked, usage, reservedField, coverage) is defined by the profile linked above. A term whose spelling also exists in the configured application ALPS profile is marked <code>alpsBacked</code>; the matched application descriptor id is carried on the entry's <code>data-alps</code> attribute.</p>

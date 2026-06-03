@@ -74,6 +74,8 @@ final class TermUsageIndexTest extends TestCase
         $html = (new TermUsageIndex($config))->generateHtml();
 
         $this->assertStringContainsString('<title>Term Usage Index</title>', $html);
+        // The document as a whole binds to the termUsageIndex descriptor.
+        $this->assertStringContainsString('<main class="termUsageIndex">', $html);
         $this->assertStringContainsString('<a href="index.html">API Documentation</a>', $html);
         $this->assertStringContainsString('<li class="termsUsedCount">Terms used in API:', $html);
         // The Index links each term (and reserved field) down to its entry anchor.

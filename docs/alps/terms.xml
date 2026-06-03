@@ -14,7 +14,10 @@ Bind page elements to these descriptors by their `class` attribute:
 - the cross-reference to that application descriptor, when present, is carried by the `data-alps` attribute, not by `class`;
 - usage occurrences carry `class="usage"`, refined to `parameterUsage` or `schemaPropertyUsage`;
 - reserved representation fields carry `class="reservedField"`;
-- summary figures carry the matching count/coverage descriptor classes.
+- summary figures carry the matching count/coverage descriptor classes;
+- the whole document is bound by `class="termUsageIndex"` on its `main` element.
+
+Representation and navigation chrome is deliberately outside this vocabulary and carries no descriptor binding: the "API Documentation" back link, the `index-list` table of contents, and the `mark` checkmark are presentation only. Their absence from the binding set is intentional, not an omission.
 
 Matching is lexical (same identifier spelling); it does not assert semantic equivalence between the indexed term and the application descriptor.
   </doc>
