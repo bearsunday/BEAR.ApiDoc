@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALPS Profiles</title>
+<style>
+body {
+    margin: 0;
+    padding: 32px;
+    color: #1f2328;
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.5;
+}
+main {
+    max-width: 980px;
+}
+a {
+    color: #0969da;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+code {
+    padding: 0.15em 0.35em;
+    border-radius: 4px;
+    background: #f6f8fa;
+    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Consolas, monospace;
+}
+dl {
+    margin: 0;
+}
+dt {
+    margin-top: 16px;
+    border-top: 1px solid #d8dee4;
+    padding-top: 16px;
+    font-weight: 600;
+}
+dd {
+    margin: 4px 0 0 0;
+    color: #57606a;
+}
+</style>
+</head>
+<body>
+<main>
+<p><a href="../index.html">API Documentation</a></p>
+<h1>ALPS Profiles</h1>
+<p>Application-level Profile Semantics (ALPS) profiles for this documentation. The structural profiles describe the vocabulary of the generated reports; they are declared by each page via <code>rel="profile"</code>. The rendered application profile is at <a href="../alps.html">alps.html</a>.</p>
+
+<dl>
+<dt><a href="apidoc.xml">apidoc.xml</a></dt>
+<dd>Structural profile for the main API documentation (index.html): endpoint, response, method, rel, embed, object, array, param, and related descriptors.</dd>
+
+<dt><a href="terms.xml">terms.xml</a></dt>
+<dd>Profile for the Term Usage Index (terms.html): term, alpsBacked, usage (parameterUsage / schemaPropertyUsage), reservedField, and coverage figures.</dd>
+
+<dt><a href="audit.xml">audit.xml</a></dt>
+<dd>Profile for the Documentation Audit (audit.html): apiDocumentationAudit, operation, finding, findingType, and summary counts.</dd>
+
+<dt><a href="index-schema.xml">index-schema.xml</a></dt>
+<dd>Profile for the JSON Schema index.</dd>
+</dl>
+</main>
+</body>
+</html>

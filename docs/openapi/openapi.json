@@ -1,0 +1,1585 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "API Documentation",
+        "description": "This is a sample API documentation in OpenAPI 3.1 format",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/address": {
+            "get": {
+                "summary": "Get address",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Address"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/alps-fallback": {
+            "get": {
+                "summary": "Test ALPS fallback - parameters have no PHPDoc description",
+                "parameters": [
+                    {
+                        "name": "firstName",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "familyName",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "age",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "foo",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/array-data": {
+            "get": {
+                "summary": "Get array data",
+                "parameters": [
+                    {
+                        "name": "items",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Groceries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/calendar/{year}/{month}": {
+            "get": {
+                "summary": "Get schedule",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CalendarEvent"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/card": {
+            "get": {
+                "summary": "Get card",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Card"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/contact": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Contact name for display"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "description": "Contact email address"
+                                    },
+                                    "age": {
+                                        "type": "integer"
+                                    },
+                                    "subject": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "subject"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/contact-with-descriptions": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Contact name for display"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "description": "Contact email address"
+                                    },
+                                    "age": {
+                                        "type": "integer"
+                                    },
+                                    "subject": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "subject"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/docblock-variants": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "bothSummaryAndDescription": {
+                                        "type": "string",
+                                        "description": "Short summary line.\n\nLonger description on a second paragraph."
+                                    },
+                                    "tagOnly": {
+                                        "type": "string"
+                                    },
+                                    "nonPromoted": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "bothSummaryAndDescription",
+                                    "tagOnly",
+                                    "nonPromoted"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/index": {
+            "get": {
+                "summary": "API entry point",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/input-edge-cases": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "builtinType": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "builtinType"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "noCtor": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "noCtor"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/missing-schema": {
+            "get": {
+                "summary": "Get data with non-existent schema",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/numbers": {
+            "get": {
+                "summary": "Get numbers",
+                "parameters": [
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Numbers"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/org": {
+            "get": {
+                "summary": "Get organization",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Org"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/person": {
+            "get": {
+                "operationId": "goPerson",
+                "summary": "Get person",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Unique identifier of the person",
+                        "example": "person_12345"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Person"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "doCreatePerson",
+                "summary": "Register member",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "firstName": {
+                                        "type": "string",
+                                        "description": "The person's first/given name",
+                                        "example": "John",
+                                        "minLength": 1,
+                                        "maxLength": 50
+                                    },
+                                    "familyName": {
+                                        "type": "string",
+                                        "description": "The person's family/last name",
+                                        "example": "Doe",
+                                        "maxLength": 50
+                                    },
+                                    "age": {
+                                        "type": "integer",
+                                        "description": "Age in years",
+                                        "example": 30,
+                                        "minimum": 0,
+                                        "maximum": 150
+                                    }
+                                },
+                                "required": [
+                                    "firstName"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Update profile",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "description": "Unique identifier of the person",
+                                        "example": "person_12345"
+                                    },
+                                    "firstName": {
+                                        "type": "string",
+                                        "description": "The person's first/given name",
+                                        "example": "John",
+                                        "minLength": 1,
+                                        "maxLength": 50
+                                    },
+                                    "familyName": {
+                                        "type": "string",
+                                        "description": "The person's family/last name",
+                                        "example": "Doe",
+                                        "maxLength": 50
+                                    },
+                                    "age": {
+                                        "type": "integer",
+                                        "description": "Age in years",
+                                        "example": 30,
+                                        "minimum": 0,
+                                        "maximum": 150
+                                    }
+                                },
+                                "required": [
+                                    "id"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/ticket/{id}": {
+            "get": {
+                "summary": "Get a ticket",
+                "description": "Retrieve detailed information about a specific support ticket.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The unique identifier for a ticket",
+                        "example": "TKT-2024-001"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Ticket"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new ticket",
+                "description": "Create a new support ticket in the system. This endpoint allows you to submit customer inquiries, bug reports, feature requests, and other issues that need to be tracked and resolved by the support team. The ticket will be automatically assigned a unique identifier and timestamps for creation and last update.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Brief summary of the issue or request",
+                                        "example": "Cannot login to dashboard",
+                                        "minLength": 3,
+                                        "maxLength": 255
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "Detailed explanation of the issue",
+                                        "example": "When I click login, I get a 500 error",
+                                        "maxLength": 2000
+                                    },
+                                    "assignee": {
+                                        "type": "string",
+                                        "description": "Username of the support agent",
+                                        "example": "john.smith"
+                                    }
+                                },
+                                "required": [
+                                    "title"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a ticket",
+                "description": "Modify an existing ticket's information.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The unique identifier for a ticket",
+                        "example": "TKT-2024-001"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Brief summary of the issue or request",
+                                        "example": "Cannot login to dashboard",
+                                        "minLength": 3,
+                                        "maxLength": 255
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "description": "Current status of the ticket",
+                                        "example": "in_progress",
+                                        "enum": [
+                                            "open",
+                                            "in_progress",
+                                            "waiting",
+                                            "resolved",
+                                            "closed"
+                                        ]
+                                    },
+                                    "assignee": {
+                                        "type": "string",
+                                        "description": "Username of the support agent",
+                                        "example": "john.smith"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "Detailed explanation of the issue",
+                                        "example": "When I click login, I get a 500 error",
+                                        "maxLength": 2000
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a ticket",
+                "description": "Permanently remove a ticket from the system.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The unique identifier for a ticket",
+                        "example": "TKT-2024-001"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/tickets": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CollectionOfTickets"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/union-type": {
+            "get": {
+                "summary": "Test union type parameter",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "operationId": "getUser",
+                "summary": "Get user profile",
+                "description": "Retrieve detailed profile information for a specific user.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Unique identifier for the user",
+                        "example": "usr_abc123"
+                    },
+                    {
+                        "name": "options",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Display options",
+                        "example": "full"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "createUser",
+                "summary": "Create a new user",
+                "description": "Register a new user account in the system.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Display name of the user",
+                                        "example": "Jane Smith"
+                                    },
+                                    "age": {
+                                        "type": "integer",
+                                        "description": "Age of the user in years",
+                                        "example": 29,
+                                        "minimum": 0,
+                                        "maximum": 150
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "description": "Email address for the account",
+                                        "example": "jane.smith@example.com"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "age"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "updateUser",
+                "summary": "Update user profile",
+                "description": "Modify existing user account information.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Unique identifier for the user",
+                        "example": "usr_abc123"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Display name of the user",
+                                        "example": "Jane Smith"
+                                    },
+                                    "age": {
+                                        "type": "integer",
+                                        "description": "Age of the user in years",
+                                        "example": 29,
+                                        "minimum": 0,
+                                        "maximum": 150
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "description": "Email address for the account",
+                                        "example": "jane.smith@example.com"
+                                    },
+                                    "enabled": {
+                                        "type": "boolean",
+                                        "description": "Whether the account is active",
+                                        "example": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "deleteUser",
+                "summary": "Delete user account",
+                "description": "Permanently delete a user account and associated data.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Unique identifier for the user",
+                        "example": "usr_abc123"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/ticket/assign": {
+            "put": {
+                "summary": "Assign ticket",
+                "description": "CQRS domain command. Compare with CRUD operations at /ticket.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "assignee": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "assignee"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Address": {
+                "title": "Address",
+                "description": "Physical postal address following h-card microformat conventions",
+                "type": "object",
+                "properties": {
+                    "post-office-box": {
+                        "type": "string",
+                        "title": "Post Office Box",
+                        "description": "PO Box number for mail delivery",
+                        "example": "PO Box 1234"
+                    },
+                    "extended-address": {
+                        "type": "string",
+                        "description": "Apartment, suite, or unit number",
+                        "example": "Suite 500"
+                    },
+                    "street-address": {
+                        "type": "string",
+                        "description": "Street number and name",
+                        "example": "123 Main Street"
+                    },
+                    "locality": {
+                        "type": "string",
+                        "description": "City or town name",
+                        "example": "San Francisco"
+                    },
+                    "region": {
+                        "type": [
+                            "integer",
+                            "string"
+                        ],
+                        "description": "State, province, or region",
+                        "example": "CA"
+                    },
+                    "postal-code": {
+                        "type": "string",
+                        "description": "ZIP or postal code",
+                        "example": "94102",
+                        "pattern": "^[0-9A-Za-z\\- ]+$"
+                    },
+                    "country-name": {
+                        "type": "string",
+                        "description": "Full country name",
+                        "example": "United States"
+                    }
+                },
+                "required": [
+                    "locality",
+                    "region",
+                    "country-name"
+                ]
+            },
+            "Veggie": {
+                "type": "object",
+                "required": [
+                    "veggieName",
+                    "veggieLike"
+                ],
+                "properties": {
+                    "veggieName": {
+                        "type": "string",
+                        "description": "The name of the vegetable."
+                    },
+                    "veggieLike": {
+                        "type": "boolean",
+                        "description": "Do I like this vegetable?"
+                    }
+                }
+            },
+            "Juice": {
+                "type": "object",
+                "required": [
+                    "juiceName",
+                    "juiceLike"
+                ],
+                "properties": {
+                    "juiceName": {
+                        "type": "string",
+                        "description": "The name of the juice."
+                    },
+                    "juiceLike": {
+                        "type": "boolean",
+                        "description": "Do I like this juice?"
+                    }
+                }
+            },
+            "Groceries": {
+                "description": "A groceries list containing fruits, vegetables, and juice preferences",
+                "type": "object",
+                "title": "Groceries",
+                "properties": {
+                    "fruits": {
+                        "type": "array",
+                        "description": "List of fruit names",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "vegetables": {
+                        "type": "array",
+                        "description": "List of vegetables with preferences",
+                        "items": {
+                            "$ref": "#/components/schemas/Veggie"
+                        }
+                    },
+                    "juice": {
+                        "type": "object",
+                        "description": "Juice preference details",
+                        "$ref": "#/components/schemas/Juice"
+                    }
+                }
+            },
+            "CalendarEvent": {
+                "title": "Calendar Event",
+                "description": "Calendar event following iCalendar (RFC 5545) conventions",
+                "type": "object",
+                "required": [
+                    "dtstart",
+                    "summary"
+                ],
+                "properties": {
+                    "dtstart": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Event start date and time in ISO 8601 format",
+                        "example": "2024-03-15T10:00:00Z"
+                    },
+                    "dtend": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Event end date and time in ISO 8601 format",
+                        "example": "2024-03-15T11:30:00Z"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "Brief title or name of the event",
+                        "example": "Weekly Team Meeting",
+                        "maxLength": 255
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Physical location or virtual meeting URL",
+                        "example": "Conference Room A / https://meet.example.com/abc"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL with more information about the event",
+                        "example": "https://example.com/events/weekly-meeting"
+                    },
+                    "duration": {
+                        "type": "string",
+                        "description": "Event duration in ISO 8601 duration format",
+                        "example": "PT1H30M"
+                    },
+                    "rdate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Additional recurrence date for the event",
+                        "example": "2024-03-22T10:00:00Z"
+                    },
+                    "rrule": {
+                        "type": "string",
+                        "description": "Recurrence rule in iCalendar RRULE format",
+                        "example": "FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=10"
+                    },
+                    "category": {
+                        "type": "string",
+                        "description": "Event category for organization and filtering",
+                        "example": "meeting"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Detailed description of the event and agenda",
+                        "example": "Discuss Q1 progress and plan Q2 objectives.",
+                        "maxLength": 2000
+                    }
+                }
+            },
+            "Card": {
+                "title": "Card",
+                "description": "Contact card following vCard/h-card format for people, organizations, or places",
+                "type": "object",
+                "required": [
+                    "familyName",
+                    "givenName"
+                ],
+                "properties": {
+                    "fn": {
+                        "type": "string",
+                        "description": "Full formatted name as it should be displayed",
+                        "example": "Dr. Jane M. Smith, PhD"
+                    },
+                    "familyName": {
+                        "type": "string",
+                        "description": "Family name (surname/last name)",
+                        "example": "Smith"
+                    },
+                    "givenName": {
+                        "type": "string",
+                        "description": "Given name (first name)",
+                        "example": "Jane"
+                    },
+                    "additionalName": {
+                        "type": "array",
+                        "description": "Middle names or other additional names",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "Marie"
+                        ]
+                    },
+                    "honorificPrefix": {
+                        "type": "array",
+                        "description": "Name prefixes and titles (e.g., Dr., Mr., Ms.)",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "Dr."
+                        ]
+                    },
+                    "honorificSuffix": {
+                        "type": "array",
+                        "description": "Name suffixes and post-nominals (e.g., PhD, Jr., III)",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "PhD",
+                            "MBA"
+                        ]
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "description": "Preferred informal name or alias",
+                        "example": "Jenny"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "Personal or professional website URL",
+                        "example": "https://janesmith.example.com"
+                    },
+                    "email": {
+                        "type": "object",
+                        "description": "Email address with type classification",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "description": "Category of email (work, home, other)",
+                                "example": "work"
+                            },
+                            "value": {
+                                "type": "string",
+                                "format": "email",
+                                "description": "The email address",
+                                "example": "jane.smith@company.com"
+                            }
+                        }
+                    },
+                    "tel": {
+                        "type": "object",
+                        "description": "Telephone number with type classification",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "description": "Category of phone (work, home, mobile, fax)",
+                                "example": "mobile"
+                            },
+                            "value": {
+                                "type": "string",
+                                "description": "The phone number",
+                                "example": "+1-555-123-4567"
+                            }
+                        }
+                    },
+                    "tz": {
+                        "type": "string",
+                        "description": "Timezone in IANA format or UTC offset",
+                        "example": "America/New_York"
+                    },
+                    "photo": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL to profile photo image",
+                        "example": "https://example.com/photos/jsmith.jpg"
+                    },
+                    "logo": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL to company or organization logo",
+                        "example": "https://company.com/logo.png"
+                    },
+                    "sound": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL to audio file with name pronunciation",
+                        "example": "https://example.com/pronunciation/jsmith.mp3"
+                    },
+                    "bday": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Birthday in ISO 8601 date format",
+                        "example": "1985-06-15"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Job title or position",
+                        "example": "Senior Software Engineer"
+                    },
+                    "role": {
+                        "type": "string",
+                        "description": "Function or role within organization",
+                        "example": "Technical Lead"
+                    },
+                    "org": {
+                        "type": "object",
+                        "description": "Organization or company affiliation",
+                        "properties": {
+                            "organizationName": {
+                                "type": "string",
+                                "description": "Name of the organization",
+                                "example": "Acme Corporation"
+                            },
+                            "organizationUnit": {
+                                "type": "string",
+                                "description": "Department or division within organization",
+                                "example": "Engineering"
+                            }
+                        }
+                    }
+                }
+            },
+            "Numbers": {
+                "title": "Numbers",
+                "type": "array",
+                "items": {
+                    "type": "integer",
+                    "title": "Today's lucky numbers",
+                    "examples": [
+                        7,
+                        777
+                    ],
+                    "uniqueItems": true
+                }
+            },
+            "Org": {
+                "title": "Org",
+                "description": "Organization information",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Organization ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Organization name",
+                        "example": "Acme Inc."
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
+            "Person": {
+                "title": "Person",
+                "description": "Personal identity and profile information",
+                "type": "object",
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "description": "The person's first/given name",
+                        "example": "John",
+                        "minLength": 1,
+                        "maxLength": 50
+                    },
+                    "familyName": {
+                        "type": "string",
+                        "description": "The person's family/last name",
+                        "example": "Doe",
+                        "maxLength": 50
+                    },
+                    "age": {
+                        "description": "Age in years (must be 0 or greater)",
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 150,
+                        "example": 30
+                    }
+                },
+                "required": [
+                    "firstName"
+                ],
+                "additionalProperties": false
+            },
+            "Ticket": {
+                "title": "Ticket",
+                "description": "Support ticket for tracking customer issues and requests",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the ticket",
+                        "example": "TKT-2024-001"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Brief summary of the issue or request",
+                        "example": "Cannot login to dashboard",
+                        "minLength": 3,
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Detailed explanation of the issue including steps to reproduce",
+                        "example": "When I click the login button, the page shows a 500 error.",
+                        "maxLength": 2000
+                    },
+                    "assignee": {
+                        "type": "string",
+                        "description": "Username of the support agent handling this ticket",
+                        "example": "john.smith",
+                        "maxLength": 50
+                    },
+                    "status": {
+                        "description": "Current status of the ticket in the workflow",
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "in_progress",
+                            "waiting",
+                            "resolved",
+                            "closed"
+                        ],
+                        "example": "in_progress"
+                    },
+                    "priority": {
+                        "description": "Urgency level of the ticket",
+                        "type": "string",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high",
+                            "critical"
+                        ],
+                        "example": "high"
+                    },
+                    "created": {
+                        "description": "Timestamp when the ticket was created",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T09:30:00Z"
+                    },
+                    "updated": {
+                        "description": "Timestamp when the ticket was last modified",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-16T14:22:00Z"
+                    }
+                },
+                "required": [
+                    "title",
+                    "description",
+                    "status",
+                    "created",
+                    "updated"
+                ],
+                "additionalProperties": false
+            },
+            "CollectionOfTickets": {
+                "title": "Collection of Tickets",
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Ticket"
+                }
+            },
+            "Age": {
+                "type": "integer",
+                "title": "Age",
+                "description": "Age in years, must be a non-negative integer",
+                "minimum": 0,
+                "maximum": 150,
+                "example": 35
+            },
+            "User": {
+                "title": "User",
+                "description": "User account and profile information",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the user account",
+                        "example": "usr_abc123",
+                        "maxLength": 30
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "description": "User's first/given name",
+                        "example": "Jane",
+                        "maxLength": 30,
+                        "pattern": "[a-zA-Z\\-']+"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "description": "User's last/family name",
+                        "example": "Smith",
+                        "maxLength": 30,
+                        "pattern": "[a-zA-Z\\-']+"
+                    },
+                    "created": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the account was created",
+                        "example": "2024-01-10T08:00:00Z"
+                    },
+                    "modified": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp of the last profile update",
+                        "example": "2024-02-15T14:30:00Z"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Primary email address for the account",
+                        "example": "jane.smith@example.com"
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Whether the account is active and can login",
+                        "example": true
+                    },
+                    "age": {
+                        "$ref": "#/components/schemas/Age",
+                        "description": "User's age in years",
+                        "example": 29
+                    },
+                    "_links": {
+                        "type": "object",
+                        "properties": {
+                            "self": {
+                                "type": "object",
+                                "properties": {
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "_embedded": {
+                        "type": "object",
+                        "properties": {
+                            "tickets": {
+                                "type": "array"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "firstName",
+                    "lastName",
+                    "age"
+                ]
+            }
+        }
+    }
+}
