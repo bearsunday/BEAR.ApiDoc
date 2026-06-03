@@ -57,6 +57,24 @@ final class TermUsageHtmlRendererTest extends TestCase
         $this->assertStringContainsString('<p class="borrowedDescriptor">def: identifier</p><p class="borrowedDescriptor">doc: A role within the org</p>', $html);
     }
 
+    public function testUsageWithoutKnownPrefixFallsBackToTheBareUsageClass(): void
+    {
+        // render() is public and accepts arbitrary usage strings. Production strings
+        // always start with "parameter:" or "schema property:", but a string that
+        // matches neither must still bind to the generic `usage` descriptor.
+        $html = (new TermUsageHtmlRenderer())->render(
+            ['orphan' => ['header: X-Orphan' => true]],
+            [],
+            [],
+            0,
+            '0',
+        );
+
+        $this->assertStringContainsString('<li class="usage">header: X-Orphan</li>', $html);
+        $this->assertStringNotContainsString('parameterUsage', $html);
+        $this->assertStringNotContainsString('schemaPropertyUsage', $html);
+    }
+
     /**
      * Parameter-derived terms are always valid PHP identifiers, so symbols never
      * arise from method signatures. However, JSON Schemas are reusable, independent
