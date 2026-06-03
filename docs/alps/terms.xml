@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alps version="1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
+
+  <title>BEAR.ApiDoc Term Usage Index Profile</title>
+  <doc format="markdown">
+This profile describes the vocabulary of the Term Usage Index page (terms.html) itself, not the API it indexes.
+
+The Term Usage Index is a meta-document: it lists the identifiers (parameter names and JSON Schema property names) that appear across the generated API documentation and records where each one is used. Because it talks *about* the documentation's vocabulary, its profile sits one level above the API profile (apidoc.xml) and above any application-level ALPS profile (which defines the domain meaning of terms such as `age` or `familyName`).
+
+Bind page elements to these descriptors by their `class` attribute:
+- a term entry carries `class="term"` (and `class="term alpsBacked"` when a same-name descriptor exists in the configured application ALPS profile);
+- the cross-reference to that application descriptor, when present, is carried by the `data-alps` attribute, not by `class`;
+- usage occurrences carry `class="usage"`, refined to `parameterUsage` or `schemaPropertyUsage`;
+- reserved representation fields carry `class="reservedField"`;
+- summary figures carry the matching count/coverage descriptor classes;
+- the whole document is bound by `class="termUsageIndex"` on its `main` element.
+
+Representation and navigation chrome is deliberately outside this vocabulary and carries no descriptor binding: the "API Documentation" back link, the `index-list` table of contents, and the `mark` checkmark are presentation only. Their absence from the binding set is intentional, not an omission.
+
+Matching is lexical (same identifier spelling); it does not assert semantic equivalence between the indexed term and the application descriptor.
+  </doc>
+  <link rel="help" href="https://alps-io.github.io/spec/"/>
+
+  <!-- The document as a whole -->
+
+  <descriptor id="termUsageIndex" type="semantic" title="Term Usage Index">
+    <doc>The index document. Lists every identifier used in the generated API documentation and where it appears. A companion view to the main API documentation (index.html), one meta level above it.</doc>
+  </descriptor>
+
+  <!-- Term entries -->
+
+  <descriptor id="term" type="semantic" title="Indexed Term">
+    <doc>An identifier used in the API: a request parameter name or a JSON Schema property name. The entry collects every place the identifier appears. Listing is by lexical spelling, so the same spelling used in unrelated places is collected under one entry.</doc>
+  </descriptor>
+
+  <descriptor id="alpsBacked" type="semantic" title="ALPS-backed Term">
+    <doc>Marks a term whose spelling also exists as a descriptor id in the configured application ALPS profile (the `alps` setting in apidoc.xml). Shown with a checkmark. This is a lexical match only and does not prove that the indexed term and the application descriptor mean the same thing. The application descriptor id is exposed on the entry's `data-alps` attribute for cross-reference.</doc>
+  </descriptor>
+
+  <descriptor id="borrowedDescriptor" type="semantic" title="Borrowed Descriptor Detail">
+    <doc>Descriptor metadata (title, def, doc) shown on an ALPS-backed entry. The value is borrowed from the configured application ALPS profile for display; this index is not its authority. A `def` that is a URL links to the external vocabulary it references.</doc>
+  </descriptor>
+
+  <!-- Usage occurrences -->
+
+  <descriptor id="usage" type="semantic" title="Usage Occurrence">
+    <doc>One place where the term appears in the API documentation.</doc>
+    <descriptor id="parameterUsage" type="semantic" title="Parameter Usage">
+      <doc>The term is used as a request parameter of an endpoint, written as "parameter: METHOD /path {term}". Extracted from the resource method signature.</doc>
+    </descriptor>
+    <descriptor id="schemaPropertyUsage" type="semantic" title="Schema Property Usage">
+      <doc>The term is used as a JSON Schema property, written as "schema property: file.json#/json/pointer". Extracted from request and response schema files.</doc>
+    </descriptor>
+  </descriptor>
+
+  <descriptor id="reservedField" type="semantic" title="Reserved Representation Field">
+    <doc>A leading-underscore field such as `_links` or `_embedded`. Listed separately because it usually belongs to the representation format (HAL) rather than the API domain vocabulary.</doc>
+  </descriptor>
+
+  <!-- Summary figures -->
+
+  <descriptor id="termsUsedCount" type="semantic" title="Terms Used Count">
+    <doc>Number of distinct API terms collected (excluding reserved representation fields).</doc>
+  </descriptor>
+
+  <descriptor id="alpsMatchedCount" type="semantic" title="ALPS-matched Count">
+    <doc>Number of collected terms whose spelling matches a descriptor id in the configured application ALPS profile.</doc>
+  </descriptor>
+
+  <descriptor id="lexicalCoverage" type="semantic" title="Lexical ALPS Coverage">
+    <doc>alpsMatchedCount divided by termsUsedCount, as a percentage. A lexical coverage figure, not a semantic one.</doc>
+  </descriptor>
+
+  <descriptor id="reservedCount" type="semantic" title="Reserved Field Count">
+    <doc>Number of distinct reserved representation fields collected.</doc>
+  </descriptor>
+
+</alps>

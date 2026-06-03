@@ -43,23 +43,23 @@ final readonly class TermUsageHtmlRenderer
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Term Usage Index</title>
-<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/apidoc.xml">
+<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/terms.xml">
 <style>
 {$styles}
 </style>
 </head>
 <body>
-<main>
+<main class="termUsageIndex">
 <p><a href="index.html">API Documentation</a></p>
 <h1>Term Usage Index</h1>
-<p>This index reports lexical identifier matches only; it does not prove semantic equivalence. A term backed by an ALPS descriptor carries that descriptor as its class, per the profile linked above.</p>
+<p>This index reports lexical identifier matches only; it does not prove semantic equivalence. Its own vocabulary (term, alpsBacked, usage, reservedField, coverage) is defined by the profile linked above. A term whose spelling also exists in the configured application ALPS profile is marked <code>alpsBacked</code>; the matched application descriptor id is carried on the entry's <code>data-alps</code> attribute.</p>
 
 <h2>Summary</h2>
 <ul>
-  <li>Terms used in API: {$this->html((string) \count($apiUsages))}</li>
-  <li>Terms with same-name ALPS descriptor: {$this->html((string) $matchedAlpsDescriptorCount)}</li>
-  <li>Lexical ALPS coverage: {$this->html($coverage)}%</li>
-  <li>Reserved representation fields: {$this->html((string) \count($reservedUsages))}</li>
+  <li class="termsUsedCount">Terms used in API: {$this->html((string) \count($apiUsages))}</li>
+  <li class="alpsMatchedCount">Terms with same-name ALPS descriptor: {$this->html((string) $matchedAlpsDescriptorCount)}</li>
+  <li class="lexicalCoverage">Lexical ALPS coverage: {$this->html($coverage)}%</li>
+  <li class="reservedCount">Reserved representation fields: {$this->html((string) \count($reservedUsages))}</li>
 </ul>
 
 {$indexHtml}
@@ -111,7 +111,7 @@ dt code {
     font-size: 1.2em;
     font-weight: 600;
 }
-.alps {
+.mark {
     margin-left: 6px;
     color: #1a7f37;
 }
@@ -214,15 +214,21 @@ CSS;
      */
     private function renderEntry(string $idPrefix, string $term, array $usages, ?array $descriptor): string
     {
-        // The term name stays plain for a consistent column; the ALPS binding is
-        // shown by a checkmark and (machine-readably) by the descriptor-id class.
-        $mark = $descriptor !== null ? '<span class="alps" title="defined in ALPS">&#x2611;</span>' : '';
-        $classAttr = $descriptor !== null ? sprintf(' class="%s"', $this->html($term)) : '';
+        $backed = $descriptor !== null;
+        // Each entry binds to this index's own profile (terms.xml): `term` (or
+        // `term alpsBacked`) for API terms, `reservedField` for representation
+        // fields. The matched application descriptor id is a cross-reference, so
+        // it rides on data-alps rather than masquerading as a profile class.
+        $baseClass = $idPrefix === 'field' ? 'reservedField' : 'term';
+        $class = $backed ? $baseClass . ' alpsBacked' : $baseClass;
+        $dataAlps = $backed ? sprintf(' data-alps="%s"', $this->html($term)) : '';
+        $mark = $backed ? '<span class="mark" title="same-name ALPS descriptor">&#x2611;</span>' : '';
 
         return sprintf(
-            '<dt id="%s"%s><code>%s</code>%s</dt>%s<dd>%s%s</dd>',
+            '<dt id="%s" class="%s"%s><code>%s</code>%s</dt>%s<dd>%s%s</dd>',
             $this->htmlId($idPrefix, $term),
-            $classAttr,
+            $class,
+            $dataAlps,
             $this->html($term),
             $mark,
             PHP_EOL,
@@ -245,7 +251,7 @@ CSS;
                 continue;
             }
 
-            $lines[] = sprintf('<p>%s: %s</p>', $field, $this->renderDescriptorValue($field, $value));
+            $lines[] = sprintf('<p class="borrowedDescriptor">%s: %s</p>', $field, $this->renderDescriptorValue($field, $value));
         }
 
         return implode('', $lines);
@@ -266,10 +272,23 @@ CSS;
     {
         $items = [];
         foreach (array_keys($usages) as $usage) {
-            $items[] = sprintf('<li>%s</li>', $this->html($usage));
+            $items[] = sprintf('<li class="%s">%s</li>', $this->usageClass($usage), $this->html($usage));
         }
 
         return sprintf('<ul>%s</ul>', implode('', $items));
+    }
+
+    private function usageClass(string $usage): string
+    {
+        if (str_starts_with($usage, 'parameter:')) {
+            return 'usage parameterUsage';
+        }
+
+        if (str_starts_with($usage, 'schema property:')) {
+            return 'usage schemaPropertyUsage';
+        }
+
+        return 'usage';
     }
 
     private function htmlId(string $prefix, string $value): string
