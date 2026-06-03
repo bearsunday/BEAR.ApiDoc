@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0] - 2026-06-03
+
 ### Added
 - Add `audit` output format and `apidoc audit` command for documentation coverage reports.
 - Add `terms` output format and `apidoc terms` command for lexical Term Usage Index reports.
+- Generate a `terms.html` companion Term Usage Index with HTML docs and `terms.md` with
+  Markdown docs, linked automatically from `index.html` / `index.md` (#94).
+- Render the HTML Term Usage Index as ALPS-profile-semantic markup: terms defined in ALPS
+  carry their descriptor id as `class` and are flagged, descriptors are shown as labelled
+  `title`/`def`/`doc` attributes, with an in-page Index for navigation (#94).
 
 ## [1.10.0] - 2026-05-17
 
@@ -146,7 +153,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update dependencies
 
-[Unreleased]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.10.0...HEAD
+[Unreleased]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.11.0...HEAD
+[1.11.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.10.0...1.11.0
 [1.10.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.2...1.10.0
 [1.9.2]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.1...1.9.2
 [1.9.1]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.0...1.9.1
