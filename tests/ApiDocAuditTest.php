@@ -101,4 +101,52 @@ final class ApiDocAuditTest extends TestCase
         $this->assertStringContainsString("## Findings\nNo documentation gaps found.", $report);
         $this->assertStringNotContainsString('Missing ALPS attribute.', $report);
     }
+
+    public function testGenerateHtmlDeclaresProfileAndBindsReportVocabulary(): void
+    {
+        $html = (new ApiDocAudit(new Config(__DIR__ . '/apidoc.alps.xml')))->generateHtml();
+
+        // The audit page declares its own per-report profile and binds the document as a whole.
+        $this->assertStringContainsString('<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/audit.xml">', $html);
+        $this->assertStringContainsString('<main class="apiDocumentationAudit">', $html);
+        // Summary figures bind to their count descriptors.
+        $this->assertStringContainsString('<li class="operationCount">Operations: 28</li>', $html);
+        $this->assertStringContainsString('<li class="alpsAttributeCount">Operations with ALPS attributes: 6</li>', $html);
+        // Each operation with gaps is a bound section; each finding carries a bound type token.
+        // The section id is a readable slug plus a short stable hash for uniqueness.
+        $this->assertMatchesRegularExpression('#<section class="operation" id="op-POST-contact-[0-9a-f]{7}"><h3>POST /contact</h3>#', $html);
+        $this->assertStringContainsString('<li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li>', $html);
+        $this->assertStringContainsString('<li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li>', $html);
+    }
+
+    public function testGenerateHtmlOmitsAlpsFiguresWhenProfileDisabled(): void
+    {
+        $html = (new ApiDocAudit(new Config(__DIR__ . '/apidoc.html-nolinks.xml')))->generateHtml();
+
+        $this->assertStringNotContainsString('alpsAttributeCount', $html);
+        $this->assertStringNotContainsString('findingType">alps<', $html);
+    }
+
+    public function testGenerateHtmlReportsNoGapsForDocumentedOperations(): void
+    {
+        $config = TestConfigFactory::new([
+            'alps' => __FILE__,
+            'resourceFiles' => [(object) ['uriPath' => 'documented', 'class' => DocumentedAuditResource::class]],
+            'routes' => ['documented' => '/documented/{id}'],
+        ]);
+        $html = (new ApiDocAudit($config))->generateHtml();
+
+        $this->assertStringContainsString('<p>No documentation gaps found.</p>', $html);
+        $this->assertStringNotContainsString('class="operation"', $html);
+    }
+
+    public function testHtmlIsDeterministic(): void
+    {
+        $config = new Config(__DIR__ . '/apidoc.alps.xml');
+
+        $this->assertSame(
+            (new ApiDocAudit($config))->generateHtml(),
+            (new ApiDocAudit($config))->generateHtml(),
+        );
+    }
 }

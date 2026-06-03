@@ -42,9 +42,21 @@ dt code {
     font-size: 1.2em;
     font-weight: 600;
 }
-.mark {
+.alpsBacked::after {
+    content: "\2611";
     margin-left: 6px;
     color: #1a7f37;
+}
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 dd {
     margin: 4px 0 0 16px;
@@ -94,7 +106,7 @@ dd ul {
 <dl>
 <dt id="term-additionalName" class="term"><code>additionalName</code></dt>
 <dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/additionalName</li></ul></dd>
-<dt id="term-age" class="term alpsBacked" data-alps="age"><code>age</code><span class="mark" title="same-name ALPS descriptor">&#x2611;</span></dt>
+<dt id="term-age" class="term alpsBacked" data-alps="age"><code>age</code><span class="visually-hidden"> (ALPS-backed)</span></dt>
 <dd><p class="borrowedDescriptor">title: Age in years which must be equal to or greater than zero.</p><ul><li class="usage parameterUsage">parameter: GET /alps-fallback {age}</li><li class="usage parameterUsage">parameter: POST /contact {age}</li><li class="usage parameterUsage">parameter: POST /contact-with-descriptions {age}</li><li class="usage parameterUsage">parameter: POST /person {age}</li><li class="usage parameterUsage">parameter: PATCH /person {age}</li><li class="usage parameterUsage">parameter: POST /users/{id} {age}</li><li class="usage parameterUsage">parameter: PUT /users/{id} {age}</li><li class="usage schemaPropertyUsage">schema property: contact.param.json#/properties/age</li><li class="usage schemaPropertyUsage">schema property: person.json#/properties/age</li><li class="usage schemaPropertyUsage">schema property: person.param.json#/properties/age</li><li class="usage schemaPropertyUsage">schema property: user.json#/properties/age</li><li class="usage schemaPropertyUsage">schema property: user.param.json#/properties/age</li></ul></dd>
 <dt id="term-assignee" class="term"><code>assignee</code></dt>
 <dd><ul><li class="usage parameterUsage">parameter: POST /ticket/{id} {assignee}</li><li class="usage parameterUsage">parameter: PUT /ticket/{id} {assignee}</li><li class="usage parameterUsage">parameter: PUT /ticket/assign {assignee}</li><li class="usage schemaPropertyUsage">schema property: ticket.json#/properties/assignee</li><li class="usage schemaPropertyUsage">schema property: ticket.param.json#/properties/assignee</li></ul></dd>
@@ -130,9 +142,9 @@ dd ul {
 <dd><ul><li class="usage parameterUsage">parameter: PUT /users/{id} {enabled}</li><li class="usage schemaPropertyUsage">schema property: user.json#/properties/enabled</li><li class="usage schemaPropertyUsage">schema property: user.param.json#/properties/enabled</li></ul></dd>
 <dt id="term-extended-address" class="term"><code>extended-address</code></dt>
 <dd><ul><li class="usage schemaPropertyUsage">schema property: address.json#/properties/extended-address</li></ul></dd>
-<dt id="term-familyName" class="term alpsBacked" data-alps="familyName"><code>familyName</code><span class="mark" title="same-name ALPS descriptor">&#x2611;</span></dt>
+<dt id="term-familyName" class="term alpsBacked" data-alps="familyName"><code>familyName</code><span class="visually-hidden"> (ALPS-backed)</span></dt>
 <dd><p class="borrowedDescriptor">def: <a href="https://schema.org/familyName">https://schema.org/familyName</a></p><ul><li class="usage parameterUsage">parameter: GET /alps-fallback {familyName}</li><li class="usage parameterUsage">parameter: POST /person {familyName}</li><li class="usage parameterUsage">parameter: PATCH /person {familyName}</li><li class="usage schemaPropertyUsage">schema property: card.json#/properties/familyName</li><li class="usage schemaPropertyUsage">schema property: person.json#/properties/familyName</li><li class="usage schemaPropertyUsage">schema property: person.param.json#/properties/familyName</li></ul></dd>
-<dt id="term-firstName" class="term alpsBacked" data-alps="firstName"><code>firstName</code><span class="mark" title="same-name ALPS descriptor">&#x2611;</span></dt>
+<dt id="term-firstName" class="term alpsBacked" data-alps="firstName"><code>firstName</code><span class="visually-hidden"> (ALPS-backed)</span></dt>
 <dd><p class="borrowedDescriptor">title: First Name by ALPS</p><ul><li class="usage parameterUsage">parameter: GET /alps-fallback {firstName}</li><li class="usage parameterUsage">parameter: POST /person {firstName}</li><li class="usage parameterUsage">parameter: PATCH /person {firstName}</li><li class="usage schemaPropertyUsage">schema property: person.json#/properties/firstName</li><li class="usage schemaPropertyUsage">schema property: person.param.json#/properties/firstName</li><li class="usage schemaPropertyUsage">schema property: user.json#/properties/firstName</li></ul></dd>
 <dt id="term-fn" class="term"><code>fn</code></dt>
 <dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/fn</li></ul></dd>
@@ -148,7 +160,7 @@ dd ul {
 <dd><ul><li class="usage schemaPropertyUsage">schema property: card.json#/properties/honorificSuffix</li></ul></dd>
 <dt id="term-href" class="term"><code>href</code></dt>
 <dd><ul><li class="usage schemaPropertyUsage">schema property: user.json#/properties/_links/properties/self/properties/href</li></ul></dd>
-<dt id="term-id" class="term alpsBacked" data-alps="id"><code>id</code><span class="mark" title="same-name ALPS descriptor">&#x2611;</span></dt>
+<dt id="term-id" class="term alpsBacked" data-alps="id"><code>id</code><span class="visually-hidden"> (ALPS-backed)</span></dt>
 <dd><p class="borrowedDescriptor">title: Person identifier</p><ul><li class="usage parameterUsage">parameter: GET /address {id}</li><li class="usage parameterUsage">parameter: GET /card {id}</li><li class="usage parameterUsage">parameter: GET /org {id}</li><li class="usage parameterUsage">parameter: GET /person {id}</li><li class="usage parameterUsage">parameter: PATCH /person {id}</li><li class="usage parameterUsage">parameter: GET /ticket/{id} {id}</li><li class="usage parameterUsage">parameter: PUT /ticket/{id} {id}</li><li class="usage parameterUsage">parameter: DELETE /ticket/{id} {id}</li><li class="usage parameterUsage">parameter: PUT /ticket/assign {id}</li><li class="usage parameterUsage">parameter: GET /union-type {id}</li><li class="usage parameterUsage">parameter: GET /users/{id} {id}</li><li class="usage parameterUsage">parameter: PUT /users/{id} {id}</li><li class="usage parameterUsage">parameter: DELETE /users/{id} {id}</li><li class="usage schemaPropertyUsage">schema property: org.json#/properties/id</li><li class="usage schemaPropertyUsage">schema property: person.param.json#/properties/id</li><li class="usage schemaPropertyUsage">schema property: ticket.json#/properties/id</li><li class="usage schemaPropertyUsage">schema property: ticket.param.json#/properties/id</li><li class="usage schemaPropertyUsage">schema property: user.json#/properties/id</li><li class="usage schemaPropertyUsage">schema property: user.param.json#/properties/id</li></ul></dd>
 <dt id="term-ids" class="term"><code>ids</code></dt>
 <dd><ul><li class="usage schemaPropertyUsage">schema property: json-schema-input.param.json#/properties/ids</li></ul></dd>

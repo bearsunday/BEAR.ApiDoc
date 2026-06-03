@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alps version="1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
+
+  <title>BEAR.ApiDoc Documentation Audit Profile</title>
+  <doc format="markdown">
+This profile describes the vocabulary of the API Documentation Audit page (audit.html), not the API it audits.
+
+The audit is a meta-document: it inspects each operation of the generated API documentation and reports where documentation is missing (response/request schema, class/operation summary, ALPS attribute). Like the term usage index, it is a per-report profile — it describes its own report structure and is domain-agnostic. It carries no claim about what any endpoint *means*; it only reports the presence or absence of documentation artifacts.
+
+Bind page elements to these descriptors by their `class` attribute:
+- the whole report is `class="apiDocumentationAudit"` on its `main` element;
+- each audited operation with findings is `class="operation"`;
+- each gap is `class="finding"`, and its category is `class="findingType"`;
+- summary figures carry the matching count descriptor classes.
+  </doc>
+  <link rel="help" href="https://alps-io.github.io/spec/"/>
+
+  <!-- The document as a whole -->
+
+  <descriptor id="apiDocumentationAudit" type="semantic" title="API Documentation Audit">
+    <doc>The audit document. Inspects every operation of the generated API documentation and lists the documentation that is missing. A companion view to the main API documentation (index.html).</doc>
+  </descriptor>
+
+  <!-- Findings -->
+
+  <descriptor id="operation" type="semantic" title="Audited Operation">
+    <doc>One HTTP operation (method + path) that has at least one documentation gap. Operations that are fully documented are omitted from the findings list.</doc>
+  </descriptor>
+
+  <descriptor id="finding" type="semantic" title="Documentation Gap">
+    <doc>A single missing-documentation report for an operation, e.g. a missing response schema or operation summary.</doc>
+    <descriptor id="findingType" type="semantic" title="Finding Type">
+      <doc>The category of the gap: response-schema, request-schema, class-summary, operation-summary, or alps. A stable machine token; the human message accompanies it as text.</doc>
+    </descriptor>
+  </descriptor>
+
+  <!-- Summary figures -->
+
+  <descriptor id="resourceCount" type="semantic" title="Resource Count">
+    <doc>Number of resource classes scanned.</doc>
+  </descriptor>
+
+  <descriptor id="operationCount" type="semantic" title="Operation Count">
+    <doc>Number of HTTP operations scanned across all resources.</doc>
+  </descriptor>
+
+  <descriptor id="responseSchemaCount" type="semantic" title="Response Schema Count">
+    <doc>Number of operations that declare a response JSON Schema.</doc>
+  </descriptor>
+
+  <descriptor id="requestSchemaCount" type="semantic" title="Request Schema Count">
+    <doc>Number of operations that declare a request JSON Schema.</doc>
+  </descriptor>
+
+  <descriptor id="alpsAttributeCount" type="semantic" title="ALPS Attribute Count">
+    <doc>Number of operations carrying an ALPS attribute. Reported only when an ALPS profile is configured.</doc>
+  </descriptor>
+
+</alps>

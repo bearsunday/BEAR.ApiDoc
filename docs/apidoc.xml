@@ -13,7 +13,7 @@
         <link rel="issue" href="https://github.com/bearsunday/BEAR.ApiDoc/issues" />
         <link rel="openapi" href="openapi.json" />
         <link rel="schemas" href="schemas/" />
-        <link rel="audit" href="audit.md" />
+        <link rel="audit" href="audit.html" />
     </links>
     <alps>alps.json</alps>
 </apidoc>

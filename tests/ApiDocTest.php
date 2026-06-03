@@ -158,6 +158,15 @@ class ApiDocTest extends TestCase
         $this->assertIsString($content);
         $this->assertStringContainsString('# API Documentation Audit', $content);
         $this->assertStringContainsString('## Findings', $content);
+
+        // The audit format also emits the HTML report, bound to its own profile.
+        $this->assertStringContainsString('audit.html', $result);
+        $this->assertFileExists(__DIR__ . '/docs/audit/audit.html');
+
+        $html = file_get_contents(__DIR__ . '/docs/audit/audit.html');
+        $this->assertIsString($html);
+        $this->assertStringContainsString('<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/audit.xml">', $html);
+        $this->assertStringContainsString('<main class="apiDocumentationAudit">', $html);
     }
 
     public function testTermsOutput(): void

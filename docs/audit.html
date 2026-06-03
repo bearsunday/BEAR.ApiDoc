@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Documentation Audit</title>
+<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/audit.xml">
+<style>
+body {
+    margin: 0;
+    padding: 32px;
+    color: #1f2328;
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.5;
+}
+main {
+    max-width: 980px;
+}
+a {
+    color: #0969da;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+code {
+    padding: 0.15em 0.35em;
+    border-radius: 4px;
+    background: #f6f8fa;
+    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Consolas, monospace;
+}
+.operation {
+    margin-top: 16px;
+    border-top: 1px solid #d8dee4;
+    padding-top: 8px;
+}
+.operation h3 {
+    font-size: 1.05em;
+    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Consolas, monospace;
+}
+.operation ul {
+    margin: 4px 0;
+    padding-left: 1.2em;
+}
+.findingType {
+    color: #57606a;
+}
+</style>
+</head>
+<body>
+<main class="apiDocumentationAudit">
+<h1>API Documentation Audit</h1>
+<p>This report lists missing documentation per operation. It describes the documentation's structure, not the API's domain meaning, per the profile linked above.</p>
+
+<h2>Summary</h2>
+<ul><li class="resourceCount">Resources: 19</li><li class="operationCount">Operations: 28</li><li class="responseSchemaCount">Operations with response schema: 11</li><li class="requestSchemaCount">Operations with request schema: 12</li><li class="alpsAttributeCount">Operations with ALPS attributes: 6</li></ul>
+
+<h2>Findings</h2>
+<section class="operation" id="op-GET-address-26d9243"><h3>GET /address</h3><ul><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-alps-fallback-2fe432e"><h3>GET /alps-fallback</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-array-data-3524a56"><h3>GET /array-data</h3><ul><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-calendar-year-month-21b877d"><h3>GET /calendar/{year}/{month}</h3><ul><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-card-3bf02a2"><h3>GET /card</h3><ul><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-POST-contact-1757165"><h3>POST /contact</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">request-schema</code> Missing request schema for non-path body input.</li><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">operation-summary</code> Missing operation summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-POST-contact-with-descriptions-b545f8b"><h3>POST /contact-with-descriptions</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">operation-summary</code> Missing operation summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-POST-docblock-variants-fd716e2"><h3>POST /docblock-variants</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">request-schema</code> Missing request schema for non-path body input.</li><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">operation-summary</code> Missing operation summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-index-8f8db0c"><h3>GET /index</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-POST-input-edge-cases-9122c16"><h3>POST /input-edge-cases</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">request-schema</code> Missing request schema for non-path body input.</li><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">operation-summary</code> Missing operation summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-PUT-input-edge-cases-e1ae1d3"><h3>PUT /input-edge-cases</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">request-schema</code> Missing request schema for non-path body input.</li><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">operation-summary</code> Missing operation summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-missing-schema-ff6996f"><h3>GET /missing-schema</h3><ul><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-numbers-a1ceea9"><h3>GET /numbers</h3><ul><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-org-c835cee"><h3>GET /org</h3><ul><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-PATCH-person-fd05919"><h3>PATCH /person</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-POST-person-104145b"><h3>POST /person</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li></ul></section>
+<section class="operation" id="op-PUT-ticket-assign-7d80012"><h3>PUT /ticket/assign</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">request-schema</code> Missing request schema for non-path body input.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-DELETE-ticket-id-ed0098e"><h3>DELETE /ticket/{id}</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-ticket-id-8a3b71d"><h3>GET /ticket/{id}</h3><ul><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-POST-ticket-id-353b8a2"><h3>POST /ticket/{id}</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-PUT-ticket-id-0e9d624"><h3>PUT /ticket/{id}</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-tickets-1fa22a7"><h3>GET /tickets</h3><ul><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">operation-summary</code> Missing operation summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-GET-union-type-e5560bf"><h3>GET /union-type</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li><li class="finding"><code class="findingType">class-summary</code> Missing resource class summary.</li><li class="finding"><code class="findingType">alps</code> Missing ALPS attribute.</li></ul></section>
+<section class="operation" id="op-DELETE-users-id-9b72332"><h3>DELETE /users/{id}</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li></ul></section>
+<section class="operation" id="op-POST-users-id-145e9a6"><h3>POST /users/{id}</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li></ul></section>
+<section class="operation" id="op-PUT-users-id-7b2e64b"><h3>PUT /users/{id}</h3><ul><li class="finding"><code class="findingType">response-schema</code> Missing response schema.</li></ul></section>
+</main>
+</body>
+</html>

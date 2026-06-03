@@ -37,6 +37,9 @@ use function usort;
  *     hasMethodSummary: bool,
  *     hasRequestBodyInput: bool
  * }
+ * @psalm-type AuditFinding = array{type: string, message: string}
+ * @psalm-type AuditFindingGroup = array{method: string, path: string, items: non-empty-list<AuditFinding>}
+ * @psalm-type AuditSummary = array{resourceCount: int, operationCount: int, responseSchemaCount: int, requestSchemaCount: int, alpsAttributeCount: int|null}
  */
 final class ApiDocAudit
 {
@@ -54,46 +57,87 @@ final class ApiDocAudit
 
     public function generateMarkdown(): string
     {
-        $operations = $this->collectOperations();
-        $findings = [];
+        $report = $this->collectReport();
+        $summary = $report['summary'];
 
-        foreach ($operations as $operation) {
-            $operationFindings = $this->findingsFor($operation);
-            if ($operationFindings === []) {
-                continue;
-            }
-
-            $findings[] = sprintf('### %s %s', $operation['method'], $operation['path']);
-
-            foreach ($operationFindings as $finding) {
-                $findings[] = sprintf('- %s', $finding);
-            }
-
-            $findings[] = '';
-        }
-
-        $summary = [
+        $lines = [
             '# API Documentation Audit',
             '',
             '## Summary',
-            sprintf('- Resources: %d', count($this->config->resourceFiles)),
-            sprintf('- Operations: %d', count($operations)),
-            sprintf('- Operations with response schema: %d', count(array_filter($operations, static fn (array $operation): bool => $operation['hasResponseSchema']))),
-            sprintf('- Operations with request schema: %d', count(array_filter($operations, static fn (array $operation): bool => $operation['hasRequestSchema']))),
+            sprintf('- Resources: %d', $summary['resourceCount']),
+            sprintf('- Operations: %d', $summary['operationCount']),
+            sprintf('- Operations with response schema: %d', $summary['responseSchemaCount']),
+            sprintf('- Operations with request schema: %d', $summary['requestSchemaCount']),
         ];
 
-        if ($this->alpsEnabled()) {
-            $summary[] = sprintf('- Operations with ALPS attributes: %d', count(array_filter($operations, static fn (array $operation): bool => $operation['hasAlps'])));
+        if ($summary['alpsAttributeCount'] !== null) {
+            $lines[] = sprintf('- Operations with ALPS attributes: %d', $summary['alpsAttributeCount']);
         }
 
-        $summary[] = '';
-        $summary[] = '## Findings';
+        $lines[] = '';
+        $lines[] = '## Findings';
 
-        if ($findings === []) {
-            $summary[] = 'No documentation gaps found.';
+        if ($report['groups'] === []) {
+            $lines[] = 'No documentation gaps found.';
+
+            return implode("\n", $lines);
         }
 
-        return implode("\n", [...$summary, ...$findings]);
+        foreach ($report['groups'] as $group) {
+            $lines[] = sprintf('### %s %s', $group['method'], $group['path']);
+            foreach ($group['items'] as $finding) {
+                $lines[] = sprintf('- %s', $finding['message']);
+            }
+
+            $lines[] = '';
+        }
+
+        return implode("\n", $lines);
+    }
+
+    public function generateHtml(): string
+    {
+        $report = $this->collectReport();
+
+        return (new AuditHtmlRenderer())->render($report['summary'], $report['groups']);
+    }
+
+    /**
+     * Single collection used by both formatters, so summary counts and finding
+     * grouping live in one place.
+     *
+     * @return array{summary: AuditSummary, groups: list<AuditFindingGroup>}
+     */
+    private function collectReport(): array
+    {
+        $operations = $this->collectOperations();
+
+        /** @var list<AuditFindingGroup> $groups */
+        $groups = [];
+        foreach ($operations as $operation) {
+            $items = $this->findingsFor($operation);
+            if ($items === []) {
+                continue;
+            }
+
+            $groups[] = [
+                'method' => $operation['method'],
+                'path' => $operation['path'],
+                'items' => $items,
+            ];
+        }
+
+        $summary = [
+            'resourceCount' => count($this->config->resourceFiles),
+            'operationCount' => count($operations),
+            'responseSchemaCount' => count(array_filter($operations, static fn (array $operation): bool => $operation['hasResponseSchema'])),
+            'requestSchemaCount' => count(array_filter($operations, static fn (array $operation): bool => $operation['hasRequestSchema'])),
+            'alpsAttributeCount' => $this->alpsEnabled()
+                ? count(array_filter($operations, static fn (array $operation): bool => $operation['hasAlps']))
+                : null,
+        ];
+
+        return ['summary' => $summary, 'groups' => $groups];
     }
 
     /** @return list<AuditOperation> */
@@ -200,29 +244,29 @@ final class ApiDocAudit
     /**
      * @param AuditOperation $operation
      *
-     * @return list<string>
+     * @return list<AuditFinding>
      */
     private function findingsFor(array $operation): array
     {
         $findings = [];
         if (! $operation['hasResponseSchema']) {
-            $findings[] = 'Missing response schema.';
+            $findings[] = ['type' => 'response-schema', 'message' => 'Missing response schema.'];
         }
 
         if ($operation['hasRequestBodyInput'] && ! $operation['hasRequestSchema']) {
-            $findings[] = 'Missing request schema for non-path body input.';
+            $findings[] = ['type' => 'request-schema', 'message' => 'Missing request schema for non-path body input.'];
         }
 
         if (! $operation['hasClassSummary']) {
-            $findings[] = 'Missing resource class summary.';
+            $findings[] = ['type' => 'class-summary', 'message' => 'Missing resource class summary.'];
         }
 
         if (! $operation['hasMethodSummary']) {
-            $findings[] = 'Missing operation summary.';
+            $findings[] = ['type' => 'operation-summary', 'message' => 'Missing operation summary.'];
         }
 
         if ($this->alpsEnabled() && ! $operation['hasAlps']) {
-            $findings[] = 'Missing ALPS attribute.';
+            $findings[] = ['type' => 'alps', 'message' => 'Missing ALPS attribute.'];
         }
 
         return $findings;
