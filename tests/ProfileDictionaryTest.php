@@ -183,6 +183,53 @@ JSON;
         $this->assertSame('City name', $dictionary['city']);
     }
 
+    public function testResolvesExternalXmlHrefAndRtReferences(): void
+    {
+        $external = $this->writeTempFile(
+            '<?xml version="1.0"?><alps version="1.0">'
+            . '<descriptor id="sharedName" title="Shared from external XML"/>'
+            . '<descriptor id="SharedState" title="Shared XML state"/>'
+            . '</alps>',
+            '.xml',
+        );
+        $main = $this->writeTempFile(
+            sprintf(
+                '<?xml version="1.0"?><alps version="1.0">'
+                . '<descriptor href="%1$s#sharedName"/>'
+                . '<descriptor id="goShared" type="safe" rt="%1$s#SharedState" title="Go shared"/>'
+                . '</alps>',
+                basename($external),
+            ),
+            '.xml',
+        );
+
+        try {
+            $dictionary = ProfileDictionary::fromFile($main)->toArray();
+        } finally {
+            @unlink($main);
+            @unlink($external);
+        }
+
+        $this->assertSame('Shared from external XML', $dictionary['sharedName']);
+        $this->assertSame('Go shared', $dictionary['goShared']);
+        $this->assertSame('Shared XML state', $dictionary['SharedState']);
+    }
+
+    public function testRemoteHrefReferenceIsNotFetched(): void
+    {
+        $profile = '{"alps":{"descriptor":[{"id":"local","title":"Local"},{"href":"https://example.com/common.json#remote"}]}}';
+        $file = $this->writeTempFile($profile, '.json');
+
+        try {
+            $dictionary = ProfileDictionary::fromFile($file)->toArray();
+        } finally {
+            @unlink($file);
+        }
+
+        $this->assertSame('Local', $dictionary['local']);
+        $this->assertArrayNotHasKey('remote', $dictionary);
+    }
+
     public function testFromFileTreatsNonXmlExtensionAsJson(): void
     {
         $file = $this->writeTempFile('{"alps":{"descriptor":[{"id":"upper","title":"Upper JSON"}]}}', '.JSON');

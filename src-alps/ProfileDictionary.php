@@ -20,7 +20,7 @@ use function pathinfo;
 use function realpath;
 use function simplexml_load_file;
 use function sprintf;
-use function str_starts_with;
+use function str_contains;
 use function strpos;
 use function substr;
 use function strtolower;
@@ -36,9 +36,14 @@ use const PATHINFO_EXTENSION;
  * This intentionally contains only the small profile-reading surface needed by
  * BEAR.ApiDoc. Diagram rendering belongs to the JavaScript ASD package.
  *
- * External descriptor references (`{"href": "common.json#id"}`) are resolved by
- * loading the referenced file so that profiles split across files keep their
- * labels. Invalid or unreadable profiles fail loudly with
+ * External descriptor references (`{"href": "common.json#id"}`) and transition
+ * targets (`"rt": "common.json#id"`) are resolved by loading the referenced
+ * file so that profiles split across files keep their labels. Remote references
+ * (`http://`, `https://`) are not fetched; their labels fall back to the
+ * descriptor id. Cross-file references are resolved in a single direction and a
+ * per-file loop guard keeps cyclic references from recursing infinitely: a file
+ * that is still being read contributes no labels back to the file referencing
+ * it. Invalid or unreadable local profiles fail loudly with
  * {@see InvalidProfileException}.
  */
 final readonly class ProfileDictionary
@@ -351,6 +356,12 @@ final readonly class ProfileDictionary
             return;
         }
 
+        // Remote profiles are not fetched: this avoids network access (SSRF) and
+        // offline failures. Such references fall back to the descriptor id.
+        if (str_contains($filePart, '://')) {
+            return;
+        }
+
         $external = self::dictForFile(self::resolvePath($filePart, $baseDir), $cache);
         if (isset($external[$id]) && ! isset($dictionary[$id])) {
             $dictionary[$id] = $external[$id];
@@ -359,10 +370,6 @@ final readonly class ProfileDictionary
 
     private static function resolvePath(string $filePart, string $baseDir): string
     {
-        if (str_starts_with($filePart, 'http://') || str_starts_with($filePart, 'https://')) {
-            return $filePart;
-        }
-
         if ($filePart[0] === '/') {
             return $filePart;
         }
