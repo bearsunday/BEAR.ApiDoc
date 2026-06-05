@@ -2,6 +2,7 @@ parameters:
   level: max
   paths:
     - src
+    - src-alps
     - tests
 
   excludePaths:

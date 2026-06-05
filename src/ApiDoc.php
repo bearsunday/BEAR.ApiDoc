@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+use AlpsAsd\AlpsProfile\ProfileDictionary;
 use ArrayObject;
 use BEAR\ApiDoc\Exception\AlpsFileNotFoundException;
 use BEAR\ApiDoc\Exception\NotWritableException;
 use FilesystemIterator;
 use Generator;
-use Koriym\AppStateDiagram\LabelName;
-use Koriym\AppStateDiagram\Profile;
-use Koriym\AppStateDiagram\SemanticDescriptor;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
 use SplFileInfo;
@@ -24,8 +22,6 @@ use function file_exists;
 use function file_put_contents;
 use function implode;
 use function is_dir;
-use function is_object;
-use function is_string;
 use function mkdir;
 use function realpath;
 use function sprintf;
@@ -232,34 +228,7 @@ final readonly class ApiDoc
             throw new AlpsFileNotFoundException($file);
         }
 
-        $alps = new Profile($file, new LabelName());
-        /** @var  ArrayObject<string, string> $semanticDictionary */
-        $semanticDictionary = new ArrayObject();
-        foreach ($alps->descriptors as $descriptor) {
-            if ($descriptor instanceof SemanticDescriptor) {
-                $semanticDictionary[$descriptor->id] = $this->getSemanticTitle($descriptor);
-            }
-        }
-
-        return $semanticDictionary;
-    }
-
-    /** @psalm-external-mutation-free */
-    private function getSemanticTitle(SemanticDescriptor $descriptor): string
-    {
-        if ($descriptor->title !== '' && $descriptor->title !== '0') {
-            return $descriptor->title;
-        }
-
-        if (is_object($descriptor->doc) && isset($descriptor->doc->value) && is_string($descriptor->doc->value)) {
-            return $descriptor->doc->value;
-        }
-
-        if (isset($descriptor->def)) {
-            return sprintf('[%s](%s)', $descriptor->def, $descriptor->def);
-        }
-
-        return '';
+        return ProfileDictionary::fromFile($file)->toArrayObject();
     }
 
     private function copySchema(string $inputDir, string $outputDir): void
