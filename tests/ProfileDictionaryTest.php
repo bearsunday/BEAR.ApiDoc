@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace BEAR\ApiDoc;
 
+use AlpsAsd\AlpsProfile\Exception\InvalidProfileException;
 use AlpsAsd\AlpsProfile\ProfileDictionary;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
+use function basename;
 use function file_put_contents;
+use function sprintf;
 use function sys_get_temp_dir;
 use function tempnam;
 use function unlink;
@@ -64,6 +67,8 @@ JSON;
     <doc value="Attribute doc fallback"/>
   </descriptor>
   <descriptor id="defThird" def="https://schema.org/identifier"/>
+  <descriptor id="refFallback" ref="https://schema.org/ref"/>
+  <descriptor id="srcFallback" src="https://schema.org/src"/>
   <descriptor id="empty"/>
   <descriptor id="Parent">
     <descriptor id="nested" title="Nested title"/>
@@ -82,6 +87,8 @@ XML;
         $this->assertSame('Doc fallback', $dictionary['docSecond']);
         $this->assertSame('Attribute doc fallback', $dictionary['docAttribute']);
         $this->assertSame('[https://schema.org/identifier](https://schema.org/identifier)', $dictionary['defThird']);
+        $this->assertSame('[https://schema.org/ref](https://schema.org/ref)', $dictionary['refFallback']);
+        $this->assertSame('[https://schema.org/src](https://schema.org/src)', $dictionary['srcFallback']);
         $this->assertSame('', $dictionary['empty']);
         $this->assertSame('Nested title', $dictionary['nested']);
     }
@@ -97,6 +104,129 @@ XML;
         }
 
         $this->assertSame('First Name', $dictionary['firstName']);
+    }
+
+    public function testJsonRefAndSrcAreUsedAsDefFallback(): void
+    {
+        $profile = <<<'JSON'
+{
+  "alps": {
+    "descriptor": [
+      {"id": "byRef", "ref": "https://schema.org/ref"},
+      {"id": "bySrc", "src": "https://schema.org/src"}
+    ]
+  }
+}
+JSON;
+        $file = $this->writeTempFile($profile, '.json');
+
+        try {
+            $dictionary = ProfileDictionary::fromFile($file)->toArray();
+        } finally {
+            @unlink($file);
+        }
+
+        $this->assertSame('[https://schema.org/ref](https://schema.org/ref)', $dictionary['byRef']);
+        $this->assertSame('[https://schema.org/src](https://schema.org/src)', $dictionary['bySrc']);
+    }
+
+    public function testResolvesExternalHrefReference(): void
+    {
+        $external = $this->writeTempFile('{"alps":{"descriptor":[{"id":"sharedName","title":"Shared from external"}]}}', '.json');
+        $main = $this->writeTempFile(sprintf('{"alps":{"descriptor":[{"href":"%s#sharedName"}]}}', basename($external)), '.json');
+
+        try {
+            $dictionary = ProfileDictionary::fromFile($main)->toArray();
+        } finally {
+            @unlink($main);
+            @unlink($external);
+        }
+
+        $this->assertSame('Shared from external', $dictionary['sharedName']);
+    }
+
+    public function testResolvesExternalRtReference(): void
+    {
+        $external = $this->writeTempFile('{"alps":{"descriptor":[{"id":"SharedState","title":"Shared state"}]}}', '.json');
+        $main = $this->writeTempFile(
+            sprintf('{"alps":{"descriptor":[{"id":"goShared","type":"safe","rt":"%s#SharedState","title":"Go shared"}]}}', basename($external)),
+            '.json',
+        );
+
+        try {
+            $dictionary = ProfileDictionary::fromFile($main)->toArray();
+        } finally {
+            @unlink($main);
+            @unlink($external);
+        }
+
+        $this->assertSame('Go shared', $dictionary['goShared']);
+        $this->assertSame('Shared state', $dictionary['SharedState']);
+    }
+
+    public function testResolvesExternalHrefNestedInsideParentDescriptor(): void
+    {
+        $external = $this->writeTempFile('{"alps":{"descriptor":[{"id":"city","title":"City name"}]}}', '.json');
+        $main = $this->writeTempFile(
+            sprintf('{"alps":{"descriptor":[{"id":"Address","title":"Address","descriptor":[{"href":"%s#city"}]}]}}', basename($external)),
+            '.json',
+        );
+
+        try {
+            $dictionary = ProfileDictionary::fromFile($main)->toArray();
+        } finally {
+            @unlink($main);
+            @unlink($external);
+        }
+
+        $this->assertSame('Address', $dictionary['Address']);
+        $this->assertSame('City name', $dictionary['city']);
+    }
+
+    public function testFromFileTreatsNonXmlExtensionAsJson(): void
+    {
+        $file = $this->writeTempFile('{"alps":{"descriptor":[{"id":"upper","title":"Upper JSON"}]}}', '.JSON');
+
+        try {
+            $dictionary = ProfileDictionary::fromFile($file)->toArray();
+        } finally {
+            @unlink($file);
+        }
+
+        $this->assertSame('Upper JSON', $dictionary['upper']);
+    }
+
+    public function testInvalidJsonProfileThrows(): void
+    {
+        $file = $this->writeTempFile('{ this is : not json', '.json');
+
+        $this->expectException(InvalidProfileException::class);
+
+        try {
+            ProfileDictionary::fromFile($file);
+        } finally {
+            @unlink($file);
+        }
+    }
+
+    public function testInvalidXmlProfileThrows(): void
+    {
+        $file = $this->writeTempFile('<alps><descriptor', '.xml');
+
+        $this->expectException(InvalidProfileException::class);
+
+        try {
+            ProfileDictionary::fromFile($file);
+        } finally {
+            @unlink($file);
+        }
+    }
+
+    public function testUnreadableProfileThrows(): void
+    {
+        $this->expectException(InvalidProfileException::class);
+
+        ProfileDictionary::fromJsonFile(sys_get_temp_dir() . '/bear-apidoc-missing-profile.json');
     }
 
     private function writeTempFile(string $contents, string $extension): string

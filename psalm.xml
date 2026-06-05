@@ -11,6 +11,7 @@
 >
     <projectFiles>
         <directory name="src" />
+        <directory name="src-alps" />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>

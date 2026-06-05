@@ -65,7 +65,7 @@
         "sa": [
             "./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G",
             "./vendor/bin/psalm --show-info=true",
-            "php -d error_reporting=24575 ./vendor/bin/phpmd src text phpmd.xml"
+            "php -d error_reporting=24575 ./vendor/bin/phpmd src,src-alps text phpmd.xml"
         ],
         "tests": [
             "@cs",

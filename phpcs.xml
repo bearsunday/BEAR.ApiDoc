@@ -17,6 +17,7 @@
 
     <!-- Directories to be checked -->
     <file>src</file>
+    <file>src-alps</file>
     <file>tests</file>
     <exclude-pattern>*/tmp/*</exclude-pattern>
     <exclude-pattern>*/Fake/*</exclude-pattern>
