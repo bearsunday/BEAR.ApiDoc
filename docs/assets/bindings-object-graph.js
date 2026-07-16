@@ -31,6 +31,7 @@
   }
 
   function enableSearch(svg) {
+    var originalViewBox = svg.getAttribute('viewBox');
     var nodes = Array.from(svg.querySelectorAll('g.node'));
     var edges = Array.from(svg.querySelectorAll('g.edge'));
     var searchable = nodes.map(function (node) {
@@ -59,14 +60,86 @@
       return matchesCount;
     }
 
+    function resetView() {
+      if (originalViewBox) {
+        svg.setAttribute('viewBox', originalViewBox);
+      }
+      mount.classList.remove('is-focused');
+      mount.title = '';
+    }
+
+    function nodeBounds(node) {
+      var box = node.getBBox();
+      var nodeMatrix = node.getCTM();
+      var svgMatrix = svg.getCTM();
+      if (!nodeMatrix || !svgMatrix) {
+        return box;
+      }
+      var matrix = svgMatrix.inverse().multiply(nodeMatrix);
+      var points = [
+        new DOMPoint(box.x, box.y),
+        new DOMPoint(box.x + box.width, box.y),
+        new DOMPoint(box.x, box.y + box.height),
+        new DOMPoint(box.x + box.width, box.y + box.height)
+      ].map(function (point) {
+        return point.matrixTransform(matrix);
+      });
+      var xs = points.map(function (point) { return point.x; });
+      var ys = points.map(function (point) { return point.y; });
+      var minX = Math.min.apply(null, xs);
+      var maxX = Math.max.apply(null, xs);
+      var minY = Math.min.apply(null, ys);
+      var maxY = Math.max.apply(null, ys);
+
+      return {x: minX, y: minY, width: maxX - minX, height: maxY - minY};
+    }
+
+    function focusNodes(matchingNodes) {
+      if (matchingNodes.length === 0) {
+        resetView();
+        return;
+      }
+      var boxes = matchingNodes.map(nodeBounds);
+      var minX = Math.min.apply(null, boxes.map(function (box) { return box.x; }));
+      var minY = Math.min.apply(null, boxes.map(function (box) { return box.y; }));
+      var maxX = Math.max.apply(null, boxes.map(function (box) { return box.x + box.width; }));
+      var maxY = Math.max.apply(null, boxes.map(function (box) { return box.y + box.height; }));
+      var width = Math.max(maxX - minX, 1);
+      var height = Math.max(maxY - minY, 1);
+      var padding = Math.max(Math.max(width, height) * 0.08, 12);
+      minX -= padding;
+      minY -= padding;
+      width += padding * 2;
+      height += padding * 2;
+
+      var viewportRatio = mount.clientWidth / mount.clientHeight;
+      var boxRatio = width / height;
+      if (boxRatio > viewportRatio) {
+        var fittedHeight = width / viewportRatio;
+        minY -= (fittedHeight - height) / 2;
+        height = fittedHeight;
+      } else {
+        var fittedWidth = height * viewportRatio;
+        minX -= (fittedWidth - width) / 2;
+        width = fittedWidth;
+      }
+      svg.setAttribute('viewBox', [minX, minY, width, height].join(' '));
+      mount.classList.add('is-focused');
+      mount.title = 'Click to reset the object graph view';
+    }
+
     function filter() {
       var terms = search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
       var nodeMatches = 0;
+      var matchingNodes = [];
       searchable.forEach(function (node) {
         var match = terms.length === 0 || matches(node.text, terms);
         node.element.classList.toggle('is-match', terms.length > 0 && match);
         node.element.classList.toggle('is-dimmed', !match);
         nodeMatches += match ? 1 : 0;
+        if (terms.length > 0 && match) {
+          matchingNodes.push(node.element);
+        }
       });
       edges.forEach(function (edge) {
         edge.classList.toggle('is-dimmed', terms.length > 0);
@@ -79,6 +152,11 @@
       if (modulesSection) {
         modulesSection.classList.toggle('is-search-hidden', terms.length > 0);
       }
+      if (terms.length === 0) {
+        resetView();
+      } else {
+        focusNodes(matchingNodes);
+      }
       count.textContent = terms.length === 0
         ? nodeMatches + ' / ' + nodes.length
         : nodeMatches + ' nodes · ' + bindings + ' bindings · ' + provenance + ' provenance';
@@ -88,6 +166,20 @@
     search.addEventListener('input', filter);
     search.form.addEventListener('submit', function (event) {
       event.preventDefault();
+    });
+    mount.addEventListener('click', function () {
+      if (mount.classList.contains('is-focused')) {
+        resetView();
+      }
+    });
+    mount.addEventListener('keydown', function (event) {
+      if (!mount.classList.contains('is-focused')) {
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ' ' || event.key === 'Escape') {
+        event.preventDefault();
+        resetView();
+      }
     });
     filter();
   }
@@ -129,9 +221,6 @@
       sanitize(svg);
       svg.removeAttribute('width');
       svg.removeAttribute('height');
-      var serialized = new XMLSerializer().serializeToString(svg);
-      mount.href = URL.createObjectURL(new Blob([serialized], {type: 'image/svg+xml'}));
-      mount.title = 'Open full-size object graph';
       mount.replaceChildren(svg);
       enableSearch(svg);
     } catch (error) {
