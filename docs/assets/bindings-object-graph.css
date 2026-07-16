@@ -7,7 +7,7 @@
 .object-graph-search input{min-width:15rem;max-width:28rem;flex:1;padding:7px 10px;border:1px solid var(--line,#e7e5e1);border-radius:7px;background:var(--panel,#fff);color:var(--ink,#1c2027);font:12px var(--mono,ui-monospace,monospace)}
 .object-graph-search input:focus{border-color:var(--accent,#0ea5b7);outline:2px solid color-mix(in srgb,var(--accent,#0ea5b7) 25%,transparent);outline-offset:1px}
 .object-graph-search input:disabled{cursor:wait;opacity:.6}
-.object-graph-search output{min-width:5rem;text-align:right;font:12px var(--mono,ui-monospace,monospace);color:var(--muted,#6b7280)}
+.object-graph-search output{margin-left:auto;white-space:nowrap;text-align:right;font:12px var(--mono,ui-monospace,monospace);color:var(--muted,#6b7280)}
 .object-graph{display:block;overflow:auto;max-width:100%;max-height:38rem;border:1px solid var(--line,#e7e5e1);border-radius:8px;margin:0 0 16px;background:var(--panel,#fff);padding:10px;text-decoration:none;position:relative;min-height:4rem}
 .object-graph svg{width:100%!important;height:auto!important;max-width:100%;display:block;cursor:zoom-in}
 .object-graph:hover{border-color:var(--accent,#0ea5b7);box-shadow:0 0 0 1px var(--accent,#0ea5b7)}
@@ -19,4 +19,6 @@
 .object-graph .node.is-dimmed{opacity:.12}
 .object-graph .edge.is-dimmed{opacity:.08}
 .object-graph .node.is-match polygon,.object-graph .node.is-match ellipse,.object-graph .node.is-match path{stroke:var(--accent,#0ea5b7);stroke-width:3}
-@media (max-width:600px){.object-graph-label{align-items:flex-start;flex-direction:column;gap:3px}.object-graph-search{align-items:stretch;flex-wrap:wrap}.object-graph-search label{width:100%}.object-graph-search input{min-width:0;width:100%}.object-graph-search output{margin-left:auto}}
+.object-graph .edge.is-match path,.object-graph .edge.is-match polygon{stroke:var(--accent,#0ea5b7);stroke-width:2}
+#view .is-search-hidden{display:none!important}
+@media (max-width:600px){.object-graph-label{align-items:flex-start;flex-direction:column;gap:3px}.object-graph-search{align-items:stretch;flex-wrap:wrap}.object-graph-search label{width:100%}.object-graph-search input{min-width:0;width:100%}.object-graph-search output{width:100%;white-space:normal;text-align:left}}
