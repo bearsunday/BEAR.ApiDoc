@@ -29,7 +29,7 @@
         "ray/object-visual-grapher": "^1.0"
     },
     "require-dev": {
-        "bear/aura-router-module": "^2.0.3",
+        "bear/aura-router-module": "^2.5.1",
         "bamarni/composer-bin-plugin": "^1.8.2",
         "koriym/attributes": "^1.0.5",
         "phpunit/phpunit": "^11.0",
