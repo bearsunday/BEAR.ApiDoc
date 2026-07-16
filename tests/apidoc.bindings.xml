@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../apidoc.xsd">
+    <appName>FakeVendor\FakeProject</appName>
+    <scheme>app</scheme>
+    <docDir>docs/bindings</docDir>
+    <format>bindings</format>
+    <title>FakeProject</title>
+    <description>A sample BEAR.Sunday application for testing</description>
+</apidoc>

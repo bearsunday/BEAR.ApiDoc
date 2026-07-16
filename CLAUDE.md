@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-BEAR.ApiDoc generates API documentation from BEAR.Sunday applications. It extracts documentation from method signatures, PHPDoc comments, and JSON Schema to produce accurate API documentation in HTML, Markdown, or OpenAPI 3.1 formats.
+BEAR.ApiDoc generates API documentation from BEAR.Sunday applications. It extracts documentation from method signatures, PHPDoc comments, and JSON Schema to produce accurate API documentation in HTML, Markdown, OpenAPI 3.1, Audit, or Ray.Di Bindings formats.
 
 ## Development Commands
 
@@ -42,7 +42,7 @@ Configuration uses XML format validated against `apidoc.xsd`:
     <appName>MyVendor\MyProject</appName>  <!-- Application namespace -->
     <scheme>app</scheme>                    <!-- Resource scheme: app or page -->
     <docDir>docs/api</docDir>              <!-- Output directory -->
-    <format>html</format>                  <!-- html, md, or openapi -->
+    <format>html</format>                  <!-- html, md, openapi, llms, audit, bindings, or comma-separated -->
     <title>API Title</title>
     <alps>profile.json</alps>              <!-- Optional ALPS profile -->
 </apidoc>

@@ -7,6 +7,7 @@ namespace BEAR\ApiDoc;
 use BEAR\ApiDoc\Exception\AlpsFileNotFoundException;
 use BEAR\ApiDoc\Exception\InvalidAppNamespaceException;
 use PHPUnit\Framework\TestCase;
+use Ray\Bindings\BindingsHtml;
 
 use function file_get_contents;
 
@@ -181,6 +182,40 @@ class ApiDocTest extends TestCase
         $this->assertIsString($content);
         $this->assertStringContainsString('# Term Usage Index', $content);
         $this->assertStringContainsString('Lexical ALPS coverage', $content);
+    }
+
+    public function testBindingsOutput(): void
+    {
+        $apiDoc = new ApiDoc();
+        $result = $apiDoc(__DIR__ . '/apidoc.bindings.xml');
+
+        $this->assertStringContainsString('bindings.html', $result);
+        $this->assertFileExists(__DIR__ . '/docs/bindings/bindings.html');
+
+        $html = file_get_contents(__DIR__ . '/docs/bindings/bindings.html');
+        $this->assertIsString($html);
+        // Bindings page + source map from walked-up composer.lock
+        $this->assertStringContainsString('id="src"', $html);
+        $this->assertStringContainsString('id="srcmap"', $html);
+        // DOT artifact; browser renders (no Graphviz at generation time)
+        $this->assertFileExists(__DIR__ . '/docs/bindings/object-graph.dot');
+        $this->assertStringContainsString('id="object-graph-dot"', $html);
+        $this->assertStringContainsString('label=\\u003C\\u003Ctable', $html);
+        $this->assertStringNotContainsString('</script><script', $html);
+        // Shared assets stay on their CDNs; only DOT data and semantic controls are embedded.
+        $this->assertStringContainsString(BindingsHtml::CSS_URL, $html);
+        $this->assertStringContainsString(BindingsHtml::JS_URL, $html);
+        $this->assertStringContainsString('docs/assets/bindings-object-graph.css', $html);
+        $this->assertStringContainsString('docs/assets/bindings-object-graph.js', $html);
+        $this->assertStringContainsString('@viz-js/viz@3.28.0/dist/viz-global.js', $html);
+        $this->assertStringContainsString('<form class="object-graph-search" role="search">', $html);
+        $this->assertStringContainsString('type="search" id="object-graph-search"', $html);
+        $this->assertStringContainsString('id="object-graph-search-count"', $html);
+        $this->assertStringContainsString('<div class="object-graph" id="object-graph-mount" tabindex="0"', $html);
+        $this->assertStringNotContainsString('<a class="object-graph"', $html);
+        $this->assertStringNotContainsString('<style>', $html);
+        $this->assertStringNotContainsString('href="bindings.css"', $html);
+        $this->assertStringNotContainsString('src="bindings.js"', $html);
     }
 
     public function testMultipleFormatsOutput(): void

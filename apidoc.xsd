@@ -8,6 +8,7 @@
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appName"/>
+                <xs:element ref="context" minOccurs="0"/>
                 <xs:element ref="scheme"/>
                 <xs:element ref="docDir"/>
                 <xs:element ref="format"/>
@@ -23,6 +24,11 @@
     <xs:element name="appName" type="xs:string">
         <xs:annotation>
             <xs:documentation>Application namespace ex) MyVendor\MyProject.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="context" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>Application context for DI/bindings (e.g. app, prod-hal-app). Defaults to app.</xs:documentation>
         </xs:annotation>
     </xs:element>
     <xs:element name="scheme">
@@ -43,11 +49,11 @@
     </xs:element>
     <xs:element name="format">
         <xs:annotation>
-            <xs:documentation>Output document format (comma-separated for multiple: html,llms,audit; terms is accepted as a legacy Markdown index alias)</xs:documentation>
+            <xs:documentation>Output document format (comma-separated for multiple: html,llms,audit,bindings; terms is accepted as a legacy Markdown index alias)</xs:documentation>
         </xs:annotation>
         <xs:simpleType>
             <xs:restriction base="xs:string">
-                <xs:pattern value="(html|md|openapi|llms|audit|terms)(,(html|md|openapi|llms|audit|terms))*"/>
+                <xs:pattern value="(html|md|openapi|llms|audit|terms|bindings)(,(html|md|openapi|llms|audit|terms|bindings))*"/>
             </xs:restriction>
         </xs:simpleType>
     </xs:element>

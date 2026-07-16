@@ -19,13 +19,14 @@
         "bear/resource": "^1.16.2",
         "bear/sunday": "^1.4",
         "bear/app-meta": "^1.7",
-        "ray/di": "^2.16",
+        "ray/di": "^2.21",
         "rize/uri-template": "^0.3.3 || ^0.4",
         "bear/package": "^1.9",
         "michelf/php-markdown": "^1.9.1 || ^2.0",
         "koriym/psr4list": "^1.0.1",
         "ray/aop": "^2.10",
-        "ray/input-query": "^1.0"
+        "ray/input-query": "^1.0",
+        "ray/object-visual-grapher": "^1.0"
     },
     "require-dev": {
         "bear/aura-router-module": "^2.0.3",
@@ -84,12 +85,14 @@
         "docs-md": "php bin/apidoc -ctests/apidoc.md.xml",
         "docs-openapi": "php bin/apidoc -ctests/apidoc.demo-openapi.xml",
         "docs-audit": "php bin/apidoc -ctests/apidoc.demo-audit.xml",
+        "docs-bindings": "php bin/apidoc -ctests/apidoc.bindings.xml",
         "docs-terms": "php bin/apidoc -ctests/apidoc.demo-terms.xml",
         "docs-all": [
             "@docs",
             "@docs-md",
             "@docs-openapi",
-            "@docs-audit"
+            "@docs-audit",
+            "@docs-bindings"
         ],
         "openapi-install": "npm install -g @redocly/cli",
         "openapi-lint": "npx @redocly/cli lint docs/openapi/openapi.json",
@@ -112,7 +115,8 @@
         "docs-dev": "Generate HTML API documentation with inline CSS",
         "docs-md": "Generate Markdown API documentation",
         "docs-openapi": "Generate OpenAPI specification",
-        "docs-all": "Generate all documentation formats (HTML, Markdown, OpenAPI)",
+        "docs-bindings": "Generate Ray.Di bindings HTML report",
+        "docs-all": "Generate all documentation formats (HTML, Markdown, OpenAPI, Audit, Bindings)",
         "openapi-install": "Install Redocly CLI globally",
         "openapi-lint": "Validate OpenAPI spec with Redocly CLI",
         "openapi-html": "Generate HTML documentation from OpenAPI spec"

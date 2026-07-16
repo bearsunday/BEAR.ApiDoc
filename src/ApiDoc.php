@@ -10,6 +10,7 @@ use BEAR\ApiDoc\Exception\AlpsFileNotFoundException;
 use BEAR\ApiDoc\Exception\NotWritableException;
 use FilesystemIterator;
 use Generator;
+use Ray\Bindings\BindingsHtml;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
 use SplFileInfo;
@@ -19,16 +20,30 @@ use function chmod;
 use function copy;
 use function dirname;
 use function file_exists;
+use function file_get_contents;
 use function file_put_contents;
 use function implode;
 use function is_dir;
+use function is_string;
+use function json_encode;
 use function mkdir;
 use function realpath;
 use function sprintf;
+use function str_replace;
+use function strlen;
+use function strpos;
 use function substr;
+
+use const JSON_HEX_TAG;
+use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_UNICODE;
 
 final readonly class ApiDoc
 {
+    private const OBJECT_GRAPH_CSS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@557ff95f77c8a090b137eaaa05570c42ada88cf9/docs/assets/bindings-object-graph.css';
+    private const OBJECT_GRAPH_JS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@557ff95f77c8a090b137eaaa05570c42ada88cf9/docs/assets/bindings-object-graph.js';
+    private const VIZ_JS_URL = 'https://cdn.jsdelivr.net/npm/@viz-js/viz@3.28.0/dist/viz-global.js';
+
     /** @SuppressWarnings("PHPMD.BooleanArgumentFlag") */
     public function __construct(
         private bool $inlineCss = false,
@@ -64,6 +79,7 @@ final readonly class ApiDoc
     {
         return match ($format) {
             'audit' => ['audit.md', 'audit.html'],
+            'bindings' => ['bindings.html'],
             'openapi' => ['openapi.json'],
             'md' => ['index.md', 'terms.md'],
             'llms' => ['llms.txt'],
@@ -102,6 +118,12 @@ final readonly class ApiDoc
 
         if ($format === 'terms') {
             $this->dumpTerms($config);
+
+            return;
+        }
+
+        if ($format === 'bindings') {
+            $this->dumpBindings($config);
 
             return;
         }
@@ -283,6 +305,110 @@ final readonly class ApiDoc
         $audit = new ApiDocAudit($config);
         $this->filePutContents(sprintf('%s/audit.md', $config->docDir), $audit->generateMarkdown());
         $this->filePutContents(sprintf('%s/audit.html', $config->docDir), $audit->generateHtml());
+    }
+
+    private function dumpBindings(Config $config): void
+    {
+        $markdown = $config->bindingsMarkdown;
+        if ($markdown === '') {
+            $markdown = "# Ray.Di bindings\n\n0 bindings · 0 modules · 0 replaced · 0 discarded\n\n## Bindings\n\n## Modules\n\n## Provenance\n\n";
+        }
+
+        [$composerLock, $lockDir] = $this->readComposerLock($config->appDir);
+        $vendorDir = $lockDir !== '' && is_dir($lockDir . '/vendor') ? $lockDir . '/vendor' : '';
+        $message = sprintf('%s · %s', $config->appName, $config->context);
+        $html = (new BindingsHtml())->page($markdown, $composerLock, $message, $vendorDir);
+        $dot = $config->objectGraphDot;
+        if ($dot !== '') {
+            $dotFileName = 'object-graph.dot';
+            $this->filePutContents(sprintf('%s/%s', $config->docDir, $dotFileName), $dot);
+            $html = $this->injectObjectGraph($html, $dot, $dotFileName);
+        }
+
+        $outputFile = sprintf('%s/bindings.html', $config->docDir);
+        $this->filePutContents($outputFile, $html);
+    }
+
+    /**
+     * Embed object-graph DOT under the header; browser renders via @viz-js/viz (ASD pattern).
+     * No Graphviz binary at generation time — only object-visual-grapher for DOT text.
+     */
+    private function injectObjectGraph(string $html, string $dot, string $dotHref): string
+    {
+        $dotJson = json_encode(
+            $dot,
+            JSON_HEX_TAG | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        );
+        $cssUrl = self::OBJECT_GRAPH_CSS_URL;
+        $jsUrl = self::OBJECT_GRAPH_JS_URL;
+        $vizJsUrl = self::VIZ_JS_URL;
+        $section = <<<HTML
+<section class="object-graph-section" aria-label="Object graph overview">
+<div class="object-graph-label">
+<span class="title">Object graph</span>
+<span class="hint">Search to focus · drag to pan · click to reset · <a href="{$dotHref}">DOT</a></span>
+</div>
+<form class="object-graph-search" role="search">
+<label for="object-graph-search">Find node</label>
+<input type="search" id="object-graph-search" placeholder="Search classes or bindings…" autocomplete="off" disabled>
+<output id="object-graph-search-count" for="object-graph-search" aria-live="polite">0 / 0</output>
+</form>
+<div class="object-graph" id="object-graph-mount" tabindex="0" aria-label="Object graph">
+<p class="object-graph-status">Rendering object graph…</p>
+</div>
+<script type="application/json" id="object-graph-dot">{$dotJson}</script>
+</section>
+HTML;
+        $assets = <<<HTML
+<script src="{$vizJsUrl}" defer></script>
+<script src="{$jsUrl}" defer></script>
+HTML;
+        $html = str_replace('</head>', "<link rel=\"stylesheet\" href=\"{$cssUrl}\">\n</head>", $html);
+        $html = str_replace('</body>', $assets . "\n</body>", $html);
+
+        // Cover thumbnail: immediately under the page header, above stats/PROVENANCE.
+        $marker = '</header>';
+        $pos = strpos($html, $marker);
+        if ($pos !== false) {
+            $insertAt = $pos + strlen($marker);
+
+            return substr($html, 0, $insertAt) . "\n" . $section . substr($html, $insertAt);
+        }
+
+        $scriptPos = strpos($html, '<script src=');
+        if ($scriptPos === false) {
+            return $html . $section;
+        }
+
+        return substr($html, 0, $scriptPos) . $section . "\n" . substr($html, $scriptPos);
+    }
+
+    /**
+     * Load composer.lock for class → source links in bindings.html.
+     *
+     * Looks in $appDir first, then walks parent directories (monorepo / package-as-appDir
+     * layouts). Without a lock, BindingsHtml emits no #srcmap and FQCNs stay plain text.
+     *
+     * @return array{0: string, 1: string} [lock contents, directory containing the lock]
+     */
+    private function readComposerLock(string $appDir): array
+    {
+        $dir = $appDir;
+        while (true) {
+            $lockFile = $dir . '/composer.lock';
+            if (file_exists($lockFile)) {
+                $contents = file_get_contents($lockFile);
+
+                return is_string($contents) ? [$contents, $dir] : ['', ''];
+            }
+
+            $parent = dirname($dir);
+            if ($parent === $dir) {
+                return ['', ''];
+            }
+
+            $dir = $parent;
+        }
     }
 
     private function dumpTerms(Config $config): void
