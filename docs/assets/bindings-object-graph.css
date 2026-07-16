@@ -19,6 +19,5 @@
 .object-graph .node.is-dimmed{opacity:.12}
 .object-graph .edge.is-dimmed{opacity:.08}
 .object-graph .node.is-match polygon,.object-graph .node.is-match ellipse,.object-graph .node.is-match path{stroke:var(--accent,#0ea5b7);stroke-width:3}
-.object-graph .edge.is-match path,.object-graph .edge.is-match polygon{stroke:var(--accent,#0ea5b7);stroke-width:2}
 #view .is-search-hidden{display:none!important}
 @media (max-width:600px){.object-graph-label{align-items:flex-start;flex-direction:column;gap:3px}.object-graph-search{align-items:stretch;flex-wrap:wrap}.object-graph-search label{width:100%}.object-graph-search input{min-width:0;width:100%}.object-graph-search output{width:100%;white-space:normal;text-align:left}}

@@ -34,16 +34,11 @@
     var nodes = Array.from(svg.querySelectorAll('g.node'));
     var edges = Array.from(svg.querySelectorAll('g.edge'));
     var searchable = nodes.map(function (node) {
-      var title = node.querySelector('title');
       var labels = Array.from(node.querySelectorAll('text')).map(function (label) {
         return label.textContent || '';
       });
 
-      return {
-        element: node,
-        id: title ? title.textContent || '' : '',
-        text: labels.join('\\').toLowerCase()
-      };
+      return {element: node, text: labels.join('\\').toLowerCase()};
     });
 
     function matches(text, terms) {
@@ -52,7 +47,7 @@
       });
     }
 
-    function filterReport(selector, terms) {
+    function filterRows(selector, terms) {
       var elements = Array.from(document.querySelectorAll(selector));
       var matchesCount = 0;
       elements.forEach(function (element) {
@@ -60,49 +55,28 @@
         element.classList.toggle('is-search-hidden', !match);
         matchesCount += match ? 1 : 0;
       });
-      if (elements.length > 0) {
-        var section = elements[0].closest('section');
-        if (section) {
-          section.classList.toggle('is-search-hidden', terms.length > 0 && matchesCount === 0);
-        }
-      }
 
       return matchesCount;
     }
 
     function filter() {
       var terms = search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-      var matchingNodeIds = [];
       var nodeMatches = 0;
       searchable.forEach(function (node) {
         var match = terms.length === 0 || matches(node.text, terms);
         node.element.classList.toggle('is-match', terms.length > 0 && match);
         node.element.classList.toggle('is-dimmed', !match);
-        if (match) {
-          matchingNodeIds.push(node.id);
-          nodeMatches += 1;
-        }
+        nodeMatches += match ? 1 : 0;
       });
       edges.forEach(function (edge) {
-        var edgeTitle = edge.querySelector('title');
-        var edgeId = edgeTitle ? edgeTitle.textContent || '' : '';
-        var connected = terms.length === 0 || matchingNodeIds.some(function (nodeId) {
-          return nodeId !== '' && edgeId.includes(nodeId);
-        });
-        edge.classList.toggle('is-match', terms.length > 0 && connected);
-        edge.classList.toggle('is-dimmed', !connected);
+        edge.classList.toggle('is-dimmed', terms.length > 0);
       });
 
-      var bindings = filterReport('#view .b', terms);
-      var modules = filterReport('#view .ml', terms);
-      var provenance = filterReport('#view .ev', terms);
-      var stats = document.querySelector('#view .stats');
-      if (stats) {
-        stats.classList.toggle('is-search-hidden', terms.length > 0);
-      }
+      var bindings = filterRows('#view .b', terms);
+      var provenance = filterRows('#view .ev', terms);
       count.textContent = terms.length === 0
         ? nodeMatches + ' / ' + nodes.length
-        : nodeMatches + ' nodes · ' + bindings + ' bindings · ' + modules + ' modules · ' + provenance + ' provenance';
+        : nodeMatches + ' nodes · ' + bindings + ' bindings · ' + provenance + ' provenance';
     }
 
     search.disabled = false;
