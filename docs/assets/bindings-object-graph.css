@@ -19,8 +19,8 @@
 .object-graph:hover::after{color:var(--accent,#0ea5b7);opacity:1}
 .object-graph-status{font-size:12px;color:var(--muted,#6b7280);margin:0;padding:12px 4px}
 .object-graph .node,.object-graph .edge{transition:opacity .15s ease}
-.object-graph .node.is-dimmed{opacity:.12}
-.object-graph .edge.is-dimmed{opacity:.08}
+.object-graph .node.is-dimmed{opacity:.22}
+.object-graph .edge.is-dimmed{opacity:.12}
 .object-graph .node.is-match polygon,.object-graph .node.is-match ellipse,.object-graph .node.is-match path{stroke:var(--accent,#0ea5b7);stroke-width:3}
 #view .is-search-hidden{display:none!important}
 @media (max-width:600px){.object-graph-label{align-items:flex-start;flex-direction:column;gap:3px}.object-graph-search{align-items:stretch;flex-wrap:wrap}.object-graph-search label{width:100%}.object-graph-search input{min-width:0;width:100%}.object-graph-search output{width:100%;white-space:normal;text-align:left}.object-graph{height:60vh;min-height:18rem}}
