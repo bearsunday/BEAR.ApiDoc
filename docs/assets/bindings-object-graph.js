@@ -74,6 +74,11 @@
 
       var bindings = filterRows('#view .b', terms);
       var provenance = filterRows('#view .ev', terms);
+      var moduleRow = document.querySelector('#view .ml');
+      var modulesSection = moduleRow ? moduleRow.closest('section') : null;
+      if (modulesSection) {
+        modulesSection.classList.toggle('is-search-hidden', terms.length > 0);
+      }
       count.textContent = terms.length === 0
         ? nodeMatches + ' / ' + nodes.length
         : nodeMatches + ' nodes · ' + bindings + ' bindings · ' + provenance + ' provenance';
