@@ -24,5 +24,6 @@ class AppModule extends AbstractAppModule
         $this->install(new JsonSchemaLinkHeaderModule('http://example.com/schema/'));
         $this->install(new PackageModule);
         $this->bind(Reader::class)->toInstance(new DualReader(new AnnotationReader(), new AttributeReader()));
+        $this->bind(GraphRootInterface::class)->to(GraphRoot::class);
     }
 }

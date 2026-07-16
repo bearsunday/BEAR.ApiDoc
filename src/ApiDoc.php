@@ -10,7 +10,6 @@ use BEAR\ApiDoc\Exception\AlpsFileNotFoundException;
 use BEAR\ApiDoc\Exception\NotWritableException;
 use FilesystemIterator;
 use Generator;
-use Ray\Bindings\BindingsHtml;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
 use SplFileInfo;
@@ -309,15 +308,12 @@ final readonly class ApiDoc
 
     private function dumpBindings(Config $config): void
     {
-        $markdown = $config->bindingsMarkdown;
-        if ($markdown === '') {
-            $markdown = "# Ray.Di bindings\n\n0 bindings · 0 modules · 0 replaced · 0 discarded\n\n## Bindings\n\n## Modules\n\n## Provenance\n\n";
-        }
-
+        $bindings = $config->bindings;
+        assert($bindings !== null);
         [$composerLock, $lockDir] = $this->readComposerLock($config->appDir);
         $vendorDir = $lockDir !== '' && is_dir($lockDir . '/vendor') ? $lockDir . '/vendor' : '';
         $message = sprintf('%s · %s', $config->appName, $config->context);
-        $html = (new BindingsHtml())->page($markdown, $composerLock, $message, $vendorDir);
+        $html = $bindings->toHtml($composerLock, $message, $vendorDir);
         $dot = $config->objectGraphDot;
         if ($dot !== '') {
             $dotFileName = 'object-graph.dot';

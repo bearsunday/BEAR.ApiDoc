@@ -6,10 +6,13 @@ namespace BEAR\ApiDoc;
 
 use BEAR\ApiDoc\Exception\AlpsFileNotFoundException;
 use BEAR\ApiDoc\Exception\InvalidAppNamespaceException;
+use BEAR\AppMeta\Meta;
 use PHPUnit\Framework\TestCase;
 use Ray\Bindings\BindingsHtml;
 
+use function file_exists;
 use function file_get_contents;
+use function unlink;
 
 class ApiDocTest extends TestCase
 {
@@ -186,6 +189,15 @@ class ApiDocTest extends TestCase
 
     public function testBindingsOutput(): void
     {
+        $meta = new Meta('FakeVendor\FakeProject', 'app');
+        $bindingsFile = $meta->tmpDir . '/bindings.md';
+        $signatureFile = $bindingsFile . '.signature';
+        foreach ([$bindingsFile, $signatureFile] as $artifact) {
+            if (file_exists($artifact)) {
+                unlink($artifact);
+            }
+        }
+
         $apiDoc = new ApiDoc();
         $result = $apiDoc(__DIR__ . '/apidoc.bindings.xml');
 
@@ -197,8 +209,19 @@ class ApiDocTest extends TestCase
         // Bindings page + source map from walked-up composer.lock
         $this->assertStringContainsString('id="src"', $html);
         $this->assertStringContainsString('id="srcmap"', $html);
+        $this->assertStringContainsString(
+            'FakeVendor\FakeProject\Module\GraphRootInterface- =&gt; (dependency) FakeVendor\FakeProject\Module\GraphRoot',
+            $html,
+        );
+        $this->assertStringNotContainsString('FakeVendor\FakeProject\Module\GraphDependency- =&gt;', $html);
+        $this->assertStringNotContainsString('Ray\Di\ProviderSetModule', $html);
+        $this->assertFileDoesNotExist($bindingsFile);
+        $this->assertFileDoesNotExist($signatureFile);
         // DOT artifact; browser renders (no Graphviz at generation time)
         $this->assertFileExists(__DIR__ . '/docs/bindings/object-graph.dot');
+        $dot = file_get_contents(__DIR__ . '/docs/bindings/object-graph.dot');
+        $this->assertIsString($dot);
+        $this->assertStringContainsString('class_FakeVendor_FakeProject_Module_GraphDependency', $dot);
         $this->assertStringContainsString('id="object-graph-dot"', $html);
         $this->assertStringContainsString('label=\\u003C\\u003Ctable', $html);
         $this->assertStringNotContainsString('</script><script', $html);

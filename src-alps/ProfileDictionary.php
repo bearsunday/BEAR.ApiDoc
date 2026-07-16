@@ -22,8 +22,8 @@ use function simplexml_load_file;
 use function sprintf;
 use function str_contains;
 use function strpos;
-use function substr;
 use function strtolower;
+use function substr;
 use function trim;
 
 use const DIRECTORY_SEPARATOR;
@@ -177,9 +177,9 @@ final readonly class ProfileDictionary
     }
 
     /**
-     * @param array<array-key, mixed>                    $descriptors
-     * @param array<string, string>                      $dictionary
-     * @param array<string, array<string, string>|null>  $cache
+     * @param array<array-key, mixed>                   $descriptors
+     * @param array<string, string>                     $dictionary
+     * @param array<string, array<string, string>|null> $cache
      */
     private static function walkJsonDescriptors(array $descriptors, string $baseDir, array &$dictionary, array &$cache): void
     {

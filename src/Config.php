@@ -11,6 +11,7 @@ use Aura\Router\RouterContainer;
 use BEAR\ApiDoc\Exception\InvalidAppNamespaceException;
 use BEAR\AppMeta\Meta;
 use BEAR\AppMeta\ResMeta;
+use Ray\Bindings\Bindings;
 use Ray\Di\AbstractModule;
 use Ray\Di\Exception\Unbound;
 use Ray\Di\Injector;
@@ -23,8 +24,6 @@ use function assert;
 use function class_exists;
 use function dirname;
 use function explode;
-use function file_exists;
-use function file_get_contents;
 use function in_array;
 use function is_iterable;
 use function is_string;
@@ -86,7 +85,7 @@ final class Config
 
     public string $sqlDir = '';
 
-    public string $bindingsMarkdown = '';
+    public ?Bindings $bindings = null;
 
     public string $appDir = '';
 
@@ -170,21 +169,15 @@ final class Config
 
         $includeBindings = in_array('bindings', $this->formats, true);
         if ($includeBindings) {
+            $this->bindings = new Bindings();
+            $appModule->accept($this->bindings);
             /** @psalm-suppress all */
             $this->objectGraphDot = (new ObjectGrapher())($appModule);
         }
 
         /** @psalm-suppress all */
-        $injector = $includeBindings ? new Injector($appModule, $meta->tmpDir) : new Injector($appModule);
+        $injector = new Injector($appModule);
         $this->resourceFiles = iterator_to_array($meta->getGenerator($this->scheme));
-
-        $bindingsFile = $meta->tmpDir . '/bindings.md';
-        if ($includeBindings && file_exists($bindingsFile)) {
-            $bindingsMarkdown = file_get_contents($bindingsFile);
-            if (is_string($bindingsMarkdown)) {
-                $this->bindingsMarkdown = $bindingsMarkdown;
-            }
-        }
 
         try {
             $jsonSchemaDir = $injector->getInstance('', 'json_schema_dir');
