@@ -21,7 +21,7 @@
         "bear/app-meta": "^1.7",
         "ray/di": "^2.22",
         "rize/uri-template": "^0.3.3 || ^0.4",
-        "bear/package": "^1.9",
+        "bear/package": "^1.20",
         "michelf/php-markdown": "^1.9.1 || ^2.0",
         "koriym/psr4list": "^1.0.1",
         "ray/aop": "^2.10",
