@@ -13,7 +13,8 @@
 .object-graph:hover{border-color:var(--accent,#0ea5b7);box-shadow:0 0 0 1px var(--accent,#0ea5b7)}
 .object-graph:focus-visible{outline:2px solid var(--accent,#0ea5b7);outline-offset:2px}
 .object-graph::after{content:"";position:absolute;right:10px;bottom:8px;font-size:14px;line-height:1;color:var(--muted,#6b7280);opacity:.75;pointer-events:none}
-.object-graph.is-focused{cursor:zoom-out}
+.object-graph.is-focused{cursor:grab;touch-action:none;user-select:none}
+.object-graph.is-dragging{cursor:grabbing}
 .object-graph.is-focused::after{content:"↺"}
 .object-graph:hover::after{color:var(--accent,#0ea5b7);opacity:1}
 .object-graph-status{font-size:12px;color:var(--muted,#6b7280);margin:0;padding:12px 4px}

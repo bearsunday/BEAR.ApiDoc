@@ -32,6 +32,7 @@
 
   function enableSearch(svg) {
     var originalViewBox = svg.getAttribute('viewBox');
+    var originalBounds = originalViewBox ? originalViewBox.split(/[,\s]+/).map(Number) : null;
     var nodes = Array.from(svg.querySelectorAll('g.node'));
     var edges = Array.from(svg.querySelectorAll('g.edge'));
     var searchable = nodes.map(function (node) {
@@ -167,7 +168,65 @@
     search.form.addEventListener('submit', function (event) {
       event.preventDefault();
     });
+    var drag = null;
+    var ignoreClick = false;
+    mount.addEventListener('pointerdown', function (event) {
+      if (!mount.classList.contains('is-focused') || !event.isPrimary || event.button !== 0) {
+        return;
+      }
+      var viewBox = svg.viewBox.baseVal;
+      drag = {
+        pointerId: event.pointerId,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        moved: false,
+        x: viewBox.x,
+        y: viewBox.y,
+        width: viewBox.width,
+        height: viewBox.height
+      };
+      mount.setPointerCapture(event.pointerId);
+      mount.classList.add('is-dragging');
+      event.preventDefault();
+    });
+    mount.addEventListener('pointermove', function (event) {
+      if (!drag || event.pointerId !== drag.pointerId) {
+        return;
+      }
+      var deltaX = event.clientX - drag.clientX;
+      var deltaY = event.clientY - drag.clientY;
+      drag.moved = drag.moved || Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3;
+      var x = drag.x - deltaX * drag.width / Math.max(svg.clientWidth, 1);
+      var y = drag.y - deltaY * drag.height / Math.max(svg.clientHeight, 1);
+      if (originalBounds) {
+        if (drag.width < originalBounds[2]) {
+          x = Math.min(Math.max(x, originalBounds[0]), originalBounds[0] + originalBounds[2] - drag.width);
+        }
+        if (drag.height < originalBounds[3]) {
+          y = Math.min(Math.max(y, originalBounds[1]), originalBounds[1] + originalBounds[3] - drag.height);
+        }
+      }
+      svg.setAttribute('viewBox', [x, y, drag.width, drag.height].join(' '));
+      event.preventDefault();
+    });
+    function finishDrag(event) {
+      if (!drag || event.pointerId !== drag.pointerId) {
+        return;
+      }
+      ignoreClick = event.type === 'pointerup' && drag.moved;
+      drag = null;
+      mount.classList.remove('is-dragging');
+      if (mount.hasPointerCapture(event.pointerId)) {
+        mount.releasePointerCapture(event.pointerId);
+      }
+    }
+    mount.addEventListener('pointerup', finishDrag);
+    mount.addEventListener('pointercancel', finishDrag);
     mount.addEventListener('click', function () {
+      if (ignoreClick) {
+        ignoreClick = false;
+        return;
+      }
       if (mount.classList.contains('is-focused')) {
         resetView();
       }
