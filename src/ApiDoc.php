@@ -308,12 +308,12 @@ final readonly class ApiDoc
 
     private function dumpBindings(Config $config): void
     {
-        $bindings = $config->bindings;
-        assert($bindings !== null);
+        $markdown = $config->bindingsMarkdown;
+        assert($markdown !== '');
         [$composerLock, $lockDir] = $this->readComposerLock($config->appDir);
         $vendorDir = $lockDir !== '' && is_dir($lockDir . '/vendor') ? $lockDir . '/vendor' : '';
         $message = sprintf('%s · %s', $config->appName, $config->context);
-        $html = $bindings->toHtml($composerLock, $message, $vendorDir);
+        $html = (new BindingsHtmlRenderer())->page($markdown, $composerLock, $message, $vendorDir);
         $dot = $config->objectGraphDot;
         if ($dot !== '') {
             $dotFileName = 'object-graph.dot';

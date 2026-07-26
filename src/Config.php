@@ -11,7 +11,6 @@ use Aura\Router\RouterContainer;
 use BEAR\ApiDoc\Exception\InvalidAppNamespaceException;
 use BEAR\AppMeta\Meta;
 use BEAR\AppMeta\ResMeta;
-use Ray\Bindings\Bindings;
 use Ray\Di\AbstractModule;
 use Ray\Di\Exception\Unbound;
 use Ray\Di\Injector;
@@ -85,7 +84,7 @@ final class Config
 
     public string $sqlDir = '';
 
-    public ?Bindings $bindings = null;
+    public string $bindingsMarkdown = '';
 
     public string $appDir = '';
 
@@ -169,8 +168,9 @@ final class Config
 
         $includeBindings = in_array('bindings', $this->formats, true);
         if ($includeBindings) {
-            $this->bindings = new Bindings();
-            $appModule->accept($this->bindings);
+            $snapshot = new BindingsSnapshot();
+            $appModule->accept($snapshot);
+            $this->bindingsMarkdown = $snapshot->markdown();
             /** @psalm-suppress all */
             $this->objectGraphDot = (new ObjectGrapher())($appModule);
         }

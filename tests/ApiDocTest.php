@@ -8,7 +8,6 @@ use BEAR\ApiDoc\Exception\AlpsFileNotFoundException;
 use BEAR\ApiDoc\Exception\InvalidAppNamespaceException;
 use BEAR\AppMeta\Meta;
 use PHPUnit\Framework\TestCase;
-use Ray\Bindings\BindingsHtml;
 
 use function file_exists;
 use function file_get_contents;
@@ -226,8 +225,8 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('label=\\u003C\\u003Ctable', $html);
         $this->assertStringNotContainsString('</script><script', $html);
         // Shared assets stay on their CDNs; only DOT data and semantic controls are embedded.
-        $this->assertStringContainsString(BindingsHtml::CSS_URL, $html);
-        $this->assertStringContainsString(BindingsHtml::JS_URL, $html);
+        $this->assertStringContainsString(BindingsHtmlRenderer::CSS_URL, $html);
+        $this->assertStringContainsString(BindingsHtmlRenderer::JS_URL, $html);
         $this->assertStringContainsString('docs/assets/bindings-object-graph.css', $html);
         $this->assertStringContainsString('docs/assets/bindings-object-graph.js', $html);
         $this->assertStringContainsString('@viz-js/viz@3.28.0/dist/viz-global.js', $html);

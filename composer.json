@@ -19,7 +19,7 @@
         "bear/resource": "^1.16.2",
         "bear/sunday": "^1.8",
         "bear/app-meta": "^1.7",
-        "ray/di": "^2.22",
+        "ray/di": "2.x-dev",
         "rize/uri-template": "^0.3.3 || ^0.4",
         "bear/package": "^1.20",
         "michelf/php-markdown": "^1.9.1 || ^2.0",
@@ -132,5 +132,4 @@
             "forward-command": true
         }
     }
-
 }
