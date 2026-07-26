@@ -19,7 +19,8 @@
     var mapEl = document.getElementById('srcmap');
     if (mapEl) { try { srcmap = JSON.parse(mapEl.textContent) || []; } catch (e) { srcmap = []; } }
 
-    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    var escDiv = document.createElement('div');
+    function esc(s) { escDiv.textContent = s; return escDiv.innerHTML; }
 
     // esc for a double-quoted attribute value (esc leaves quotes untouched)
     function attr(s) { return esc(s).replace(/"/g, '&quot;'); }
@@ -67,13 +68,11 @@
     function section(name) {
       var m = text.match(new RegExp('(?:^|\\n)## ' + name + '\\n([\\s\\S]*?)(?:\\n## |$)'));
       if (!m) { return []; }
-      return m[1].split('\n').filter(function (l) { return l.trim() !== ''; });
+      return m[1].split('\n').filter(function (l) { var t = l.trim(); return t !== '' && !/^<!-- signature:/.test(t); });
     }
 
-    var summary = '';
-    text.split('\n').slice(0, 8).forEach(function (l) {
-      if (l.indexOf('bindings ·') !== -1 && summary === '') { summary = l.trim(); }
-    });
+    var sm = text.match(/^.*\bbindings ·.*$/m);
+    var summary = sm ? sm[0].trim() : '';
     var cm = summary.match(/(\d+) bindings . (\d+) modules . (\d+) replaced . (\d+) discarded/);
     var counts = cm ? [cm[1], cm[2], cm[3], cm[4]] : ['?', '?', '?', '?'];
 
@@ -111,18 +110,25 @@
         target = target.slice(0, am.index);
         var by = {}, order = [], pair, re = /\+(\w+)\(([^)]*)\)/g;
         while ((pair = re.exec(am[1])) !== null) {
-          if (!by[pair[2]]) { by[pair[2]] = []; order.push(pair[2]); }
-          by[pair[2]].push(pair[1]);
+          var method = pair[1];
+          // SpyCompiler emits "+method(A, B, ...)" — group methods by each interceptor.
+          pair[2].split(',').forEach(function (intr) {
+            intr = intr.trim();
+            if (!by[intr]) { by[intr] = []; order.push(intr); }
+            by[intr].push(method);
+          });
         }
         aop = '<div class="aop"><span class="tag">aop</span> ' + order.map(function (i) {
           return '<span class="mod">' + link(i, esc(i.split('\\').pop())) + '</span> <span class="methods">' + esc(by[i].join(', ')) + '</span>';
         }).join(' · ') + '</div>';
       }
-      // collapse noise: a compiled null object, or a class bound to itself (untargeted)
+      // collapse noise: a compiled null object, or a class bound to itself (untargeted).
+      // Ray.Di 2.23's ModuleString pre-collapses self-bound to "(untargeted)"; keep the
+      // legacy "(dependency) Foo" + matching-index form as a fallback for older snapshots.
       var tgt;
       if (/[0-9a-f]{8}Null$/.test(target)) {
         tgt = '<span class="nil">(null object)</span>';
-      } else if (target.indexOf('(dependency) ') === 0 && m[1] === target.slice(13) + '-') {
+      } else if (target === '(untargeted)' || (target.indexOf('(dependency) ') === 0 && m[1] === target.slice(13) + '-')) {
         tgt = '<span class="nil">(untargeted)</span>';
       } else {
         tgt = escLink(target);
