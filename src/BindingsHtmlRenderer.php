@@ -74,7 +74,7 @@ use const JSON_UNESCAPED_SLASHES;
  */
 final class BindingsHtmlRenderer
 {
-    private const ASSETS_REF = '84f78c3ca8498c59a5731b49e53c3933f9a8aeae';
+    private const ASSETS_REF = '0c77f20bf3f896146ce62a427be0440fb5ae469c';
 
     public const CSS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@' . self::ASSETS_REF . '/docs/assets/bindings.css';
 
