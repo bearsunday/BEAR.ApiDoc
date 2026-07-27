@@ -349,8 +349,18 @@ final readonly class ApiDoc
 <input type="search" id="object-graph-search" placeholder="Search classes or bindings…" autocomplete="off" disabled>
 <output id="object-graph-search-count" for="object-graph-search" aria-live="polite">0 / 0</output>
 </form>
+<div class="object-graph-frame">
 <div class="object-graph" id="object-graph-mount" tabindex="0" aria-label="Object graph">
 <p class="object-graph-status">Rendering object graph…</p>
+</div>
+<div class="object-graph-zoom" role="group" aria-label="Object graph zoom">
+<button type="button" id="object-graph-zoom-in" aria-label="Zoom in" title="Zoom in" disabled>
+<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="M14.5 14.5 20 20M10 7v6M7 10h6"></path></svg>
+</button>
+<button type="button" id="object-graph-zoom-out" aria-label="Zoom out" title="Zoom out" disabled>
+<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="M14.5 14.5 20 20M7 10h6"></path></svg>
+</button>
+</div>
 </div>
 <script type="application/json" id="object-graph-dot">{$dotJson}</script>
 </section>

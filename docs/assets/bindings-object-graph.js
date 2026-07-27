@@ -5,7 +5,9 @@
   var raw = document.getElementById('object-graph-dot');
   var search = document.getElementById('object-graph-search');
   var count = document.getElementById('object-graph-search-count');
-  if (!mount || !raw || !search || !count) {
+  var zoomIn = document.getElementById('object-graph-zoom-in');
+  var zoomOut = document.getElementById('object-graph-zoom-out');
+  if (!mount || !raw || !search || !count || !zoomIn || !zoomOut) {
     return;
   }
 
@@ -67,6 +69,34 @@
       }
       mount.classList.remove('is-focused');
       mount.title = '';
+    }
+
+    function zoomBy(factor) {
+      var viewBox = svg.viewBox.baseVal;
+      if (originalBounds && factor > 1 && (
+        viewBox.width * factor >= originalBounds[2]
+        || viewBox.height * factor >= originalBounds[3]
+      )) {
+        resetView();
+        return;
+      }
+      var width = Math.max(viewBox.width * factor, 1);
+      var height = Math.max(viewBox.height * factor, 1);
+      var centerX = viewBox.x + viewBox.width / 2;
+      var centerY = viewBox.y + viewBox.height / 2;
+      var x = centerX - width / 2;
+      var y = centerY - height / 2;
+      if (originalBounds) {
+        if (width < originalBounds[2]) {
+          x = Math.min(Math.max(x, originalBounds[0]), originalBounds[0] + originalBounds[2] - width);
+        }
+        if (height < originalBounds[3]) {
+          y = Math.min(Math.max(y, originalBounds[1]), originalBounds[1] + originalBounds[3] - height);
+        }
+      }
+      svg.setAttribute('viewBox', [x, y, width, height].join(' '));
+      mount.classList.add('is-focused');
+      mount.title = 'Click to reset the object graph view';
     }
 
     function nodeBounds(node) {
@@ -172,7 +202,15 @@
     }
 
     search.disabled = false;
+    zoomIn.disabled = false;
+    zoomOut.disabled = false;
     search.addEventListener('input', filter);
+    zoomIn.addEventListener('click', function () {
+      zoomBy(0.8);
+    });
+    zoomOut.addEventListener('click', function () {
+      zoomBy(1.25);
+    });
     search.form.addEventListener('submit', function (event) {
       event.preventDefault();
     });

@@ -234,6 +234,8 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('type="search" id="object-graph-search"', $html);
         $this->assertStringContainsString('id="object-graph-search-count"', $html);
         $this->assertStringContainsString('<div class="object-graph" id="object-graph-mount" tabindex="0"', $html);
+        $this->assertStringContainsString('id="object-graph-zoom-in" aria-label="Zoom in"', $html);
+        $this->assertStringContainsString('id="object-graph-zoom-out" aria-label="Zoom out"', $html);
         $this->assertStringNotContainsString('<a class="object-graph"', $html);
         $this->assertStringNotContainsString('<style>', $html);
         $this->assertStringNotContainsString('href="bindings.css"', $html);

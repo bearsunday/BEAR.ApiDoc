@@ -8,11 +8,18 @@
 .object-graph-search input:focus{border-color:var(--accent,#0ea5b7);outline:2px solid color-mix(in srgb,var(--accent,#0ea5b7) 25%,transparent);outline-offset:1px}
 .object-graph-search input:disabled{cursor:wait;opacity:.6}
 .object-graph-search output{margin-left:auto;white-space:nowrap;text-align:right;font:12px var(--mono,ui-monospace,monospace);color:var(--muted,#6b7280)}
-.object-graph{display:block;overflow:hidden;width:100%;height:min(65vh,38rem);border:1px solid var(--line,#e7e5e1);border-radius:8px;margin:0 0 16px;background:var(--panel,#fff);padding:10px;position:relative;min-height:20rem}
+.object-graph-frame{position:relative;margin:0 0 16px}
+.object-graph{display:block;overflow:hidden;width:100%;height:min(65vh,38rem);border:1px solid var(--line,#e7e5e1);border-radius:8px;margin:0;background:var(--panel,#fff);padding:10px;position:relative;min-height:20rem}
 .object-graph svg{width:100%!important;height:100%!important;max-width:100%;display:block}
 .object-graph:hover{border-color:var(--accent,#0ea5b7);box-shadow:0 0 0 1px var(--accent,#0ea5b7)}
 .object-graph:focus-visible{outline:2px solid var(--accent,#0ea5b7);outline-offset:2px}
-.object-graph::after{content:"";position:absolute;right:10px;bottom:8px;font-size:14px;line-height:1;color:var(--muted,#6b7280);opacity:.75;pointer-events:none}
+.object-graph::after{content:"";position:absolute;left:10px;bottom:8px;font-size:14px;line-height:1;color:var(--muted,#6b7280);opacity:.75;pointer-events:none}
+.object-graph-zoom{position:absolute;right:10px;bottom:10px;z-index:1;display:flex;gap:6px}
+.object-graph-zoom button{display:grid;place-items:center;width:34px;height:34px;padding:0;border:1px solid var(--line,#e7e5e1);border-radius:7px;background:color-mix(in srgb,var(--panel,#fff) 92%,transparent);color:var(--ink,#1c2027);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.object-graph-zoom button:hover:not(:disabled){border-color:var(--accent,#0ea5b7);color:var(--accent,#0ea5b7)}
+.object-graph-zoom button:focus-visible{outline:2px solid var(--accent,#0ea5b7);outline-offset:2px}
+.object-graph-zoom button:disabled{cursor:wait;opacity:.5}
+.object-graph-zoom svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .object-graph.is-focused{cursor:grab;touch-action:none;user-select:none}
 .object-graph.is-dragging{cursor:grabbing}
 .object-graph.is-focused::after{content:"↺"}
