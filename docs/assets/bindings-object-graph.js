@@ -33,6 +33,8 @@
   }
 
   function enableSearch(svg) {
+    var autoMaxScale = 1.5;
+    var manualMaxScale = 4;
     var originalViewBox = svg.getAttribute('viewBox');
     var originalBounds = originalViewBox ? originalViewBox.split(/[,\s]+/).map(Number) : null;
     var nodes = Array.from(svg.querySelectorAll('g.node'));
@@ -73,6 +75,16 @@
 
     function zoomBy(factor) {
       var viewBox = svg.viewBox.baseVal;
+      if (factor < 1) {
+        factor = Math.max(
+          factor,
+          mount.clientWidth / manualMaxScale / viewBox.width,
+          mount.clientHeight / manualMaxScale / viewBox.height
+        );
+        if (factor >= 1) {
+          return;
+        }
+      }
       if (originalBounds && factor > 1 && (
         viewBox.width * factor >= originalBounds[2]
         || viewBox.height * factor >= originalBounds[3]
@@ -153,6 +165,17 @@
         var fittedWidth = height * viewportRatio;
         minX -= (fittedWidth - width) / 2;
         width = fittedWidth;
+      }
+      var autoMinWidth = mount.clientWidth / autoMaxScale;
+      var autoMinHeight = mount.clientHeight / autoMaxScale;
+      if (width < autoMinWidth || height < autoMinHeight) {
+        var autoScale = Math.max(autoMinWidth / width, autoMinHeight / height);
+        var centerX = minX + width / 2;
+        var centerY = minY + height / 2;
+        width *= autoScale;
+        height *= autoScale;
+        minX = centerX - width / 2;
+        minY = centerY - height / 2;
       }
       if (originalBounds) {
         if (width < originalBounds[2]) {
