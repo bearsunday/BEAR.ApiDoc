@@ -31,7 +31,6 @@
   }
 
   function enableSearch(svg) {
-    var maxZoom = 6;
     var originalViewBox = svg.getAttribute('viewBox');
     var originalBounds = originalViewBox ? originalViewBox.split(/[,\s]+/).map(Number) : null;
     var nodes = Array.from(svg.querySelectorAll('g.node'));
@@ -126,17 +125,6 @@
         width = fittedWidth;
       }
       if (originalBounds) {
-        var scale = Math.max(
-          originalBounds[2] / maxZoom / width,
-          originalBounds[3] / maxZoom / height,
-          1
-        );
-        var centerX = minX + width / 2;
-        var centerY = minY + height / 2;
-        width *= scale;
-        height *= scale;
-        minX = centerX - width / 2;
-        minY = centerY - height / 2;
         if (width < originalBounds[2]) {
           minX = Math.min(Math.max(minX, originalBounds[0]), originalBounds[0] + originalBounds[2] - width);
         }
