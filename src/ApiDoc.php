@@ -40,7 +40,7 @@ use const JSON_UNESCAPED_UNICODE;
 final readonly class ApiDoc
 {
     private const OBJECT_GRAPH_CSS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@557ff95f77c8a090b137eaaa05570c42ada88cf9/docs/assets/bindings-object-graph.css';
-    private const OBJECT_GRAPH_JS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@557ff95f77c8a090b137eaaa05570c42ada88cf9/docs/assets/bindings-object-graph.js';
+    private const OBJECT_GRAPH_JS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@62584731f761c01030d1c546f7fba77b289bf6ee/docs/assets/bindings-object-graph.js';
     private const VIZ_JS_URL = 'https://cdn.jsdelivr.net/npm/@viz-js/viz@3.28.0/dist/viz-global.js';
 
     /** @SuppressWarnings("PHPMD.BooleanArgumentFlag") */
