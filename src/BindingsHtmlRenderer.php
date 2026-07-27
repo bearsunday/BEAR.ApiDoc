@@ -164,6 +164,7 @@ final class BindingsHtmlRenderer
 
     /**
      * @throws JsonException on invalid JSON in the composer.lock.
+     *
      * @SuppressWarnings("PHPMD.NPathComplexity")
      */
     private function buildSourceMap(string $markdown, string $composerLock, string $vendorDir = ''): string
@@ -224,6 +225,7 @@ final class BindingsHtmlRenderer
      * @param list<SourceMapEntry> $map
      *
      * @return list<SourceMapEntry>
+     *
      * @SuppressWarnings("PHPMD.NPathComplexity")
      */
     private function disambiguateSharedPrefixes(array $map, string $markdown, string $vendorDir): array
