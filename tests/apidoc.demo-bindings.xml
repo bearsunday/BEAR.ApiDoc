@@ -4,6 +4,6 @@
         xsi:noNamespaceSchemaLocation="../apidoc.xsd">
     <appName>FakeVendor\FakeProject</appName>
     <scheme>app</scheme>
-    <docDir>docs/bindings</docDir>
+    <docDir>../docs</docDir>
     <format>bindings</format>
 </apidoc>

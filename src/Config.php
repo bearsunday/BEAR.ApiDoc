@@ -244,6 +244,8 @@ final class Config
 
             return $queries->classes;
         } catch (Unbound) {
+            // MediaQuery module not installed, or Queries is not bound.
+            // Ray.Di 2.22.2+ rejects non-instantiable JIT (private ctor) with Unbound.
         }
 
         return [];

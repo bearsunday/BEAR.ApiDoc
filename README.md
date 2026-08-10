@@ -7,6 +7,7 @@ Your application is the documentation.
 - **JSON Schema**: Information model
 - **ALPS**: Vocabulary semantics for AI understanding
 - **llms.txt**: AI-readable application overview
+- **Bindings HTML**: Ray.Di DI graph and binding provenance
 
 ## Semantic Depth
 
@@ -28,6 +29,7 @@ This is a semantic application document, not just an API reference. It describes
 - [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
 - [Documentation Audit](https://bearsunday.github.io/BEAR.ApiDoc/audit.html)
 - [Term Usage Index](https://bearsunday.github.io/BEAR.ApiDoc/terms.html)
+- [Bindings](https://bearsunday.github.io/BEAR.ApiDoc/bindings.html)
 
 ## Installation
 
@@ -77,7 +79,7 @@ jobs:
   docs:
     uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
     with:
-      format: 'html,openapi,alps,audit,llms'
+      format: 'html,openapi,alps,audit,llms,bindings'
       alps-profile: 'alps.json'
 ```
 
@@ -86,7 +88,7 @@ jobs:
 | Input | Default | Description |
 |-------|---------|-------------|
 | `php-version` | `'8.2'` | PHP version |
-| `format` | `'html,openapi,llms'` | Comma-separated: html (apidoc), md, openapi, alps, llms, audit |
+| `format` | `'html,openapi,llms'` | Comma-separated: html (apidoc), md, openapi, alps, llms, audit, bindings |
 | `alps-profile` | `''` | ALPS profile path (required for alps format) |
 | `docs-path` | `'docs/api'` | Output directory |
 | `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
@@ -99,6 +101,8 @@ docs/
 ├── terms.html          # Term usage index for HTML docs
 ├── audit.html          # Documentation coverage report (HTML, ALPS-profiled)
 ├── audit.md            # Documentation coverage report (Markdown, for CLI/tooling)
+├── bindings.html       # Ray.Di bindings and object graph
+├── object-graph.dot    # Object graph source (DOT)
 ├── llms.txt            # AI-readable overview
 ├── openapi.json        # OpenAPI spec
 ├── alps/               # ALPS report profiles (terms.xml, audit.xml)
@@ -117,6 +121,7 @@ composer docs-dev    # Generate docs with inline CSS for development
 composer docs-md     # Generate Markdown docs
 composer docs-openapi # Generate OpenAPI spec
 composer docs-audit  # Generate documentation audit report
+composer docs-bindings # Generate Ray.Di bindings HTML report
 composer docs-terms  # Generate legacy Markdown term usage index
 ```
 

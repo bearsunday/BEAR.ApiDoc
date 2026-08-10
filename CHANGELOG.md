@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.12.0] - 2026-08-11
+
+### Added
+- Add `bindings` output format: Ray.Di binding provenance and object graph as interactive HTML (`bindings.html`, `object-graph.dot`). Collected through Ray.Di 2.23's `ModuleVisitorInterface` (`$module->accept(new BindingsSnapshot())`); the viewer is ported in-repo from the `ray/bindings` package.
+- Object graph viewer with zoom controls and search focus; viewer assets served from CDN.
+- Add `composer docs-bindings` demo generation.
+
+### Changed
+- Raise package minimums so the dependency tree no longer pulls `doctrine/cache` (`bear/package` `^1.20` and aligned deps).
+- Require `ray/di` `^2.23.0` for `ModuleVisitorInterface`; non-instantiable just-in-time binding also fails with `Unbound` there (needed for optional MediaQuery `Queries` probing without a bare PHP `Error`).
 
 ## [1.11.0] - 2026-06-03
 
@@ -153,7 +162,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update dependencies
 
-[Unreleased]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.11.0...HEAD
+[Unreleased]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.12.0...HEAD
+[1.12.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.11.0...1.12.0
 [1.11.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.10.0...1.11.0
 [1.10.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.2...1.10.0
 [1.9.2]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.1...1.9.2

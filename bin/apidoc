@@ -11,7 +11,17 @@ use BEAR\ApiDoc\TermUsageIndex;
  * @param array<int,string> $argv
  */
 (function (array $argv): void {
-    foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $file) {
+    // Composer bin proxy sets this to the *consuming* project's autoload.
+    // Prefer it so path-repository symlinks do not load this package's own vendor/
+    // (where __DIR__ resolves outside vendor/bear/api-doc/).
+    $autoloadCandidates = [];
+    if (isset($GLOBALS['_composer_autoload_path']) && is_string($GLOBALS['_composer_autoload_path'])) {
+        $autoloadCandidates[] = $GLOBALS['_composer_autoload_path'];
+    }
+
+    $autoloadCandidates[] = __DIR__ . '/../../../autoload.php';
+    $autoloadCandidates[] = __DIR__ . '/../vendor/autoload.php';
+    foreach ($autoloadCandidates as $file) {
         if (file_exists($file)) {
             require $file;
 
