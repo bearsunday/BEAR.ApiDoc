@@ -8,9 +8,19 @@ use BEAR\ApiDoc\Exception\AlpsFileNotFoundException;
 use BEAR\ApiDoc\Exception\InvalidAppNamespaceException;
 use BEAR\AppMeta\Meta;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
+use function assert;
 use function file_exists;
 use function file_get_contents;
+use function is_string;
+use function mkdir;
+use function rmdir;
+use function strlen;
+use function strpos;
+use function substr;
+use function sys_get_temp_dir;
+use function uniqid;
 use function unlink;
 
 class ApiDocTest extends TestCase
@@ -292,5 +302,47 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('[tickets.json](../../../Fake/app/src/var/fake/tickets.json)', $ticketsMd);
 
         $this->assertFileExists(__DIR__ . '/docs/md-fake/examples/ticket.param.json');
+    }
+
+    public function testInjectObjectGraphInsertsBeforeFirstScriptWhenHeaderIsAbsent(): void
+    {
+        $html = '<html><head></head><body><p>bindings</p></body></html>';
+        $method = new ReflectionMethod(ApiDoc::class, 'injectObjectGraph');
+        $result = $method->invoke(new ApiDoc(), $html, 'digraph G {}', 'object-graph.dot');
+        assert(is_string($result));
+
+        $sectionPos = strpos($result, 'class="object-graph-section"');
+        $scriptPos = strpos($result, '<script src=');
+        $this->assertIsInt($sectionPos);
+        $this->assertIsInt($scriptPos);
+        $this->assertLessThan($scriptPos, $sectionPos);
+        $this->assertStringContainsString('id="object-graph-dot"', $result);
+    }
+
+    public function testInjectObjectGraphAppendsSectionWhenNoMarkerExists(): void
+    {
+        $html = '<div>plain bindings page</div>';
+        $method = new ReflectionMethod(ApiDoc::class, 'injectObjectGraph');
+        $result = $method->invoke(new ApiDoc(), $html, 'digraph G {}', 'object-graph.dot');
+        assert(is_string($result));
+
+        $this->assertSame($html, substr($result, 0, strlen($html)));
+        $this->assertStringContainsString('class="object-graph-section"', $result);
+        $this->assertStringContainsString('id="object-graph-dot"', $result);
+    }
+
+    public function testReadComposerLockReturnsEmptyWhenFilesystemRootIsReached(): void
+    {
+        $dir = sys_get_temp_dir() . '/apidoc-no-lock-' . uniqid('', true);
+        mkdir($dir, 0777, true);
+        $method = new ReflectionMethod(ApiDoc::class, 'readComposerLock');
+        try {
+            /** @var array{string, string} $result */
+            $result = $method->invoke(new ApiDoc(), $dir);
+        } finally {
+            rmdir($dir);
+        }
+
+        $this->assertSame(['', ''], $result);
     }
 }
