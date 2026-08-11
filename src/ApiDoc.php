@@ -39,7 +39,7 @@ use const JSON_UNESCAPED_UNICODE;
 
 final readonly class ApiDoc
 {
-    private const OBJECT_GRAPH_CSS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@4fa57559f29044af74256cf40a39dbaff5ee7498/docs/assets/bindings-object-graph.css';
+    private const OBJECT_GRAPH_CSS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@d75cad069a0ea25dc9b9518bc4b9ad9e807b455b/docs/assets/bindings-object-graph.css';
     private const OBJECT_GRAPH_JS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@55206bead1beb209bbe91fa902d639caad64088c/docs/assets/bindings-object-graph.js';
     private const VIZ_JS_URL = 'https://cdn.jsdelivr.net/npm/@viz-js/viz@3.28.0/dist/viz-global.js';
 
