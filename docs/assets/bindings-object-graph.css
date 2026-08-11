@@ -9,7 +9,7 @@
 .object-graph-search input:disabled{cursor:wait;opacity:.6}
 .object-graph-search output{margin-left:auto;white-space:nowrap;text-align:right;font:12px var(--mono,ui-monospace,monospace);color:var(--muted,#6b7280)}
 .object-graph-frame{position:relative;margin:0 0 16px}
-.object-graph{display:block;overflow:hidden;width:100%;height:min(65vh,38rem);border:1px solid var(--line,#e7e5e1);border-radius:8px;margin:0;background:var(--panel,#fff);padding:10px;position:relative;min-height:20rem}
+.object-graph{display:block;overflow:hidden;width:100%;height:78vh;border:1px solid var(--line,#e7e5e1);border-radius:8px;margin:0;background:var(--panel,#fff);padding:10px;position:relative;min-height:20rem}
 .object-graph svg{width:100%!important;height:100%!important;max-width:100%;display:block}
 .object-graph:hover{border-color:var(--accent,#0ea5b7);box-shadow:0 0 0 1px var(--accent,#0ea5b7)}
 .object-graph:focus-visible{outline:2px solid var(--accent,#0ea5b7);outline-offset:2px}
