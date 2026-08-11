@@ -39,8 +39,8 @@ use const JSON_UNESCAPED_UNICODE;
 
 final readonly class ApiDoc
 {
-    private const OBJECT_GRAPH_CSS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@e3130dcca551c2b9726eaed85c14a907d5e839da/docs/assets/bindings-object-graph.css';
-    private const OBJECT_GRAPH_JS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@e3130dcca551c2b9726eaed85c14a907d5e839da/docs/assets/bindings-object-graph.js';
+    private const OBJECT_GRAPH_CSS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@67cfc7b0efea7f18f2ac8f59fc2c278dc278dd45/docs/assets/bindings-object-graph.css';
+    private const OBJECT_GRAPH_JS_URL = 'https://cdn.jsdelivr.net/gh/bearsunday/BEAR.ApiDoc@67cfc7b0efea7f18f2ac8f59fc2c278dc278dd45/docs/assets/bindings-object-graph.js';
     private const VIZ_JS_URL = 'https://cdn.jsdelivr.net/npm/@viz-js/viz@3.28.0/dist/viz-global.js';
 
     /** @SuppressWarnings("PHPMD.BooleanArgumentFlag") */
