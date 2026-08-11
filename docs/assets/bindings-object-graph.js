@@ -125,9 +125,51 @@
       history.replaceState(null, '', location.pathname + location.search);
     }
 
+    // Animate viewBox moves triggered by discrete actions (focus, reset);
+    // continuous controls (wheel, drag) stay instant for a direct feel.
+    var anim = null;
+    function cancelAnim() {
+      if (anim) {
+        cancelAnimationFrame(anim);
+        anim = null;
+      }
+    }
+
+    function animateViewBox(tx, ty, tw, th, record) {
+      cancelAnim();
+      var v = svg.viewBox.baseVal;
+      var sx = v.x;
+      var sy = v.y;
+      var sw = v.width;
+      var sh = v.height;
+      var start = null;
+      function step(ts) {
+        if (start === null) {
+          start = ts;
+        }
+        var t = Math.min((ts - start) / 280, 1);
+        var e = 1 - Math.pow(1 - t, 3);
+        svg.setAttribute('viewBox', [
+          sx + (tx - sx) * e,
+          sy + (ty - sy) * e,
+          sw + (tw - sw) * e,
+          sh + (th - sh) * e
+        ].join(' '));
+        if (t < 1) {
+          anim = requestAnimationFrame(step);
+        } else {
+          anim = null;
+          if (record) {
+            recordView();
+          }
+        }
+      }
+      anim = requestAnimationFrame(step);
+    }
+
     function resetView() {
       if (originalViewBox) {
-        svg.setAttribute('viewBox', originalViewBox);
+        animateViewBox(originalBounds[0], originalBounds[1], originalBounds[2], originalBounds[3], false);
       }
       mount.classList.remove('is-focused');
       mount.title = '';
@@ -135,6 +177,7 @@
     }
 
     function zoomBy(factor, px, py) {
+      cancelAnim();
       px = px === undefined ? 0.5 : px;
       py = py === undefined ? 0.5 : py;
       var viewBox = svg.viewBox.baseVal;
@@ -248,9 +291,8 @@
           minY = Math.min(Math.max(minY, originalBounds[1]), originalBounds[1] + originalBounds[3] - height);
         }
       }
-      svg.setAttribute('viewBox', [minX, minY, width, height].join(' '));
+      animateViewBox(minX, minY, width, height, true);
       mount.classList.add('is-focused');
-      recordView();
     }
 
     function filter() {
@@ -346,6 +388,7 @@
       if (!mount.classList.contains('is-focused') || !event.isPrimary || event.button !== 0) {
         return;
       }
+      cancelAnim();
       var viewBox = svg.viewBox.baseVal;
       drag = {
         pointerId: event.pointerId,
