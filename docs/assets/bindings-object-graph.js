@@ -7,7 +7,8 @@
   var count = document.getElementById('object-graph-search-count');
   var zoomIn = document.getElementById('object-graph-zoom-in');
   var zoomOut = document.getElementById('object-graph-zoom-out');
-  if (!mount || !raw || !search || !count || !zoomIn || !zoomOut) {
+  var fullscreenBtn = document.getElementById('object-graph-fullscreen');
+  if (!mount || !raw || !search || !count || !zoomIn || !zoomOut || !fullscreenBtn) {
     return;
   }
 
@@ -233,6 +234,20 @@
     });
     zoomOut.addEventListener('click', function () {
       zoomBy(1.25);
+    });
+    fullscreenBtn.disabled = false;
+    fullscreenBtn.addEventListener('click', function () {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        mount.requestFullscreen();
+      }
+    });
+    document.addEventListener('fullscreenchange', function () {
+      var on = document.fullscreenElement === mount;
+      fullscreenBtn.classList.toggle('is-active', on);
+      fullscreenBtn.setAttribute('aria-label', on ? 'Exit fullscreen' : 'Fullscreen');
+      fullscreenBtn.title = on ? 'Exit fullscreen' : 'Fullscreen';
     });
     search.form.addEventListener('submit', function (event) {
       event.preventDefault();

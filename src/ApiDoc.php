@@ -360,6 +360,10 @@ final readonly class ApiDoc
 <button type="button" id="object-graph-zoom-out" aria-label="Zoom out" title="Zoom out" disabled>
 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="M14.5 14.5 20 20M7 10h6"></path></svg>
 </button>
+<button type="button" id="object-graph-fullscreen" aria-label="Fullscreen" title="Fullscreen" disabled>
+<svg class="icon-enter" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg>
+<svg class="icon-exit" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"></path></svg>
+</button>
 </div>
 </div>
 <script type="application/json" id="object-graph-dot">{$dotJson}</script>
