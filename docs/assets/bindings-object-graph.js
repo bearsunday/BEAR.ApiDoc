@@ -74,7 +74,9 @@
       mount.title = '';
     }
 
-    function zoomBy(factor) {
+    function zoomBy(factor, px, py) {
+      px = px === undefined ? 0.5 : px;
+      py = py === undefined ? 0.5 : py;
       var viewBox = svg.viewBox.baseVal;
       if (factor < 1) {
         factor = Math.max(
@@ -95,10 +97,10 @@
       }
       var width = Math.max(viewBox.width * factor, 1);
       var height = Math.max(viewBox.height * factor, 1);
-      var centerX = viewBox.x + viewBox.width / 2;
-      var centerY = viewBox.y + viewBox.height / 2;
-      var x = centerX - width / 2;
-      var y = centerY - height / 2;
+      var anchorX = viewBox.x + viewBox.width * px;
+      var anchorY = viewBox.y + viewBox.height * py;
+      var x = anchorX - width * px;
+      var y = anchorY - height * py;
       if (originalBounds) {
         if (width < originalBounds[2]) {
           x = Math.min(Math.max(x, originalBounds[0]), originalBounds[0] + originalBounds[2] - width);
@@ -225,6 +227,16 @@
         : nodeMatches + ' nodes · ' + bindings + ' bindings · ' + provenance + ' provenance';
     }
 
+    function fitBoxHeight() {
+      if (document.fullscreenElement === mount || !originalBounds) {
+        return;
+      }
+      var ratio = originalBounds[3] / Math.max(originalBounds[2], 1);
+      var needed = mount.clientWidth * ratio + 20;
+      var maxHeight = window.innerHeight * 0.78;
+      mount.style.height = Math.max(320, Math.min(needed, maxHeight)) + 'px';
+    }
+
     search.disabled = false;
     zoomIn.disabled = false;
     zoomOut.disabled = false;
@@ -235,6 +247,15 @@
     zoomOut.addEventListener('click', function () {
       zoomBy(1.25);
     });
+    mount.addEventListener('wheel', function (event) {
+      event.preventDefault();
+      var rect = mount.getBoundingClientRect();
+      var px = Math.min(Math.max((event.clientX - rect.left) / Math.max(rect.width, 1), 0), 1);
+      var py = Math.min(Math.max((event.clientY - rect.top) / Math.max(rect.height, 1), 0), 1);
+      zoomBy(event.deltaY < 0 ? 0.8 : 1.25, px, py);
+    }, {passive: false});
+    window.addEventListener('resize', fitBoxHeight);
+    fitBoxHeight();
     fullscreenBtn.disabled = false;
     fullscreenBtn.addEventListener('click', function () {
       if (document.fullscreenElement) {
@@ -248,6 +269,9 @@
       fullscreenBtn.classList.toggle('is-active', on);
       fullscreenBtn.setAttribute('aria-label', on ? 'Exit fullscreen' : 'Fullscreen');
       fullscreenBtn.title = on ? 'Exit fullscreen' : 'Fullscreen';
+      if (!on) {
+        fitBoxHeight();
+      }
     });
     search.form.addEventListener('submit', function (event) {
       event.preventDefault();

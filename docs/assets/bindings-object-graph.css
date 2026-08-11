@@ -20,7 +20,7 @@
 .object-graph-zoom button:focus-visible{outline:2px solid var(--accent,#0ea5b7);outline-offset:2px}
 .object-graph-zoom button:disabled{cursor:wait;opacity:.5}
 .object-graph-zoom svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.object-graph:fullscreen{height:100%;min-height:0;border-radius:0}
+.object-graph:fullscreen{height:100%!important;min-height:0;border-radius:0}
 #object-graph-fullscreen .icon-exit{display:none}
 #object-graph-fullscreen.is-active .icon-enter{display:none}
 #object-graph-fullscreen.is-active .icon-exit{display:block}
