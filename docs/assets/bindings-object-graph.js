@@ -8,8 +8,49 @@
   var zoomIn = document.getElementById('object-graph-zoom-in');
   var zoomOut = document.getElementById('object-graph-zoom-out');
   var fullscreenBtn = document.getElementById('object-graph-fullscreen');
-  if (!mount || !raw || !search || !count || !zoomIn || !zoomOut || !fullscreenBtn) {
+  var resetBtn = document.getElementById('object-graph-reset');
+  if (!mount || !raw || !search || !count || !zoomIn || !zoomOut || !fullscreenBtn || !resetBtn) {
     return;
+  }
+
+  var srcmap = [];
+  var mapEl = document.getElementById('srcmap');
+  if (mapEl) { try { srcmap = JSON.parse(mapEl.textContent) || []; } catch (e) { srcmap = []; } }
+
+  // Same resolution as the bindings viewer: exact-class overrides first, then
+  // longest PSR-4 prefix. Only http(s) repositories become links.
+  function resolve(fqcn) {
+    for (var i = 0; i < srcmap.length; i++) {
+      var ex = srcmap[i];
+      if (ex.x === 1 && ex.p === fqcn && ex.path && /^https?:\/\//.test(ex.u)) {
+        return { gh: ex.u + (ex.u.indexOf('github.com') !== -1 ? '/blob/' + ex.r + '/' + ex.path : ''), local: 'vendor/' + ex.n + '/' + ex.path };
+      }
+    }
+    var best = null;
+    for (var j = 0; j < srcmap.length; j++) {
+      var e = srcmap[j];
+      if (e.x === 1) { continue; }
+      if (fqcn.indexOf(e.p) === 0 && (!best || e.p.length > best.p.length)) { best = e; }
+    }
+    if (!best || !/^https?:\/\//.test(best.u)) { return null; }
+    var file = (best.d ? best.d + '/' : '') + fqcn.slice(best.p.length).replace(/\\/g, '/') + '.php';
+    var gh = best.u.indexOf('github.com') !== -1 ? best.u + '/blob/' + best.r + '/' + file : best.u;
+    return { gh: gh, local: 'vendor/' + best.n + '/' + file };
+  }
+
+  // Rebuild the FQCN from the node label texts (namespace, then class name);
+  // stop at the first non-name row such as "<construct>".
+  function nodeClassName(node) {
+    var texts = Array.from(node.querySelectorAll('text'));
+    var parts = [];
+    for (var i = 0; i < texts.length; i++) {
+      var t = (texts[i].textContent || '').trim();
+      if (/^@?[A-Za-z_][A-Za-z0-9_\\]*$/.test(t)) { parts.push(t); } else { break; }
+    }
+    if (parts.length === 1 && parts[0].charAt(0) === '@') {
+      return parts[0].slice(1);
+    }
+    return parts.length > 1 ? parts.join('\\') : null;
   }
 
   function showStatus(message) {
@@ -66,12 +107,23 @@
       return matchesCount;
     }
 
+    function recordView() {
+      var v = svg.viewBox.baseVal;
+      var parts = [v.x, v.y, v.width, v.height].map(function (n) { return Math.round(n * 10) / 10; });
+      history.replaceState(null, '', '#graph=' + parts.join(','));
+    }
+
+    function clearView() {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+
     function resetView() {
       if (originalViewBox) {
         svg.setAttribute('viewBox', originalViewBox);
       }
       mount.classList.remove('is-focused');
       mount.title = '';
+      clearView();
     }
 
     function zoomBy(factor, px, py) {
@@ -111,7 +163,7 @@
       }
       svg.setAttribute('viewBox', [x, y, width, height].join(' '));
       mount.classList.add('is-focused');
-      mount.title = 'Click to reset the object graph view';
+      recordView();
     }
 
     function nodeBounds(node) {
@@ -190,7 +242,7 @@
       }
       svg.setAttribute('viewBox', [minX, minY, width, height].join(' '));
       mount.classList.add('is-focused');
-      mount.title = 'Click to reset the object graph view';
+      recordView();
     }
 
     function filter() {
@@ -240,6 +292,10 @@
     search.disabled = false;
     zoomIn.disabled = false;
     zoomOut.disabled = false;
+    resetBtn.disabled = false;
+    resetBtn.addEventListener('click', function () {
+      resetView();
+    });
     search.addEventListener('input', filter);
     zoomIn.addEventListener('click', function () {
       zoomBy(0.8);
@@ -322,6 +378,9 @@
         return;
       }
       ignoreClick = event.type === 'pointerup' && drag.moved;
+      if (drag.moved) {
+        recordView();
+      }
       drag = null;
       mount.classList.remove('is-dragging');
       if (mount.hasPointerCapture(event.pointerId)) {
@@ -330,13 +389,25 @@
     }
     mount.addEventListener('pointerup', finishDrag);
     mount.addEventListener('pointercancel', finishDrag);
-    mount.addEventListener('click', function () {
+    mount.addEventListener('click', function (event) {
       if (ignoreClick) {
         ignoreClick = false;
         return;
       }
-      if (mount.classList.contains('is-focused')) {
-        resetView();
+      var node = event.target && event.target.closest ? event.target.closest('g.node') : null;
+      if (node) {
+        focusNodes([node]);
+      }
+    });
+    mount.addEventListener('dblclick', function (event) {
+      var node = event.target && event.target.closest ? event.target.closest('g.node') : null;
+      if (!node) {
+        return;
+      }
+      var fqcn = nodeClassName(node);
+      var resolved = fqcn ? resolve(fqcn) : null;
+      if (resolved) {
+        window.open(resolved.gh, '_blank', 'noopener');
       }
     });
     mount.addEventListener('keydown', function (event) {
@@ -348,6 +419,17 @@
         resetView();
       }
     });
+    // Restore a view shared or left in the URL hash (#graph=x,y,width,height).
+    var hashMatch = location.hash.match(/^#graph=(-?[\d.]+),(-?[\d.]+),(-?[\d.]+),(-?[\d.]+)$/);
+    if (hashMatch) {
+      var restored = [Number(hashMatch[1]), Number(hashMatch[2]), Number(hashMatch[3]), Number(hashMatch[4])];
+      if (restored[2] > 0 && restored[3] > 0) {
+        svg.setAttribute('viewBox', restored.join(' '));
+        if (originalBounds && (restored[2] < originalBounds[2] || restored[3] < originalBounds[3])) {
+          mount.classList.add('is-focused');
+        }
+      }
+    }
     filter();
   }
 

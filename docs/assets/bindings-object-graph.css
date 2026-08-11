@@ -24,6 +24,7 @@
 #object-graph-fullscreen .icon-exit{display:none}
 #object-graph-fullscreen.is-active .icon-enter{display:none}
 #object-graph-fullscreen.is-active .icon-exit{display:block}
+.object-graph g.node{cursor:pointer}
 .object-graph.is-focused{cursor:grab;touch-action:none;user-select:none}
 .object-graph.is-dragging{cursor:grabbing}
 .object-graph.is-focused::after{content:"↺"}
