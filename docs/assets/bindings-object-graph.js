@@ -54,6 +54,13 @@
     return parts.length > 1 ? parts.join('\\') : null;
   }
 
+  // Hit-test in viewport coordinates: survives the view moving after a focus
+  // click and pointer-capture retargeting after drags.
+  function nodeAt(event) {
+    var el = document.elementFromPoint(event.clientX, event.clientY);
+    return el && el.closest ? el.closest('g.node') : null;
+  }
+
   function showStatus(message) {
     var status = document.createElement('p');
     status.className = 'object-graph-status';
@@ -360,7 +367,7 @@
       }
       var deltaX = event.clientX - drag.clientX;
       var deltaY = event.clientY - drag.clientY;
-      drag.moved = drag.moved || Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3;
+      drag.moved = drag.moved || Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6;
       var x = drag.x - deltaX * drag.width / Math.max(svg.clientWidth, 1);
       var y = drag.y - deltaY * drag.height / Math.max(svg.clientHeight, 1);
       if (originalBounds) {
@@ -390,18 +397,26 @@
     }
     mount.addEventListener('pointerup', finishDrag);
     mount.addEventListener('pointercancel', finishDrag);
+    var clickTimer = null;
     mount.addEventListener('click', function (event) {
       if (ignoreClick) {
         ignoreClick = false;
         return;
       }
-      var node = event.target && event.target.closest ? event.target.closest('g.node') : null;
-      if (node) {
-        focusNodes([node]);
+      var node = nodeAt(event);
+      if (!node) {
+        return;
       }
+      // Delay the focus move so the second click of a double-click still
+      // lands on the same node; dblclick cancels the pending focus.
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(function () {
+        focusNodes([node]);
+      }, 260);
     });
     mount.addEventListener('dblclick', function (event) {
-      var node = event.target && event.target.closest ? event.target.closest('g.node') : null;
+      clearTimeout(clickTimer);
+      var node = nodeAt(event);
       if (!node) {
         return;
       }
