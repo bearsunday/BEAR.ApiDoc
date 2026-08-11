@@ -6,9 +6,22 @@ namespace BEAR\ApiDoc;
 
 use BEAR\ApiDoc\Exception\AlpsFileNotFoundException;
 use BEAR\ApiDoc\Exception\InvalidAppNamespaceException;
+use BEAR\AppMeta\Meta;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
+use function assert;
+use function file_exists;
 use function file_get_contents;
+use function is_string;
+use function mkdir;
+use function rmdir;
+use function strlen;
+use function strpos;
+use function substr;
+use function sys_get_temp_dir;
+use function uniqid;
+use function unlink;
 
 class ApiDocTest extends TestCase
 {
@@ -183,6 +196,62 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('Lexical ALPS coverage', $content);
     }
 
+    public function testBindingsOutput(): void
+    {
+        $meta = new Meta('FakeVendor\FakeProject', 'app');
+        $bindingsFile = $meta->tmpDir . '/bindings.md';
+        $signatureFile = $bindingsFile . '.signature';
+        foreach ([$bindingsFile, $signatureFile] as $artifact) {
+            if (file_exists($artifact)) {
+                unlink($artifact);
+            }
+        }
+
+        $apiDoc = new ApiDoc();
+        $result = $apiDoc(__DIR__ . '/apidoc.bindings.xml');
+
+        $this->assertStringContainsString('bindings.html', $result);
+        $this->assertFileExists(__DIR__ . '/docs/bindings/bindings.html');
+
+        $html = file_get_contents(__DIR__ . '/docs/bindings/bindings.html');
+        $this->assertIsString($html);
+        // Bindings page + source map from walked-up composer.lock
+        $this->assertStringContainsString('id="src"', $html);
+        $this->assertStringContainsString('id="srcmap"', $html);
+        $this->assertStringContainsString(
+            'FakeVendor\FakeProject\Module\GraphRootInterface- =&gt; (dependency) FakeVendor\FakeProject\Module\GraphRoot',
+            $html,
+        );
+        $this->assertStringNotContainsString('FakeVendor\FakeProject\Module\GraphDependency- =&gt;', $html);
+        $this->assertStringNotContainsString('Ray\Di\ProviderSetModule', $html);
+        $this->assertFileDoesNotExist($bindingsFile);
+        $this->assertFileDoesNotExist($signatureFile);
+        // DOT artifact; browser renders (no Graphviz at generation time)
+        $this->assertFileExists(__DIR__ . '/docs/bindings/object-graph.dot');
+        $dot = file_get_contents(__DIR__ . '/docs/bindings/object-graph.dot');
+        $this->assertIsString($dot);
+        $this->assertStringContainsString('class_FakeVendor_FakeProject_Module_GraphDependency', $dot);
+        $this->assertStringContainsString('id="object-graph-dot"', $html);
+        $this->assertStringContainsString('label=\\u003C\\u003Ctable', $html);
+        $this->assertStringNotContainsString('</script><script', $html);
+        // Shared assets stay on their CDNs; only DOT data and semantic controls are embedded.
+        $this->assertStringContainsString(BindingsHtmlRenderer::CSS_URL, $html);
+        $this->assertStringContainsString(BindingsHtmlRenderer::JS_URL, $html);
+        $this->assertStringContainsString('docs/assets/bindings-object-graph.css', $html);
+        $this->assertStringContainsString('docs/assets/bindings-object-graph.js', $html);
+        $this->assertStringContainsString('@viz-js/viz@3.28.0/dist/viz-global.js', $html);
+        $this->assertStringContainsString('<form class="object-graph-search" role="search">', $html);
+        $this->assertStringContainsString('type="search" id="object-graph-search"', $html);
+        $this->assertStringContainsString('id="object-graph-search-count"', $html);
+        $this->assertStringContainsString('<div class="object-graph" id="object-graph-mount" tabindex="0"', $html);
+        $this->assertStringContainsString('id="object-graph-zoom-in" aria-label="Zoom in"', $html);
+        $this->assertStringContainsString('id="object-graph-zoom-out" aria-label="Zoom out"', $html);
+        $this->assertStringNotContainsString('<a class="object-graph"', $html);
+        $this->assertStringNotContainsString('<style>', $html);
+        $this->assertStringNotContainsString('href="bindings.css"', $html);
+        $this->assertStringNotContainsString('src="bindings.js"', $html);
+    }
+
     public function testMultipleFormatsOutput(): void
     {
         $apiDoc = new ApiDoc();
@@ -233,5 +302,47 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('[tickets.json](../../../Fake/app/src/var/fake/tickets.json)', $ticketsMd);
 
         $this->assertFileExists(__DIR__ . '/docs/md-fake/examples/ticket.param.json');
+    }
+
+    public function testInjectObjectGraphInsertsBeforeFirstScriptWhenHeaderIsAbsent(): void
+    {
+        $html = '<html><head></head><body><p>bindings</p></body></html>';
+        $method = new ReflectionMethod(ApiDoc::class, 'injectObjectGraph');
+        $result = $method->invoke(new ApiDoc(), $html, 'digraph G {}', 'object-graph.dot');
+        assert(is_string($result));
+
+        $sectionPos = strpos($result, 'class="object-graph-section"');
+        $scriptPos = strpos($result, '<script src=');
+        $this->assertIsInt($sectionPos);
+        $this->assertIsInt($scriptPos);
+        $this->assertLessThan($scriptPos, $sectionPos);
+        $this->assertStringContainsString('id="object-graph-dot"', $result);
+    }
+
+    public function testInjectObjectGraphAppendsSectionWhenNoMarkerExists(): void
+    {
+        $html = '<div>plain bindings page</div>';
+        $method = new ReflectionMethod(ApiDoc::class, 'injectObjectGraph');
+        $result = $method->invoke(new ApiDoc(), $html, 'digraph G {}', 'object-graph.dot');
+        assert(is_string($result));
+
+        $this->assertSame($html, substr($result, 0, strlen($html)));
+        $this->assertStringContainsString('class="object-graph-section"', $result);
+        $this->assertStringContainsString('id="object-graph-dot"', $result);
+    }
+
+    public function testReadComposerLockReturnsEmptyWhenFilesystemRootIsReached(): void
+    {
+        $dir = sys_get_temp_dir() . '/apidoc-no-lock-' . uniqid('', true);
+        mkdir($dir, 0777, true);
+        $method = new ReflectionMethod(ApiDoc::class, 'readComposerLock');
+        try {
+            /** @var array{string, string} $result */
+            $result = $method->invoke(new ApiDoc(), $dir);
+        } finally {
+            rmdir($dir);
+        }
+
+        $this->assertSame(['', ''], $result);
     }
 }

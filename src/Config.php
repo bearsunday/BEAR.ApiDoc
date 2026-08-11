@@ -15,6 +15,7 @@ use Ray\Di\AbstractModule;
 use Ray\Di\Exception\Unbound;
 use Ray\Di\Injector;
 use Ray\Di\InjectorInterface;
+use Ray\ObjectGrapher\ObjectGrapher;
 use SimpleXMLElement;
 
 use function array_map;
@@ -41,6 +42,9 @@ final class Config
 {
     /** @var non-empty-string */
     public readonly string $appName;
+
+    /** @var non-empty-string Application DI context (e.g. app, prod-hal-app) */
+    public readonly string $context;
 
     /** @var '*'|'app'|'page' */
     public readonly string $scheme;
@@ -80,10 +84,17 @@ final class Config
 
     public string $sqlDir = '';
 
+    public string $bindingsMarkdown = '';
+
+    public string $appDir = '';
+
+    public string $objectGraphDot = '';
+
     /**
      * @psalm-suppress
      * @SuppressWarnings("PHPMD.NPathComplexity")
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
+     * @SuppressWarnings("PHPMD.ExcessiveMethodLength")
      */
     public function __construct(string $configFile)
     {
@@ -97,6 +108,12 @@ final class Config
         $appName = (string) $xml->appName;
         assert($appName !== '');
         $this->appName = $appName;
+        $context = property_exists($xml, 'context') ? trim((string) $xml->context) : 'app';
+        if ($context === '') {
+            $context = 'app';
+        }
+
+        $this->context = $context;
         $this->docDir = sprintf('%s/%s', $dir, (string) $xml->docDir);
         $formatString = (string) $xml->format;
         $this->formats = array_map(trim(...), explode(',', $formatString));
@@ -143,10 +160,21 @@ final class Config
             throw new InvalidAppNamespaceException($this->appName);
         }
 
-        $meta = new Meta($this->appName);
+        $meta = new Meta($this->appName, $this->context);
+        $this->appDir = $meta->appDir;
 
         /** @psalm-suppress UnsafeInstantiation */
         $appModule = new $appModuleClass($meta, new AppMetaModule($meta));
+
+        $includeBindings = in_array('bindings', $this->formats, true);
+        if ($includeBindings) {
+            $snapshot = new BindingsSnapshot();
+            $appModule->accept($snapshot);
+            $this->bindingsMarkdown = $snapshot->markdown();
+            /** @psalm-suppress all */
+            $this->objectGraphDot = (new ObjectGrapher())($appModule);
+        }
+
         /** @psalm-suppress all */
         $injector = new Injector($appModule);
         $this->resourceFiles = iterator_to_array($meta->getGenerator($this->scheme));
@@ -216,6 +244,8 @@ final class Config
 
             return $queries->classes;
         } catch (Unbound) {
+            // MediaQuery module not installed, or Queries is not bound.
+            // Ray.Di 2.22.2+ rejects non-instantiable JIT (private ctor) with Unbound.
         }
 
         return [];

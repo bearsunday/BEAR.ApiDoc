@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../apidoc.xsd">
+    <appName>FakeVendor\FakeProject</appName>
+    <context> </context>
+    <scheme>app</scheme>
+    <docDir>docs/empty-context</docDir>
+    <format>html</format>
+</apidoc>
