@@ -155,17 +155,17 @@
       + '<div class="stat replace"><div class="n">' + counts[2] + '</div><div class="l">replaced</div></div>'
       + '<div class="stat keep"><div class="n">' + counts[3] + '</div><div class="l">discarded</div></div>'
       + '</div>'
+      + '<section><h2>Bindings <span class="hint">— resolved state</span></h2>'
+      + '<div class="log">' + binds + '</div></section>'
+      + '<section><h2>Modules <span class="hint">— composing modules, by binding count</span></h2>'
+      + '<div class="grid">' + mods + '</div></section>'
       + '<section><h2>Provenance <span class="hint">— who bound what, who was discarded</span></h2>'
       + '<div class="bar"><span class="lbl">filter</span>'
       + '<span class="chip bind" data-t="bind" data-off="0" role="button" tabindex="0">bind</span>'
       + '<span class="chip replace" data-t="replace" data-off="0" role="button" tabindex="0">replace</span>'
       + '<span class="chip keep" data-t="keep" data-off="0" role="button" tabindex="0">keep</span>'
       + '<span class="chip move" data-t="move" data-off="0" role="button" tabindex="0">move</span></div>'
-      + '<div class="log" id="prov">' + prov + '</div></section>'
-      + '<section><h2>Modules <span class="hint">— composing modules, by binding count</span></h2>'
-      + '<div class="grid">' + mods + '</div></section>'
-      + '<section><h2>Bindings <span class="hint">— resolved state</span></h2>'
-      + '<div class="log">' + binds + '</div></section>';
+      + '<div class="log" id="prov">' + prov + '</div></section>';
 
     var provEl = document.getElementById('prov');
     view.querySelectorAll('.chip').forEach(function (c) {
