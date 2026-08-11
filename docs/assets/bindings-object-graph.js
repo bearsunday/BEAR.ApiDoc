@@ -9,7 +9,8 @@
   var zoomOut = document.getElementById('object-graph-zoom-out');
   var fullscreenBtn = document.getElementById('object-graph-fullscreen');
   var resetBtn = document.getElementById('object-graph-reset');
-  if (!mount || !raw || !search || !count || !zoomIn || !zoomOut || !fullscreenBtn || !resetBtn) {
+  var frame = mount ? mount.parentElement : null; // fullscreen the frame so the controls stay visible
+  if (!mount || !raw || !search || !count || !zoomIn || !zoomOut || !fullscreenBtn || !resetBtn || !frame) {
     return;
   }
 
@@ -280,7 +281,7 @@
     }
 
     function fitBoxHeight() {
-      if (document.fullscreenElement === mount || !originalBounds) {
+      if (document.fullscreenElement === frame || !originalBounds) {
         return;
       }
       var ratio = originalBounds[3] / Math.max(originalBounds[2], 1);
@@ -317,11 +318,11 @@
       if (document.fullscreenElement) {
         document.exitFullscreen();
       } else {
-        mount.requestFullscreen();
+        frame.requestFullscreen();
       }
     });
     document.addEventListener('fullscreenchange', function () {
-      var on = document.fullscreenElement === mount;
+      var on = document.fullscreenElement === frame;
       fullscreenBtn.classList.toggle('is-active', on);
       fullscreenBtn.setAttribute('aria-label', on ? 'Exit fullscreen' : 'Fullscreen');
       fullscreenBtn.title = on ? 'Exit fullscreen' : 'Fullscreen';

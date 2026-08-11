@@ -342,7 +342,7 @@ final readonly class ApiDoc
 <section class="object-graph-section" aria-label="Object graph overview">
 <div class="object-graph-label">
 <span class="title">Object graph</span>
-<span class="hint">Search to focus · drag to pan · click to reset · <a href="{$dotHref}">DOT</a></span>
+<span class="hint">Wheel to zoom · drag to pan · click a class to focus · double-click for source · <a href="{$dotHref}">DOT</a></span>
 </div>
 <form class="object-graph-search" role="search">
 <label for="object-graph-search">Find node</label>
