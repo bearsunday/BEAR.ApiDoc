@@ -299,3 +299,21 @@ tr:hover {
 .doc-links li {
     margin: 5px 0;
 }
+
+/* Top-of-page navigation (ALPS profile links + apidoc.xml links) */
+.doc-nav {
+    margin: 10px 0 20px;
+}
+
+.doc-nav-tag {
+    margin: 10px 0 5px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #57606a;
+}
+
+.doc-link-rel {
+    margin-left: 6px;
+    color: #57606a;
+    font-size: 12px;
+}

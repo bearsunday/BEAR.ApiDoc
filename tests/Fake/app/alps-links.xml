@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alps version="1.0">
+  <title>Person API</title>
+  <link href="index.html" rel="service-doc" title="API Reference" tag="reference"/>
+  <link href="audit.html" rel="audit" title="Documentation Audit" tag="report"/>
+  <link href="qr-graph.html" rel="cache-graph"/>
+  <descriptor id="firstName" title="First Name by ALPS">
+    <link href="self.html" rel="self" title="Nested link, must be ignored"/>
+  </descriptor>
+  <descriptor id="familyName" def="https://schema.org/familyName"/>
+  <descriptor id="age" title="Age in years which must be equal to or greater than zero."/>
+  <descriptor id="id" title="Person identifier"/>
+
+  <descriptor id="Index" title="API Entry Point">
+    <descriptor href="#goPerson"/>
+    <descriptor href="#doCreatePerson"/>
+  </descriptor>
+
+  <descriptor id="Person" title="Person Details">
+    <descriptor href="#id"/>
+    <descriptor href="#firstName"/>
+    <descriptor href="#familyName"/>
+    <descriptor href="#age"/>
+    <descriptor href="#goIndex"/>
+  </descriptor>
+
+  <descriptor id="goIndex" type="safe" rt="#Index" title="Return to index"/>
+  <descriptor id="goPerson" type="safe" rt="#Person" title="Get person details">
+    <descriptor href="#id"/>
+  </descriptor>
+  <descriptor id="doCreatePerson" type="unsafe" rt="#Person" title="Create a new person">
+    <descriptor href="#firstName"/>
+    <descriptor href="#familyName"/>
+    <descriptor href="#age"/>
+  </descriptor>
+</alps>

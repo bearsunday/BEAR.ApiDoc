@@ -36,6 +36,7 @@ use const JSON_UNESCAPED_UNICODE;
  * @psalm-import-type HtmlRelation from Types
  * @psalm-import-type HtmlObjectRelations from Types
  * @psalm-import-type DocLink from Types
+ * @psalm-import-type AlpsProfileLink from Types
  */
 final class HtmlRenderer
 {
@@ -49,6 +50,7 @@ final class HtmlRenderer
      * @param array<string, HtmlObject>                $objects
      * @param HtmlObjectRelations                      $objectRelations
      * @param array<DocLink>                           $links
+     * @param array<AlpsProfileLink>                   $alpsProfileLinks
      */
     public function render(
         string $title,
@@ -59,20 +61,19 @@ final class HtmlRenderer
         array $links = [],
         string $alpsHtmlPath = 'alps.html',
         ?string $localCss = null,
+        array $alpsProfileLinks = [],
     ): string {
         $this->alpsHtmlPath = $alpsHtmlPath;
         $escapedTitle = htmlspecialchars($title ?: 'API Documentation');
         $escapedDescription = $this->convertMarkdownLinks($description ?: '');
         $endpointsHtml = $this->renderEndpoints($endpoints);
         [$objectsHtml, $arraysHtml] = $this->renderObjectsAndArrays($objects, $objectRelations);
-        $linksHtml = $this->renderLinks($links);
+        $navHtml = (new DocNavRenderer())($alpsProfileLinks, $links);
 
         $objectsSection = $objectsHtml !== '' ? '<h2>Objects</h2>
 ' . $objectsHtml : '';
         $arraysSection = $arraysHtml !== '' ? '<h2>Arrays</h2>
 ' . $arraysHtml : '';
-        $linksSection = $linksHtml !== '' ? '<h2>Links</h2>
-' . $linksHtml : '';
 
         $cssHtml = $localCss !== null
             ? sprintf('<style>%s</style>', $localCss)
@@ -95,14 +96,14 @@ final class HtmlRenderer
 <h1>{$escapedTitle}</h1>
 <p>{$escapedDescription}</p>
 
+{$navHtml}
+
 <h2>Endpoints</h2>
 {$endpointsHtml}
 
 {$objectsSection}
 
 {$arraysSection}
-
-{$linksSection}
 
 </div>
 </body>
@@ -665,22 +666,5 @@ HTML;
             '<a href="$2">$1</a>',
             $escaped,
         );
-    }
-
-    /** @param array<DocLink> $links */
-    private function renderLinks(array $links): string
-    {
-        if ($links === []) {
-            return '';
-        }
-
-        $items = '';
-        foreach ($links as $link) {
-            $rel = htmlspecialchars($link['rel']);
-            $href = htmlspecialchars($link['href']);
-            $items .= sprintf('<li><strong>%s</strong> : <a href="%s">%s</a></li>', $rel, $href, $href);
-        }
-
-        return '<ul class="doc-links">' . $items . '</ul>';
     }
 }

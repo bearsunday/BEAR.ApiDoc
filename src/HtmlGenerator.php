@@ -62,6 +62,8 @@ final class HtmlGenerator
 
     private readonly JsonFile $jsonFile;
 
+    private readonly AlpsProfileLinkExtractor $alpsProfileLinkExtractor;
+
     private readonly FakeDataExampleResolver $fakeDataExampleResolver;
 
     /**
@@ -83,6 +85,7 @@ final class HtmlGenerator
         $emptyDictionary = new ArrayObject();
         $this->semanticDictionary = $semanticDictionary ?? $emptyDictionary;
         $this->jsonFile = $jsonFile ?? new JsonFile();
+        $this->alpsProfileLinkExtractor = new AlpsProfileLinkExtractor($this->jsonFile);
         $this->fakeDataExampleResolver = $fakeDataExampleResolver ?? new FakeDataExampleResolver($this->config->fakeDataDir, $this->config->docDir);
     }
 
@@ -104,6 +107,7 @@ final class HtmlGenerator
             $links,
             $this->extractAlpsHtmlPath($links),
             $this->loadLocalCss(),
+            ($this->alpsProfileLinkExtractor)($this->config->alps),
         );
     }
 
