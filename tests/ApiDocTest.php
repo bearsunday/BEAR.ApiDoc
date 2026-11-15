@@ -152,6 +152,12 @@ class ApiDocTest extends TestCase
         $this->assertLessThan($reference, $home);
         $this->assertStringContainsString('<strong>cache-graph</strong> : <a href="qr-graph.html">qr-graph.html</a>', $html);
         $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
+
+        $linksHeading = strpos($html, '<h2>Links</h2>');
+        $endpointsHeading = strpos($html, '<h2>Endpoints</h2>');
+        $this->assertIsInt($linksHeading);
+        $this->assertIsInt($endpointsHeading);
+        $this->assertLessThan($endpointsHeading, $linksHeading);
     }
 
     public function testAlpsProfileTermsLinkReplacesTheAutomaticOne(): void

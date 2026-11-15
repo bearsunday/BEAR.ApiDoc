@@ -95,14 +95,14 @@ final class HtmlRenderer
 <h1>{$escapedTitle}</h1>
 <p>{$escapedDescription}</p>
 
+{$linksSection}
+
 <h2>Endpoints</h2>
 {$endpointsHtml}
 
 {$objectsSection}
 
 {$arraysSection}
-
-{$linksSection}
 
 </div>
 </body>
