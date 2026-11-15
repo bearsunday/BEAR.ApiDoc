@@ -43,21 +43,21 @@ final class HtmlRendererTest extends TestCase
         $this->assertLessThan($endpointsPos, $navPos);
 
         $untaggedPos = strpos($html, 'qr-graph.html');
-        $referencePos = strpos($html, '<h3 class="doc-nav-tag">reference</h3>');
-        $reportPos = strpos($html, '<h3 class="doc-nav-tag">report</h3>');
+        $referencePos = strpos($html, '<span class="doc-nav-tag">reference</span>');
+        $reportPos = strpos($html, '<span class="doc-nav-tag">report</span>');
         $this->assertIsInt($untaggedPos);
         $this->assertIsInt($referencePos);
         $this->assertIsInt($reportPos);
         $this->assertLessThan($referencePos, $untaggedPos);
         $this->assertLessThan($reportPos, $referencePos);
 
-        // rel as the link text when there is no title, without repeating it as a label
-        $this->assertStringContainsString('<a href="qr-graph.html">cache-graph</a></li>', $html);
-        // title used when present, rel kept as a secondary label
-        $this->assertStringContainsString('<a href="index.html">API Reference</a> <span class="doc-link-rel">service-doc</span>', $html);
+        // rel as the link text when there is no title
+        $this->assertStringContainsString('<a href="qr-graph.html" rel="cache-graph" title="cache-graph">cache-graph</a>', $html);
+        // title as the link text when present, rel kept on the anchor
+        $this->assertStringContainsString('<a href="index.html" rel="service-doc" title="service-doc">API Reference</a>', $html);
 
         // apidoc.xml links share the same nav block
-        $this->assertStringContainsString('<strong>home</strong> : <a href="https://example.com">https://example.com</a>', $html);
+        $this->assertStringContainsString('<a href="https://example.com" rel="home" title="home">home</a>', $html);
         $this->assertStringNotContainsString('<h2>Links</h2>', $html);
     }
 
@@ -71,7 +71,7 @@ final class HtmlRendererTest extends TestCase
 
         $html = (new HtmlRenderer())->render('T', 'D', [], [], [], [], 'alps.html', null, $alpsLinks);
 
-        $this->assertStringContainsString('<h3 class="doc-nav-tag">2024</h3>', $html);
+        $this->assertStringContainsString('<span class="doc-nav-tag">2024</span>', $html);
     }
 
     public function testEscapesAlpsLinkAttributesAndText(): void
@@ -85,9 +85,9 @@ final class HtmlRendererTest extends TestCase
         $this->assertStringNotContainsString('<b>T</b>', $html);
         $this->assertStringNotContainsString('<t>', $html);
         $this->assertStringContainsString('&lt;b&gt;T&lt;/b&gt;', $html);
-        $this->assertStringContainsString('<h3 class="doc-nav-tag">&lt;t&gt;</h3>', $html);
+        $this->assertStringContainsString('<span class="doc-nav-tag">&lt;t&gt;</span>', $html);
         $this->assertStringContainsString('href="a.html?a=1&amp;b=&lt;2&gt;"', $html);
-        $this->assertStringContainsString('class="doc-link-rel">x&quot;y<', $html);
+        $this->assertStringContainsString('rel="x&quot;y"', $html);
     }
 
     public function testUnknownExampleLinkKindsAreIgnored(): void

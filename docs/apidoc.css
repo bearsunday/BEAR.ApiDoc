@@ -302,18 +302,35 @@ tr:hover {
 
 /* Top-of-page navigation (ALPS profile links + apidoc.xml links) */
 .doc-nav {
-    margin: 10px 0 20px;
+    margin: 12px 0 24px;
+    padding: 6px 16px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    background: #f6f8fa;
+    font-size: 14px;
+}
+
+.doc-nav-row {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    padding: 6px 0;
+}
+
+.doc-nav-links {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 2px 18px;
+}
+
+.doc-nav-row + .doc-nav-row {
+    border-top: 1px solid #eaeef2;
 }
 
 .doc-nav-tag {
-    margin: 10px 0 5px;
-    font-size: 14px;
-    text-transform: uppercase;
+    flex: 0 0 7em;
+    font-size: 13px;
+    font-weight: 600;
     color: #57606a;
-}
-
-.doc-link-rel {
-    margin-left: 6px;
-    color: #57606a;
-    font-size: 12px;
 }
