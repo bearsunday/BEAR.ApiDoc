@@ -41,9 +41,15 @@ jobs:
 
       - run: cp apidoc.xsd docs/apidoc.xsd
 
+      # The same Jekyll build the branch-deployed site had, so adr/*.html keeps being served
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs
+          destination: ./_site
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: docs
+          path: _site
 
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/1.x'
