@@ -8,3 +8,15 @@
 /tests/docs/
 /tests/Fake/app/var/tmp/
 /.phpunit.cache
+# Built and deployed by .github/workflows/docs.yml
+/docs/index.html
+/docs/terms.html
+/docs/audit.html
+/docs/audit.md
+/docs/bindings.html
+/docs/object-graph.dot
+/docs/alps.html
+/docs/apidoc.xsd
+/docs/openapi/
+/docs/schemas/
+/docs/paths/
