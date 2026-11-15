@@ -92,7 +92,7 @@ final class AlpsProfileLinkExtractor
     /** @return array<DocLink> */
     private function fromXml(string $file): array
     {
-        $xml = simplexml_load_file($file);
+        $xml = @simplexml_load_file($file);
         if (! $xml instanceof SimpleXMLElement) {
             return [];
         }

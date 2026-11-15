@@ -114,7 +114,7 @@ Color indicators: green (go* - safe navigation), red (do* - unsafe action).</doc
   <!-- Utility -->
 
   <descriptor id="docLink" type="semantic" title="Documentation Link">
-    <doc>Links configured in apidoc.xml. Common links: openapi (OpenAPI spec for tooling), schemas (JSON Schema index for validation/form generation).</doc>
+    <doc>Links configured in apidoc.xml, followed by the root-level links of the ALPS profile. Common links: openapi (OpenAPI spec for tooling), schemas (JSON Schema index for validation/form generation).</doc>
   </descriptor>
 
 </alps>

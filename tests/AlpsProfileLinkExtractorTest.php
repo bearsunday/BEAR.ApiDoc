@@ -44,6 +44,19 @@ JSON;
         ], $links);
     }
 
+    public function testJsonSingleLinkObject(): void
+    {
+        $file = $this->writeTempFile('{"alps": {"link": {"rel": "help", "href": "help.html", "title": "Help"}}}', '.json');
+
+        try {
+            $links = (new AlpsProfileLinkExtractor(new JsonFile()))($file);
+        } finally {
+            unlink($file);
+        }
+
+        $this->assertSame([['rel' => 'help', 'href' => 'help.html', 'title' => 'Help']], $links);
+    }
+
     public function testXmlInvalidFileYieldsNoLinks(): void
     {
         $file = $this->writeTempFile('not xml at all', '.xml');

@@ -6,7 +6,9 @@
       {"rel": "service-doc", "href": "index.html", "title": "API Reference", "tag": "reference"},
       {"rel": "openapi", "href": "openapi/", "title": "OpenAPI Spec", "tag": "reference"},
       {"rel": "audit", "href": "audit.html", "title": "Documentation Audit", "tag": "report"},
-      {"rel": "cache-graph", "href": "qr-graph.html"}
+      {"rel": "cache-graph", "href": "qr-graph.html"},
+      {"rel": "about", "href": "https://github.com/bearsunday/BEAR.ApiDoc", "title": "Source code"},
+      {"rel": "profile", "href": "profile-diagram.html", "title": "Profile diagram"}
     ],
     "doc": {"value": "ALPS profile for person management API"},
     "descriptor": [

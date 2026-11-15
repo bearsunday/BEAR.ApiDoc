@@ -98,9 +98,12 @@ final class HtmlGenerator
         }
 
         $configLinks = $this->extractLinks();
-        $links = [...$configLinks, ...($this->alpsProfileLinkExtractor)($this->config->alps)];
-        if (! in_array('terms', array_column($links, 'rel'), true)) {
-            $links[] = ['rel' => 'terms', 'href' => 'terms.html'];
+        $links = $configLinks;
+        foreach ([...($this->alpsProfileLinkExtractor)($this->config->alps), ['rel' => 'terms', 'href' => 'terms.html']] as $link) {
+            // apidoc.xml wins; the profile and the generated terms page only add hrefs not linked yet
+            if (! in_array($link['href'], array_column($links, 'href'), true)) {
+                $links[] = $link;
+            }
         }
 
         return $this->renderer->render(

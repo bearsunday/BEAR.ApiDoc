@@ -153,6 +153,14 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('<li>cache-graph : <a href="qr-graph.html">qr-graph.html</a>', $html);
         $this->assertStringContainsString('<li>terms : <a href="terms.html">terms.html</a>', $html);
 
+        // apidoc.xml already links the repository, so the profile's link to the same href is skipped
+        $this->assertStringNotContainsString('Source code', $html);
+
+        // A profile link with rel="profile" is listed, but parameter links keep pointing at alps.html
+        $this->assertStringContainsString('<li>Profile diagram : <a href="profile-diagram.html">', $html);
+        $this->assertStringContainsString('href="alps.html#', $html);
+        $this->assertStringNotContainsString('href="profile-diagram.html#', $html);
+
         $linksHeading = strpos($html, '<h2>Links</h2>');
         $endpointsHeading = strpos($html, '<h2>Endpoints</h2>');
         $this->assertIsInt($linksHeading);
