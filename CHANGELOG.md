@@ -8,10 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Show the ALPS profile's root-level `link` elements (`title`, grouped by `tag`) in a navigation block at the top of the generated `index.html`, so every linked document (OpenAPI, audit, terms, bindings, cache graphs...) is reachable from the top of the page.
-
-### Changed
-- Move the apidoc.xml `<links>` list from a "Links" section at the bottom of `index.html` into the same top-of-page navigation block.
+- The "Links" section of the HTML doc also lists the ALPS profile's root-level `link` elements, labelled by their `title` (or `rel`), after the apidoc.xml `<links>`.
 
 ## [1.12.0] - 2026-08-11
 

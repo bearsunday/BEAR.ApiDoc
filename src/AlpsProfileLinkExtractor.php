@@ -21,7 +21,7 @@ use const PATHINFO_EXTENSION;
  * nested inside descriptors are not visited.
  *
  * @internal
- * @psalm-import-type AlpsProfileLink from Types
+ * @psalm-import-type DocLink from Types
  */
 final class AlpsProfileLinkExtractor
 {
@@ -30,7 +30,7 @@ final class AlpsProfileLinkExtractor
     ) {
     }
 
-    /** @return array<AlpsProfileLink> */
+    /** @return array<DocLink> */
     public function __invoke(string $alpsFile): array
     {
         if ($alpsFile === '' || $alpsFile === '0' || ! is_file($alpsFile)) {
@@ -42,7 +42,7 @@ final class AlpsProfileLinkExtractor
             : $this->fromJson($alpsFile);
     }
 
-    /** @return array<AlpsProfileLink> */
+    /** @return array<DocLink> */
     private function fromJson(string $file): array
     {
         $decoded = $this->jsonFile->assoc($file);
@@ -73,7 +73,7 @@ final class AlpsProfileLinkExtractor
     /**
      * @param array<array-key, mixed> $rawLink
      *
-     * @return AlpsProfileLink|null
+     * @return DocLink|null
      */
     private function toLinkFromJson(array $rawLink): array|null
     {
@@ -85,18 +85,11 @@ final class AlpsProfileLinkExtractor
 
         /** @var mixed $title */
         $title = $rawLink['title'] ?? null;
-        /** @var mixed $tag */
-        $tag = $rawLink['tag'] ?? null;
 
-        return [
-            'rel' => $rel,
-            'href' => $href,
-            'title' => is_string($title) && $title !== '' ? $title : null,
-            'tag' => is_string($tag) && $tag !== '' ? $tag : null,
-        ];
+        return is_string($title) && $title !== '' ? ['rel' => $rel, 'href' => $href, 'title' => $title] : ['rel' => $rel, 'href' => $href];
     }
 
-    /** @return array<AlpsProfileLink> */
+    /** @return array<DocLink> */
     private function fromXml(string $file): array
     {
         $xml = simplexml_load_file($file);
@@ -123,7 +116,7 @@ final class AlpsProfileLinkExtractor
         return $links;
     }
 
-    /** @return AlpsProfileLink|null */
+    /** @return DocLink|null */
     private function toLinkFromXml(SimpleXMLElement $element): array|null
     {
         $rel = (string) ($element['rel'] ?? '');
@@ -132,14 +125,8 @@ final class AlpsProfileLinkExtractor
             return null;
         }
 
-        $title = isset($element['title']) ? (string) $element['title'] : null;
-        $tag = isset($element['tag']) ? (string) $element['tag'] : null;
+        $title = (string) ($element['title'] ?? '');
 
-        return [
-            'rel' => $rel,
-            'href' => $href,
-            'title' => $title !== null && $title !== '' ? $title : null,
-            'tag' => $tag !== null && $tag !== '' ? $tag : null,
-        ];
+        return $title !== '' ? ['rel' => $rel, 'href' => $href, 'title' => $title] : ['rel' => $rel, 'href' => $href];
     }
 }

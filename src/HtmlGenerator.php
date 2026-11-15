@@ -97,8 +97,11 @@ final class HtmlGenerator
             $this->processResource($path, new ReflectionClass($meta->class));
         }
 
-        $alpsLinks = ($this->alpsProfileLinkExtractor)($this->config->alps);
-        $links = $this->extractLinks(in_array('terms', array_column($alpsLinks, 'rel'), true));
+        $configLinks = $this->extractLinks();
+        $links = [...$configLinks, ...($this->alpsProfileLinkExtractor)($this->config->alps)];
+        if (! in_array('terms', array_column($links, 'rel'), true)) {
+            $links[] = ['rel' => 'terms', 'href' => 'terms.html'];
+        }
 
         return $this->renderer->render(
             $this->config->title,
@@ -107,9 +110,8 @@ final class HtmlGenerator
             $this->objects,
             $this->objectRelations,
             $links,
-            $this->extractAlpsHtmlPath($links),
+            $this->extractAlpsHtmlPath($configLinks),
             $this->loadLocalCss(),
-            $alpsLinks,
         );
     }
 
@@ -594,25 +596,16 @@ final class HtmlGenerator
         return $this->semanticDictionary[$propName] ?? '';
     }
 
-    /**
-     * Adds a terms.html link unless apidoc.xml or the ALPS profile already links terms
-     *
-     * @return array<DocLink>
-     */
-    private function extractLinks(bool $hasTermsLink): array
+    /** @return array<DocLink> */
+    private function extractLinks(): array
     {
         $links = [];
         foreach ($this->config->links as $link) {
             $rel = (string) ($link['rel'] ?? '');
             $href = (string) ($link['href'] ?? '');
             if ($rel !== '' && $href !== '') {
-                $hasTermsLink = $hasTermsLink || $rel === 'terms';
                 $links[] = ['rel' => $rel, 'href' => $href];
             }
-        }
-
-        if (! $hasTermsLink) {
-            $links[] = ['rel' => 'terms', 'href' => 'terms.html'];
         }
 
         return $links;

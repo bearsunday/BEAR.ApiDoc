@@ -40,7 +40,7 @@ JSON;
         }
 
         $this->assertSame([
-            ['rel' => 'home', 'href' => 'index.html', 'title' => null, 'tag' => null],
+            ['rel' => 'home', 'href' => 'index.html'],
         ], $links);
     }
 
@@ -76,7 +76,7 @@ XML;
         }
 
         $this->assertSame([
-            ['rel' => 'home', 'href' => 'index.html', 'title' => null, 'tag' => null],
+            ['rel' => 'home', 'href' => 'index.html'],
         ], $links);
     }
 

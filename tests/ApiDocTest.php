@@ -38,7 +38,7 @@ class ApiDocTest extends TestCase
 
         $html = file_get_contents(__DIR__ . '/../docs/index.html');
         $this->assertIsString($html);
-        $this->assertStringContainsString('<a href="terms.html" rel="terms" title="terms">terms</a>', $html);
+        $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
     }
 
     public function testMdOutput(): void
@@ -133,12 +133,11 @@ class ApiDocTest extends TestCase
 
         $html = file_get_contents(__DIR__ . '/docs/html-nolinks/index.html');
         $this->assertIsString($html);
-        $this->assertStringContainsString('<nav class="doc-nav">', $html);
-        $this->assertStringNotContainsString('<h2>Links</h2>', $html);
-        $this->assertStringContainsString('<a href="terms.html" rel="terms" title="terms">terms</a>', $html);
+        $this->assertStringContainsString('<h2>Links</h2>', $html);
+        $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
     }
 
-    public function testAlpsProfileLinksFromJson(): void
+    public function testAlpsProfileLinksJoinTheLinksSection(): void
     {
         $apiDoc = new ApiDoc();
         $apiDoc(__DIR__ . '/apidoc.alps-links.xml');
@@ -146,38 +145,16 @@ class ApiDocTest extends TestCase
         $html = file_get_contents(__DIR__ . '/docs/html-alps-links/index.html');
         $this->assertIsString($html);
 
-        $navPos = strpos($html, '<nav class="doc-nav">');
-        $endpointsPos = strpos($html, '<h2>Endpoints</h2>');
-        $this->assertIsInt($navPos);
-        $this->assertIsInt($endpointsPos);
-        $this->assertLessThan($endpointsPos, $navPos);
-
-        // Tagged links get one heading each, in first-appearance order.
-        $referencePos = strpos($html, '<span class="doc-nav-tag">reference</span>');
-        $reportPos = strpos($html, '<span class="doc-nav-tag">report</span>');
-        $this->assertIsInt($referencePos);
-        $this->assertIsInt($reportPos);
-        $this->assertLessThan($reportPos, $referencePos);
-
-        $this->assertStringContainsString('<a href="index.html" rel="service-doc" title="service-doc">API Reference</a>', $html);
-        $this->assertStringContainsString('<a href="openapi/" rel="openapi" title="openapi">OpenAPI Spec</a>', $html);
-        $this->assertStringContainsString('<a href="audit.html" rel="audit" title="audit">Documentation Audit</a>', $html);
-
-        // Untagged link without a title falls back to rel, and renders before any tag heading.
-        $this->assertStringContainsString('<a href="qr-graph.html" rel="cache-graph" title="cache-graph">cache-graph</a>', $html);
-        $untaggedPos = strpos($html, 'qr-graph.html');
-        $this->assertIsInt($untaggedPos);
-        $this->assertLessThan($referencePos, $untaggedPos);
-
-        // apidoc.xml <links> share the same nav block.
-        $this->assertStringContainsString('<a href="https://github.com/bearsunday/BEAR.ApiDoc" rel="home" title="home">home</a>', $html);
-        // Without a terms link in apidoc.xml or the profile, terms.html is still linked.
-        $this->assertStringContainsString('<a href="terms.html" rel="terms" title="terms">terms</a>', $html);
-
-        $this->assertStringNotContainsString('<h2>Links</h2>', $html);
+        $home = strpos($html, '<strong>home</strong> : <a href="https://github.com/bearsunday/BEAR.ApiDoc">');
+        $reference = strpos($html, '<strong>API Reference</strong> : <a href="index.html">index.html</a>');
+        $this->assertIsInt($home);
+        $this->assertIsInt($reference);
+        $this->assertLessThan($reference, $home);
+        $this->assertStringContainsString('<strong>cache-graph</strong> : <a href="qr-graph.html">qr-graph.html</a>', $html);
+        $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
     }
 
-    public function testAlpsProfileLinksFromXml(): void
+    public function testAlpsProfileTermsLinkReplacesTheAutomaticOne(): void
     {
         $apiDoc = new ApiDoc();
         $apiDoc(__DIR__ . '/apidoc.alps-links-xml.xml');
@@ -185,19 +162,9 @@ class ApiDocTest extends TestCase
         $html = file_get_contents(__DIR__ . '/docs/html-alps-links-xml/index.html');
         $this->assertIsString($html);
 
-        $this->assertStringContainsString('<a href="index.html" rel="service-doc" title="service-doc">API Reference</a>', $html);
-        $this->assertStringContainsString('<a href="audit.html" rel="audit" title="audit">Documentation Audit</a>', $html);
-        $this->assertStringContainsString('<a href="qr-graph.html" rel="cache-graph" title="cache-graph">cache-graph</a>', $html);
-
-        // The profile links terms, so the automatic terms.html link is not added a second time.
-        $this->assertStringContainsString('<a href="terms.html" rel="terms" title="terms">Term Usage Index</a>', $html);
+        $this->assertStringContainsString('<strong>Term Usage Index</strong> : <a href="terms.html">terms.html</a>', $html);
         $this->assertSame(1, substr_count($html, 'href="terms.html"'));
-
-        // A <link> nested inside a descriptor must not leak into the nav.
         $this->assertStringNotContainsString('self.html', $html);
-        $this->assertStringNotContainsString('Nested link, must be ignored', $html);
-
-        $this->assertStringNotContainsString('<h2>Links</h2>', $html);
     }
 
     public function testInvalidAppNamespace(): void
