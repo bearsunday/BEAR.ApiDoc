@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The "Links" section of the HTML doc also lists the ALPS profile's root-level `link` elements, labelled by their `title` (or `rel`), after the apidoc.xml `<links>`.
 
 ### Changed
-- The "Links" section of the HTML doc moves from the bottom of the page to just below the description.
+- The "Links" section of the HTML doc moves from the bottom of the page to just below the description, and its labels are no longer bold.
 
 ## [1.12.0] - 2026-08-11
 

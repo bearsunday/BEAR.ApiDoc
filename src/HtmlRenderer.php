@@ -678,7 +678,7 @@ HTML;
         foreach ($links as $link) {
             $label = htmlspecialchars($link['title'] ?? $link['rel']);
             $href = htmlspecialchars($link['href']);
-            $items .= sprintf('<li><strong>%s</strong> : <a href="%s">%s</a></li>', $label, $href, $href);
+            $items .= sprintf('<li>%s : <a href="%s">%s</a></li>', $label, $href, $href);
         }
 
         return '<ul class="doc-links">' . $items . '</ul>';

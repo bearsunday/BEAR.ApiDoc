@@ -38,7 +38,7 @@ class ApiDocTest extends TestCase
 
         $html = file_get_contents(__DIR__ . '/../docs/index.html');
         $this->assertIsString($html);
-        $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
+        $this->assertStringContainsString('<li>terms : <a href="terms.html">terms.html</a>', $html);
     }
 
     public function testMdOutput(): void
@@ -134,7 +134,7 @@ class ApiDocTest extends TestCase
         $html = file_get_contents(__DIR__ . '/docs/html-nolinks/index.html');
         $this->assertIsString($html);
         $this->assertStringContainsString('<h2>Links</h2>', $html);
-        $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
+        $this->assertStringContainsString('<li>terms : <a href="terms.html">terms.html</a>', $html);
     }
 
     public function testAlpsProfileLinksJoinTheLinksSection(): void
@@ -145,13 +145,13 @@ class ApiDocTest extends TestCase
         $html = file_get_contents(__DIR__ . '/docs/html-alps-links/index.html');
         $this->assertIsString($html);
 
-        $home = strpos($html, '<strong>home</strong> : <a href="https://github.com/bearsunday/BEAR.ApiDoc">');
-        $reference = strpos($html, '<strong>API Reference</strong> : <a href="index.html">index.html</a>');
+        $home = strpos($html, '<li>home : <a href="https://github.com/bearsunday/BEAR.ApiDoc">');
+        $reference = strpos($html, '<li>API Reference : <a href="index.html">index.html</a>');
         $this->assertIsInt($home);
         $this->assertIsInt($reference);
         $this->assertLessThan($reference, $home);
-        $this->assertStringContainsString('<strong>cache-graph</strong> : <a href="qr-graph.html">qr-graph.html</a>', $html);
-        $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
+        $this->assertStringContainsString('<li>cache-graph : <a href="qr-graph.html">qr-graph.html</a>', $html);
+        $this->assertStringContainsString('<li>terms : <a href="terms.html">terms.html</a>', $html);
 
         $linksHeading = strpos($html, '<h2>Links</h2>');
         $endpointsHeading = strpos($html, '<h2>Endpoints</h2>');
@@ -168,7 +168,7 @@ class ApiDocTest extends TestCase
         $html = file_get_contents(__DIR__ . '/docs/html-alps-links-xml/index.html');
         $this->assertIsString($html);
 
-        $this->assertStringContainsString('<strong>Term Usage Index</strong> : <a href="terms.html">terms.html</a>', $html);
+        $this->assertStringContainsString('<li>Term Usage Index : <a href="terms.html">terms.html</a>', $html);
         $this->assertSame(1, substr_count($html, 'href="terms.html"'));
         $this->assertStringNotContainsString('self.html', $html);
     }
