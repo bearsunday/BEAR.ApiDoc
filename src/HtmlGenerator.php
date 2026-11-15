@@ -15,6 +15,7 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use SplFileInfo;
 
+use function array_column;
 use function dirname;
 use function file_get_contents;
 use function in_array;
@@ -96,7 +97,8 @@ final class HtmlGenerator
             $this->processResource($path, new ReflectionClass($meta->class));
         }
 
-        $links = $this->extractLinks();
+        $alpsLinks = ($this->alpsProfileLinkExtractor)($this->config->alps);
+        $links = $this->extractLinks(in_array('terms', array_column($alpsLinks, 'rel'), true));
 
         return $this->renderer->render(
             $this->config->title,
@@ -107,7 +109,7 @@ final class HtmlGenerator
             $links,
             $this->extractAlpsHtmlPath($links),
             $this->loadLocalCss(),
-            ($this->alpsProfileLinkExtractor)($this->config->alps),
+            $alpsLinks,
         );
     }
 
@@ -592,11 +594,14 @@ final class HtmlGenerator
         return $this->semanticDictionary[$propName] ?? '';
     }
 
-    /** @return array<DocLink> */
-    private function extractLinks(): array
+    /**
+     * Adds a terms.html link unless apidoc.xml or the ALPS profile already links terms
+     *
+     * @return array<DocLink>
+     */
+    private function extractLinks(bool $hasTermsLink): array
     {
         $links = [];
-        $hasTermsLink = false;
         foreach ($this->config->links as $link) {
             $rel = (string) ($link['rel'] ?? '');
             $href = (string) ($link['href'] ?? '');

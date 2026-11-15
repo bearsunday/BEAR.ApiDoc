@@ -3,6 +3,7 @@
   <title>Person API</title>
   <link href="index.html" rel="service-doc" title="API Reference" tag="reference"/>
   <link href="audit.html" rel="audit" title="Documentation Audit" tag="report"/>
+  <link href="terms.html" rel="terms" title="Term Usage Index" tag="reference"/>
   <link href="qr-graph.html" rel="cache-graph"/>
   <descriptor id="firstName" title="First Name by ALPS">
     <link href="self.html" rel="self" title="Nested link, must be ignored"/>

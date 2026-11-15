@@ -170,6 +170,8 @@ class ApiDocTest extends TestCase
 
         // apidoc.xml <links> share the same nav block.
         $this->assertStringContainsString('<strong>home</strong> : <a href="https://github.com/bearsunday/BEAR.ApiDoc">https://github.com/bearsunday/BEAR.ApiDoc</a>', $html);
+        // Without a terms link in apidoc.xml or the profile, terms.html is still linked.
+        $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
 
         $this->assertStringNotContainsString('<h2>Links</h2>', $html);
     }
@@ -185,6 +187,10 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('<a href="index.html">API Reference</a> <span class="doc-link-rel">service-doc</span>', $html);
         $this->assertStringContainsString('<a href="audit.html">Documentation Audit</a> <span class="doc-link-rel">audit</span>', $html);
         $this->assertStringContainsString('<a href="qr-graph.html">cache-graph</a></li>', $html);
+
+        // The profile links terms, so the automatic terms.html link is not added a second time.
+        $this->assertStringContainsString('<a href="terms.html">Term Usage Index</a>', $html);
+        $this->assertStringNotContainsString('<strong>terms</strong>', $html);
 
         // A <link> nested inside a descriptor must not leak into the nav.
         $this->assertStringNotContainsString('self.html', $html);
