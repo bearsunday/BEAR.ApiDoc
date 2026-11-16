@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../apidoc.xsd">
+    <appName>FakeVendor\FakeProject</appName>
+    <scheme>app</scheme>
+    <docDir>docs/html-terms-link</docDir>
+    <format>html</format>
+    <title>API Doc With Terms Link</title>
+    <links>
+        <link rel="terms" href="https://example.com/terms-of-service" />
+    </links>
+</apidoc>

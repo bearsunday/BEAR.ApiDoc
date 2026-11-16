@@ -181,6 +181,18 @@ class ApiDocTest extends TestCase
         $this->assertStringNotContainsString('self.html', $html);
     }
 
+    public function testConfigTermsLinkReplacesTheAutomaticOne(): void
+    {
+        $apiDoc = new ApiDoc();
+        $apiDoc(__DIR__ . '/apidoc.terms-link.xml');
+
+        $html = file_get_contents(__DIR__ . '/docs/html-terms-link/index.html');
+        $this->assertIsString($html);
+
+        $this->assertStringContainsString('<li>terms : <a href="https://example.com/terms-of-service">', $html);
+        $this->assertStringNotContainsString('href="terms.html"', $html);
+    }
+
     public function testInvalidAppNamespace(): void
     {
         $this->expectException(InvalidAppNamespaceException::class);
