@@ -98,6 +98,7 @@ jobs:
 ```text
 docs/
 ├── index.html          # API documentation
+├── alps.html           # ALPS state diagram (alps format; also copied to alps/index.html)
 ├── terms.html          # Term usage index for HTML docs
 ├── audit.html          # Documentation coverage report (HTML, ALPS-profiled)
 ├── audit.md            # Documentation coverage report (Markdown, for CLI/tooling)
