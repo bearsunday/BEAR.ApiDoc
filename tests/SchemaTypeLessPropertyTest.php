@@ -33,14 +33,17 @@ class SchemaTypeLessPropertyTest extends TestCase
             'level' => '',
             'levels' => 'array',
             'color' => 'string',
+            'maybeCount' => 'int|null',
         ], $types);
     }
 
-    public function testArrayItemsReferringToADefinitionWithoutType(): void
+    public function testArrayItemsWithoutType(): void
     {
-        $jsonFile = __DIR__ . '/Fake/var/schema/response/type-less-items.json';
-        $schema = new Schema(new SplFileInfo($jsonFile), (object) json_decode((string) file_get_contents($jsonFile)), new ArrayObject());
+        foreach (['type-less-items.json' => '{"$ref":"#/definitions/level"}', 'type-less-enum-items.json' => '{"enum":["a","b"]}'] as $file => $constraint) {
+            $jsonFile = __DIR__ . '/Fake/var/schema/response/' . $file;
+            $schema = new Schema(new SplFileInfo($jsonFile), (object) json_decode((string) file_get_contents($jsonFile)), new ArrayObject());
 
-        $this->assertStringContainsString('|  | {"$ref":"#/definitions/level"} |', $schema->toStringTypeArray());
+            $this->assertStringContainsString('|  | ' . $constraint . ' |', $schema->toStringTypeArray());
+        }
     }
 }

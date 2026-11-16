@@ -3,7 +3,8 @@
   "type": "object",
   "definitions": {
     "color": {"type": "string"},
-    "level": {"enum": ["low", "high"]}
+    "level": {"enum": ["low", "high"]},
+    "maybeCount": {"type": ["integer", "null"]}
   },
   "properties": {
     "nameColor": {"anyOf": [{"$ref": "#/definitions/color"}, {"type": "null"}]},
@@ -14,6 +15,7 @@
     "anything": {"description": "any value"},
     "level": {"$ref": "#/definitions/level"},
     "levels": {"type": "array", "items": {"$ref": "#/definitions/level"}},
-    "color": {"$ref": "#/definitions/color"}
+    "color": {"$ref": "#/definitions/color"},
+    "maybeCount": {"$ref": "#/definitions/maybeCount"}
   }
 }

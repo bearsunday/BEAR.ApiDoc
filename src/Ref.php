@@ -11,6 +11,8 @@ use function assert;
 use function explode;
 use function file_exists;
 use function filter_var;
+use function implode;
+use function is_array;
 use function is_object;
 use function is_string;
 use function sprintf;
@@ -47,7 +49,9 @@ final class Ref
         }
 
         $this->json = $target;
-        $this->type = isset($target->type) && is_string($target->type) ? $target->type : '';
+        /** @var list<string>|string $type */
+        $type = $target->type ?? '';
+        $this->type = is_array($type) ? implode('|', $type) : $type;
         $title = $target->title ?? $path;
         assert(is_string($title));
         $this->title = $title;

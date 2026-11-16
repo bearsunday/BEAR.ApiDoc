@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
-use RuntimeException;
 use SplFileInfo;
 
 use function array_map;
 use function assert;
+use function explode;
 use function get_object_vars;
 use function implode;
 use function in_array;
@@ -156,9 +156,7 @@ EOT;
             return $ref->type;
         }
 
-        // @codeCoverageIgnoreStart
-        throw new RuntimeException();
-        // @codeCoverageIgnoreEnd
+        return '';
     }
 
     /** @param array<string, string> $required */
@@ -233,7 +231,7 @@ EOT;
             return $this->returnType($ref->type);
         }
 
-        // A property may leave out `type` (anyOf, enum, const, ...); the Meta column shows those keywords as written
+        // `type` is optional in JSON Schema (anyOf, enum, const, ...)
         if (! isset($property->type)) {
             return '';
         }
@@ -247,11 +245,8 @@ EOT;
     /** @param string|list<string> $type */
     private function returnType($type): string
     {
-        if (is_array($type)) {
-            $type = array_map(static fn (string $item): string => $item === 'integer' ? 'int' : $item, $type);
-            $type = implode('|', $type);
-        }
+        $types = is_array($type) ? $type : explode('|', $type);
 
-        return $type === 'integer' ? 'int' : $type;
+        return implode('|', array_map(static fn (string $item): string => $item === 'integer' ? 'int' : $item, $types));
     }
 }
