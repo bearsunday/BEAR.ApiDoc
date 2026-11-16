@@ -523,6 +523,10 @@ HTML;
             return '';
         }
 
+        if (in_array($prop['type'], Ref::TYPE_KEYWORDS, true)) {
+            return sprintf('<span class="badge keyword">%s</span>', $prop['type']);
+        }
+
         $type = $this->normalizeType($prop['type']);
         $typeClass = 'type-' . (preg_replace('/[^a-zA-Z0-9-]/', '', $type) ?? $type);
 

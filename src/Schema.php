@@ -146,17 +146,11 @@ EOT;
 
     private function getItemType(object $schema): string
     {
-        if (isset($schema->type) && is_string($schema->type)) {
-            return $this->returnType($schema->type);
+        if (! isset($schema->type) && isset($schema->{'$ref'}) && is_string($schema->{'$ref'})) {
+            return (new Ref($schema->{'$ref'}, $this->file, $this->schema))->type;
         }
 
-        if (isset($schema->{'$ref'}) && is_string($schema->{'$ref'})) {
-            $ref = new Ref($schema->{'$ref'}, $this->file, $this->schema);
-
-            return $ref->type;
-        }
-
-        return '';
+        return $this->returnType(Ref::typeOf($schema));
     }
 
     /** @param array<string, string> $required */
@@ -231,15 +225,7 @@ EOT;
             return $this->returnType($ref->type);
         }
 
-        // `type` is optional in JSON Schema (anyOf, enum, const, ...)
-        if (! isset($property->type)) {
-            return '';
-        }
-
-        /** @var list<string>|string $type */
-        $type = $property->type;
-
-        return $this->returnType($type);
+        return $this->returnType(Ref::typeOf($property));
     }
 
     /** @param string|list<string> $type */

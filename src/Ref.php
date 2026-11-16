@@ -23,6 +23,9 @@ use const FILTER_VALIDATE_URL;
 
 final class Ref
 {
+    /** Keywords shown in place of a left-out `type`, first match wins */
+    public const TYPE_KEYWORDS = ['anyOf', 'oneOf', 'allOf', 'enum', 'const'];
+
     public string $title = '';
 
     public string $type = '';
@@ -72,12 +75,23 @@ final class Ref
         $this->title = isset($schema->title) && is_string($schema->title) ? $schema->title : '';
     }
 
-    private static function typeOf(object $schema): string
+    /** The written `type` joined with `|`, else the first keyword of TYPE_KEYWORDS used, else '' */
+    public static function typeOf(object $schema): string
     {
-        /** @var list<string>|string $type */
-        $type = $schema->type ?? '';
+        if (isset($schema->type)) {
+            /** @var list<string>|string $type */
+            $type = $schema->type;
 
-        return is_array($type) ? implode('|', $type) : $type;
+            return is_array($type) ? implode('|', $type) : $type;
+        }
+
+        foreach (self::TYPE_KEYWORDS as $keyword) {
+            if (property_exists($schema, $keyword)) {
+                return $keyword;
+            }
+        }
+
+        return '';
     }
 
     private function getFilePath(string $ref, SplFileInfo $file): string

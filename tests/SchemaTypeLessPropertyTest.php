@@ -16,7 +16,7 @@ use function sprintf;
 
 class SchemaTypeLessPropertyTest extends TestCase
 {
-    public function testPropertiesWithoutTypeHaveABlankType(): void
+    public function testPropertiesWithoutTypeShowTheirKeyword(): void
     {
         $jsonFile = __DIR__ . '/Fake/var/schema/response/type-less.json';
         $schema = new Schema(new SplFileInfo($jsonFile), (object) json_decode((string) file_get_contents($jsonFile)), new ArrayObject());
@@ -27,13 +27,13 @@ class SchemaTypeLessPropertyTest extends TestCase
         }
 
         $this->assertSame([
-            'nameColor' => '',
-            'infoType' => '',
-            'merged' => '',
-            'isOverseas' => '',
-            'version' => '',
+            'nameColor' => 'anyOf',
+            'infoType' => 'oneOf',
+            'merged' => 'allOf',
+            'isOverseas' => 'enum',
+            'version' => 'const',
             'anything' => '',
-            'level' => '',
+            'level' => 'enum',
             'levels' => 'array',
             'color' => 'string',
             'maybeCount' => 'int|null',
@@ -47,7 +47,7 @@ class SchemaTypeLessPropertyTest extends TestCase
             $jsonFile = __DIR__ . '/Fake/var/schema/response/' . $file;
             $schema = new Schema(new SplFileInfo($jsonFile), (object) json_decode((string) file_get_contents($jsonFile)), new ArrayObject());
 
-            $this->assertStringContainsString('|  | ' . $constraint . ' |', $schema->toStringTypeArray());
+            $this->assertStringContainsString('| enum | ' . $constraint . ' |', $schema->toStringTypeArray());
         }
     }
 
