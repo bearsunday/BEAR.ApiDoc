@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "definitions": {
+    "color": {"type": "string"},
+    "level": {"enum": ["low", "high"]}
+  },
+  "properties": {
+    "nameColor": {"anyOf": [{"$ref": "#/definitions/color"}, {"type": "null"}]},
+    "infoType": {"oneOf": [{"enum": ["news"]}, {"type": ["integer", "null"]}]},
+    "merged": {"allOf": [{"type": "string"}, {"maxLength": 5}]},
+    "isOverseas": {"enum": [true, false]},
+    "version": {"const": 1},
+    "anything": {"description": "any value"},
+    "level": {"$ref": "#/definitions/level"},
+    "levels": {"type": "array", "items": {"$ref": "#/definitions/level"}},
+    "color": {"$ref": "#/definitions/color"}
+  }
+}

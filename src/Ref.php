@@ -46,10 +46,8 @@ final class Ref
             assert(is_object($target));
         }
 
-        assert(isset($target->type));
-        assert(is_string($target->type));
         $this->json = $target;
-        $this->type = $target->type;
+        $this->type = isset($target->type) && is_string($target->type) ? $target->type : '';
         $title = $target->title ?? $path;
         assert(is_string($title));
         $this->title = $title;

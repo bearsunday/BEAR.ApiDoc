@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Document JSON Schema properties written without `type` (`anyOf`, `oneOf`, `allOf`, `enum`, `const`, or a `$ref` to such a definition) instead of stopping with an assertion error. Their Type column is left blank, and the HTML Meta column now shows `anyOf`, `oneOf` and `allOf` as written, like the Markdown doc.
 - The reusable workflow (`apidoc.yml`) now writes the ALPS diagram to `alps.html`, the page the API doc links its parameters to; `alps/index.html` is still written.
 
 ## [1.12.0] - 2026-08-11

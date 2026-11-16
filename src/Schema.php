@@ -233,7 +233,11 @@ EOT;
             return $this->returnType($ref->type);
         }
 
-        assert(isset($property->type));
+        // A property may leave out `type` (anyOf, enum, const, ...); the Meta column shows those keywords as written
+        if (! isset($property->type)) {
+            return '';
+        }
+
         /** @var list<string>|string $type */
         $type = $property->type;
 
