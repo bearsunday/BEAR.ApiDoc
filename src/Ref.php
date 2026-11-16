@@ -8,11 +8,17 @@ use RuntimeException;
 use SplFileInfo;
 
 use function assert;
+use function basename;
+use function dirname;
 use function explode;
 use function file_exists;
 use function filter_var;
+use function implode;
+use function is_array;
 use function is_object;
 use function is_string;
+use function property_exists;
+use function realpath;
 use function sprintf;
 use function substr;
 
@@ -20,6 +26,9 @@ use const FILTER_VALIDATE_URL;
 
 final class Ref
 {
+    /** Keywords shown in place of a left-out `type`, first match wins */
+    public const TYPE_KEYWORDS = ['anyOf', 'oneOf', 'allOf', 'enum', 'const'];
+
     public string $title = '';
 
     public string $type = '';
@@ -41,15 +50,20 @@ final class Ref
         $target = $schema;
         $paths = explode('/', substr($ref, 2));
         foreach ($paths as $path) {
+            if (! is_object($target) || ! property_exists($target, $path)) {
+                throw new RuntimeException('Invalid $ref ' . $ref);
+            }
+
             /** @psalm-suppress MixedAssignment */
             $target = $target->{$path};
-            assert(is_object($target));
         }
 
-        assert(isset($target->type));
-        assert(is_string($target->type));
+        if (! is_object($target)) {
+            throw new RuntimeException('Invalid $ref ' . $ref);
+        }
+
         $this->json = $target;
-        $this->type = $target->type;
+        $this->type = self::typeOf($target);
         $title = $target->title ?? $path;
         assert(is_string($title));
         $this->title = $title;
@@ -60,8 +74,27 @@ final class Ref
         $filePath = $this->getFilePath($ref, $file);
         $schema = (new JsonFile())->object($filePath);
         $this->json = $schema;
-        $this->type = isset($schema->type) && is_string($schema->type) ? $schema->type : '';
+        $this->type = self::typeOf($schema);
         $this->title = isset($schema->title) && is_string($schema->title) ? $schema->title : '';
+    }
+
+    /** The written `type` joined with `|`, else the first keyword of TYPE_KEYWORDS used, else '' */
+    public static function typeOf(object $schema): string
+    {
+        if (isset($schema->type)) {
+            /** @var list<string>|string $type */
+            $type = $schema->type;
+
+            return is_array($type) ? implode('|', $type) : $type;
+        }
+
+        foreach (self::TYPE_KEYWORDS as $keyword) {
+            if (property_exists($schema, $keyword)) {
+                return $keyword;
+            }
+        }
+
+        return '';
     }
 
     private function getFilePath(string $ref, SplFileInfo $file): string
@@ -76,5 +109,18 @@ final class Ref
         }
 
         return $refFile;
+    }
+
+    /** File name of the schema that the external `$ref` of `$property` points to, when it is a top-level file of `$publishedDir` (the directory copied to schemas/) */
+    public static function publishedSchemaFile(mixed $property, SplFileInfo $file, string $publishedDir): ?string
+    {
+        $ref = is_object($property) ? $property->{'$ref'} ?? null : null;
+        if (! is_string($ref) || $ref === '' || $ref[0] === '#') {
+            return null;
+        }
+
+        $target = realpath(sprintf('%s/%s', $file->getPath(), $ref));
+
+        return $target !== false && dirname($target) === realpath($publishedDir) ? basename($target) : null;
     }
 }

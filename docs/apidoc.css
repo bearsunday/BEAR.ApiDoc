@@ -214,6 +214,7 @@ tr:hover {
 .badge.type-mixed,
 .badge.constraint,
 .badge.embed,
+.badge.keyword,
 .badge.link {
     background: #f6f8fa;
     border-color: #d0d7de;

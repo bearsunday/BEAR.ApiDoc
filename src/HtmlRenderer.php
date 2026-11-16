@@ -519,6 +519,16 @@ HTML;
     /** @param HtmlProperty $prop */
     private function renderPropertyTypeBadge(array $prop): string
     {
+        if ($prop['type'] === '') {
+            return '';
+        }
+
+        if (in_array($prop['type'], Ref::TYPE_KEYWORDS, true)) {
+            $badge = sprintf('<span class="badge keyword">%s</span>', $prop['type']);
+
+            return isset($prop['typeSchemaFile']) ? sprintf('<a href="schemas/%s">%s</a>', htmlspecialchars($prop['typeSchemaFile']), $badge) : $badge;
+        }
+
         $type = $this->normalizeType($prop['type']);
         $typeClass = 'type-' . (preg_replace('/[^a-zA-Z0-9-]/', '', $type) ?? $type);
 
@@ -536,7 +546,7 @@ HTML;
         }
 
         // Keys to skip in constraint badges
-        $skipKeys = ['items', 'properties', '$ref', 'definitions', 'allOf', 'anyOf', 'oneOf', 'not', 'if', 'then', 'else', 'description'];
+        $skipKeys = ['items', 'properties', '$ref', 'definitions', 'not', 'if', 'then', 'else', 'description'];
 
         // Constraint badges
         /** @psalm-suppress MixedAssignment */
@@ -546,12 +556,12 @@ HTML;
             }
 
             if (is_object($value) || is_array($value)) {
-                $value = (string) json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $valueHtml = sprintf('<code>%s</code>', htmlspecialchars((string) json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)));
             } else {
-                $value = is_scalar($value) ? (string) $value : '';
+                $valueHtml = htmlspecialchars(is_scalar($value) ? (string) $value : '');
             }
 
-            $badges[] = sprintf('<span class="badge constraint">%s: %s</span>', htmlspecialchars($key), htmlspecialchars($value));
+            $badges[] = sprintf('<span class="badge constraint">%s: %s</span>', htmlspecialchars($key), $valueHtml);
         }
 
         // Example badge (shown last)

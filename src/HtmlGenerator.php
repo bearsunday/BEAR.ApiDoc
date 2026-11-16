@@ -451,6 +451,8 @@ final class HtmlGenerator
                 unset($constraints['$ref']);
             }
 
+            /** @psalm-suppress MixedPropertyFetch, MixedArgument */
+            $typeSchemaFile = Ref::publishedSchemaFile($schemaJson->properties->{$propName} ?? null, $schema->file, $this->responseSchemaDir);
             $properties[] = [
                 'name' => $propName,
                 'type' => $prop->type,
@@ -459,6 +461,7 @@ final class HtmlGenerator
                 'format' => $format,
                 'constraints' => $constraints,
                 'ref' => $ref,
+                'typeSchemaFile' => $typeSchemaFile,
             ];
         }
 

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
-use RuntimeException;
 use SplFileInfo;
 
 use function array_map;
 use function assert;
+use function explode;
 use function get_object_vars;
 use function implode;
 use function in_array;
@@ -146,19 +146,11 @@ EOT;
 
     private function getItemType(object $schema): string
     {
-        if (isset($schema->type) && is_string($schema->type)) {
-            return $this->returnType($schema->type);
+        if (! isset($schema->type) && isset($schema->{'$ref'}) && is_string($schema->{'$ref'})) {
+            return $this->returnType((new Ref($schema->{'$ref'}, $this->file, $this->schema))->type);
         }
 
-        if (isset($schema->{'$ref'}) && is_string($schema->{'$ref'})) {
-            $ref = new Ref($schema->{'$ref'}, $this->file, $this->schema);
-
-            return $ref->type;
-        }
-
-        // @codeCoverageIgnoreStart
-        throw new RuntimeException();
-        // @codeCoverageIgnoreEnd
+        return $this->returnType(Ref::typeOf($schema));
     }
 
     /** @param array<string, string> $required */
@@ -233,21 +225,14 @@ EOT;
             return $this->returnType($ref->type);
         }
 
-        assert(isset($property->type));
-        /** @var list<string>|string $type */
-        $type = $property->type;
-
-        return $this->returnType($type);
+        return $this->returnType(Ref::typeOf($property));
     }
 
     /** @param string|list<string> $type */
     private function returnType($type): string
     {
-        if (is_array($type)) {
-            $type = array_map(static fn (string $item): string => $item === 'integer' ? 'int' : $item, $type);
-            $type = implode('|', $type);
-        }
+        $types = is_array($type) ? $type : explode('|', $type);
 
-        return $type === 'integer' ? 'int' : $type;
+        return implode('|', array_map(static fn (string $item): string => $item === 'integer' ? 'int' : $item, $types));
     }
 }
