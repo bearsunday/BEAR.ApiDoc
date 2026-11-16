@@ -39,6 +39,7 @@ class ApiDocTest extends TestCase
         $html = file_get_contents(__DIR__ . '/../docs/index.html');
         $this->assertIsString($html);
         $this->assertStringContainsString('<li>terms : <a href="terms.html">terms.html</a>', $html);
+        $this->assertStringContainsString('<li>schemas : <a href="schemas/">schemas/</a></li>', $html);
         $this->assertLessThan(strpos($html, '<h2>Endpoints</h2>'), strpos($html, '<h2>Links</h2>'));
         $this->assertStringContainsString('<a href="schemas/slug.json"><span class="badge keyword">anyOf</span></a>', $html);
         $this->assertFileExists(__DIR__ . '/../docs/schemas/slug.json');

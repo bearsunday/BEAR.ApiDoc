@@ -613,7 +613,7 @@ final class HtmlGenerator
 
         // apidoc.xml wins: a generated page is skipped when its rel or href is already listed
         $generated = array_intersect_key(self::GENERATED_PAGES, array_flip($this->config->formats)) + ['terms' => 'terms.html'];
-        // Parameters already link to alps.html#<descriptor> when an ALPS profile is configured
+        // alps.html is written by app-state-diagram, not here; parameter links already point to it
         if ($this->config->alps !== '') {
             $generated['profile'] = 'alps.html';
         }
