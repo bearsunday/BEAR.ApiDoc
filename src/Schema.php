@@ -147,7 +147,7 @@ EOT;
     private function getItemType(object $schema): string
     {
         if (! isset($schema->type) && isset($schema->{'$ref'}) && is_string($schema->{'$ref'})) {
-            return (new Ref($schema->{'$ref'}, $this->file, $this->schema))->type;
+            return $this->returnType((new Ref($schema->{'$ref'}, $this->file, $this->schema))->type);
         }
 
         return $this->returnType(Ref::typeOf($schema));

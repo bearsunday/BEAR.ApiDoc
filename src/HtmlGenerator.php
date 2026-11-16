@@ -452,7 +452,7 @@ final class HtmlGenerator
             }
 
             /** @psalm-suppress MixedPropertyFetch, MixedArgument */
-            $typeSchemaFile = Ref::siblingSchemaFile($schemaJson->properties->{$propName} ?? null, $schema->file);
+            $typeSchemaFile = Ref::publishedSchemaFile($schemaJson->properties->{$propName} ?? null, $schema->file, $this->responseSchemaDir);
             $properties[] = [
                 'name' => $propName,
                 'type' => $prop->type,

@@ -43,11 +43,11 @@ class SchemaTypeLessPropertyTest extends TestCase
 
     public function testArrayItemsWithoutType(): void
     {
-        foreach (['type-less-items.json' => '{"$ref":"#/definitions/level"}', 'type-less-enum-items.json' => '{"enum":["a","b"]}'] as $file => $constraint) {
+        foreach (['type-less-items.json' => '| enum | {"$ref":"#/definitions/level"} |', 'type-less-enum-items.json' => '| enum | {"enum":["a","b"]} |', 'type-list-items.json' => '| int|null | '] as $file => $row) {
             $jsonFile = __DIR__ . '/Fake/var/schema/response/' . $file;
             $schema = new Schema(new SplFileInfo($jsonFile), (object) json_decode((string) file_get_contents($jsonFile)), new ArrayObject());
 
-            $this->assertStringContainsString('| enum | ' . $constraint . ' |', $schema->toStringTypeArray());
+            $this->assertStringContainsString($row, $schema->toStringTypeArray());
         }
     }
 

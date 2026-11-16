@@ -111,8 +111,8 @@ final class Ref
         return $refFile;
     }
 
-    /** File name of the schema that the external `$ref` of `$property` points to, when it sits next to `$file` */
-    public static function siblingSchemaFile(mixed $property, SplFileInfo $file): ?string
+    /** File name of the schema that the external `$ref` of `$property` points to, when it is a top-level file of `$publishedDir` (the directory copied to schemas/) */
+    public static function publishedSchemaFile(mixed $property, SplFileInfo $file, string $publishedDir): ?string
     {
         $ref = is_object($property) ? $property->{'$ref'} ?? null : null;
         if (! is_string($ref) || $ref === '' || $ref[0] === '#') {
@@ -121,6 +121,6 @@ final class Ref
 
         $target = realpath(sprintf('%s/%s', $file->getPath(), $ref));
 
-        return $target !== false && dirname($target) === realpath($file->getPath()) ? basename($target) : null;
+        return $target !== false && dirname($target) === realpath($publishedDir) ? basename($target) : null;
     }
 }
