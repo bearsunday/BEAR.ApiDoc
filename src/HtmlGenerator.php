@@ -16,8 +16,9 @@ use ReflectionNamedType;
 use SplFileInfo;
 
 use function array_column;
+use function array_diff;
+use function array_diff_key;
 use function array_flip;
-use function array_intersect;
 use function array_intersect_key;
 use function dirname;
 use function file_get_contents;
@@ -621,11 +622,9 @@ final class HtmlGenerator
             $generated['schemas'] = 'schemas/';
         }
 
-        $listed = [...array_column($links, 'rel'), ...array_column($links, 'href')];
+        $generated = array_diff(array_diff_key($generated, array_flip(array_column($links, 'rel'))), array_column($links, 'href'));
         foreach ($generated as $rel => $href) {
-            if (array_intersect([$rel, $href], $listed) === []) {
-                $links[] = ['rel' => $rel, 'href' => $href];
-            }
+            $links[] = ['rel' => $rel, 'href' => $href];
         }
 
         return $links;
