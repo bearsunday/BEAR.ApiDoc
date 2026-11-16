@@ -91,13 +91,16 @@ jobs:
 | `format` | `'html,openapi,llms'` | Comma-separated: html (apidoc), md, openapi, alps, llms, audit, bindings |
 | `alps-profile` | `''` | ALPS profile path (required for alps format) |
 | `docs-path` | `'docs/api'` | Output directory |
-| `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
+| `publish-to` | `'github-pages'` | `github-pages` or `artifact-only`. The docs are always uploaded as the `api-docs` artifact; `github-pages` also deploys them |
+
+A GitHub Pages site is public unless you are on GitHub Enterprise Cloud, and GitHub Free cannot publish Pages from a private repository. For a private repository, use `publish-to: 'artifact-only'` and download the docs from the workflow run.
 
 ### Output Structure
 
 ```text
 docs/
 ├── index.html          # API documentation
+├── alps.html           # ALPS state diagram (alps format; also copied to alps/index.html)
 ├── terms.html          # Term usage index for HTML docs
 ├── audit.html          # Documentation coverage report (HTML, ALPS-profiled)
 ├── audit.md            # Documentation coverage report (Markdown, for CLI/tooling)

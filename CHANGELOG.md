@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The "Links" section of the HTML doc moves from the bottom of the page to just below the description, and its labels are no longer bold.
 
+### Fixed
+- The reusable workflow (`apidoc.yml`) now writes the ALPS diagram to `alps.html`, the page the API doc links its parameters to; `alps/index.html` is still written.
+
 ## [1.12.0] - 2026-08-11
 
 ### Added
