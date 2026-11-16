@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.1] - 2026-11-16
+
+## [1.12.1] - 2026-11-16
+
 ### Fixed
 - Document JSON Schema properties and array items written without `type` (`anyOf`, `oneOf`, `allOf`, `enum`, `const`, or a `$ref` to such a definition) instead of stopping with an error. Their Type column shows that keyword, and the HTML Meta column now shows `anyOf`, `oneOf` and `allOf` as written, like the Markdown doc.
 - The reusable workflow (`apidoc.yml`) now writes the ALPS diagram to `alps.html`, the page the API doc links its parameters to; `alps/index.html` is still written.
@@ -168,7 +172,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update dependencies
 
-[Unreleased]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.12.0...HEAD
+[Unreleased]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.12.1...HEAD
+[1.12.1]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.12.0...1.12.1
 [1.12.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.11.0...1.12.0
 [1.11.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.10.0...1.11.0
 [1.10.0]: https://github.com/bearsunday/BEAR.ApiDoc/compare/1.9.2...1.10.0
