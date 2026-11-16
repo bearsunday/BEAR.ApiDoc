@@ -268,6 +268,20 @@ class ApiDocTest extends TestCase
         $this->assertFileExists(__DIR__ . '/docs/multi/llms.txt');
     }
 
+    public function testGeneratedPagesAreLinkedUnlessAlreadyListed(): void
+    {
+        $apiDoc = new ApiDoc();
+        $apiDoc(__DIR__ . '/apidoc.generated-links.xml');
+
+        $html = file_get_contents(__DIR__ . '/docs/generated-links/index.html');
+        $this->assertIsString($html);
+
+        $this->assertStringContainsString('<li>llms : <a href="llms.txt">llms.txt</a></li>', $html);
+        $this->assertStringContainsString('<li>terms : <a href="terms.html">terms.html</a></li>', $html);
+        $this->assertStringContainsString('<li>openapi : <a href="openapi/">openapi/</a></li>', $html);
+        $this->assertStringNotContainsString('href="openapi.json"', $html);
+    }
+
     public function testHtmlOutputWithFakeExamples(): void
     {
         $apiDoc = new ApiDoc();

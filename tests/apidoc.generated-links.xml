@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../apidoc.xsd">
+    <appName>FakeVendor\FakeProject</appName>
+    <scheme>app</scheme>
+    <docDir>docs/generated-links</docDir>
+    <format>html,openapi,llms</format>
+    <title>API Doc With Generated Pages</title>
+    <links>
+        <link rel="openapi" href="openapi/" />
+    </links>
+</apidoc>

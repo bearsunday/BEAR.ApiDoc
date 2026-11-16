@@ -15,6 +15,9 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use SplFileInfo;
 
+use function array_column;
+use function array_flip;
+use function array_intersect_key;
 use function dirname;
 use function file_get_contents;
 use function in_array;
@@ -46,6 +49,9 @@ use const PATHINFO_FILENAME;
  */
 final class HtmlGenerator
 {
+    /** Pages a `<format>` writes next to index.html, linked as rel => href; terms.html always comes with the HTML doc */
+    private const GENERATED_PAGES = ['openapi' => 'openapi.json', 'audit' => 'audit.html', 'bindings' => 'bindings.html', 'llms' => 'llms.txt'];
+
     /** @var array<string, array<string, HtmlMethod>> */
     private array $endpoints = [];
 
@@ -595,18 +601,20 @@ final class HtmlGenerator
     private function extractLinks(): array
     {
         $links = [];
-        $hasTermsLink = false;
         foreach ($this->config->links as $link) {
             $rel = (string) ($link['rel'] ?? '');
             $href = (string) ($link['href'] ?? '');
             if ($rel !== '' && $href !== '') {
-                $hasTermsLink = $hasTermsLink || $rel === 'terms';
                 $links[] = ['rel' => $rel, 'href' => $href];
             }
         }
 
-        if (! $hasTermsLink) {
-            $links[] = ['rel' => 'terms', 'href' => 'terms.html'];
+        // apidoc.xml wins: a generated page is skipped when its rel or href is already listed
+        $generated = array_intersect_key(self::GENERATED_PAGES, array_flip($this->config->formats)) + ['terms' => 'terms.html'];
+        foreach ($generated as $rel => $href) {
+            if (! in_array($rel, array_column($links, 'rel'), true) && ! in_array($href, array_column($links, 'href'), true)) {
+                $links[] = ['rel' => $rel, 'href' => $href];
+            }
         }
 
         return $links;
