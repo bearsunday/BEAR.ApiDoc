@@ -19,6 +19,7 @@ use function rmdir;
 use function strlen;
 use function strpos;
 use function substr;
+use function substr_count;
 use function sys_get_temp_dir;
 use function uniqid;
 use function unlink;
@@ -280,6 +281,8 @@ class ApiDocTest extends TestCase
         $this->assertStringContainsString('<li>terms : <a href="terms.html">terms.html</a></li>', $html);
         $this->assertStringContainsString('<li>openapi : <a href="openapi/">openapi/</a></li>', $html);
         $this->assertStringNotContainsString('href="openapi.json"', $html);
+        $this->assertStringContainsString('<li>profile : <a href="alps.html">alps.html</a></li>', $html);
+        $this->assertSame(1, substr_count($html, 'href="schemas/"'));
     }
 
     public function testHtmlOutputWithFakeExamples(): void

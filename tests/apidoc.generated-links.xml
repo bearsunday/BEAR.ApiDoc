@@ -9,5 +9,7 @@
     <title>API Doc With Generated Pages</title>
     <links>
         <link rel="openapi" href="openapi/" />
+        <link rel="schema-index" href="schemas/" />
     </links>
+    <alps>../docs/alps.json</alps>
 </apidoc>
