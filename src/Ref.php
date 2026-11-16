@@ -8,6 +8,8 @@ use RuntimeException;
 use SplFileInfo;
 
 use function assert;
+use function basename;
+use function dirname;
 use function explode;
 use function file_exists;
 use function filter_var;
@@ -16,6 +18,7 @@ use function is_array;
 use function is_object;
 use function is_string;
 use function property_exists;
+use function realpath;
 use function sprintf;
 use function substr;
 
@@ -106,5 +109,18 @@ final class Ref
         }
 
         return $refFile;
+    }
+
+    /** File name of the schema that the external `$ref` of `$property` points to, when it sits next to `$file` */
+    public static function siblingSchemaFile(mixed $property, SplFileInfo $file): ?string
+    {
+        $ref = is_object($property) ? $property->{'$ref'} ?? null : null;
+        if (! is_string($ref) || $ref === '' || $ref[0] === '#') {
+            return null;
+        }
+
+        $target = realpath(sprintf('%s/%s', $file->getPath(), $ref));
+
+        return $target !== false && dirname($target) === realpath($file->getPath()) ? basename($target) : null;
     }
 }

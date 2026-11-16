@@ -524,7 +524,9 @@ HTML;
         }
 
         if (in_array($prop['type'], Ref::TYPE_KEYWORDS, true)) {
-            return sprintf('<span class="badge keyword">%s</span>', $prop['type']);
+            $badge = sprintf('<span class="badge keyword">%s</span>', $prop['type']);
+
+            return isset($prop['typeSchemaFile']) ? sprintf('<a href="schemas/%s">%s</a>', htmlspecialchars($prop['typeSchemaFile']), $badge) : $badge;
         }
 
         $type = $this->normalizeType($prop['type']);

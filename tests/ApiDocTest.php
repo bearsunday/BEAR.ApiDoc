@@ -38,6 +38,8 @@ class ApiDocTest extends TestCase
         $html = file_get_contents(__DIR__ . '/../docs/index.html');
         $this->assertIsString($html);
         $this->assertStringContainsString('<strong>terms</strong> : <a href="terms.html">terms.html</a>', $html);
+        $this->assertStringContainsString('<a href="schemas/slug.json"><span class="badge keyword">anyOf</span></a>', $html);
+        $this->assertFileExists(__DIR__ . '/../docs/schemas/slug.json');
     }
 
     public function testMdOutput(): void

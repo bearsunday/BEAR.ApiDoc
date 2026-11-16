@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "anyOf": [
+    {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    {"type": "null"}
+  ]
+}
