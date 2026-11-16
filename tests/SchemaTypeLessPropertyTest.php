@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace BEAR\ApiDoc;
 
 use ArrayObject;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use SplFileInfo;
 
 use function file_get_contents;
 use function json_decode;
+use function sprintf;
 
 class SchemaTypeLessPropertyTest extends TestCase
 {
@@ -49,12 +51,22 @@ class SchemaTypeLessPropertyTest extends TestCase
     }
 
     /** A broken local $ref stops generation whether or not assertions run */
-    public function testBrokenLocalRefStops(): void
+    #[DataProvider('brokenRefProvider')]
+    public function testBrokenLocalRefStops(string $ref): void
     {
-        $json = '{"type": "object", "definitions": {}, "properties": {"broken": {"$ref": "#/definitions/missing"}}}';
+        $json = sprintf('{"type": "object", "definitions": {"color": {"type": "string"}}, "properties": {"broken": {"$ref": "%s"}}}', $ref);
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Invalid $ref #/definitions/missing');
+        $this->expectExceptionMessage('Invalid $ref ' . $ref);
         new Schema(new SplFileInfo(__FILE__), (object) json_decode($json), new ArrayObject());
+    }
+
+    /** @return array<string, array{string}> */
+    public static function brokenRefProvider(): array
+    {
+        return [
+            'missing member' => ['#/definitions/missing'],
+            'not a schema' => ['#/definitions/color/type'],
+        ];
     }
 }
