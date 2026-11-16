@@ -35,4 +35,12 @@ class SchemaTypeLessPropertyTest extends TestCase
             'color' => 'string',
         ], $types);
     }
+
+    public function testArrayItemsReferringToADefinitionWithoutType(): void
+    {
+        $jsonFile = __DIR__ . '/Fake/var/schema/response/type-less-items.json';
+        $schema = new Schema(new SplFileInfo($jsonFile), (object) json_decode((string) file_get_contents($jsonFile)), new ArrayObject());
+
+        $this->assertStringContainsString('|  | {"$ref":"#/definitions/level"} |', $schema->toStringTypeArray());
+    }
 }
