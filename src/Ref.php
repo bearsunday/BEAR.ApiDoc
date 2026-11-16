@@ -15,6 +15,7 @@ use function implode;
 use function is_array;
 use function is_object;
 use function is_string;
+use function property_exists;
 use function sprintf;
 use function substr;
 
@@ -43,9 +44,16 @@ final class Ref
         $target = $schema;
         $paths = explode('/', substr($ref, 2));
         foreach ($paths as $path) {
+            if (! is_object($target) || ! property_exists($target, $path)) {
+                throw new RuntimeException('Invalid $ref ' . $ref);
+            }
+
             /** @psalm-suppress MixedAssignment */
             $target = $target->{$path};
-            assert(is_object($target));
+        }
+
+        if (! is_object($target)) {
+            throw new RuntimeException('Invalid $ref ' . $ref);
         }
 
         $this->json = $target;

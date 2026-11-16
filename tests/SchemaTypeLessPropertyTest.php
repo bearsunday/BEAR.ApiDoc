@@ -6,6 +6,7 @@ namespace BEAR\ApiDoc;
 
 use ArrayObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use SplFileInfo;
 
 use function file_get_contents;
@@ -45,5 +46,15 @@ class SchemaTypeLessPropertyTest extends TestCase
 
             $this->assertStringContainsString('|  | ' . $constraint . ' |', $schema->toStringTypeArray());
         }
+    }
+
+    /** A broken local $ref stops generation whether or not assertions run */
+    public function testBrokenLocalRefStops(): void
+    {
+        $json = '{"type": "object", "definitions": {}, "properties": {"broken": {"$ref": "#/definitions/missing"}}}';
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid $ref #/definitions/missing');
+        new Schema(new SplFileInfo(__FILE__), (object) json_decode($json), new ArrayObject());
     }
 }
