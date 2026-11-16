@@ -16,6 +16,7 @@
     "level": {"$ref": "#/definitions/level"},
     "levels": {"type": "array", "items": {"$ref": "#/definitions/level"}},
     "color": {"$ref": "#/definitions/color"},
-    "maybeCount": {"$ref": "#/definitions/maybeCount"}
+    "maybeCount": {"$ref": "#/definitions/maybeCount"},
+    "maybeCountFile": {"$ref": "maybe-count.json"}
   }
 }

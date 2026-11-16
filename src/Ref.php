@@ -57,9 +57,7 @@ final class Ref
         }
 
         $this->json = $target;
-        /** @var list<string>|string $type */
-        $type = $target->type ?? '';
-        $this->type = is_array($type) ? implode('|', $type) : $type;
+        $this->type = self::typeOf($target);
         $title = $target->title ?? $path;
         assert(is_string($title));
         $this->title = $title;
@@ -70,8 +68,16 @@ final class Ref
         $filePath = $this->getFilePath($ref, $file);
         $schema = (new JsonFile())->object($filePath);
         $this->json = $schema;
-        $this->type = isset($schema->type) && is_string($schema->type) ? $schema->type : '';
+        $this->type = self::typeOf($schema);
         $this->title = isset($schema->title) && is_string($schema->title) ? $schema->title : '';
+    }
+
+    private static function typeOf(object $schema): string
+    {
+        /** @var list<string>|string $type */
+        $type = $schema->type ?? '';
+
+        return is_array($type) ? implode('|', $type) : $type;
     }
 
     private function getFilePath(string $ref, SplFileInfo $file): string

@@ -37,6 +37,7 @@ class SchemaTypeLessPropertyTest extends TestCase
             'levels' => 'array',
             'color' => 'string',
             'maybeCount' => 'int|null',
+            'maybeCountFile' => 'int|null',
         ], $types);
     }
 
