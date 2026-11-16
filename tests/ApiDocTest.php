@@ -19,6 +19,7 @@ use function rmdir;
 use function strlen;
 use function strpos;
 use function substr;
+use function substr_count;
 use function sys_get_temp_dir;
 use function uniqid;
 use function unlink;
@@ -38,6 +39,7 @@ class ApiDocTest extends TestCase
         $html = file_get_contents(__DIR__ . '/../docs/index.html');
         $this->assertIsString($html);
         $this->assertStringContainsString('<li>terms : <a href="terms.html">terms.html</a>', $html);
+        $this->assertStringContainsString('<li>schemas : <a href="schemas/">schemas/</a></li>', $html);
         $this->assertLessThan(strpos($html, '<h2>Endpoints</h2>'), strpos($html, '<h2>Links</h2>'));
         $this->assertStringContainsString('<a href="schemas/slug.json"><span class="badge keyword">anyOf</span></a>', $html);
         $this->assertFileExists(__DIR__ . '/../docs/schemas/slug.json');
@@ -266,6 +268,22 @@ class ApiDocTest extends TestCase
         $this->assertFileExists(__DIR__ . '/docs/multi/index.html');
         $this->assertFileExists(__DIR__ . '/docs/multi/terms.html');
         $this->assertFileExists(__DIR__ . '/docs/multi/llms.txt');
+    }
+
+    public function testGeneratedPagesAreLinkedUnlessAlreadyListed(): void
+    {
+        $apiDoc = new ApiDoc();
+        $apiDoc(__DIR__ . '/apidoc.generated-links.xml');
+
+        $html = file_get_contents(__DIR__ . '/docs/generated-links/index.html');
+        $this->assertIsString($html);
+
+        $this->assertStringContainsString('<li>llms : <a href="llms.txt">llms.txt</a></li>', $html);
+        $this->assertStringContainsString('<li>terms : <a href="terms.html">terms.html</a></li>', $html);
+        $this->assertStringContainsString('<li>openapi : <a href="openapi/">openapi/</a></li>', $html);
+        $this->assertStringNotContainsString('href="openapi.json"', $html);
+        $this->assertStringContainsString('<li>profile : <a href="alps.html">alps.html</a></li>', $html);
+        $this->assertSame(1, substr_count($html, 'href="schemas/"'));
     }
 
     public function testHtmlOutputWithFakeExamples(): void

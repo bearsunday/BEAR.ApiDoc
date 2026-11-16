@@ -15,6 +15,11 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use SplFileInfo;
 
+use function array_column;
+use function array_diff;
+use function array_diff_key;
+use function array_flip;
+use function array_intersect_key;
 use function dirname;
 use function file_get_contents;
 use function in_array;
@@ -46,6 +51,9 @@ use const PATHINFO_FILENAME;
  */
 final class HtmlGenerator
 {
+    /** Pages written next to index.html by the other formats in `<format>`, as rel => href */
+    private const GENERATED_PAGES = ['openapi' => 'openapi.json', 'audit' => 'audit.html', 'bindings' => 'bindings.html', 'llms' => 'llms.txt'];
+
     /** @var array<string, array<string, HtmlMethod>> */
     private array $endpoints = [];
 
@@ -595,18 +603,28 @@ final class HtmlGenerator
     private function extractLinks(): array
     {
         $links = [];
-        $hasTermsLink = false;
         foreach ($this->config->links as $link) {
             $rel = (string) ($link['rel'] ?? '');
             $href = (string) ($link['href'] ?? '');
             if ($rel !== '' && $href !== '') {
-                $hasTermsLink = $hasTermsLink || $rel === 'terms';
                 $links[] = ['rel' => $rel, 'href' => $href];
             }
         }
 
-        if (! $hasTermsLink) {
-            $links[] = ['rel' => 'terms', 'href' => 'terms.html'];
+        // apidoc.xml wins: a generated page is skipped when its rel or href is already listed
+        $generated = array_intersect_key(self::GENERATED_PAGES, array_flip($this->config->formats)) + ['terms' => 'terms.html'];
+        // alps.html is written by app-state-diagram, not here; parameter links already point to it
+        if ($this->config->alps !== '') {
+            $generated['profile'] = 'alps.html';
+        }
+
+        if ($this->responseSchemaDir !== '') {
+            $generated['schemas'] = 'schemas/';
+        }
+
+        $generated = array_diff(array_diff_key($generated, array_flip(array_column($links, 'rel'))), array_column($links, 'href'));
+        foreach ($generated as $rel => $href) {
+            $links[] = ['rel' => $rel, 'href' => $href];
         }
 
         return $links;
