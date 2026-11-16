@@ -78,7 +78,9 @@ jobs:
             npm install -g @alps-asd/app-state-diagram
             mkdir -p ${{ inputs.docs-path }}/alps
             cp ${{ inputs.alps-profile }} ${{ inputs.docs-path }}/alps/
-            asd --echo ${{ inputs.alps-profile }} > ${{ inputs.docs-path }}/alps/index.html
+            # index.html links its parameters to alps.html#<descriptor>; alps/index.html stays for existing links
+            asd --echo ${{ inputs.alps-profile }} > ${{ inputs.docs-path }}/alps.html
+            cp ${{ inputs.docs-path }}/alps.html ${{ inputs.docs-path }}/alps/index.html
           else
             echo "::error::${{ inputs.alps-profile }} not found."
             exit 1

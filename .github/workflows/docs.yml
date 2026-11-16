@@ -1,0 +1,68 @@
+name: Docs
+
+on:
+  push:
+    branches: [1.x]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: docs-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - run: composer install --prefer-dist --no-progress
+
+      - run: composer docs
+      - run: composer docs-openapi
+      - run: composer docs-audit
+      - run: composer docs-bindings
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - run: npx --yes @redocly/cli@2.78.0 build-docs docs/openapi/openapi.json -o docs/openapi/index.html
+
+      # index.html links its parameters to alps.html#<descriptor>
+      - run: npx --yes --package=@alps-asd/app-state-diagram@2.0.0 asd --echo docs/alps.json > docs/alps.html
+
+      - run: cp apidoc.xsd docs/apidoc.xsd
+
+      # The same Jekyll build the branch-deployed site had, so adr/*.html keeps being served
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs
+          destination: ./_site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/1.x'
+    needs: build
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
