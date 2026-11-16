@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- The "Links" section of the HTML doc moves from the bottom of the page to just below the description, and its labels are no longer bold.
+
 ## [1.12.1] - 2026-11-16
 
 ### Fixed

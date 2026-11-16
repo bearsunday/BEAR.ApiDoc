@@ -95,14 +95,14 @@ final class HtmlRenderer
 <h1>{$escapedTitle}</h1>
 <p>{$escapedDescription}</p>
 
+{$linksSection}
+
 <h2>Endpoints</h2>
 {$endpointsHtml}
 
 {$objectsSection}
 
 {$arraysSection}
-
-{$linksSection}
 
 </div>
 </body>
@@ -688,7 +688,7 @@ HTML;
         foreach ($links as $link) {
             $rel = htmlspecialchars($link['rel']);
             $href = htmlspecialchars($link['href']);
-            $items .= sprintf('<li><strong>%s</strong> : <a href="%s">%s</a></li>', $rel, $href, $href);
+            $items .= sprintf('<li>%s : <a href="%s">%s</a></li>', $rel, $href, $href);
         }
 
         return '<ul class="doc-links">' . $items . '</ul>';
